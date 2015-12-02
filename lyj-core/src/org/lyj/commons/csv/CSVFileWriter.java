@@ -94,8 +94,13 @@ public final class CSVFileWriter extends CSVWriter {
     }
 
     @Override
-    public int writeAll(List<Map> allLines, boolean includeColumnNames) {
+    public int writeAll(final List<Map> allLines, final boolean includeColumnNames) {
         return super.writeAll(allLines, includeColumnNames);
+    }
+
+    @Override
+    public int writeAll(final String[] columnNames, final List<Map> allLines) {
+        return super.writeAll(columnNames, allLines);
     }
 
     @Override

@@ -25,6 +25,7 @@
 package org.lyj.commons.csv;
 
 import org.lyj.commons.csv.formatter.CSVDataFormatter;
+import org.lyj.commons.util.CollectionUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -179,17 +180,26 @@ public class CSVWriter
      * @param allLines a List of Map, with each row representing a line of the file.
      */
     public int writeAll(final List<Map> allLines,
-                        boolean includeColumnNames) {
+                        final boolean includeColumnNames) {
+        final List<String> columnNames = new LinkedList<>();
+        if (includeColumnNames) {
+            for (final Map item : allLines) {
+                final String[] header = this.getNames(item);
+                CollectionUtils.addAllNoDuplicates(columnNames, header);
+            }
+        }
+        return writeAll(columnNames.toArray(new String[columnNames.size()]), allLines);
+    }
+
+    public int writeAll(final String[] columnNames, final List<Map> allLines) {
         int result = 0;
         int i = 0;
-        String[] header = null;
         for (final Map item : allLines) {
-            if (i == 0 && includeColumnNames) {
-                header = this.getNames(item);
-                this.writeNext(header);
+            if (i == 0 && !CollectionUtils.isEmpty(columnNames)) {
+                this.writeNext(columnNames);
             }
 
-            String[] nextLine = this.getValues(header, item);
+            String[] nextLine = this.getValues(columnNames, item);
             this.writeNext(nextLine);
 
             result++;
@@ -200,7 +210,7 @@ public class CSVWriter
 
     /**
      * Writes the entire ResultSet to a CSV file.
-     * <p/>
+     * <p>
      * The caller is responsible for closing the ResultSet.
      *
      * @param rs                 the recordset to write
@@ -341,23 +351,27 @@ public class CSVWriter
 
     private String[] getValues(final String[] keys,
                                final Map map) {
-        final String[] result = new String[map.size()];
+        final List<String> result = new LinkedList<String>();
         int i = 0;
         if (null != keys && keys.length > 0) {
             // respect keys order
             for (final String key : keys) {
-                result[i] = this.getFormatter().serialize(map.get(key));
+                Object value = map.get(key);
+                if (null == value) {
+                    value = "";
+                }
+                result.add(this.getFormatter().serialize(value));
                 i++;
             }
         } else {
             final Collection values = map.values();
             for (final Object value : values) {
-                result[i] = this.getFormatter().serialize(value);
+                result.add(this.getFormatter().serialize(value));
                 i++;
             }
         }
 
-        return result;
+        return result.toArray(new String[result.size()]);
     }
 
     private String getColumnValue(ResultSet rs, int colType, int colIndex)
