@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 /**
  * @author
  */
-public abstract class RegExUtils {
+public abstract class RegExpUtils {
     //public static final String EMAIL_PATTERN = ".+@.+.[a-z]+\\.+.[a-z]";
 
     public static final String ALPHANUMERIC = "([0-9a-zA-Z])";
@@ -55,7 +55,7 @@ public abstract class RegExUtils {
      */
     public static final String DOLLAR_CURLY_BRAKETS = "(?<=\\$)" + CURLY_BRAKETS;
     public static final Character[] SPECIALS = new Character[]{
-            '{', '}', '[', ']', '(', ')', '-', '+', '?', '$', '!', '.', '*'
+            '{', '}', '[', ']', '(', ')', '-', '+', '?', '$', '!', '.', '*', '&'
     };
     /**
      * A newline (line feed) character ('\n'),
@@ -325,7 +325,7 @@ public abstract class RegExUtils {
      * @return character with escape if need.
      */
     public static String escape(final String string) {
-        return RegExUtils.escape(string, SPECIALS);
+        return RegExpUtils.escape(string, SPECIALS);
     }
 
     /**
@@ -337,7 +337,7 @@ public abstract class RegExUtils {
      */
     public static String escape(final String string,
                                 final Character[] special) {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         final char[] chars = string.toCharArray();
         for (final char c : chars) {
             final Character item = new Character(c);
@@ -352,7 +352,7 @@ public abstract class RegExUtils {
 
     public static String escape(final String string,
                                 final String[] special) {
-        final StringBuffer result = new StringBuffer();
+        final StringBuilder result = new StringBuilder();
         final char[] chars = string.toCharArray();
         for (final char c : chars) {
             final String item = String.valueOf(c);

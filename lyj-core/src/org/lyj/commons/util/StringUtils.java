@@ -189,7 +189,7 @@ public final class StringUtils {
             for (final String delimiter : delimiters) {
                 s_tokens = StringUtils.replace(s_tokens, delimiter, placeholder);
             }
-            String[] tokens = RegExUtils.split(s_tokens, placeholder);
+            String[] tokens = RegExpUtils.split(s_tokens, placeholder);
             if (null != tokens && tokens.length > 0) {
                 for (final String token : tokens) {
                     final String value = trimTokens ? trim(token) : token;
@@ -860,12 +860,12 @@ public final class StringUtils {
     }
 
     public static boolean isJSONObject(final Object value) {
-        final String string = null != value ? RegExUtils.replaceLineTerminators(value.toString()) : "";
+        final String string = null != value ? RegExpUtils.replaceLineTerminators(value.toString()) : "";
         return string.startsWith("{") && string.endsWith("}");
     }
 
     public static boolean isJSONArray(final Object value) {
-        final String string = null != value ? RegExUtils.replaceLineTerminators(value.toString()) : "";
+        final String string = null != value ? RegExpUtils.replaceLineTerminators(value.toString()) : "";
         return string.startsWith("[") && string.endsWith("]");
     }
 

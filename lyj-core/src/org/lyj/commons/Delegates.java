@@ -54,14 +54,22 @@ public class Delegates {
     // --------------------------------------------------------------------
 
     public static interface ExceptionCallback extends Handler {
-        void handle(final String message, final Throwable exception);
+        void handle(final String message, final Throwable err);
     }
 
     /**
      * Simple handler for Async Action
      */
-    public static interface Action extends Handler {
+    public static interface Callback extends Handler {
         void handle(final Object... args);
+    }
+
+    public static interface SingleResultCallback<T> extends Handler {
+        void handle(final Throwable err, final T data);
+    }
+
+    public static interface ResultCallback extends Handler {
+        void handle(final Throwable err, final Object... data);
     }
 
     /**
@@ -69,6 +77,40 @@ public class Delegates {
      */
     public static interface ProgressCallback extends Handler {
         void handle(final int index, final int length, final double progress);
+    }
+
+    // --------------------------------------------------------------------
+    //               I n v o k e r
+    // --------------------------------------------------------------------
+
+    public static void invoke(final ExceptionCallback callback, final String message, final Throwable err) {
+        if (null != callback) {
+            callback.handle(message, err);
+        }
+    }
+
+    public static void invoke(final Callback callback, final Object... args) {
+        if (null != callback) {
+            callback.handle(args);
+        }
+    }
+
+    public static <T> void invoke(final SingleResultCallback<T> callback, final Throwable err, final T data) {
+        if (null != callback) {
+            callback.handle(err, data);
+        }
+    }
+
+    public static void invoke(final ResultCallback callback, final Throwable err, final Object...data) {
+        if (null != callback) {
+            callback.handle(err, data);
+        }
+    }
+
+    public static void invoke(final ProgressCallback callback, final int index, final int length, final double progress) {
+        if (null != callback) {
+            callback.handle(index, length, progress);
+        }
     }
 
     // --------------------------------------------------------------------
@@ -163,7 +205,7 @@ public class Delegates {
                 if (null != method) {
                     if (async) {
                         //Async.Action((args2)->{});
-                        Async.Action(new Action() {
+                        Async.Action(new Callback() {
                             @Override
                             public void handle(final Object... args2) {
                                 try {

@@ -26,7 +26,7 @@ import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.ByteUtils;
 import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.RegExUtils;
+import org.lyj.commons.util.RegExpUtils;
 import org.lyj.commons.util.StringUtils;
 
 import java.io.FileNotFoundException;
@@ -127,7 +127,7 @@ public class AvatarUtils {
                                       final int bgSet,
                                       final int height,
                                       final int width) {
-        final String avatar_email = RegExUtils.isValidEmail(email)
+        final String avatar_email = RegExpUtils.isValidEmail(email)
                 ? email
                 : MD5.encode(email) + "@email.com";
         final String base_url = FormatUtils.format(ROBO_HASH, avatar_email);
