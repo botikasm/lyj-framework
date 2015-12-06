@@ -22,10 +22,10 @@ package org.lyj.commons.network.socket.server.handlers.impl;
 
 import org.lyj.commons.network.socket.messages.multipart.MultipartInfo;
 import org.lyj.commons.network.socket.messages.multipart.MultipartMessagePart;
+import org.lyj.commons.network.socket.messages.tools.MultipartMessageUtils;
 import org.lyj.commons.network.socket.server.handlers.AbstractSocketHandler;
 import org.lyj.commons.network.socket.server.handlers.SocketRequest;
 import org.lyj.commons.network.socket.server.handlers.SocketResponse;
-import org.lyj.commons.network.socket.messages.tools.MultipartMessageUtils;
 
 /**
  *

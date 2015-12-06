@@ -83,6 +83,13 @@ public class Delegates {
     //               I n v o k e r
     // --------------------------------------------------------------------
 
+    public static <T> T invoke(final Function<T> callback, final Object... args) {
+        if (null != callback) {
+            return callback.handle(args);
+        }
+        return null;
+    }
+
     public static void invoke(final ExceptionCallback callback, final String message, final Throwable err) {
         if (null != callback) {
             callback.handle(message, err);
@@ -205,7 +212,7 @@ public class Delegates {
                 if (null != method) {
                     if (async) {
                         //Async.Action((args2)->{});
-                        Async.Action(new Callback() {
+                        Async.invoke(new Callback() {
                             @Override
                             public void handle(final Object... args2) {
                                 try {

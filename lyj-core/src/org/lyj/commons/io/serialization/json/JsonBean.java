@@ -25,10 +25,10 @@ package org.lyj.commons.io.serialization.json;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lyj.commons.io.serialization.json.serializer.BeanSerializer;
 import org.lyj.commons.io.serialization.json.utils.JsonBeanUtils;
 import org.lyj.commons.util.BeanUtils;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.commons.io.serialization.json.serializer.BeanSerializer;
 
 import java.util.LinkedList;
 import java.util.List;

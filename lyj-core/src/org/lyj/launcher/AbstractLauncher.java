@@ -26,10 +26,7 @@ import org.lyj.Lyj;
 import org.lyj.commons.cmdline.cmdparser.CmdLineParser;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.logging.LoggingRepository;
-import org.lyj.commons.util.BeanUtils;
-import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,6 +90,22 @@ abstract class AbstractLauncher {
 
     public final Map<String, Object> getArgsMap() {
         return _argsMap;
+    }
+
+    public final Object getArg(final String name){
+        return _argsMap.get(name);
+    }
+
+    public final Object getArgString(final String name){
+        return ConversionUtils.toString(_argsMap.get(name));
+    }
+
+    public final boolean getArgBoolean(final String name){
+        return ConversionUtils.toBoolean(_argsMap.get(name));
+    }
+
+    public final int getArgInteger(final String name){
+        return ConversionUtils.toInteger(_argsMap.get(name));
     }
 
     public abstract void ready();

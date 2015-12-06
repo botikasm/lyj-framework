@@ -288,7 +288,7 @@ public class Multipart {
     private void doOnFull() {
         synchronized (_listeners_OnFull) {
             for (final OnFullListener listener : _listeners_OnFull) {
-                Async.Action(new Delegates.Callback() {
+                Async.invoke(new Delegates.Callback() {
                     @Override
                     public void handle(Object... args) {
                         listener.handle((Multipart) args[0]);
@@ -301,7 +301,7 @@ public class Multipart {
     private void doOnPart(final MultipartMessagePart part) {
         synchronized (_listeners_OnPart) {
             for (final OnPartListener listener : _listeners_OnPart) {
-                Async.Action(new Delegates.Callback() {
+                Async.invoke(new Delegates.Callback() {
                     @Override
                     public void handle(Object... args) {
                         listener.handle((Multipart) args[0], (MultipartMessagePart) args[1]);
