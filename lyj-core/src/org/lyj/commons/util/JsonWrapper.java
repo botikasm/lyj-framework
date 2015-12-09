@@ -54,6 +54,23 @@ public final class JsonWrapper implements Cloneable {
         _parse_error = null;
     }
 
+    public JsonWrapper(final Object data) {
+        _array = null;
+        _object = null;
+        _parse_error = null;
+        if (null != data) {
+            if (data instanceof String) {
+                this.parse((String) data);
+            } else if (data instanceof JSONArray) {
+                _array = (JSONArray) data;
+            } else if (data instanceof JSONObject) {
+                _object = (JSONObject) data;
+            } else {
+                this.parse(data.toString());
+            }
+        }
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this.isJSONArray()) {

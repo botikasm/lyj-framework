@@ -68,7 +68,6 @@ public abstract class ExceptionUtils {
      *
      * @param ex the throwable
      * @return the real cause; ex itself if it is already the real cause
-     * @see #wrap
      */
     public static Throwable getRealCause(Throwable ex) {
         while (true) {
@@ -104,12 +103,12 @@ public abstract class ExceptionUtils {
     /**
      * Retrieve message of real cause.
      *
-     * @param ex
-     * @return
+     * @param ex Error
+     * @return Message
      */
-    public static String getRealMessage(Throwable ex) {
-        Throwable t = getRealCause(ex);
-        return null != t ? t.toString() : getMessage(ex);
+    public static String getRealMessage(final Throwable ex) {
+        final Throwable t = getRealCause(ex);
+        return null != t ? getMessage(t) : getMessage(ex);
     }
 
     /**
