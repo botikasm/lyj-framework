@@ -125,6 +125,17 @@ public class ImageIOUtils {
         return Base64.encodeBytes(ByteUtils.getBytes(image, format));
     }
 
+    public static BufferedImage readBase64(final String base64) throws IOException {
+        final byte[] data = Base64.decode(base64);
+        return readBytes(data);
+    }
+
+    public static BufferedImage readBytes(final byte[] bytes) throws IOException {
+        try (InputStream in = new ByteArrayInputStream(bytes)){
+            return ImageIO.read(in);
+        }
+    }
+
     public static ImageSize getImageSize(final File file) {
         final ImageSize size = new ImageSize();
         try {
