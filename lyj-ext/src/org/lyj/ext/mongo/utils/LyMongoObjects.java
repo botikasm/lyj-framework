@@ -2,11 +2,13 @@ package org.lyj.ext.mongo.utils;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Utility methods working on Bson documents
@@ -62,6 +64,29 @@ public class LyMongoObjects {
                 list.add(new Document(key, value));
             }
         }
+        return list;
+    }
+
+    public static Bson toBson(final JSONObject item) {
+        return null!=item ? Document.parse(item.toString()) : null;
+    }
+
+    public static Bson toBson(final Map<String, Object> item) {
+        final JSONObject json = new JSONObject(item);
+        return null!=item ? Document.parse(json.toString()) : null;
+    }
+
+    public static List<Bson> toBsonList(final JSONArray array) {
+        final List<Bson> list = new LinkedList<>();
+        CollectionUtils.forEach(array, new CollectionUtils.IterationCallback() {
+            @Override
+            public Object handle(Object item, int index, Object key) {
+                if (item instanceof JSONObject) {
+                    list.add(toBson((JSONObject) item));
+                }
+                return null;
+            }
+        });
         return list;
     }
 

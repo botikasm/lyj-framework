@@ -679,6 +679,20 @@ public abstract class CollectionUtils {
         return result;
     }
 
+    @SafeVarargs
+    public static <T> Map<String, T> toMap(final T...pairs) {
+        final Map<String, T> result = new HashMap<>();
+        final int len = pairs.length;
+        for (int i = 0; i < len - 1; i += 2) {
+            String key = StringUtils.toString(pairs[i]);
+            T value = pairs[i + 1];
+            if (StringUtils.hasText(key)) {
+                result.put(key, value);
+            }
+        }
+        return result;
+    }
+
     public static Object[] subtract(final Object[] valuestoremove,
                                     final Object[] targetarray) {
         final List<Object> result = new LinkedList<Object>();
