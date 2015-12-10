@@ -8,6 +8,6 @@
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="lyj-core" />
-    <orderEntry type="library" name="org.mongodb:mongodb-driver-async:3.0.0" level="application" />
+    <orderEntry type="library" name="mongodb-driver" level="application" />
   </component>
 </module>
