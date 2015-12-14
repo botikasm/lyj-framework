@@ -13,7 +13,7 @@ import java.util.*;
 /**
  * Utility methods working on Bson documents
  */
-public class LyMongoObjects {
+public class LyjMongoObjects {
 
     /**
      * Returns a list of Bson objects

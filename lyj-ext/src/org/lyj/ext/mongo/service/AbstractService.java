@@ -4,6 +4,7 @@ import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.FindIterable;
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
+import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
@@ -74,12 +75,20 @@ public abstract class AbstractService {
 
     protected void find(final String collection_name, final Bson filter, final int skip, final int limit,
                         final Bson sort, final Delegates.SingleResultCallback<JSONArray> callback) {
+        this.find(collection_name, filter, skip, limit, sort, null, callback);
+    }
+
+    protected void find(final String collection_name, final Bson filter, final int skip, final int limit,
+                        final Bson sort, final Bson projection, final Delegates.SingleResultCallback<JSONArray> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
                 final JSONArray array = new JSONArray();
                 FindIterable<Document> iterable = collection.find().filter(filter).skip(skip).limit(limit);
                 if (null != sort) {
                     iterable = iterable.sort(sort);
+                }
+                if (null != projection) {
+                    iterable = iterable.projection(projection);
                 }
                 iterable.forEach((document) -> {
                     array.put(document);
@@ -120,6 +129,30 @@ public abstract class AbstractService {
                 collection.find(eq(ID, id)).first((final Object item, final Throwable error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, (Document) item);
+                    } else {
+                        Delegates.invoke(callback, error, null);
+                    }
+                });
+            } else {
+                Delegates.invoke(callback, err, null);
+            }
+        });
+    }
+
+    protected void findIds(final String collection_name, final Bson filter, final int skip, final int limit, final Bson sort,
+                           final Delegates.SingleResultCallback<JSONArray> callback){
+        this.getCollection(collection_name, (err, collection) -> {
+            if (null == err) {
+                final JSONArray array = new JSONArray();
+                FindIterable<Document> iterable = collection.find().filter(filter).projection(Projections.include(ID)).skip(skip).limit(limit);
+                if (null != sort) {
+                    iterable = iterable.sort(sort);
+                }
+                iterable.forEach((document) -> {
+                    array.put(document.getString(ID));
+                }, (Void, error) -> {
+                    if (null == error) {
+                        Delegates.invoke(callback, null, array);
                     } else {
                         Delegates.invoke(callback, error, null);
                     }
