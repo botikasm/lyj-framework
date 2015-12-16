@@ -124,9 +124,18 @@ public abstract class AbstractService {
 
     protected void findById(final String collection_name, final String id,
                             final Delegates.SingleResultCallback<Document> callback) {
+        this.findById(collection_name, id, null, callback);
+    }
+
+    protected void findById(final String collection_name, final String id, final Bson projection,
+                            final Delegates.SingleResultCallback<Document> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
-                collection.find(eq(ID, id)).first((final Object item, final Throwable error) -> {
+                FindIterable<Document> iterable = collection.find(eq(ID, id));
+                if (null != projection) {
+                    iterable = iterable.projection(projection);
+                }
+                iterable.first((final Document item, final Throwable error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, (Document) item);
                     } else {
@@ -140,7 +149,7 @@ public abstract class AbstractService {
     }
 
     protected void findIds(final String collection_name, final Bson filter, final int skip, final int limit, final Bson sort,
-                           final Delegates.SingleResultCallback<JSONArray> callback){
+                           final Delegates.SingleResultCallback<JSONArray> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
                 final JSONArray array = new JSONArray();

@@ -5,7 +5,6 @@ import org.bson.conversions.Bson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.*;
@@ -78,7 +77,7 @@ public class LyjMongoObjects {
 
     public static List<Bson> toBsonList(final JSONArray array) {
         final List<Bson> list = new LinkedList<>();
-        CollectionUtils.forEach(array, new CollectionUtils.IterationCallback() {
+        CollectionUtils.map(array, new CollectionUtils.IterationResponseCallback() {
             @Override
             public Object handle(Object item, int index, Object key) {
                 if (item instanceof JSONObject) {
@@ -88,6 +87,19 @@ public class LyjMongoObjects {
             }
         });
         return list;
+    }
+
+    public static Document asDocument(final Object... pairs) {
+        final Document result = new Document();
+        final int len = pairs.length;
+        for (int i = 0; i < len - 1; i += 2) {
+            String key = StringUtils.toString(pairs[i]);
+            Object value = pairs[i + 1];
+            if (StringUtils.hasText(key)) {
+                result.put(key, value);
+            }
+        }
+        return result;
     }
 
 }

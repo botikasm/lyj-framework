@@ -97,7 +97,7 @@ public class FileMeta {
         final Set<String> result = new HashSet<String>();
         final JSONObject attributes = this.getAttributes();
         final JSONArray names = attributes.names();
-        CollectionUtils.forEach(names, new CollectionUtils.IterationCallback() {
+        CollectionUtils.map(names, new CollectionUtils.IterationResponseCallback() {
             @Override
             public Object handle(Object item, int index, Object key) {
                 if (item instanceof String) {

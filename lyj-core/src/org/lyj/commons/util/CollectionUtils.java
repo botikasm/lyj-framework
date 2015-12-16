@@ -30,8 +30,12 @@ import java.util.Map.Entry;
 public abstract class CollectionUtils {
 
 
-    public static interface IterationCallback {
-        Object handle(final Object item, final int index, final Object key);
+    public static interface IterationResponseCallback<T> {
+        T handle(final T item, final int index, final Object key);
+    }
+
+    public static interface IterationCallback<T> {
+        void handle(final T item, final int index, final Object key);
     }
 
     //---------------------------------------------------------------------
@@ -39,12 +43,52 @@ public abstract class CollectionUtils {
     // Use to filter, map reduce or simply loop on items
     //---------------------------------------------------------------------
 
-    public static Collection<?> forEach(final Collection<?> items, final IterationCallback callback) {
-        final Collection<Object> result = new LinkedList<Object>();
+    public static <T> void forEach (final Collection<T> items, final IterationCallback<T> callback) {
         if (null != callback && null != items) {
             int index = 0;
-            for (final Object item : items) {
-                final Object response = callback.handle(item, index, null);
+            for (final T item : items) {
+                callback.handle(item, index, null);
+                index++;
+            }
+        }
+    }
+
+    public static <T> void forEach(final T[] items, final IterationCallback<T> callback) {
+        if (null != callback && null != items) {
+            int index = 0;
+            for (final T item : items) {
+                callback.handle(item, index, null);
+                index++;
+            }
+        }
+    }
+
+    public static void forEach(final JSONArray items, final IterationCallback<Object> callback) {
+        if (null != callback && null != items && items.length() > 0) {
+            final int len = items.length();
+            for (int i = 0; i < len; i++) {
+                callback.handle(items.get(i), i, null);
+            }
+        }
+    }
+
+    public static <K,V> void forEach(final Map<K,V> map, final IterationCallback<V> callback) {
+        if (null != callback && null != map) {
+            final Set<K> keys = map.keySet();
+            int index = 0;
+            for (final K key : keys) {
+                callback.handle(map.get(key), index, key);
+                index++;
+            }
+        }
+    }
+
+    public static <T> Collection<T> map(final Collection<T> items, final IterationResponseCallback<T> callback) {
+        final Collection<T> result = new LinkedList<>();
+        if (null != callback && null != items) {
+            int index = 0;
+            for (final T item : items) {
+                final T response = callback.handle(item, index, null);
                 if (null != response) {
                     result.add(response);
                 }
@@ -54,22 +98,22 @@ public abstract class CollectionUtils {
         return result;
     }
 
-    public static Object[] forEach(final Object[] items, final IterationCallback callback) {
-        final Collection<Object> result = new LinkedList<Object>();
+    public static <T> T[] map(final T[] items, final IterationResponseCallback<T> callback) {
+        final Collection<T> result = new LinkedList<>();
         if (null != callback && null != items) {
             int index = 0;
-            for (final Object item : items) {
-                final Object response = callback.handle(item, index, null);
+            for (final T item : items) {
+                final T response = callback.handle(item, index, null);
                 if (null != response) {
                     result.add(response);
                 }
                 index++;
             }
         }
-        return result.toArray(new Object[result.size()]);
+        return result.toArray((T[])new Object[result.size()]);
     }
 
-    public static JSONArray forEach(final JSONArray items, final IterationCallback callback) {
+    public static JSONArray map(final JSONArray items, final IterationResponseCallback<Object> callback) {
         final JSONArray result = new JSONArray();
         if (null != callback && null != items && items.length() > 0) {
             final int len = items.length();
@@ -83,13 +127,13 @@ public abstract class CollectionUtils {
         return result;
     }
 
-    public static Map<?, ?> forEach(final Map<?, ?> map, final IterationCallback callback) {
-        final Map<Object, Object> result = new HashMap<Object, Object>();
+    public static <K,V> Map<K,V> map(final Map<K,V> map, final IterationResponseCallback<V> callback) {
+        final Map<K, V> result = new HashMap<>();
         if (null != callback && null != map) {
-            final Set<?> keys = map.keySet();
+            final Set<K> keys = map.keySet();
             int index = 0;
-            for (final Object key : keys) {
-                final Object response = callback.handle(map.get(key), index, key);
+            for (final K key : keys) {
+                final V response = callback.handle(map.get(key), index, key);
                 if (null != response) {
                     result.put(key, response);
                 }
@@ -99,12 +143,12 @@ public abstract class CollectionUtils {
         return result;
     }
 
-    public static Object find(final Collection<?> items, final IterationCallback callback) {
+    public static <T> T find(final Collection<T> items, final IterationResponseCallback<T> callback) {
         if (null != callback && null != items) {
             int index = 0;
-            for (final Object item : items) {
-                final Object response = callback.handle(item, index, null);
-                if (null!=response) {
+            for (final T item : items) {
+                final T response = callback.handle(item, index, null);
+                if (null != response) {
                     return response;
                 }
                 index++;
@@ -113,12 +157,12 @@ public abstract class CollectionUtils {
         return null;
     }
 
-    public static Object find(final Object[] items, final IterationCallback callback) {
+    public static <T> T find(final T[] items, final IterationResponseCallback<T> callback) {
         if (null != callback && null != items) {
             int index = 0;
-            for (final Object item : items) {
-                final Object response = callback.handle(item, index, null);
-                if (null!=response) {
+            for (final T item : items) {
+                final T response = callback.handle(item, index, null);
+                if (null != response) {
                     return response;
                 }
                 index++;
@@ -127,12 +171,12 @@ public abstract class CollectionUtils {
         return null;
     }
 
-    public static Object find(final JSONArray items, final IterationCallback callback) {
+    public static Object find(final JSONArray items, final IterationResponseCallback<Object> callback) {
         if (null != callback && null != items && items.length() > 0) {
             final int len = items.length();
             for (int i = 0; i < len; i++) {
                 final Object response = callback.handle(items.get(i), i, null);
-                if (null!=response) {
+                if (null != response) {
                     return response;
                 }
             }
@@ -140,13 +184,13 @@ public abstract class CollectionUtils {
         return null;
     }
 
-    public static Object find(final Map<?, ?> map, final IterationCallback callback) {
+    public static <K,V> V find(final Map<K,V> map, final IterationResponseCallback<V> callback) {
         if (null != callback && null != map) {
-            final Set<?> keys = map.keySet();
+            final Set<K> keys = map.keySet();
             int index = 0;
-            for (final Object key : keys) {
-                final Object response = callback.handle(map.get(key), index, key);
-                if (null!=response) {
+            for (final K key : keys) {
+                final V response = callback.handle(map.get(key), index, key);
+                if (null != response) {
                     return response;
                 }
                 index++;
@@ -208,7 +252,7 @@ public abstract class CollectionUtils {
      *              <code>null</code>)
      * @param str   the String to append
      * @return the new array (never
-     *         <code>null</code>)
+     * <code>null</code>)
      */
     public static String[] addStringToArray(final String[] array, final String str) {
         if (isEmpty(array)) {
@@ -228,7 +272,7 @@ public abstract class CollectionUtils {
      *              <code>null</code>)
      * @param str   the String to insert in first position
      * @return the new array (never
-     *         <code>null</code>)
+     * <code>null</code>)
      */
     public static String[] insertStringToArray(String[] array, String str) {
         if (isEmpty(array)) {
@@ -260,7 +304,7 @@ public abstract class CollectionUtils {
      *
      * @param array the source array
      * @return the sorted array (never
-     *         <code>null</code>)
+     * <code>null</code>)
      */
     public static String[] sortStringArray(String[] array) {
         if (isEmpty(array)) {
@@ -298,8 +342,8 @@ public abstract class CollectionUtils {
      * @param delimiter to split each element using (typically the equals
      *                  symbol)
      * @return a
-     *         <code>Properties</code> instance representing the array contents, or
-     *         <code>null</code> if the array to process was null or empty
+     * <code>Properties</code> instance representing the array contents, or
+     * <code>null</code> if the array to process was null or empty
      */
     public static Properties splitArrayElementsIntoProperties(String[] array, String delimiter) {
         return splitArrayElementsIntoProperties(array, delimiter, null);
@@ -321,8 +365,8 @@ public abstract class CollectionUtils {
      *                      symbol), or
      *                      <code>null</code> if no removal should occur
      * @return a
-     *         <code>Properties</code> instance representing the array contents, or
-     *         <code>null</code> if the array to process was null or empty
+     * <code>Properties</code> instance representing the array contents, or
+     * <code>null</code> if the array to process was null or empty
      */
     public static Properties splitArrayElementsIntoProperties(
             String[] array, String delimiter, String charsToDelete) {
@@ -680,7 +724,7 @@ public abstract class CollectionUtils {
     }
 
     @SafeVarargs
-    public static <T> Map<String, T> toMap(final T...pairs) {
+    public static <T> Map<String, T> toMap(final T... pairs) {
         final Map<String, T> result = new HashMap<>();
         final int len = pairs.length;
         for (int i = 0; i < len - 1; i += 2) {
@@ -794,11 +838,11 @@ public abstract class CollectionUtils {
      * @param a   the array to be searched
      * @param key the value to be searched for
      * @return index of the search key, if it is contained in the array;
-     *         otherwise, <tt>(- 1)</tt>. The <i>insertion point</i> is defined as the
-     *         point at which the key would be inserted into the array: the index of the
-     *         first element greater than the key, or <tt>a.length</tt> if all elements
-     *         in the array are less than the specified key. Note that this guarantees
-     *         that the return value will be &gt;= 0 if and only if the key is found.
+     * otherwise, <tt>(- 1)</tt>. The <i>insertion point</i> is defined as the
+     * point at which the key would be inserted into the array: the index of the
+     * first element greater than the key, or <tt>a.length</tt> if all elements
+     * in the array are less than the specified key. Note that this guarantees
+     * that the return value will be &gt;= 0 if and only if the key is found.
      * @throws ClassCastException if the search key is not comparable to the
      *                            elements of the array.
      */
@@ -1303,7 +1347,7 @@ public abstract class CollectionUtils {
      * @param separator       the delimiter. i.e. ":", ",", "|", etc..
      * @param index           Index of value in string.
      * @return Null or token value. i.e. s=getToken("a:b:c:d:e", ":", 1); //
-     *         s=='b'
+     * s=='b'
      */
     public static String getToken(final String delimitedString,
                                   final String separator, final int index) {
@@ -1318,7 +1362,7 @@ public abstract class CollectionUtils {
      * @param index           Index of value in string.
      * @param defaultValue    Default value if result is null
      * @return Null or token value. i.e. s=getToken("a:b:c:d:e", ":", 1); //
-     *         s=='b'
+     * s=='b'
      */
     public static String getToken(final String delimitedString,
                                   final String separator,
@@ -1383,8 +1427,8 @@ public abstract class CollectionUtils {
         }
     }
 
-    public static Object getFirst(final JSONArray array){
-        if(null!=array && array.length()>0){
+    public static Object getFirst(final JSONArray array) {
+        if (null != array && array.length() > 0) {
             return array.get(0);
         }
         return null;
@@ -1425,9 +1469,9 @@ public abstract class CollectionUtils {
         }
     }
 
-    public static Object getLast(final JSONArray array){
-        if(null!=array && array.length()>0){
-            return array.get(array.length()-1);
+    public static Object getLast(final JSONArray array) {
+        if (null != array && array.length() > 0) {
+            return array.get(array.length() - 1);
         }
         return null;
     }
