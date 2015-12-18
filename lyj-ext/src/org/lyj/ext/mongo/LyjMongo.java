@@ -87,7 +87,7 @@ public class LyjMongo {
             return _connections.get(name);
         } else {
             final JsonWrapper config = _configurations.get(name);
-            if(null!=config){
+            if (null != config) {
                 _connections.put(name, new LyjMongoConnection(config));
                 return _connections.get(name);
             } else {
@@ -102,7 +102,7 @@ public class LyjMongo {
 
     public void getDatabase(final String connectionName, final String databaseName, final Delegates.SingleResultCallback<MongoDatabase> callback) {
         LyjMongoConnection connection = this.getConnection(connectionName);
-        if(null!=connection) {
+        if (null != connection) {
             connection.getDatabase(databaseName, callback);
         } else {
             Delegates.invoke(callback, new Exception("Connection not found: '" + connectionName + "'"), null);
@@ -120,7 +120,7 @@ public class LyjMongo {
                               final String collectionName,
                               final Delegates.SingleResultCallback<MongoCollection> callback) {
         LyjMongoConnection connection = this.getConnection(connectionName);
-        if(null!=connection) {
+        if (null != connection) {
             connection.getCollection(databaseName, collectionName, callback);
         } else {
             Delegates.invoke(callback, new Exception("Connection not found: '" + connectionName + "'"), null);
@@ -133,6 +133,14 @@ public class LyjMongo {
 
     private Logger getLogger() {
         return LoggingUtils.getLogger(this);
+    }
+
+    private void initCodecs() {
+        /**
+        CodecRegistry codecRegistry =
+                CodecRegistries.fromRegistries(CodecRegistries.fromCodecs(new UuidCodec(UuidRepresentation.STANDARD)),
+                        MongoClient.getDefaultCodecRegistry());
+        */
     }
 
     // ------------------------------------------------------------------------

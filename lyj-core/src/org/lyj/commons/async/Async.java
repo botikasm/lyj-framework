@@ -21,8 +21,10 @@
 package org.lyj.commons.async;
 
 import org.lyj.commons.Delegates;
+import org.lyj.commons.async.future.Task;
 import org.lyj.commons.util.MathUtils;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,22 +35,6 @@ public abstract class Async {
 
 
     public static Thread invoke(final Delegates.Callback handler, final Object... args) {
-        if (null != handler) {
-            final Thread t = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    handler.handle(args);
-                }
-            });
-            t.setDaemon(true);
-            t.setPriority(Thread.NORM_PRIORITY);
-            t.start();
-            return t;
-        }
-        return null;
-    }
-
-    public static Thread invoke(final Delegates.Function<?> handler, final Object... args) {
         if (null != handler) {
             final Thread t = new Thread(new Runnable() {
                 @Override
@@ -172,6 +158,35 @@ public abstract class Async {
             }
         }
 
+    }
+
+    public static void joinAll(final Collection<? extends Task> tasks) {
+        if (null != tasks && tasks.size() > 0) {
+            // final Task[] array = tasks.toArray(new Task[tasks.size()]);
+            joinAll(tasks.toArray(new Task[tasks.size()]));
+        }
+    }
+
+    public static void joinAll(final Task[] tasks) {
+        final int length = tasks.length;
+        final Set<Long> terminated = new HashSet<>();
+        while (length > terminated.size()) {
+            for (final Task task : tasks) {
+                try {
+                    final Task.State state = task.getState();
+                    if (Task.State.NEW.equals(state)) {
+                        task.run();
+                    } else if (Task.State.RUNNABLE.equals(state)) {
+                        task.get();
+                    } else if (Task.State.TERMINATED.equals(state)) {
+                        terminated.add(task.getId());
+                    } else {
+                        System.out.println(state);
+                    }
+                } catch (Throwable ignored) {
+                }
+            }
+        }
     }
 
 }

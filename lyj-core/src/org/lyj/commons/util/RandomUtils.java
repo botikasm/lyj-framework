@@ -26,6 +26,7 @@ package org.lyj.commons.util;
 
 import java.math.BigDecimal;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Static utils class for Randomize
@@ -135,8 +136,7 @@ public abstract class RandomUtils {
      */
     public static Long getTimeBasedRandomLong() {
         Random generator = new Random(System.currentTimeMillis());
-        Long value = generator.nextLong();
-        return value;
+        return generator.nextLong();
     }
 
     /**
@@ -144,16 +144,21 @@ public abstract class RandomUtils {
      * only numbers grater than zero will be returned. Number can have values
      * from a maximum of 2<sup>63</sup>-1, to a minimum of 0.
      *
-     * @param ordinal if true, will be returned a number greated than zero.
+     * @param ordinal if true, will be returned a number greater than zero.
      * @return Random integer.
      */
-    public static Long getTimeBasedRandomLong(boolean ordinal) {
+    public static Long getTimeBasedRandomLong(final boolean ordinal) {
         Random generator = new Random(System.currentTimeMillis());
         Long value = generator.nextLong();
         if (value < 0 && ordinal) {
             value *= -1;
         }
         return value;
+    }
+
+    public static Long getTimeBasedRandomLong(final boolean secure, final boolean ordinal){
+        return RandomUtils.getTimeBasedRandomLong(ordinal) +
+                (secure ? ConversionUtils.toLong(RandomUtils.randomNumeric(6)) :0L);
     }
 
     /**
@@ -398,6 +403,10 @@ public abstract class RandomUtils {
             return random(count, 0, 0, false, false, null, _random);
         }
         return random(count, 0, chars.length, false, false, chars, _random);
+    }
+
+    public static String randomUUID(){
+        return UUID.randomUUID().toString();
     }
 
     // ------------------------------------------------------------------------

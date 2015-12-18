@@ -1,10 +1,19 @@
 package org.lyj.ext.mongo.utils;
 
+import org.bson.BsonReader;
+import org.bson.BsonValue;
+import org.bson.BsonWriter;
 import org.bson.Document;
+import org.bson.codecs.Codec;
+import org.bson.codecs.CollectibleCodec;
+import org.bson.codecs.DecoderContext;
+import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
+import org.bson.types.Code;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.*;
@@ -13,6 +22,10 @@ import java.util.*;
  * Utility methods working on Bson documents
  */
 public class LyjMongoObjects {
+
+    private static final String EMPTY_ITEM = "{}"; // "{\"_id\":0}"
+    private static final String EMPTY_LIST = "[]"; // "[]"
+
 
     /**
      * Returns a list of Bson objects
@@ -67,24 +80,21 @@ public class LyjMongoObjects {
     }
 
     public static Bson toBson(final JSONObject item) {
-        return null!=item ? Document.parse(item.toString()) : null;
+        return toDocument(item);
     }
 
     public static Bson toBson(final Map<String, Object> item) {
         final JSONObject json = new JSONObject(item);
-        return null!=item ? Document.parse(json.toString()) : null;
+        return null != item ? Document.parse(json.toString()) : null;
     }
 
     public static List<Bson> toBsonList(final JSONArray array) {
         final List<Bson> list = new LinkedList<>();
-        CollectionUtils.map(array, new CollectionUtils.IterationResponseCallback() {
-            @Override
-            public Object handle(Object item, int index, Object key) {
-                if (item instanceof JSONObject) {
-                    list.add(toBson((JSONObject) item));
-                }
-                return null;
+        CollectionUtils.map(array, (item, index, key) -> {
+            if (item instanceof JSONObject) {
+                list.add(toBson((JSONObject) item));
             }
+            return null;
         });
         return list;
     }
@@ -102,4 +112,38 @@ public class LyjMongoObjects {
         return result;
     }
 
+    public static Document toDocument(final Object obj) {
+        if (obj instanceof Document) {
+            return (Document) obj;
+        } else if (obj instanceof JsonWrapper) {
+            return Document.parse(((JsonWrapper) obj).getJSONObject().toString());
+        } else if (obj instanceof JSONObject) {
+            return Document.parse(obj.toString());
+        } else if (null != obj) {
+            final String sobj = obj.toString();
+            if (StringUtils.isJSONObject(sobj)) {
+                return Document.parse(sobj);
+            }
+        }
+        return new Document();
+    }
+
+    public static String toJson(final Object obj) {
+        return toJson(obj, "");
+    }
+
+    public static String toJson(final Object obj, final String def) {
+        if (null != obj) {
+            if (obj instanceof Document) {
+                return ((Document) obj).toJson();
+            } else if (obj instanceof Collection) {
+                final Collection list = (Collection) obj;
+                return new JSONArray(list).toString();
+            } else {
+                return obj.toString();
+            }
+        } else {
+            return null!=def ? def : EMPTY_ITEM;
+        }
+    }
 }

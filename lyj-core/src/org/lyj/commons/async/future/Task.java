@@ -1,9 +1,13 @@
 package org.lyj.commons.async.future;
 
 import org.lyj.commons.Delegates;
+import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.MathUtils;
+import org.lyj.commons.util.RandomUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -11,19 +15,44 @@ import java.util.concurrent.TimeUnit;
  */
 public class Task<T> {
 
+    public enum State {
+        /**
+         * Thread state for a thread which has not yet started.
+         */
+        NEW,
+
+        /**
+         * Thread state for a runnable thread.  A thread in the runnable
+         * state is executing in the Java virtual machine but it may
+         * be waiting for other resources from the operating system
+         * such as processor.
+         */
+        RUNNABLE,
+
+
+        /**
+         * Thread state for a terminated thread.
+         * The thread has completed execution.
+         */
+        TERMINATED;
+    }
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private final Long _id;
     private final ExecutorService _executor;
 
     // callbacks
     private ActionCallback _callback_action;
     private ErrorCallback _callback_error;
     private ResultCallback<T> _callback_result;
+    private ExitCallback<T> _callback_exit;
 
     private Exception _error;
     private T _data;
+    private State _state;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -33,38 +62,68 @@ public class Task<T> {
         _executor = Executors.newSingleThreadExecutor();
         _callback_action = callback;
         _error = null;
+        _state = State.NEW;
+        _id = RandomUtils.getTimeBasedRandomLong(true, true);
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public Long getId(){
+        return _id;
+    }
+
+    public State getState() {
+        return _state;
+    }
+
+    public boolean hasError(){
+        return null!=_error;
+    }
+
+    public Throwable getError(){
+        return _error;
+    }
+
     //-- THREAD --//
 
     public Task<T> run() {
-        final Task self = this;
 
-        // creates internal infinite loop
-        _executor.submit((Runnable) () -> {
-            try {
-                if (null != _callback_action) {
-                    _callback_action.handle(self);
+        // run thread
+        if (_state != State.RUNNABLE) {
+            final Task self = this;
+            _state = State.RUNNABLE;
+
+            // creates internal infinite loop
+            final Future future = _executor.submit((Runnable) () -> {
+                try {
+                    if (null != _callback_action) {
+                        _callback_action.handle(self);
+                    }
+                } catch (Exception t) {
+                    self.fail(t);
                 }
-            } catch (Exception t) {
-                self.fail(t);
-            }
 
-            // loop
-            while (!_executor.isShutdown()) {
-                if (!_executor.isTerminated()) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        // interrupted
+                // loop
+                while (!_executor.isShutdown()) {
+                    if (!_executor.isTerminated()) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            // interrupted
+                        }
                     }
                 }
-            }
-        });
+
+                // change state before exit
+                _state = State.TERMINATED;
+                // invoke exit callback
+                if (null!=_callback_exit) {
+                    _callback_exit.handle(_error, _data);
+                }
+            });
+        }
 
         return this;
     }
@@ -133,6 +192,11 @@ public class Task<T> {
         return this;
     }
 
+    public Task<T> exit(final ExitCallback callback) {
+        _callback_exit = callback;
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -168,6 +232,10 @@ public class Task<T> {
 
     public interface ErrorCallback extends Delegates.Handler {
         void handle(final Exception err);
+    }
+
+    public interface ExitCallback<T> extends Delegates.Handler {
+        void handle(final Throwable t, final T data);
     }
 
 }

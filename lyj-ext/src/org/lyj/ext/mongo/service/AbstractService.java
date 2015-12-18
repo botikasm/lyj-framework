@@ -1,6 +1,7 @@
 package org.lyj.ext.mongo.service;
 
 import com.mongodb.async.SingleResultCallback;
+import com.mongodb.async.client.AggregateIterable;
 import com.mongodb.async.client.FindIterable;
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
@@ -10,12 +11,16 @@ import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.json.JSONArray;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.cryptograph.MD5;
+import org.lyj.commons.logging.Logger;
+import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.LyjMongo;
+
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -31,12 +36,20 @@ public abstract class AbstractService {
     public static final String ID = "_id";
 
     // ------------------------------------------------------------------------
-    //                      p r o t e c t e d
+    //                      a b s t r a c t
     // ------------------------------------------------------------------------
 
     protected abstract String getConnectionName();
 
     protected abstract String getDatabaseName();
+
+    // ------------------------------------------------------------------------
+    //                      p r o t e c t e d
+    // ------------------------------------------------------------------------
+
+    protected Logger getLogger(){
+        return LoggingUtils.getLogger(this);
+    }
 
     protected void getCollection(final String collectionName,
                                  final Delegates.SingleResultCallback<MongoCollection> callback) {
@@ -69,20 +82,20 @@ public abstract class AbstractService {
     }
 
     protected void find(final String collection_name, final Bson filter,
-                        final Delegates.SingleResultCallback<JSONArray> callback) {
+                        final Delegates.SingleResultCallback<List<Document>> callback) {
         this.find(collection_name, filter, 0, 0, null, callback);
     }
 
     protected void find(final String collection_name, final Bson filter, final int skip, final int limit,
-                        final Bson sort, final Delegates.SingleResultCallback<JSONArray> callback) {
+                        final Bson sort, final Delegates.SingleResultCallback<List<Document>> callback) {
         this.find(collection_name, filter, skip, limit, sort, null, callback);
     }
 
     protected void find(final String collection_name, final Bson filter, final int skip, final int limit,
-                        final Bson sort, final Bson projection, final Delegates.SingleResultCallback<JSONArray> callback) {
+                        final Bson sort, final Bson projection, final Delegates.SingleResultCallback<List<Document>> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
-                final JSONArray array = new JSONArray();
+                final List<Document> array = new LinkedList<Document>();
                 FindIterable<Document> iterable = collection.find().filter(filter).skip(skip).limit(limit);
                 if (null != sort) {
                     iterable = iterable.sort(sort);
@@ -91,7 +104,7 @@ public abstract class AbstractService {
                     iterable = iterable.projection(projection);
                 }
                 iterable.forEach((document) -> {
-                    array.put(document);
+                    array.add(document);
                 }, (Void, error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, array);
@@ -149,16 +162,16 @@ public abstract class AbstractService {
     }
 
     protected void findIds(final String collection_name, final Bson filter, final int skip, final int limit, final Bson sort,
-                           final Delegates.SingleResultCallback<JSONArray> callback) {
+                           final Delegates.SingleResultCallback<List<String>> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
-                final JSONArray array = new JSONArray();
+                final List<String> array = new LinkedList<String>();
                 FindIterable<Document> iterable = collection.find().filter(filter).projection(Projections.include(ID)).skip(skip).limit(limit);
                 if (null != sort) {
                     iterable = iterable.sort(sort);
                 }
                 iterable.forEach((document) -> {
-                    array.put(document.getString(ID));
+                    array.add(document.getString(ID));
                 }, (Void, error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, array);
@@ -264,6 +277,27 @@ public abstract class AbstractService {
                 collection.insertOne(item, (Void, error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, item);
+                    } else {
+                        Delegates.invoke(callback, error, null);
+                    }
+                });
+            } else {
+                Delegates.invoke(callback, err, null);
+            }
+        });
+    }
+
+    protected void aggregate(final String collection_name, final List<Document> pipeline,
+                          final Delegates.SingleResultCallback<List<Document>> callback) {
+        this.getCollection(collection_name, (err, collection) -> {
+            if (null == err) {
+                final List<Document> array = new LinkedList<Document>();
+                final AggregateIterable<Document> iterable = collection.aggregate(pipeline);
+                iterable.forEach((document) -> {
+                    array.add(document);
+                }, (Void, error) -> {
+                    if (null == error) {
+                        Delegates.invoke(callback, null, array);
                     } else {
                         Delegates.invoke(callback, error, null);
                     }
