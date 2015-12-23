@@ -116,7 +116,7 @@ public final class ConsoleAppPage {
         return null;
     }
 
-    public void addCommand(final String key, final String name, final Delegates.Function cmd) {
+    public void addCommand(final String key, final String name, final Delegates.FunctionArgs cmd) {
         _commands.put(key, new Command(key, name, cmd));
     }
 
@@ -127,10 +127,10 @@ public final class ConsoleAppPage {
     public class Command {
 
         private final String _key;
-        private final Delegates.Function _cmd;
+        private final Delegates.FunctionArgs _cmd;
         private String _name;
 
-        public Command(final String key, final String name, final Delegates.Function cmd) {
+        public Command(final String key, final String name, final Delegates.FunctionArgs cmd) {
             _key = key;
             _cmd = cmd;
             _name = name;

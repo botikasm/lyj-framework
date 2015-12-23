@@ -191,7 +191,7 @@ public abstract class ResourceBundleManager {
     //                  p r i v a t e
     // ------------------------------------------------------------------------
     private static Logger getLogger() {
-        return LoggingUtils.getLogger(ResourceBundleManager.class.getName());
+        return LoggingUtils.getLogger(ResourceBundleManager.class);
     }
 
     private static String getResourceString(final String baseName,

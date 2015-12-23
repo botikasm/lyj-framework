@@ -39,7 +39,7 @@ import java.util.zip.CheckedInputStream;
  */
 public abstract class FileUtils {
 
-    private static final Logger logger = LoggingUtils.getLogger(FileUtils.class.getName());
+    private static final Logger logger = LoggingUtils.getLogger(FileUtils.class);
     public static final int BLOCK_SIZE = 1024 * 4;
     /**
      * Preserves the last modified time and other attributes if possible.

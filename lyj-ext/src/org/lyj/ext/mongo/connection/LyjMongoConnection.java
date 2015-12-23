@@ -1,18 +1,15 @@
 package org.lyj.ext.mongo.connection;
 
 
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
+import com.mongodb.*;
 import com.mongodb.async.client.*;
 import com.mongodb.connection.ClusterSettings;
+import org.bson.BsonDocument;
 import org.json.JSONObject;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
-import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.JsonWrapper;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -48,7 +45,6 @@ public class LyjMongoConnection {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-
     private final String _raw_config;
     private final Boolean _enabled;
     private final List<ServerAddress> _hosts;
@@ -65,6 +61,7 @@ public class LyjMongoConnection {
     // ------------------------------------------------------------------------
 
     public LyjMongoConnection(final JsonWrapper configuration) {
+
         _status = STATUS_NOT_CONNECTED;
 
         _database_names = new LinkedList<>();
@@ -136,7 +133,7 @@ public class LyjMongoConnection {
         return _status.equals(STATUS_ERROR);
     }
 
-    public Throwable getConnectionError(){
+    public Throwable getConnectionError() {
         return _error;
     }
 
@@ -194,7 +191,7 @@ public class LyjMongoConnection {
                 if (null == err) {
                     if (null != db) {
                         final MongoCollection collection = db.getCollection(collectionName);
-                        if (null!=collection) {
+                        if (null != collection) {
                             Delegates.invoke(callback, null, collection);
                         } else {
                             Delegates.invoke(callback,
@@ -223,16 +220,19 @@ public class LyjMongoConnection {
 
     private MongoCredential getCredential(final String auth, final String database, final String username,
                                           final String password) {
+        final MongoCredential result;
         if (CREDENTIAL_MONGODB_CR.equals(auth)) {
-            MongoCredential.createMongoCRCredential(username,
+            result = MongoCredential.createMongoCRCredential(username,
                     database,
                     password.toCharArray());
         } else if (CREDENTIAL_SCRAM_SHA_1.equals(auth)) {
-            MongoCredential.createScramSha1Credential(username,
+            result = MongoCredential.createScramSha1Credential(username,
                     database,
                     password.toCharArray());
+        } else {
+            result = MongoCredential.createCredential(username, database, password.toCharArray());
         }
-        return MongoCredential.createCredential(username, database, password.toCharArray());
+        return result;
     }
 
     private MongoClientSettings getSettings() {
@@ -244,32 +244,76 @@ public class LyjMongoConnection {
         return MongoClientSettings.builder().credentialList(_credentials).clusterSettings(clusterSettings).build();
     }
 
-    private void getClient(final Delegates.SingleResultCallback<MongoClient> callback) {
-        if (null == _client) {
-            _client = MongoClients.create(this.getSettings());
-            MongoIterable<String> names = _client.listDatabaseNames();
-            names.forEach((String s) -> {
-                _database_names.add(s);
-            }, (Void aVoid, Throwable t) -> {
-                if (null != t) {
-                    getLogger().error("Connection Error", t);
-                    _status = STATUS_ERROR;
-                    _error = t;
-                } else {
-                    getLogger().info("Successfully Connected to Databases: " + CollectionUtils.toCommaDelimitedString(_database_names));
+    private synchronized void getClient(final Delegates.SingleResultCallback<MongoClient> callback) {
+            if (null == _client) {
+
+                _client = MongoClients.create(this.getSettings());
+
+                final MongoIterable<String> names = _client.listDatabaseNames();
+                names.forEach((String s) -> {
+                    _database_names.add(s);
+                }, (Void aVoid, Throwable t) -> {
                     _status = STATUS_CONNECTED;
                     _error = null;
+                    if (null != t) {
+                        if (!this.manageException("listDatabaseNames", t)) {
+                            // GRAVE ERROR
+                            _status = STATUS_ERROR;
+                            _error = t;
+                        }
+                    } else {
+                        getLogger().info("Successfully Connected to Databases: " + CollectionUtils.toCommaDelimitedString(_database_names));
+                    }
+                    Delegates.invoke(callback, _error, _client);
+                });
+            } else {
+                Delegates.invoke(callback, null, _client);
+            }
+    }
+
+    private boolean manageException(final String action, final Throwable t) {
+        boolean managed = true;
+        if (t instanceof MongoTimeoutException) {
+            // SEVERE
+            final String message = FormatUtils.format("Unable to connect to database executing action '%s': %s", action, t);
+            getLogger().error(message, t);
+            managed = false;
+        } else if (t instanceof MongoSecurityException) {
+            // WARNING
+            getLogger().warning("Security Error occurred executing action '%s': %s",
+                    action, ExceptionUtils.getRealMessage(t));
+            managed = false;
+        } else if (t instanceof MongoCommandException) {
+            final BsonDocument response = ((MongoCommandException) t).getResponse();
+            if (null != response) {
+                final JsonWrapper wrap = new JsonWrapper(response.toJson());
+                final String errmsg = wrap.getString("errmsg");
+                if ("unauthorized".equals(errmsg)) {
+                    // MANAGED
+                    getLogger().info("Successfully Connected to Database, but client is not " +
+                            "authorized and cannot execute action '%s'.", action);
+                } else {
+                    // WARNING
+                    getLogger().warning("Command Error occurred executing action '%s': %s",
+                            action, ExceptionUtils.getRealMessage(t));
+                    managed = false;
                 }
-                Delegates.invoke(callback, t, _client);
-            });
+            } else {
+                // WARNING
+                getLogger().warning("Command Error occurred executing action '%s': %s",
+                        action, ExceptionUtils.getRealMessage(t));
+                managed = false;
+            }
+
         } else {
-            Delegates.invoke(callback, null, _client);
+            // SEVERE
+            final String message = FormatUtils.format("Error '%s' occurred: %s",
+                    t.getClass().getSimpleName(), ExceptionUtils.getRealMessage(t));
+            getLogger().error(message, t);
+            managed = false;
         }
+        return managed;
     }
 
-    private void initConnection() {
-        MongoClientSettings settings = this.getSettings();
-
-    }
 
 }

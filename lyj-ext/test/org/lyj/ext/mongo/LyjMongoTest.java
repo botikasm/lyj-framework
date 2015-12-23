@@ -1,6 +1,9 @@
 package org.lyj.ext.mongo;
 
-import org.bson.*;
+import org.bson.BsonArray;
+import org.bson.BsonDocument;
+import org.bson.BsonInt32;
+import org.bson.Document;
 import org.json.JSONArray;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9,7 +12,6 @@ import org.lyj.commons.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Created by angelogeminiani on 18/12/15.

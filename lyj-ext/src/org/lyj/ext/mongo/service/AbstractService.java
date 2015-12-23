@@ -13,8 +13,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.cryptograph.MD5;
-import org.lyj.commons.logging.Logger;
-import org.lyj.commons.logging.util.LoggingUtils;
+import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.LyjMongo;
@@ -27,7 +26,8 @@ import static com.mongodb.client.model.Filters.eq;
 /**
  *
  */
-public abstract class AbstractService {
+public abstract class AbstractService
+        extends AbstractLogEmitter{
 
     // ------------------------------------------------------------------------
     //                      C O N S T
@@ -39,17 +39,19 @@ public abstract class AbstractService {
     //                      a b s t r a c t
     // ------------------------------------------------------------------------
 
-    protected abstract String getConnectionName();
+    public abstract String getConnectionName();
 
-    protected abstract String getDatabaseName();
+    public abstract String getDatabaseName();
+
+    // ------------------------------------------------------------------------
+    //                      l o g g i n g
+    // ------------------------------------------------------------------------
+
+    // log emitter
 
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
-
-    protected Logger getLogger(){
-        return LoggingUtils.getLogger(this);
-    }
 
     protected void getCollection(final String collectionName,
                                  final Delegates.SingleResultCallback<MongoCollection> callback) {
@@ -64,12 +66,12 @@ public abstract class AbstractService {
     }
 
     protected void count(final String collection_name, final Bson filter,
-                         final Delegates.SingleResultCallback<Long> callback) {
+                         final Delegates.SingleResultCallback<Integer> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
                 collection.count(filter, (count, error) -> {
                     if (null == error) {
-                        final Long value = ConversionUtils.toLong(count);
+                        final int value = ConversionUtils.toInteger(count);
                         Delegates.invoke(callback, null, value);
                     } else {
                         Delegates.invoke(callback, error, null);
@@ -114,6 +116,29 @@ public abstract class AbstractService {
                 });
             } else {
                 Delegates.invoke(callback, err, null);
+            }
+        });
+    }
+
+    protected <T> void findField(final String collection_name, final Bson filter, final int skip, final int limit,
+                                 final Bson sort, final String fieldName, final boolean allow_duplicates,
+                                 final Delegates.SingleResultCallback<List<T>> callback) {
+        final Document projection = new Document(fieldName, 1);
+        this.find(collection_name, filter, skip, limit, sort, projection, (err, data) -> {
+            if (null != err) {
+                Delegates.invoke(callback, err, null);
+            } else {
+                final List<T> result = new LinkedList<>();
+                for (final Document item : data) {
+                    try {
+                        final T value = (T) item.get(fieldName);
+                        if (allow_duplicates || !result.contains(value)) {
+                            result.add(value);
+                        }
+                    } catch (Throwable ignored) {
+                    }
+                }
+                Delegates.invoke(callback, null, result);
             }
         });
     }
@@ -288,7 +313,7 @@ public abstract class AbstractService {
     }
 
     protected void aggregate(final String collection_name, final List<Document> pipeline,
-                          final Delegates.SingleResultCallback<List<Document>> callback) {
+                             final Delegates.SingleResultCallback<List<Document>> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
                 final List<Document> array = new LinkedList<Document>();

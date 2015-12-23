@@ -34,56 +34,72 @@ import java.util.*;
  */
 public class Delegates {
 
-    public static interface Handler { /** base handler **/
+    @FunctionalInterface
+    public static interface Handler {
+        void handle();
     }
 
     // --------------------------------------------------------------------
     //               F u n c t i o n   D e l e g a t e s
     // --------------------------------------------------------------------
 
-    public static interface CreateRunnableCallback extends Handler {
+    @FunctionalInterface
+    public static interface CreateRunnableCallback {
         Runnable handle(final int index, final int length);
     }
 
-    public static interface Function<T> extends Handler {
+    @FunctionalInterface
+    public static interface FunctionArgs<T>{
         T handle(final Object... args);
+    }
+
+    @FunctionalInterface
+    public static interface Function<T>{
+        T handle();
     }
 
     // --------------------------------------------------------------------
     //               E v e n t s
     // --------------------------------------------------------------------
 
-    public static interface ExceptionCallback extends Handler {
+    @FunctionalInterface
+    public static interface ExceptionCallback {
         void handle(final String message, final Throwable err);
     }
 
     /**
      * Simple handler for Async Action
      */
-    public static interface Callback extends Handler {
+    @FunctionalInterface
+    public static interface Callback {
         void handle(final Object... args);
     }
 
-    public static interface SingleResultCallback<T> extends Handler {
+    @FunctionalInterface
+    public static interface SingleResultCallback<T>{
         void handle(final Throwable err, final T data);
     }
 
-    public static interface ResultCallback extends Handler {
+    @FunctionalInterface
+    public static interface ResultCallback {
         void handle(final Throwable err, final Object... data);
     }
 
     /**
      * Callback for progress indicators.
      */
-    public static interface ProgressCallback extends Handler {
+    @FunctionalInterface
+    public static interface ProgressCallback {
         void handle(final int index, final int length, final double progress);
     }
+
+
 
     // --------------------------------------------------------------------
     //               I n v o k e r
     // --------------------------------------------------------------------
 
-    public static <T> T invoke(final Function<T> callback, final Object... args) {
+    public static <T> T invoke(final FunctionArgs<T> callback, final Object... args) {
         if (null != callback) {
             return callback.handle(args);
         }

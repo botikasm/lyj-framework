@@ -45,7 +45,7 @@ public class Task<T> {
     private final ExecutorService _executor;
 
     // callbacks
-    private ActionCallback _callback_action;
+    private ActionCallback<T> _callback_action;
     private ErrorCallback _callback_error;
     private ResultCallback<T> _callback_result;
     private ExitCallback<T> _callback_exit;
@@ -58,7 +58,7 @@ public class Task<T> {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public Task(final ActionCallback callback) {
+    public Task(final ActionCallback<T> callback) {
         _executor = Executors.newSingleThreadExecutor();
         _callback_action = callback;
         _error = null;
@@ -70,7 +70,7 @@ public class Task<T> {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public Long getId(){
+    public Long getId() {
         return _id;
     }
 
@@ -78,11 +78,11 @@ public class Task<T> {
         return _state;
     }
 
-    public boolean hasError(){
-        return null!=_error;
+    public boolean hasError() {
+        return null != _error;
     }
 
-    public Throwable getError(){
+    public Throwable getError() {
         return _error;
     }
 
@@ -119,7 +119,7 @@ public class Task<T> {
                 // change state before exit
                 _state = State.TERMINATED;
                 // invoke exit callback
-                if (null!=_callback_exit) {
+                if (null != _callback_exit) {
                     _callback_exit.handle(_error, _data);
                 }
             });
@@ -148,18 +148,49 @@ public class Task<T> {
         return _data;
     }
 
+    public T getSilent() {
+        T result = null;
+        try {
+            result = this.get(1, TimeUnit.MINUTES);
+        } catch (Throwable ignored) {
+        }
+        return result;
+    }
+
+    public T getSilent(final TimeUnit unit) {
+        T result = null;
+        try {
+            result = this.get(1, unit);
+        } catch (Throwable ignored) {
+        }
+        return result;
+    }
+
     //-- CALLBACK --//
 
     public void fail(final String cause) {
         this.fail(new Exception(cause));
     }
 
+    public void fail(final String cause, final T data) {
+        this.fail(new Exception(cause), data);
+    }
+
     public void fail(final Throwable cause) {
         this.fail(new Exception(cause));
     }
 
+    public void fail(final Throwable cause, final T data) {
+        this.fail(new Exception(cause), data);
+    }
+
     public void fail(final Exception cause) {
+        this.fail(cause, null);
+    }
+
+    public void fail(final Exception cause, final T data) {
         _error = cause;
+        _data = data;
         try {
             if (null != _callback_error) {
                 _callback_error.handle(cause);
@@ -192,7 +223,7 @@ public class Task<T> {
         return this;
     }
 
-    public Task<T> exit(final ExitCallback callback) {
+    public Task<T> exit(final ExitCallback<T> callback) {
         _callback_exit = callback;
         return this;
     }
@@ -222,19 +253,23 @@ public class Task<T> {
     //                      I N N E R
     // ------------------------------------------------------------------------
 
-    public interface ActionCallback extends Delegates.Handler {
-        void handle(final Task self) throws Exception;
+    @FunctionalInterface
+    public interface ActionCallback<T>  {
+        void handle(final Task<T> self) throws Exception;
     }
 
-    public interface ResultCallback<T> extends Delegates.Handler {
+    @FunctionalInterface
+    public interface ResultCallback<T>  {
         void handle(final T data);
     }
 
-    public interface ErrorCallback extends Delegates.Handler {
+    @FunctionalInterface
+    public interface ErrorCallback  {
         void handle(final Exception err);
     }
 
-    public interface ExitCallback<T> extends Delegates.Handler {
+    @FunctionalInterface
+    public interface ExitCallback<T>  {
         void handle(final Throwable t, final T data);
     }
 

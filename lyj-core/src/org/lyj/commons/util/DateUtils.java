@@ -673,4 +673,53 @@ public abstract class DateUtils {
         calendar.setTime(date);
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
+
+    public static long getDateLong(){
+        return getDateLong(DateUtils.now());
+    }
+
+    public static List<Integer> getDateList(){
+        return getDateList(DateUtils.now());
+    }
+
+    public static Integer[] getDateArray(){
+        return getDateArray(DateUtils.now());
+    }
+
+    public static int getDateWeek(){
+        return getDateWeek(DateUtils.now());
+    }
+
+    public static String getDateString(){
+        return getDateString(DateUtils.now(), "yyyy-MM-dd");
+    }
+
+    public static long getDateLong(final Date date){
+        return date.getTime();
+    }
+
+    public static List<Integer> getDateList(final Date date){
+        final DateWrapper datew = new DateWrapper(date);
+        final List<Integer> list = new LinkedList<>();
+        list.add(datew.getYear());
+        list.add(datew.getMonth());
+        list.add(datew.getDay());
+        return list;
+    }
+
+    public static Integer[] getDateArray(final Date date){
+        final List<Integer> list = DateUtils.getDateList(date);
+        return list.toArray(new Integer[list.size()]);
+    }
+
+    public static int getDateWeek(final Date date){
+        final DateWrapper datew = new DateWrapper(date);
+        return datew.getWeek();
+    }
+
+    public static String getDateString(final Date date, final String pattern){
+        final DateWrapper datew = new DateWrapper(date);
+        return datew.toString(pattern);
+    }
+
 }

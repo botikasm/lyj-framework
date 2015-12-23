@@ -23,7 +23,9 @@
  */
 package org.lyj.commons.logging;
 
+import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.FormatUtils;
+import org.lyj.commons.util.StringUtils;
 
 /**
  * @author angelo.geminiani
@@ -32,18 +34,26 @@ public class Logger {
 
 
     private String _name;
+    private String _short_name;
     private Level _level = Level.INFO;
 
-    public Logger(String name) {
-        _name = name;
+    public Logger(final String name) {
+        this.setName(name);
     }
 
     public String getName() {
         return _name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this._name = name;
+        if (StringUtils.hasText(name) && StringUtils.contains(name, ".")){
+            _short_name = CollectionUtils.getLast(name, ".");
+        }
+    }
+
+    public String getShortName(){
+        return _short_name;
     }
 
     public Level getLevel() {

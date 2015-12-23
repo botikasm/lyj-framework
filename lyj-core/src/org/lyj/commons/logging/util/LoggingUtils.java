@@ -44,21 +44,22 @@ public abstract class LoggingUtils {
         LoggingRepository.getInstance().setLevel(level);
     }
 
-    public static Logger getLogger(Class cls) {
+    public static Logger getLogger(final Class cls) {
         return getLogger(cls.getName());
     }
 
-    public static Logger getLogger(Object instance) {
+    public static Logger getLogger(final Object instance) {
         return getLogger(instance.getClass().getName());
     }
 
     public static Logger getLogger() {
-        final LogItemRepositoryLogger result = new LogItemRepositoryLogger(LOGGER_NAME, "");
+        final LogItemRepositoryLogger result = new LogItemRepositoryLogger(LOGGER_NAME);
         return result;
     }
 
-    public static Logger getLogger(String name) {
-        final LogItemRepositoryLogger result = new LogItemRepositoryLogger(name, "");
+    public static Logger getLogger(final String name) {
+        final LogItemRepositoryLogger result = new LogItemRepositoryLogger(name);
         return result;
     }
+
 }

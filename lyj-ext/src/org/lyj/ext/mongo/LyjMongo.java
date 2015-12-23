@@ -9,6 +9,7 @@ import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.connection.LyjMongoConnection;
+import org.lyj.ext.mongo.schema.LyjMongoSchemas;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,8 @@ public class LyjMongo {
 
     private final Map<String, LyjMongoConnection> _connections; // connections cache
 
+    private final LyjMongoSchemas _schemas;
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -38,6 +41,7 @@ public class LyjMongo {
     private LyjMongo() {
         _configurations = new HashMap<>();
         _connections = new HashMap<>();
+        _schemas = new LyjMongoSchemas();
     }
 
     // ------------------------------------------------------------------------
@@ -83,15 +87,17 @@ public class LyjMongo {
     }
 
     public LyjMongoConnection getConnection(final String name) {
-        if (_connections.containsKey(name)) {
-            return _connections.get(name);
-        } else {
-            final JsonWrapper config = _configurations.get(name);
-            if (null != config) {
-                _connections.put(name, new LyjMongoConnection(config));
+        synchronized (_connections) {
+            if (_connections.containsKey(name)) {
                 return _connections.get(name);
             } else {
-                return null;
+                final JsonWrapper config = _configurations.get(name);
+                if (null != config) {
+                    _connections.put(name, new LyjMongoConnection(config));
+                    return _connections.get(name);
+                } else {
+                    return null;
+                }
             }
         }
     }
@@ -127,6 +133,10 @@ public class LyjMongo {
         }
     }
 
+    public LyjMongoSchemas getSchemas() {
+        return _schemas;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -137,10 +147,10 @@ public class LyjMongo {
 
     private void initCodecs() {
         /**
-        CodecRegistry codecRegistry =
-                CodecRegistries.fromRegistries(CodecRegistries.fromCodecs(new UuidCodec(UuidRepresentation.STANDARD)),
-                        MongoClient.getDefaultCodecRegistry());
-        */
+         CodecRegistry codecRegistry =
+         CodecRegistries.fromRegistries(CodecRegistries.fromCodecs(new UuidCodec(UuidRepresentation.STANDARD)),
+         MongoClient.getDefaultCodecRegistry());
+         */
     }
 
     // ------------------------------------------------------------------------

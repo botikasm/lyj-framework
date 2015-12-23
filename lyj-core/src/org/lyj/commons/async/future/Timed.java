@@ -167,7 +167,7 @@ public class Timed {
     /**
      * Sound the alarm for a few seconds, then stop.
      */
-    public ScheduledFuture<?> start(final Delegates.Function<?> callback) {
+    public ScheduledFuture<?> start(final Delegates.FunctionArgs<?> callback) {
         return startTask(callback);
     }
 
@@ -231,7 +231,7 @@ public class Timed {
         }
     }
 
-    private ScheduledFuture<?> startTask(final Delegates.Function<?> callback) {
+    private ScheduledFuture<?> startTask(final Delegates.FunctionArgs<?> callback) {
         if(_initial_delay==0 && _interval==0){
             _stop_after_count = 1; // avoid infinite loop at no interval
         }
@@ -294,7 +294,7 @@ public class Timed {
                 0, 0);
         alarmClock.setMaxThreads(2);
         // start first thread
-        alarmClock.start(new Delegates.Function<Object>() {
+        alarmClock.start(new Delegates.FunctionArgs<Object>() {
             @Override
             public Object handle(Object... args) {
                 final int count = (Integer) args[0];
@@ -308,7 +308,7 @@ public class Timed {
             }
         });
         // start second thread
-        alarmClock.start(new Delegates.Function<Object>() {
+        alarmClock.start(new Delegates.FunctionArgs<Object>() {
             @Override
             public Object handle(Object... args) {
                 final int count = (Integer) args[0];
@@ -322,7 +322,7 @@ public class Timed {
                 0, // start after 3 seconds
                 1, // run each 1 second
                 0, 3);
-        alarmClock2.start(new Delegates.Function<Object>() {
+        alarmClock2.start(new Delegates.FunctionArgs<Object>() {
 
             @Override
             public Object handle(final Object... args) {
@@ -365,11 +365,11 @@ public class Timed {
     private static final class RunTask
             implements Runnable {
 
-        private final Delegates.Function<?> _callback;
+        private final Delegates.FunctionArgs<?> _callback;
         private final Timed _sender;
 
         public RunTask(final Timed sender,
-                       final Delegates.Function<?> callback) {
+                       final Delegates.FunctionArgs<?> callback) {
             _sender = sender;
             _callback = callback;
         }

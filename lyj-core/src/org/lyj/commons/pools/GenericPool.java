@@ -57,7 +57,7 @@ public class GenericPool<T> {
     }
 
     public GenericPool(final int capacity,
-                       final Delegates.Function<T> callback) {
+                       final Delegates.FunctionArgs<T> callback) {
         _syncObj = new Object();
         _pool = Collections.synchronizedList(new ArrayList<T>(capacity));
 
@@ -116,7 +116,7 @@ public class GenericPool<T> {
         }
     }
 
-    private void init(final int capacity, final Delegates.Function<T> callback) {
+    private void init(final int capacity, final Delegates.FunctionArgs<T> callback) {
         if (null != callback) {
             synchronized (_pool) {
                 for (int i = 0; i < capacity; i++) {

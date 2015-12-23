@@ -65,8 +65,8 @@ public final class FileResourceBundle
             if (null != file) {
                 this.loadProperties(_properties, file);
             } else {
-                LoggingUtils.getLogger(
-                        FileResourceBundle.class.getName()).log(Level.FINEST,
+                LoggingUtils.getLogger(FileResourceBundle.class)
+                        .log(Level.FINEST,
                         String.format("Unable to find file [%s] for locale [%s]. "
                                 + "Please, check file path or locale is not NULL.",
                                 path, null != locale ? locale.toString() : "NULL"));

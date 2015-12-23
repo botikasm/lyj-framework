@@ -23,10 +23,7 @@ package org.lyj.commons.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * Utility class to encode/decode datetime.
@@ -71,6 +68,7 @@ public class DateWrapper {
     private int _hour = 0;
     private int _minutes = 0;
     private int _seconds = 0;
+    private int _week = 0;
     private Calendar _calendar = null;
 
     // ------------------------------------------------------------------------
@@ -323,6 +321,10 @@ public class DateWrapper {
         _seconds = value;
     }
 
+    public int getWeek() {
+        return _week;
+    }
+
     /**
      * Return a formatted date using "yyyyMMdd" pattern.
      *
@@ -418,6 +420,7 @@ public class DateWrapper {
         _hour = calendar.get(Calendar.HOUR_OF_DAY);
         _minutes = calendar.get(Calendar.MINUTE);
         _seconds = calendar.get(Calendar.SECOND);
+        _week = calendar.get(Calendar.WEEK_OF_YEAR);
     }
 
     // ------------------------------------------------------------------------

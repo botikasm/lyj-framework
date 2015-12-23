@@ -25,6 +25,7 @@ import org.lyj.IConstants;
 import org.lyj.Lyj;
 import org.lyj.commons.cmdline.cmdparser.CmdLineParser;
 import org.lyj.commons.lang.CharEncoding;
+import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.LoggingRepository;
 import org.lyj.commons.util.*;
 
@@ -120,6 +121,10 @@ abstract class AbstractLauncher {
             // run lyj runner
             _runnerClass.getMethod("run").invoke(_runnerInstance);
 
+            if (Lyj.isDebugMode()) {
+                LoggingRepository.getInstance().setLevel(Level.FINE);
+            }
+
             // ready method
             this.ready();
 
@@ -131,12 +136,12 @@ abstract class AbstractLauncher {
     }
 
     private ClassLoader init(final String[] args) throws Exception {
-        // init internal logger
-        LoggingRepository.getInstance().setFilePath(IConstants.PATH_LOG.concat("/lyj.log"));
-
+        // logger
+        this.initLoggerPath();
 
         // read args
         this.parseArgs(args);
+
         // creates directories
         this.initDirs();
 
@@ -145,6 +150,11 @@ abstract class AbstractLauncher {
 
 
         return loader;
+    }
+
+    private void initLoggerPath(){
+        // init internal logger
+        LoggingRepository.getInstance().setFilePath(IConstants.PATH_LOG.concat("/lyj.log"));
     }
 
     private void initDirs() throws Exception {

@@ -1,15 +1,7 @@
 package org.lyj.ext.mongo.utils;
 
-import org.bson.BsonReader;
-import org.bson.BsonValue;
-import org.bson.BsonWriter;
 import org.bson.Document;
-import org.bson.codecs.Codec;
-import org.bson.codecs.CollectibleCodec;
-import org.bson.codecs.DecoderContext;
-import org.bson.codecs.EncoderContext;
 import org.bson.conversions.Bson;
-import org.bson.types.Code;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.CollectionUtils;

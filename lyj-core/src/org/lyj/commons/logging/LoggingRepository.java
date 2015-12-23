@@ -237,7 +237,7 @@ public final class LoggingRepository {
     // ------------------------------------------------------------------------
     private String getKey(final Class aclass) {
         if (null != aclass) {
-            final Logger logger = new LogItemRepositoryLogger(aclass.getName(), "");
+            final Logger logger = new LogItemRepositoryLogger(aclass.getName());
             return this.getKey(logger);
         }
         return DEFAULT;
