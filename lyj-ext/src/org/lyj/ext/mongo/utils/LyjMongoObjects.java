@@ -5,8 +5,10 @@ import org.bson.conversions.Bson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.mongo.ILyjMongoConstants;
 
 import java.util.*;
 
@@ -138,4 +140,44 @@ public class LyjMongoObjects {
             return null!=def ? def : EMPTY_ITEM;
         }
     }
+
+    public static List<String> getArrayOfString(final Document document, final String key){
+        final Object value = document.get(key);
+        if (null==value || !(value instanceof List)) {
+            return new ArrayList<>();
+        } else {
+            return (List<String>) value;
+        }
+    }
+
+    public static List<Document> getArrayOfDocument(final Document document, final String key){
+        final Object value = document.get(key);
+        if (null==value || !(value instanceof List)) {
+            return new ArrayList<>();
+        } else {
+            return (List<Document>) value;
+        }
+    }
+
+    public static Integer getInteger(final Document document, final String key){
+        return ConversionUtils.toInteger(document.get(key));
+    }
+
+    public static Long getLong(final Document document, final String key){
+        final Object value = document.get(key);
+        if(value instanceof Document){
+            return ConversionUtils.toLong(((Document)value).get(ILyjMongoConstants.$NUMBER_LONG));
+        } else {
+            return ConversionUtils.toLong(document.get(key));
+        }
+    }
+
+    public static String getString(final Document document, final String key){
+        return ConversionUtils.toString(document.get(key));
+    }
+
+    public static Boolean getBoolean(final Document document, final String key){
+        return ConversionUtils.toBoolean(document.get(key));
+    }
+
 }

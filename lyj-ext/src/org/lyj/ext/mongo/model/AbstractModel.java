@@ -4,16 +4,20 @@ import org.bson.Document;
 import org.lyj.commons.cryptograph.GUID;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.RandomUtils;
+import org.lyj.ext.mongo.ILyjMongoConstants;
 import org.lyj.ext.mongo.LyjMongo;
 import org.lyj.ext.mongo.schema.AbstractSchema;
 import org.lyj.ext.mongo.schema.LyjMongoField;
-import org.lyj.ext.mongo.schema.LyjMongoSchemas;
+import org.lyj.ext.mongo.utils.LyjMongoObjects;
+
+import java.util.List;
 
 /**
  * Base class for Mongo models
  */
 public abstract class AbstractModel
-        extends AbstractLogEmitter {
+        extends AbstractLogEmitter
+        implements ILyjMongoConstants {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -35,6 +39,11 @@ public abstract class AbstractModel
     public AbstractModel(final Class<? extends AbstractSchema> schemaClass,
                          final String id_prefix) {
         this(schemaClass, new Document(), id_prefix);
+    }
+
+    public AbstractModel(final Class<? extends AbstractSchema> schemaClass,
+                         final Document document) {
+        this(schemaClass, document, "");
     }
 
     public AbstractModel(final Class<? extends AbstractSchema> schemaClass, final Document document,
@@ -61,12 +70,36 @@ public abstract class AbstractModel
         _document.put(key, value);
     }
 
+    public List<String> getArrayOfString(final String key){
+        return LyjMongoObjects.getArrayOfString(_document, key);
+    }
+
+    public List<Document> getArrayOfDocument(final String key){
+        return LyjMongoObjects.getArrayOfDocument(_document, key);
+    }
+
+    public int getInteger(final String key){
+        return LyjMongoObjects.getInteger(_document, key);
+    }
+
+    public long getLong(final String key){
+        return LyjMongoObjects.getLong(_document, key);
+    }
+
+    public String getString(final String key){
+        return LyjMongoObjects.getString(_document, key);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
 
     protected String buildId() {
         return GUID.create(false, true).toLowerCase();
+    }
+
+    public String UUID(){
+        return RandomUtils.randomUUID();
     }
 
     // ------------------------------------------------------------------------
@@ -86,8 +119,8 @@ public abstract class AbstractModel
 
     private void initDefaults() {
         if (null != _schema) {
-            _document.put("_id", _id_prefix.concat(this.buildId()));
-            _document.put("_collection", _schema.getCollectionName());
+            _document.put(F_ID, _id_prefix.concat(this.buildId()));
+            _document.put(F_COLLECTION, _schema.getCollectionName());
 
             final LyjMongoField[] fields = _schema.fields();
             for (final LyjMongoField field : fields) {

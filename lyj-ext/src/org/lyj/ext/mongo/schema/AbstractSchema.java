@@ -118,8 +118,6 @@ public abstract class AbstractSchema
                 this.getDatabaseName(), this.getCollectionName(), callback);
     }
 
-
-
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------

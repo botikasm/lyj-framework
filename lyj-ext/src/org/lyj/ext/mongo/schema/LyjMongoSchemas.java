@@ -2,7 +2,6 @@ package org.lyj.ext.mongo.schema;
 
 import org.bson.Document;
 import org.lyj.commons.Delegates;
-import org.lyj.commons.async.Async;
 
 import java.util.*;
 

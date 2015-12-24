@@ -15,7 +15,9 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.mongo.ILyjMongoConstants;
 import org.lyj.ext.mongo.LyjMongo;
 
 import java.util.LinkedList;
@@ -33,7 +35,7 @@ public abstract class AbstractService
     //                      C O N S T
     // ------------------------------------------------------------------------
 
-    public static final String ID = "_id";
+    public static final String ID = ILyjMongoConstants.F_ID;
 
     // ------------------------------------------------------------------------
     //                      a b s t r a c t
@@ -52,6 +54,10 @@ public abstract class AbstractService
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
+
+    public String UUID(){
+        return RandomUtils.randomUUID();
+    }
 
     protected void getCollection(final String collectionName,
                                  final Delegates.SingleResultCallback<MongoCollection> callback) {
