@@ -651,6 +651,23 @@ public abstract class ConversionUtils {
         return String.valueOf(value);
     }
 
+    public static String toString(final Object value, final String defVal) {
+        if (value instanceof String) {
+            return (String) value;
+        }
+        if (value == null) {
+            return defVal;
+        }
+        if (value.getClass().isArray()) {
+            if (Array.getLength(value) > 0) {
+                // recurse on the first value
+                return toString(Array.get(value, 0));
+            }
+            return null;
+        }
+        return String.valueOf(value);
+    }
+
     /**
      * Returns the first value as a String, if any; otherwise returns null.
      *

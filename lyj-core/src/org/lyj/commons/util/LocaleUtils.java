@@ -165,6 +165,11 @@ public class LocaleUtils {
         return DEFAULT;
     }
 
+    /**
+     * Return lang code
+     * @param slocale Locale as string. "it_IT", "it-IT"
+     * @return Lang Code
+     */
     public static String getLanguage(final String slocale) {
         final String[] tokens = StringUtils.split(slocale, new String[]{"_", "-"});
         if (tokens.length > 0) {

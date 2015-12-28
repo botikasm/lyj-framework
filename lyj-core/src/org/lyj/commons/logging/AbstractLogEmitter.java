@@ -60,4 +60,8 @@ public class AbstractLogEmitter
         this.log(Level.SEVERE, methodName, message);
     }
 
+    public void warning(final String methodName, final String message) {
+        this.log(Level.WARNING, methodName, message);
+    }
+
 }

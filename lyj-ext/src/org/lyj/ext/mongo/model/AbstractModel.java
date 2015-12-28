@@ -70,8 +70,20 @@ public abstract class AbstractModel
         _document.put(key, value);
     }
 
+    public void putAll(final Document document, final boolean overwrite){
+        LyjMongoObjects.extend(_document, document, overwrite);
+    }
+
     public Object get(final String key) {
         return null != _document ? _document.get(key) : null;
+    }
+
+    public List getArray(final String key) {
+        return LyjMongoObjects.getArray(_document, key);
+    }
+
+    public List getArray(final String key, final boolean addIfNone) {
+        return LyjMongoObjects.getArray(_document, key, addIfNone);
     }
 
     public List<String> getArrayOfString(final String key) {
@@ -91,15 +103,35 @@ public abstract class AbstractModel
     }
 
     public int getInteger(final String key) {
-        return LyjMongoObjects.getInteger(_document, key);
+        return this.getInteger(key, 0);
+    }
+
+    public int getInteger(final String key, final int defVal) {
+        return LyjMongoObjects.getInteger(_document, key, defVal);
     }
 
     public long getLong(final String key) {
-        return LyjMongoObjects.getLong(_document, key);
+        return this.getLong(key, 0L);
+    }
+
+    public long getLong(final String key, final long defVal) {
+        return LyjMongoObjects.getLong(_document, key, defVal);
     }
 
     public String getString(final String key) {
-        return LyjMongoObjects.getString(_document, key);
+        return this.getString(key, "");
+    }
+
+    public String getString(final String key, final String defVal) {
+        return LyjMongoObjects.getString(_document, key, defVal);
+    }
+
+    public boolean getBoolean(final String key) {
+        return this.getBoolean(key, false);
+    }
+
+    public boolean getBoolean(final String key, final boolean defVal) {
+        return LyjMongoObjects.getBoolean(_document, key, defVal);
     }
 
     public final Object getId() {
@@ -119,6 +151,10 @@ public abstract class AbstractModel
         }
     }
 
+    public final void setId(final Object value){
+        put(F_ID, value);
+    }
+
     public final String getCollection() {
         return getString(F_COLLECTION);
     }
@@ -126,6 +162,8 @@ public abstract class AbstractModel
     public String UUID() {
         return RandomUtils.randomUUID(true);
     }
+
+
 
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d

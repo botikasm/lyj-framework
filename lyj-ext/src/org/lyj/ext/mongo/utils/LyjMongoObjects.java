@@ -145,6 +145,25 @@ public class LyjMongoObjects {
         }
     }
 
+    public static List getArray(final Document document, final String key) {
+        return getArray(document, key, false);
+    }
+
+    public static List getArray(final Document document, final String key,
+                                                    final boolean addIfNone) {
+        final Object value = document.get(key);
+        if (null == value || !(value instanceof List)) {
+            if (addIfNone) {
+                document.put(key, new ArrayList<>());
+                return (List) document.get(key);
+            } else {
+                return new ArrayList<>();
+            }
+        } else {
+            return (List) value;
+        }
+    }
+
     public static List<String> getArrayOfString(final Document document, final String key) {
         return getArrayOfString(document, key, false);
     }
@@ -184,24 +203,40 @@ public class LyjMongoObjects {
     }
 
     public static Integer getInteger(final Document document, final String key) {
-        return ConversionUtils.toInteger(document.get(key));
+        return getInteger(document, key, 0);
+    }
+
+    public static Integer getInteger(final Document document, final String key, final int defVal) {
+        return ConversionUtils.toInteger(document.get(key), defVal);
     }
 
     public static Long getLong(final Document document, final String key) {
+        return getLong(document, key, 0L);
+    }
+
+    public static Long getLong(final Document document, final String key, final long defVal) {
         final Object value = document.get(key);
         if (value instanceof Document) {
-            return ConversionUtils.toLong(((Document) value).get(ILyjMongoConstants.$NUMBER_LONG));
+            return ConversionUtils.toLong(((Document) value).get(ILyjMongoConstants.$NUMBER_LONG), defVal);
         } else {
-            return ConversionUtils.toLong(document.get(key));
+            return ConversionUtils.toLong(document.get(key), defVal);
         }
     }
 
     public static String getString(final Document document, final String key) {
-        return ConversionUtils.toString(document.get(key));
+        return getString(document, key, "");
+    }
+
+    public static String getString(final Document document, final String key, final String defVal) {
+        return ConversionUtils.toString(document.get(key), defVal);
     }
 
     public static Boolean getBoolean(final Document document, final String key) {
         return ConversionUtils.toBoolean(document.get(key));
+    }
+
+    public static Boolean getBoolean(final Document document, final String key, final boolean defVal) {
+        return ConversionUtils.toBoolean(document.get(key), defVal);
     }
 
     public static Document extend(final Document target, final Document source) {
