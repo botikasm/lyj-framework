@@ -1243,7 +1243,16 @@ public abstract class CollectionUtils {
         return result;
     }
 
-    public static <T> List<T> toList(T... args) {
+    public static List<String> toListOfString(final String delimitedString) {
+        return toListOfString(delimitedString, ",");
+    }
+
+    public static List<String> toListOfString(final String delimitedString, final String delim) {
+        return Arrays.asList(StringUtils.split(delimitedString, delim));
+    }
+
+    @SafeVarargs
+    public static <T> List<T> asList(final T... args) {
         return Arrays.asList(args);
     }
 

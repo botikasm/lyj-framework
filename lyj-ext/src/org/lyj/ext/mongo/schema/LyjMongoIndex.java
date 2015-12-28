@@ -2,6 +2,7 @@ package org.lyj.ext.mongo.schema;
 
 import org.bson.Document;
 import org.lyj.commons.cryptograph.MD5;
+import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.LinkedHashMap;
@@ -13,13 +14,24 @@ import java.util.Set;
  */
 public class LyjMongoIndex {
 
+
+    // ------------------------------------------------------------------------
+    //                      C O N S T
+    // ------------------------------------------------------------------------
+
+    public static final String SPHERE_INDEX = "2dsphere";
+
+    public static final int SORT_ASC = 1;
+    public static final int SORT_DESC = -1;
+    public static final int GEOSPATIAL = 2;
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
     private String _name; // optional index name (assigned from Mongo if leaved empty)
     private boolean _unique;
-    private final Map<String, Integer> _fields;
+    private final Map<String, Integer> _fields; // 1= ascending, -1=descending, 2=2dsphere
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -38,7 +50,7 @@ public class LyjMongoIndex {
         this();
         final Set<String> keys = fields.keySet();
         for (final String key : keys) {
-            _fields.put(key, fields.getInteger(key));
+            _fields.put(key, this.encodeSort(fields.get(key)));
         }
     }
 
@@ -102,7 +114,18 @@ public class LyjMongoIndex {
      * @param sortOrder Sort Order: 1=ascending, -1=descending
      */
     public void addField(final String name, final int sortOrder) {
-        _fields.put(name, sortOrder == 1 || sortOrder == -1 ? sortOrder : 1);
+        if(sortOrder==SORT_ASC){
+            // ASC
+            _fields.put(name, sortOrder);
+        } else if (sortOrder==SORT_DESC){
+            // DESC
+            _fields.put(name, sortOrder);
+        } else if (sortOrder==GEOSPATIAL) {
+            // GeoSpatial
+            _fields.put(name, sortOrder);
+        } else {
+            _fields.put(name, SORT_ASC);
+        }
     }
 
     /**
@@ -114,10 +137,29 @@ public class LyjMongoIndex {
         final Document result = new Document();
         final Set<String> names = this.getFieldNames();
         for (final String name : names) {
-            result.put(name, _fields.get(name));
+            result.put(name, this.decodeSort(_fields.get(name)));
         }
         return result;
     }
 
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private int encodeSort(final Object value){
+        if (value.equals(SPHERE_INDEX)) {
+            return GEOSPATIAL;
+        } else {
+            return ConversionUtils.toInteger(value);
+        }
+    }
+
+    private Object decodeSort(final int value){
+        if (value==2) {
+            return SPHERE_INDEX;
+        } else {
+            return value;
+        }
+    }
 
 }

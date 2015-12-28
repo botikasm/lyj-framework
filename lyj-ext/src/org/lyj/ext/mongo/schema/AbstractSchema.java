@@ -3,6 +3,7 @@ package org.lyj.ext.mongo.schema;
 import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
+import com.mongodb.client.model.geojson.GeoJsonObjectType;
 import org.bson.Document;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
@@ -19,6 +20,10 @@ import java.util.*;
  */
 public abstract class AbstractSchema
         extends AbstractLogEmitter {
+
+    // ------------------------------------------------------------------------
+    //                      C O N S T
+    // ------------------------------------------------------------------------
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -90,6 +95,22 @@ public abstract class AbstractSchema
         }
     }
 
+    public void indexGeo(final String geoSpatialFieldName) {
+        this.indexGeo(geoSpatialFieldName, null);
+    }
+
+    public void indexGeo(final String geoSpatialFieldName, final Document compound) {
+        if (StringUtils.hasText(geoSpatialFieldName)) {
+            final Document index = null == compound ? new Document() : compound;
+            index.put(geoSpatialFieldName, LyjMongoIndex.SPHERE_INDEX);
+            final LyjMongoIndex idx = new LyjMongoIndex(index);
+            idx.setUnique(false);
+            if (idx.hasFields()) {
+                _indexes.put(idx.getSignature(), idx);
+            }
+        }
+    }
+
     public LyjMongoField field(final LyjMongoField field) {
         _fields.put(field.getName(), field);
 
@@ -103,6 +124,10 @@ public abstract class AbstractSchema
     public LyjMongoField[] fields() {
         final Collection<LyjMongoField> result = _fields.values();
         return result.toArray(new LyjMongoField[result.size()]);
+    }
+
+    public boolean hasField(final String name) {
+        return _fields.containsKey(name);
     }
 
     public void ensureIndexes(final Delegates.SingleResultCallback<List<Document>> callback) {
@@ -122,7 +147,7 @@ public abstract class AbstractSchema
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void initIndexes(final Delegates.SingleResultCallback<List<Document>> callback){
+    private void initIndexes(final Delegates.SingleResultCallback<List<Document>> callback) {
         final Collection<Task<LyjMongoIndex>> tasks = new ArrayList<>();
         final Collection<LyjMongoIndex> indexes = _indexes.values();
         for (final LyjMongoIndex index : indexes) {
@@ -136,12 +161,12 @@ public abstract class AbstractSchema
         final List<Document> response = new LinkedList<>();
 
         // get response
-        for(final Task<LyjMongoIndex> task:tasks){
+        for (final Task<LyjMongoIndex> task : tasks) {
             final LyjMongoIndex index = task.getSilent();
-            if(null!=index) {
+            if (null != index) {
                 final Document item = Document.parse(index.toString());
                 response.add(item);
-                if (task.hasError()){
+                if (task.hasError()) {
                     item.put("error", ExceptionUtils.getMessage(task.getError()));
                 }
             }
@@ -158,8 +183,8 @@ public abstract class AbstractSchema
                     if (null != err) {
                         task.fail(err);
                     } else {
-                        this.createIndex(collection, index, (err1, response)->{
-                            if(null!=err1){
+                        this.createIndex(collection, index, (err1, response) -> {
+                            if (null != err1) {
                                 task.fail(err1, index);
                             } else {
                                 index.setName(response);
@@ -178,7 +203,7 @@ public abstract class AbstractSchema
         final Document mongo_index = index.toDocument();
         final IndexOptions options = new IndexOptions();
         options.unique(index.isUnique());
-        if(StringUtils.hasText(index.getName())){
+        if (StringUtils.hasText(index.getName())) {
             options.name(index.getName());
         }
 
@@ -191,7 +216,6 @@ public abstract class AbstractSchema
             }
         });
     }
-
 
 
 }

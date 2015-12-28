@@ -70,36 +70,72 @@ public abstract class AbstractModel
         _document.put(key, value);
     }
 
-    public List<String> getArrayOfString(final String key){
+    public Object get(final String key) {
+        return null != _document ? _document.get(key) : null;
+    }
+
+    public List<String> getArrayOfString(final String key) {
         return LyjMongoObjects.getArrayOfString(_document, key);
     }
 
-    public List<Document> getArrayOfDocument(final String key){
+    public List<String> getArrayOfString(final String key, final boolean addIfNone) {
+        return LyjMongoObjects.getArrayOfString(_document, key, addIfNone);
+    }
+
+    public List<Document> getArrayOfDocument(final String key) {
         return LyjMongoObjects.getArrayOfDocument(_document, key);
     }
 
-    public int getInteger(final String key){
+    public List<Document> getArrayOfDocument(final String key, final boolean addIfNone) {
+        return LyjMongoObjects.getArrayOfDocument(_document, key, addIfNone);
+    }
+
+    public int getInteger(final String key) {
         return LyjMongoObjects.getInteger(_document, key);
     }
 
-    public long getLong(final String key){
+    public long getLong(final String key) {
         return LyjMongoObjects.getLong(_document, key);
     }
 
-    public String getString(final String key){
+    public String getString(final String key) {
         return LyjMongoObjects.getString(_document, key);
+    }
+
+    public final Object getId() {
+        return get(F_ID);
+    }
+
+    public final String getIdString() {
+        final Object id = get(F_ID);
+        if (null != id) {
+            if (id instanceof String) {
+                return (String) id;
+            } else {
+                return id.toString();
+            }
+        } else {
+            return "";
+        }
+    }
+
+    public final String getCollection() {
+        return getString(F_COLLECTION);
+    }
+
+    public String UUID() {
+        return RandomUtils.randomUUID(true);
     }
 
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
 
-    protected String buildId() {
-        return GUID.create(false, true).toLowerCase();
-    }
-
-    public String UUID(){
-        return RandomUtils.randomUUID();
+    protected boolean hasField(final String name) {
+        if (null != _schema) {
+            return _schema.hasField(name);
+        }
+        return false;
     }
 
     // ------------------------------------------------------------------------
@@ -119,7 +155,7 @@ public abstract class AbstractModel
 
     private void initDefaults() {
         if (null != _schema) {
-            _document.put(F_ID, _id_prefix.concat(this.buildId()));
+            _document.put(F_ID, _id_prefix.concat(this.UUID()));
             _document.put(F_COLLECTION, _schema.getCollectionName());
 
             final LyjMongoField[] fields = _schema.fields();

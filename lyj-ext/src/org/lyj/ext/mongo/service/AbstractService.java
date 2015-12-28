@@ -4,6 +4,7 @@ import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.AggregateIterable;
 import com.mongodb.async.client.FindIterable;
 import com.mongodb.async.client.MongoCollection;
+import com.mongodb.async.client.MongoDatabase;
 import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.ReturnDocument;
@@ -46,6 +47,26 @@ public abstract class AbstractService
     public abstract String getDatabaseName();
 
     // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+
+    public void runCommand(final Bson command, final Delegates.SingleResultCallback<Object> callback){
+        this.getDatabase((err, db)->{
+            if (null == err) {
+                db.runCommand(command, (result, t)->{
+                    if(null!=t){
+                        Delegates.invoke(callback, t, null);
+                    } else {
+                        Delegates.invoke(callback, null, result);
+                    }
+                });
+            } else {
+                Delegates.invoke(callback, err, null);
+            }
+        });
+    }
+
+    // ------------------------------------------------------------------------
     //                      l o g g i n g
     // ------------------------------------------------------------------------
 
@@ -56,7 +77,11 @@ public abstract class AbstractService
     // ------------------------------------------------------------------------
 
     public String UUID(){
-        return RandomUtils.randomUUID();
+        return RandomUtils.randomUUID(true);
+    }
+
+    protected void getDatabase(final Delegates.SingleResultCallback<MongoDatabase> callback) {
+        LyjMongo.getInstance().getDatabase(this.getConnectionName(), this.getDatabaseName(), callback);
     }
 
     protected void getCollection(final String collectionName,
@@ -305,6 +330,10 @@ public abstract class AbstractService
                           final Delegates.SingleResultCallback<Document> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
+                // check _id
+                if(null==item.get(ID)){
+                    item.put(ID, this.UUID());
+                }
                 collection.insertOne(item, (Void, error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, item);
@@ -338,5 +367,7 @@ public abstract class AbstractService
             }
         });
     }
+
+
 
 }

@@ -3,24 +3,18 @@ package org.lyj.ext.mongo.utils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.mongo.ILyjMongoConstants;
+import org.lyj.ext.mongo.model.LyjGeoJSON;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Helper class to build filters for mongo query
  */
-public class LyjMongoFilter {
-
-    // ------------------------------------------------------------------------
-    //                      C O N S T
-    // ------------------------------------------------------------------------
-
-    private static final String NE = "$ne";
-    private static final String NIN = "$nin";
-
-    private static final String OR = "$or";
-    private static final String AND = "$and";
+public class LyjMongoFilter
+        implements ILyjMongoConstants {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -91,6 +85,131 @@ public class LyjMongoFilter {
         _filter.put(AND, Arrays.asList(conditions));
         return this;
     }
+
+    // ------------------------------------------------------------------------
+    //                      G E O
+    // ------------------------------------------------------------------------
+
+    /**
+     * Queries for location data found within a GeoJSON polygon
+     *
+     * @param locationField Name of location field
+     * @param coordinates   Array of coordinates that delim the polygon
+     * @return LyjMongoFilter { "loc" : { "$geoWithin" : { "$geometry" : { "type" : "Polygon", "coordinates" : "[[0,10], [3,6], [4,5]]" } } } }
+     */
+    @SafeVarargs
+    public final LyjMongoFilter geoWithin(final String locationField,
+                                          final List<Double>... coordinates) {
+        _filter.put(locationField,
+                new Document($GEO_WITHIN,
+                        new Document($GEOMETRY,
+                                new Document(TYPE, POLYGON).append(COORDINATES, Arrays.asList(coordinates))
+                        )
+                )
+        );
+        return this;
+    }
+
+    public final LyjMongoFilter geoWithinSphereMiles(final String locationField,
+                                                     final Double longitude,
+                                                     final Double latitude,
+                                                     final Double radiusInMiles) {
+        return geoWithinSphereRadians(locationField, longitude, latitude, radiusInMiles / EARTH_RADIUS_MILES);
+    }
+
+    public final LyjMongoFilter geoWithinSphereKilometers(final String locationField,
+                                                          final Double longitude,
+                                                          final Double latitude,
+                                                          final Double radiusInKilometers) {
+        return geoWithinSphereRadians(locationField, longitude, latitude, radiusInKilometers / EARTH_RADIUS_KILOMETERS);
+    }
+
+    public final LyjMongoFilter geoWithinSphereRadians(final String locationField,
+                                                       final Double longitude,
+                                                       final Double latitude,
+                                                       final Double radiusInRadians) {
+        _filter.put(locationField,
+                new Document($GEO_WITHIN,
+                        new Document($CENTER_SPHERE,
+                                Arrays.asList(Arrays.asList(longitude, latitude), radiusInRadians)
+                        )
+                )
+        );
+        return this;
+    }
+
+    /**
+     * Queries for locations that intersect a specified GeoJSON object.
+     * A location intersects the object if the intersection is non-empty.
+     * This includes documents that have a shared edge.
+     *
+     * @param locationField Name of location field
+     * @param type          Type of geometry
+     * @param coordinates   Array of coordinates that delim the geometry type
+     * @return { "loc" : { "$geoIntersects" : { "$geometry" : { "type" : "Polygon", "coordinates" : "[[0,10], [3,6], [4,5]]" } } } }
+     */
+    @SafeVarargs
+    public final LyjMongoFilter geoIntersects(final String locationField,
+                                              final String type,
+                                              final List<Double>... coordinates) {
+        _filter.put(locationField,
+                new Document($GEO_INTERSECTS,
+                        new Document($GEOMETRY,
+                                new Document(TYPE, type).append(COORDINATES, Arrays.asList(coordinates))
+                        )
+                )
+        );
+        return this;
+    }
+
+    /**
+     * Return a query to find the points closest to the defined point and sorts the results by distance.
+     *
+     * @param locationField Name of location field
+     * @param maxDistance   Max Distance in meters
+     * @param longitude     Latitude
+     * @param latitude      Longitude
+     * @return { "loc" : { "$near" : { "$geometry" : { "type" : "Point", "coordinates" : "[0,10]" }, "$maxDistance" : 20 } } }
+     */
+    public final LyjMongoFilter near(final String locationField,
+                                     final Integer maxDistance,
+                                     final Double longitude,
+                                     final Double latitude) {
+        _filter.put(locationField,
+                new Document($NEAR,
+                        new Document($GEOMETRY,
+                                new Document(TYPE, POINT)
+                                        .append(COORDINATES, Arrays.asList(longitude, latitude))
+                        ).append($MAX_DISTANCE, maxDistance)
+                )
+        );
+        return this;
+    }
+
+    /**
+     * @param locationField Name of location field
+     * @param maxDistance   Max Distance in meters
+     * @param minDistance   Min Distance in meters
+     * @param longitude     Latitude
+     * @param latitude      Longitude
+     * @return { "loc" : { "$near" : { "$geometry" : { "type" : "Point", "coordinates" : "[0,10]"}, "$maxDistance" : 20, "$minDistance" : 5 } } }
+     */
+    public final LyjMongoFilter near(final String locationField,
+                                     final Integer maxDistance, final Integer minDistance,
+                                     final Double longitude,
+                                     final Double latitude) {
+        _filter.put(locationField,
+                new Document($NEAR,
+                        new Document($GEOMETRY,
+                                new Document(TYPE, POINT)
+                                        .append(COORDINATES, Arrays.asList(longitude, latitude))
+                        ).append($MAX_DISTANCE, maxDistance).append($MIN_DISTANCE, minDistance)
+                )
+        );
+        return this;
+    }
+
+
 
     // ------------------------------------------------------------------------
     //                      S T A T I C

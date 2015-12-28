@@ -9,6 +9,7 @@ import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;
+import org.lyj.ext.mongo.model.LyjGeoJSON;
 
 import java.util.*;
 
@@ -132,52 +133,90 @@ public class LyjMongoObjects {
                 return ((Document) obj).toJson();
             } else if (obj instanceof Collection) {
                 final Collection list = (Collection) obj;
-                return new JSONArray(list).toString();
+                final JSONArray jarray = new JSONArray(list);
+                return jarray.toString();
+            } else if (obj.getClass().isArray()) {
+                return new JSONArray(obj).toString();
             } else {
                 return obj.toString();
             }
         } else {
-            return null!=def ? def : EMPTY_ITEM;
+            return null != def ? def : EMPTY_ITEM;
         }
     }
 
-    public static List<String> getArrayOfString(final Document document, final String key){
+    public static List<String> getArrayOfString(final Document document, final String key) {
+        return getArrayOfString(document, key, false);
+    }
+
+    public static List<String> getArrayOfString(final Document document, final String key,
+                                                final boolean addIfNone) {
         final Object value = document.get(key);
-        if (null==value || !(value instanceof List)) {
-            return new ArrayList<>();
+        if (null == value || !(value instanceof List)) {
+            if (addIfNone) {
+                document.put(key, new ArrayList<>());
+                return (List<String>) document.get(key);
+            } else {
+                return new ArrayList<>();
+            }
         } else {
             return (List<String>) value;
         }
     }
 
-    public static List<Document> getArrayOfDocument(final Document document, final String key){
+    public static List<Document> getArrayOfDocument(final Document document, final String key) {
+        return getArrayOfDocument(document, key, false);
+    }
+
+    public static List<Document> getArrayOfDocument(final Document document, final String key,
+                                                    final boolean addIfNone) {
         final Object value = document.get(key);
-        if (null==value || !(value instanceof List)) {
-            return new ArrayList<>();
+        if (null == value || !(value instanceof List)) {
+            if (addIfNone) {
+                document.put(key, new ArrayList<>());
+                return (List<Document>) document.get(key);
+            } else {
+                return new ArrayList<>();
+            }
         } else {
             return (List<Document>) value;
         }
     }
 
-    public static Integer getInteger(final Document document, final String key){
+    public static Integer getInteger(final Document document, final String key) {
         return ConversionUtils.toInteger(document.get(key));
     }
 
-    public static Long getLong(final Document document, final String key){
+    public static Long getLong(final Document document, final String key) {
         final Object value = document.get(key);
-        if(value instanceof Document){
-            return ConversionUtils.toLong(((Document)value).get(ILyjMongoConstants.$NUMBER_LONG));
+        if (value instanceof Document) {
+            return ConversionUtils.toLong(((Document) value).get(ILyjMongoConstants.$NUMBER_LONG));
         } else {
             return ConversionUtils.toLong(document.get(key));
         }
     }
 
-    public static String getString(final Document document, final String key){
+    public static String getString(final Document document, final String key) {
         return ConversionUtils.toString(document.get(key));
     }
 
-    public static Boolean getBoolean(final Document document, final String key){
+    public static Boolean getBoolean(final Document document, final String key) {
         return ConversionUtils.toBoolean(document.get(key));
     }
 
+    public static Document extend(final Document target, final Document source) {
+        return extend(target, source, false);
+    }
+
+    public static Document extend(final Document target, final Document source, final boolean overwrite) {
+        if(null!=target && null!=source){
+            final Set<String> keys = source.keySet();
+            for(final String key:keys){
+                if(overwrite || !target.containsKey(key)){
+                    target.put(key, source.get(key));
+                }
+            }
+        }
+        return target;
+    }
 }

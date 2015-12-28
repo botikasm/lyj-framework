@@ -409,6 +409,11 @@ public abstract class RandomUtils {
         return UUID.randomUUID().toString();
     }
 
+    public static String randomUUID(final boolean removeSeparator){
+        final String uuid = UUID.randomUUID().toString();
+        return removeSeparator ? StringUtils.replace(uuid, "-", "") : uuid;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
