@@ -150,7 +150,7 @@ public class LyjMongoObjects {
     }
 
     public static List getArray(final Document document, final String key,
-                                                    final boolean addIfNone) {
+                                final boolean addIfNone) {
         final Object value = document.get(key);
         if (null == value || !(value instanceof List)) {
             if (addIfNone) {
@@ -170,16 +170,20 @@ public class LyjMongoObjects {
 
     public static List<String> getArrayOfString(final Document document, final String key,
                                                 final boolean addIfNone) {
-        final Object value = document.get(key);
-        if (null == value || !(value instanceof List)) {
-            if (addIfNone) {
-                document.put(key, new ArrayList<>());
-                return (List<String>) document.get(key);
+        if (null != document) {
+            final Object value = document.get(key);
+            if (null == value || !(value instanceof List)) {
+                if (addIfNone) {
+                    document.put(key, new ArrayList<>());
+                    return (List<String>) document.get(key);
+                } else {
+                    return new ArrayList<>();
+                }
             } else {
-                return new ArrayList<>();
+                return (List<String>) value;
             }
         } else {
-            return (List<String>) value;
+            return new ArrayList<>();
         }
     }
 
@@ -189,38 +193,58 @@ public class LyjMongoObjects {
 
     public static List<Document> getArrayOfDocument(final Document document, final String key,
                                                     final boolean addIfNone) {
-        final Object value = document.get(key);
-        if (null == value || !(value instanceof List)) {
-            if (addIfNone) {
-                document.put(key, new ArrayList<>());
-                return (List<Document>) document.get(key);
+        if (null != document) {
+            final Object value = document.get(key);
+            if (null == value || !(value instanceof List)) {
+                if (addIfNone) {
+                    document.put(key, new ArrayList<>());
+                    return (List<Document>) document.get(key);
+                } else {
+                    return new ArrayList<>();
+                }
             } else {
-                return new ArrayList<>();
+                return (List<Document>) value;
             }
         } else {
-            return (List<Document>) value;
+            return new ArrayList<>();
         }
     }
 
-    public static Integer getInteger(final Document document, final String key) {
+    public static int getInteger(final Document document, final String key) {
         return getInteger(document, key, 0);
     }
 
-    public static Integer getInteger(final Document document, final String key, final int defVal) {
-        return ConversionUtils.toInteger(document.get(key), defVal);
+    public static int getInteger(final Document document, final String key, final int defVal) {
+        return null != document ? ConversionUtils.toInteger(document.get(key), defVal) : defVal;
     }
 
-    public static Long getLong(final Document document, final String key) {
+    public static long getLong(final Document document, final String key) {
         return getLong(document, key, 0L);
     }
 
-    public static Long getLong(final Document document, final String key, final long defVal) {
-        final Object value = document.get(key);
-        if (value instanceof Document) {
-            return ConversionUtils.toLong(((Document) value).get(ILyjMongoConstants.$NUMBER_LONG), defVal);
+    public static long getLong(final Document document, final String key, final long defVal) {
+        if (null != document) {
+            final Object value = document.get(key);
+            if (value instanceof Document) {
+                return ConversionUtils.toLong(((Document) value).get(ILyjMongoConstants.$NUMBER_LONG), defVal);
+            } else {
+                return ConversionUtils.toLong(document.get(key), defVal);
+            }
         } else {
-            return ConversionUtils.toLong(document.get(key), defVal);
+            return defVal;
         }
+    }
+
+    public static double getDouble(final Document document, final String key) {
+        return ConversionUtils.toDouble(document.get(key));
+    }
+
+    public static double getDouble(final Document document, final String key, final double defVal) {
+        return ConversionUtils.toDouble(document.get(key), defVal);
+    }
+
+    public static double getDouble(final Document document, final String key, final int decimalPlace, final double defVal) {
+        return null != document ? ConversionUtils.toDouble(document.get(key), decimalPlace, defVal) : defVal;
     }
 
     public static String getString(final Document document, final String key) {
@@ -228,15 +252,15 @@ public class LyjMongoObjects {
     }
 
     public static String getString(final Document document, final String key, final String defVal) {
-        return ConversionUtils.toString(document.get(key), defVal);
+        return null != document ? ConversionUtils.toString(document.get(key), defVal) : defVal;
     }
 
-    public static Boolean getBoolean(final Document document, final String key) {
+    public static boolean getBoolean(final Document document, final String key) {
         return ConversionUtils.toBoolean(document.get(key));
     }
 
-    public static Boolean getBoolean(final Document document, final String key, final boolean defVal) {
-        return ConversionUtils.toBoolean(document.get(key), defVal);
+    public static boolean getBoolean(final Document document, final String key, final boolean defVal) {
+        return null != document ? ConversionUtils.toBoolean(document.get(key), defVal) : defVal;
     }
 
     public static Document extend(final Document target, final Document source) {
@@ -244,10 +268,10 @@ public class LyjMongoObjects {
     }
 
     public static Document extend(final Document target, final Document source, final boolean overwrite) {
-        if(null!=target && null!=source){
+        if (null != target && null != source) {
             final Set<String> keys = source.keySet();
-            for(final String key:keys){
-                if(overwrite || !target.containsKey(key)){
+            for (final String key : keys) {
+                if (overwrite || !target.containsKey(key)) {
                     target.put(key, source.get(key));
                 }
             }

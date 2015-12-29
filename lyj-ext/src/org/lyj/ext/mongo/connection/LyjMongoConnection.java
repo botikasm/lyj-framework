@@ -38,6 +38,7 @@ public class LyjMongoConnection {
     private static final String DATABASE = "database";
     private static final String DESCRIPTION = "description";
 
+    private static final String CREDENTIAL_NONE = "none";
     private static final String CREDENTIAL_SCRAM_SHA_1 = "SCRAM-SHA-1";
     private static final String CREDENTIAL_MONGODB_CR = "MONGODB-CR";
 
@@ -95,7 +96,10 @@ public class LyjMongoConnection {
                 String password = wrap.getString(PSW);
                 String database = wrap.getString(DATABASE);
                 if (StringUtils.hasText(username) && StringUtils.hasText(password) && StringUtils.hasText(database)) {
-                    _credentials.add(this.getCredential(auth, database, username, password));
+                    final MongoCredential credential = this.getCredential(auth, database, username, password);
+                    if(null!=credential){
+                        _credentials.add(credential);
+                    }
                 }
             }
         }
@@ -221,7 +225,9 @@ public class LyjMongoConnection {
     private MongoCredential getCredential(final String auth, final String database, final String username,
                                           final String password) {
         final MongoCredential result;
-        if (CREDENTIAL_MONGODB_CR.equals(auth)) {
+        if(CREDENTIAL_NONE.equals(auth)){
+            result = null;
+        } else if (CREDENTIAL_MONGODB_CR.equals(auth)) {
             result = MongoCredential.createMongoCRCredential(username,
                     database,
                     password.toCharArray());
@@ -241,7 +247,11 @@ public class LyjMongoConnection {
                 .hosts(_hosts)
                 .description(_description).build();
 
-        return MongoClientSettings.builder().credentialList(_credentials).clusterSettings(clusterSettings).build();
+        if(_credentials.size()>0){
+            return MongoClientSettings.builder().credentialList(_credentials).clusterSettings(clusterSettings).build();
+        } else {
+            return MongoClientSettings.builder().clusterSettings(clusterSettings).build();
+        }
     }
 
     private synchronized void getClient(final Delegates.SingleResultCallback<MongoClient> callback) {

@@ -24,6 +24,16 @@ public interface ILyjMongoConstants {
     public static final String COORDINATES = "coordinates";
 
     // ------------------------------------------------------------------------
+    //                      A G G R E G A T E
+    // ------------------------------------------------------------------------
+
+    public static final String $MATCH = "$match";
+    public static final String $GROUP = "$group";
+    public static final String $AVG = "$avg";
+    public static final String $SKIP = "$skip";
+    public static final String $LIMIT = "$limit";
+
+    // ------------------------------------------------------------------------
     //                      G E O - T Y P E S
     // ------------------------------------------------------------------------
 

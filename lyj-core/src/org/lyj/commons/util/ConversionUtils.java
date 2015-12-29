@@ -330,8 +330,13 @@ public abstract class ConversionUtils {
         return toDouble(val, decimalPlace, 0d);
     }
 
+    public static Double toDouble(final Object val, final Double defValue) {
+        return toDouble(val, -1, defValue);
+    }
+
     public static Double toDouble(final Object val,
-                                  final int decimalPlace, final Double defValue) {
+                                  final int decimalPlace,
+                                  final Double defValue) {
         if (null == val) {
             return defValue;
         }
@@ -344,7 +349,7 @@ public abstract class ConversionUtils {
                 bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
                 result = bd.doubleValue();
             }
-            return result;
+            return null!=result ? result : defValue;
         } catch (Throwable t) {
             return defValue;
         }

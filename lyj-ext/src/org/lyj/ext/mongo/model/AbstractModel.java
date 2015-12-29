@@ -118,6 +118,18 @@ public abstract class AbstractModel
         return LyjMongoObjects.getLong(_document, key, defVal);
     }
 
+    public double getDouble(final String key) {
+        return this.getDouble(key, 0d);
+    }
+
+    public double getDouble(final String key, final Double defVal) {
+        return LyjMongoObjects.getDouble(_document, key, defVal);
+    }
+
+    public double getDouble(final String key, final int decimalPlace, final Double defVal) {
+        return LyjMongoObjects.getDouble(_document, key, decimalPlace, defVal);
+    }
+
     public String getString(final String key) {
         return this.getString(key, "");
     }

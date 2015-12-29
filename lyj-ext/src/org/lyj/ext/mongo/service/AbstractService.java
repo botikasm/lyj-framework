@@ -9,6 +9,7 @@ import com.mongodb.client.model.FindOneAndUpdateOptions;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -30,7 +31,7 @@ import static com.mongodb.client.model.Filters.eq;
  *
  */
 public abstract class AbstractService
-        extends AbstractLogEmitter{
+        extends AbstractLogEmitter {
 
     // ------------------------------------------------------------------------
     //                      C O N S T
@@ -50,11 +51,11 @@ public abstract class AbstractService
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void runCommand(final Bson command, final Delegates.SingleResultCallback<Object> callback){
-        this.getDatabase((err, db)->{
+    public void runCommand(final Bson command, final Delegates.SingleResultCallback<Object> callback) {
+        this.getDatabase((err, db) -> {
             if (null == err) {
-                db.runCommand(command, (result, t)->{
-                    if(null!=t){
+                db.runCommand(command, (result, t) -> {
+                    if (null != t) {
                         Delegates.invoke(callback, t, null);
                     } else {
                         Delegates.invoke(callback, null, result);
@@ -76,7 +77,7 @@ public abstract class AbstractService
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
 
-    public String UUID(){
+    public String UUID() {
         return RandomUtils.randomUUID(true);
     }
 
@@ -326,12 +327,32 @@ public abstract class AbstractService
         });
     }
 
+    protected void removeAll(final String collection_name, final Document filter,
+                             final Delegates.SingleResultCallback<DeleteResult> callback) {
+        this.getCollection(collection_name, (err, collection) -> {
+            if (null == err) {
+                collection.deleteMany(filter, new SingleResultCallback<DeleteResult>() {
+                    @Override
+                    public void onResult(DeleteResult deleteResult, Throwable error) {
+                        if (null == error) {
+                            Delegates.invoke(callback, null, deleteResult);
+                        } else {
+                            Delegates.invoke(callback, error, null);
+                        }
+                    }
+                });
+            } else {
+                Delegates.invoke(callback, err, null);
+            }
+        });
+    }
+
     protected void insert(final String collection_name, final Document item,
                           final Delegates.SingleResultCallback<Document> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
                 // check _id
-                if(null==item.get(ID)){
+                if (null == item.get(ID)) {
                     item.put(ID, this.UUID());
                 }
                 collection.insertOne(item, (Void, error) -> {
@@ -367,7 +388,6 @@ public abstract class AbstractService
             }
         });
     }
-
 
 
 }

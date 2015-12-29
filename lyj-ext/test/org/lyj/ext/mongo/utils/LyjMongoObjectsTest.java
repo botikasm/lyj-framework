@@ -2,6 +2,7 @@ package org.lyj.ext.mongo.utils;
 
 import org.bson.Document;
 import org.junit.Test;
+import org.lyj.commons.util.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,8 @@ public class LyjMongoObjectsTest {
         final List<Document> list2 = new ArrayList<>();
         list2.add(new Document("id", 1));
         doc.put("sub-list", list2);
+        doc.put("long", DateUtils.now().getTime());
+        doc.put("double", 0d);
         list.add(doc);
 
         final String json = LyjMongoObjects.toJson(list);
