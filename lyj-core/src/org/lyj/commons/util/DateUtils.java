@@ -596,6 +596,17 @@ public abstract class DateUtils {
         return calendar.get(Calendar.DAY_OF_MONTH);
     }
 
+    public static int getDayOfYear() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.DAY_OF_YEAR);
+    }
+
+    public static int getDayOfYear(final Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_YEAR);
+    }
+
     public static int getMonth() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.MONTH) + 1;
