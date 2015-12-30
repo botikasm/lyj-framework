@@ -14,6 +14,7 @@ import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.lyj.commons.Delegates;
+import org.lyj.commons.async.future.Task;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.ConversionUtils;
@@ -21,6 +22,7 @@ import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;
 import org.lyj.ext.mongo.LyjMongo;
+import org.lyj.ext.mongo.utils.LyjMongoObjects;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -197,12 +199,13 @@ public abstract class AbstractService
         this.findById(collection_name, id, null, callback);
     }
 
-    protected void findById(final String collection_name, final String id, final Bson projection,
+    protected void findById(final String collection_name, final String id,
+                            final Bson projection,
                             final Delegates.SingleResultCallback<Document> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
                 FindIterable<Document> iterable = collection.find(eq(ID, id));
-                if (null != projection) {
+                if (!LyjMongoObjects.isEmpty(projection)) {
                     iterable = iterable.projection(projection);
                 }
                 iterable.first((final Document item, final Throwable error) -> {
@@ -218,7 +221,24 @@ public abstract class AbstractService
         });
     }
 
-    protected void findIds(final String collection_name, final Bson filter, final int skip, final int limit, final Bson sort,
+    public Task<Document> findByIdTask(final String collection_name, final String id) {
+        return this.findByIdTask(collection_name, id, new Document());
+    }
+
+    public Task<Document> findByIdTask(final String collection_name, final String id, final Bson projection) {
+        return new Task<Document>((t) -> {
+            this.findById(collection_name, id, projection, (err, result) -> {
+                if (null != err) {
+                    t.fail(err);
+                } else {
+                    t.success(result);
+                }
+            });
+        }).run();
+    }
+
+    protected void findIds(final String collection_name, final Bson filter,
+                           final int skip, final int limit, final Bson sort,
                            final Delegates.SingleResultCallback<List<String>> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
@@ -240,6 +260,19 @@ public abstract class AbstractService
                 Delegates.invoke(callback, err, null);
             }
         });
+    }
+
+    public Task<List<String>> findIdsTask(final String collection_name, final Bson filter,
+                                          final int skip, final int limit, final Bson sort) {
+        return new Task<List<String>>((t) -> {
+            this.findIds(collection_name, filter, skip, limit, sort, (err, result) -> {
+                if (null != err) {
+                    t.fail(err);
+                } else {
+                    t.success(result);
+                }
+            });
+        }).run();
     }
 
     protected void exists(final String collection_name, final String id,
@@ -345,6 +378,22 @@ public abstract class AbstractService
                 Delegates.invoke(callback, err, null);
             }
         });
+    }
+
+    protected void removeAllAndReturnIds(final String collection_name, final Document filter,
+                                         final Delegates.SingleResultCallback<List<String>> callback) {
+        try {
+            final List<String> id_list = this.findIdsTask(collection_name, filter, 0, 0, null).run().get();
+            this.removeAll(collection_name, filter, (err, deleteResult)->{
+                if(null!=err){
+                    Delegates.invoke(callback, err, null);
+                } else {
+                    Delegates.invoke(callback, null, id_list);
+                }
+            });
+        } catch (Throwable t) {
+            Delegates.invoke(callback, t, null);
+        }
     }
 
     protected void insert(final String collection_name, final Document item,

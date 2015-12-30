@@ -74,6 +74,14 @@ public class LyjMongoObjects {
         return list;
     }
 
+    public static boolean isEmpty(final Bson bson) {
+        if (bson instanceof Document) {
+            return ((Document) bson).size() == 0;
+        } else {
+            return true;
+        }
+    }
+
     public static Bson toBson(final JSONObject item) {
         return toDocument(item);
     }

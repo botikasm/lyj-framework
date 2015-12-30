@@ -2,12 +2,16 @@ package org.lyj.ext.mongo.utils;
 
 import com.sun.xml.internal.bind.v2.model.core.ID;
 import org.bson.Document;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;
 
 import java.util.*;
 
 /**
- * Helper class to build filters for mongo query
+ * Helper class to build filters for mongo query.
+ * <p>
+ * In Aggregation the sequence order of commands is important.
+ * To filter an aggregation remember to declare a "$match" as first command.
  */
 public class LyjMongoAggregate
         implements ILyjMongoConstants {
@@ -60,12 +64,12 @@ public class LyjMongoAggregate
     }
 
     public LyjMongoAggregate avg(final String avgAlias, final String fieldName) {
-        this.get($GROUP).put("avg"+avgAlias, new Document($AVG, "$".concat(fieldName)));
+        this.get($GROUP).put("avg" + StringUtils.capitalize(avgAlias), new Document($AVG, "$".concat(fieldName)));
         return this;
     }
 
     public LyjMongoAggregate avg(final String avgAlias, final Document expression) {
-        this.get($GROUP).put("avg"+avgAlias, new Document($AVG, expression));
+        this.get($GROUP).put("avg" + avgAlias, new Document($AVG, expression));
         return this;
     }
 
@@ -73,11 +77,11 @@ public class LyjMongoAggregate
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private Document get(final String key){
-        if(!_condition.containsKey(key)){
+    private Document get(final String key) {
+        if (!_condition.containsKey(key)) {
             _condition.put(key, new Document(key, new Document()));
         }
-        return (Document)_condition.get(key).get(key);
+        return (Document) _condition.get(key).get(key);
     }
 
     // ------------------------------------------------------------------------

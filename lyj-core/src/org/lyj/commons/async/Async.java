@@ -128,7 +128,7 @@ public abstract class Async {
         return result;
     }
 
-    public static void startAll(final Thread[] threads) {
+    public static void startAll(final Thread...threads) {
         for (final Thread thread : threads) {
             try {
                 if (!thread.isAlive() && !thread.isInterrupted()) {
@@ -139,7 +139,7 @@ public abstract class Async {
         }
     }
 
-    public static void joinAll(final Thread[] threads) {
+    public static void joinAll(final Thread...threads) {
         final int length = threads.length;
         final Set<Long> terminated = new HashSet<Long>();
         while (length > terminated.size()) {
@@ -167,7 +167,7 @@ public abstract class Async {
         }
     }
 
-    public static void joinAll(final Task[] tasks) {
+    public static void joinAll(final Task... tasks) {
         final int length = tasks.length;
         final Set<Long> terminated = new HashSet<>();
         while (length > terminated.size()) {
