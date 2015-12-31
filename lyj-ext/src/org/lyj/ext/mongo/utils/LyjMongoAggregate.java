@@ -53,6 +53,18 @@ public class LyjMongoAggregate
         return this;
     }
 
+    public LyjMongoAggregate group(final String...fieldNames) {
+        if(fieldNames.length>0){
+            final Document id = new Document();
+            for(final String fieldName:fieldNames){
+                id.append(fieldName, "$".concat(fieldName));
+            }
+            this.get($GROUP).put(F_ID, id);
+        }
+
+        return this;
+    }
+
     public LyjMongoAggregate group(final String fieldName) {
         this.get($GROUP).put(F_ID, "$".concat(fieldName));
         return this;
@@ -63,6 +75,16 @@ public class LyjMongoAggregate
         return this;
     }
 
+    public LyjMongoAggregate groupCount(final String alias) {
+        this.get($GROUP).put(alias, new Document($SUM, 1));
+        return this;
+    }
+
+    public LyjMongoAggregate project(final String alias, final String fieldName) {
+        this.get($PROJECT).put(alias, "$".concat(fieldName));
+        return this;
+    }
+
     public LyjMongoAggregate avg(final String avgAlias, final String fieldName) {
         this.get($GROUP).put("avg" + StringUtils.capitalize(avgAlias), new Document($AVG, "$".concat(fieldName)));
         return this;
@@ -70,6 +92,31 @@ public class LyjMongoAggregate
 
     public LyjMongoAggregate avg(final String avgAlias, final Document expression) {
         this.get($GROUP).put("avg" + avgAlias, new Document($AVG, expression));
+        return this;
+    }
+
+    public LyjMongoAggregate max(final String maxAlias, final String fieldName) {
+        this.get($GROUP).put("max" + StringUtils.capitalize(maxAlias), new Document($MAX, "$".concat(fieldName)));
+        return this;
+    }
+
+    public LyjMongoAggregate max(final String maxAlias, final Document expression) {
+        this.get($GROUP).put("max" + maxAlias, new Document($MAX, expression));
+        return this;
+    }
+
+    public LyjMongoAggregate min(final String minAlias, final String fieldName) {
+        this.get($GROUP).put("min" + StringUtils.capitalize(minAlias), new Document($MIN, "$".concat(fieldName)));
+        return this;
+    }
+
+    public LyjMongoAggregate min(final String minAlias, final Document expression) {
+        this.get($GROUP).put("min" + minAlias, new Document($MIN, expression));
+        return this;
+    }
+
+    public LyjMongoAggregate sort(final Document sort) {
+        this.get($SORT).putAll(sort);
         return this;
     }
 

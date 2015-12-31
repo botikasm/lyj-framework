@@ -12,11 +12,12 @@ public interface ILyjMongoConstants {
 
     public static final String $NUMBER_LONG = "$numberLong";
 
-    public static final String NE = "$ne";
-    public static final String NIN = "$nin";
+    public static final String $NE = "$ne";
+    public static final String $NIN = "$nin";
+    public static final String $IN = "$in";
 
-    public static final String OR = "$or";
-    public static final String AND = "$and";
+    public static final String $OR = "$or";
+    public static final String $AND = "$and";
 
 
 
@@ -29,7 +30,12 @@ public interface ILyjMongoConstants {
 
     public static final String $MATCH = "$match";
     public static final String $GROUP = "$group";
+    public static final String $PROJECT = "$project";
+    public static final String $SORT = "$sort";
     public static final String $AVG = "$avg";
+    public static final String $MAX = "$max";
+    public static final String $MIN = "$min";
+    public static final String $SUM = "$sum";
     public static final String $SKIP = "$skip";
     public static final String $LIMIT = "$limit";
 

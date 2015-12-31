@@ -4,7 +4,6 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;
-import org.lyj.ext.mongo.model.LyjGeoJSON;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,32 +56,37 @@ public class LyjMongoFilter
     }
 
     public LyjMongoFilter notEquals(final String fieldName, final Object value) {
-        _filter.put(fieldName, new Document(NE, value));
+        _filter.put(fieldName, new Document($NE, value));
         return this;
     }
 
     public LyjMongoFilter notIn(final String fieldName, final Collection list) {
-        _filter.put(fieldName, new Document(NIN, list));
+        _filter.put(fieldName, new Document($NIN, list));
+        return this;
+    }
+
+    public LyjMongoFilter in(final String fieldName, final Collection list) {
+        _filter.put(fieldName, new Document($IN, list));
         return this;
     }
 
     public LyjMongoFilter or(final Collection<Bson> conditions) {
-        _filter.put(OR, conditions);
+        _filter.put($OR, conditions);
         return this;
     }
 
     public LyjMongoFilter or(final Bson... conditions) {
-        _filter.put(OR, Arrays.asList(conditions));
+        _filter.put($OR, Arrays.asList(conditions));
         return this;
     }
 
     public LyjMongoFilter and(final Collection<Bson> conditions) {
-        _filter.put(AND, conditions);
+        _filter.put($AND, conditions);
         return this;
     }
 
     public LyjMongoFilter and(final Bson... conditions) {
-        _filter.put(AND, Arrays.asList(conditions));
+        _filter.put($AND, Arrays.asList(conditions));
         return this;
     }
 
