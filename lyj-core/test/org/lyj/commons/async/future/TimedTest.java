@@ -5,8 +5,6 @@ import org.lyj.commons.util.FormatUtils;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by angelogeminiani on 01/01/16.
  */
@@ -42,7 +40,6 @@ public class TimedTest {
         alarmClock2.start((t) -> {
             final String msg = FormatUtils.format("[%s] Stop after 3 loop. #%s",t.id(), t.count());
             System.out.println(msg);
-
         });
 
 

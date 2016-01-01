@@ -9,7 +9,6 @@ import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;
-import org.lyj.ext.mongo.model.LyjGeoJSON;
 
 import java.util.*;
 

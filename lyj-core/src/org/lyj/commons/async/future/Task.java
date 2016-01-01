@@ -1,8 +1,5 @@
 package org.lyj.commons.async.future;
 
-import org.lyj.commons.Delegates;
-import org.lyj.commons.util.ConversionUtils;
-import org.lyj.commons.util.MathUtils;
 import org.lyj.commons.util.RandomUtils;
 
 import java.util.concurrent.ExecutorService;

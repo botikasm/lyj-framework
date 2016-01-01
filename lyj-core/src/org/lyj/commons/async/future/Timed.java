@@ -28,7 +28,27 @@ import java.util.List;
 import java.util.concurrent.*;
 
 /**
- * Act as a timer
+ * Act as a timer,
+ * Extend this class to create a scheduled task with following features:
+ * <ol>
+ * <li>Start after a delay</li>
+ * <li>Loop has a delay (cicle after some delay)</li>
+ * <li>Stop after a specific time</li>
+ * <li>Stop after a specific number of cicles</li>
+ * </ol>
+ * <p>
+ * <br>
+ * Sample usage:
+ * <code>
+ * Timed alarmClock2 = new Timed(TimeUnit.SECONDS,<br>
+ *      0, // start after 3 seconds<br>
+ *      1, // run each 1 second<br>
+ *      0, 3);<br>
+ * alarmClock2.start((t) -> {<br>
+ *      final String msg = FormatUtils.format("[%s] Stop after 3 loop. #%s",t.id(), t.count());<br>
+ *      System.out.println(msg);<br>
+ * });<br>
+ * </code>
  */
 public class Timed
         extends AbstractLogEmitter {
@@ -314,7 +334,7 @@ public class Timed
         private final int _count;
         private final int _hash;
 
-        public TaskInterruptor(final int hash, final int counter){
+        public TaskInterruptor(final int hash, final int counter) {
             _hash = hash;
             _count = counter;
         }
@@ -331,7 +351,7 @@ public class Timed
             return _count;
         }
 
-        public int id(){
+        public int id() {
             return _hash;
         }
     }

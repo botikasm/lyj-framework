@@ -3,7 +3,6 @@ package org.lyj.ext.mongo.schema;
 import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
-import com.mongodb.client.model.geojson.GeoJsonObjectType;
 import org.bson.Document;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;

@@ -1,7 +1,6 @@
 package org.lyj.ext.mongo.model;
 
 import org.bson.Document;
-import org.lyj.commons.cryptograph.GUID;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.RandomUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;

@@ -1,11 +1,13 @@
 package org.lyj.ext.mongo.utils;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import org.bson.Document;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class to build filters for mongo query.
