@@ -20,7 +20,7 @@
 
 package org.lyj.commons.async.future;
 
-import org.lyj.commons.Delegates;
+import org.lyj.commons.logging.AbstractLogEmitter;
 
 import java.util.Date;
 import java.util.LinkedList;
@@ -30,7 +30,8 @@ import java.util.concurrent.*;
 /**
  * Act as a timer
  */
-public class Timed {
+public class Timed
+        extends AbstractLogEmitter {
 
     // --------------------------------------------------------------------
     //               c o n s t a n t s
@@ -95,6 +96,7 @@ public class Timed {
 
     /**
      * Set max number of concurrent threads in pool
+     *
      * @param value int
      */
     public Timed setMaxThreads(final int value) {
@@ -108,6 +110,7 @@ public class Timed {
 
     /**
      * Set to true if you want that tasks works as Daemon
+     *
      * @param value boolean
      */
     public Timed setDaemon(final boolean value) {
@@ -167,7 +170,7 @@ public class Timed {
     /**
      * Sound the alarm for a few seconds, then stop.
      */
-    public ScheduledFuture<?> start(final Delegates.FunctionArgs<?> callback) {
+    public ScheduledFuture<?> start(final Handler callback) {
         return startTask(callback);
     }
 
@@ -181,7 +184,7 @@ public class Timed {
             for (final ScheduledFuture<?> task : _tasks) {
                 try {
                     if (!task.isDone() && !task.isCancelled()) {
-                        //task.get();
+                        task.get();
                     }
                 } catch (Exception ignored) {
                 }
@@ -231,8 +234,8 @@ public class Timed {
         }
     }
 
-    private ScheduledFuture<?> startTask(final Delegates.FunctionArgs<?> callback) {
-        if(_initial_delay==0 && _interval==0){
+    private ScheduledFuture<?> startTask(final Handler callback) {
+        if (_initial_delay == 0 && _interval == 0) {
             _stop_after_count = 1; // avoid infinite loop at no interval
         }
         final ScheduledFuture<?> future = getScheduler().scheduleWithFixedDelay(
@@ -281,60 +284,6 @@ public class Timed {
     }
 
     // --------------------------------------------------------------------
-    //               M A I N   (sample usage)
-    // --------------------------------------------------------------------
-
-    /**
-     * Run the example.
-     */
-    public static void main(String... aArgs) throws InterruptedException {
-        Timed alarmClock = new Timed(TimeUnit.SECONDS,
-                3, // start after 3 seconds
-                1, // run each 1 second
-                0, 0);
-        alarmClock.setMaxThreads(2);
-        // start first thread
-        alarmClock.start(new Delegates.FunctionArgs<Object>() {
-            @Override
-            public Object handle(Object... args) {
-                final int count = (Integer) args[0];
-                try {
-                    System.out.println("STOPPED BY CODE (sleeping): " + count);
-                    Thread.sleep((long) (Math.random() * 1000 * 3));
-                } catch (Throwable ignored) {
-
-                }
-                return count < 10; // stop after 10 loop
-            }
-        });
-        // start second thread
-        alarmClock.start(new Delegates.FunctionArgs<Object>() {
-            @Override
-            public Object handle(Object... args) {
-                final int count = (Integer) args[0];
-                System.out.println("STOPPED BY CODE: " + count);
-                return count < 10; // stop after 10 loop
-            }
-        });
-
-
-        Timed alarmClock2 = new Timed(TimeUnit.SECONDS,
-                0, // start after 3 seconds
-                1, // run each 1 second
-                0, 3);
-        alarmClock2.start(new Delegates.FunctionArgs<Object>() {
-
-            @Override
-            public Object handle(final Object... args) {
-                final int count = (Integer) args[0];
-                System.out.println("STOPPED AFTER 3 LOOPS: " + count);
-
-                return null;
-            }
-        });
-    }
-
-    // --------------------------------------------------------------------
     //               E M B E D D E D
     // --------------------------------------------------------------------
 
@@ -359,17 +308,50 @@ public class Timed {
         }
     }
 
+    public static final class TaskInterruptor {
+
+        private boolean _interrupted = false;
+        private final int _count;
+        private final int _hash;
+
+        public TaskInterruptor(final int hash, final int counter){
+            _hash = hash;
+            _count = counter;
+        }
+
+        public void stop() {
+            _interrupted = true;
+        }
+
+        public boolean isStopped() {
+            return _interrupted;
+        }
+
+        public int count() {
+            return _count;
+        }
+
+        public int id(){
+            return _hash;
+        }
+    }
+
+    @FunctionalInterface
+    public static interface Handler {
+        void handle(final TaskInterruptor interruptor);
+    }
+
     /**
      * Task Runner
      */
     private static final class RunTask
             implements Runnable {
 
-        private final Delegates.FunctionArgs<?> _callback;
+        private final Handler _callback;
         private final Timed _sender;
 
         public RunTask(final Timed sender,
-                       final Delegates.FunctionArgs<?> callback) {
+                       final Handler callback) {
             _sender = sender;
             _callback = callback;
         }
@@ -383,14 +365,11 @@ public class Timed {
             try {
                 if (null != _sender && null != _callback) {
                     final int count = _sender.incCount();
-                    final Object response = _callback.handle(count, _sender);
-                    boolean stop = false;
-                    // if false, stop execution of all tasks
-                    if (response instanceof Boolean) {
-                        if (!((Boolean) response)) {
-                            stop = true;
-                        }
-                    }
+                    final TaskInterruptor interruptor = new TaskInterruptor(_sender.hashCode(), count);
+                    _callback.handle(interruptor);
+
+                    boolean stop = interruptor.isStopped();
+
                     // if reached max number of iterations, stop
                     final int max_iterations = _sender.getShutdownAfterCount();
                     if (max_iterations > 0 && count >= max_iterations) {
