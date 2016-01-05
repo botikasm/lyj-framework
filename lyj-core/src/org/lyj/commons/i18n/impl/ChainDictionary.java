@@ -168,7 +168,7 @@ public class ChainDictionary
             result = (AbstractI18nBundle) this.getClass().getSuperclass().newInstance();
         } catch (Throwable ignored) {
         }
-        return null != result ? result : getInstance();
+        return null != result ? result : getInstance(); // at least return singleton instance of base dictionary
     }
 
     public String lookup(final String key,
