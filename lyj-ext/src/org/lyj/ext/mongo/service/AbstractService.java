@@ -417,6 +417,23 @@ public abstract class AbstractService
         });
     }
 
+    protected void insert(final String collection_name, final List<Document> items,
+                          final Delegates.SingleResultCallback<List<Document>> callback) {
+        this.getCollection(collection_name, (err, collection) -> {
+            if (null == err) {
+                collection.insertMany(items, (Void, error) -> {
+                    if (null == error) {
+                        Delegates.invoke(callback, null, items);
+                    } else {
+                        Delegates.invoke(callback, error, null);
+                    }
+                });
+            } else {
+                Delegates.invoke(callback, err, null);
+            }
+        });
+    }
+
     protected void aggregate(final String collection_name, final List<Document> pipeline,
                              final Delegates.SingleResultCallback<List<Document>> callback) {
         this.getCollection(collection_name, (err, collection) -> {
