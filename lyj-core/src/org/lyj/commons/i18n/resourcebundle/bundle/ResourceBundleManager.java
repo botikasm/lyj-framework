@@ -21,7 +21,9 @@
 package org.lyj.commons.i18n.resourcebundle.bundle;
 
 
+import org.lyj.IConstants;
 import org.lyj.commons.i18n.utils.I18nUtils;
+import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
@@ -38,6 +40,14 @@ import java.util.Properties;
  */
 public abstract class ResourceBundleManager {
 
+
+    private static String _encoding = CharEncoding.getDefault();
+
+    public static void setEncoding(final String value){
+        if(CharEncoding.isSupported(value)){
+            _encoding = value;
+        }
+    }
 
     // -----------------------------------------------------------------------
     //                  works with path + baseName
@@ -105,8 +115,10 @@ public abstract class ResourceBundleManager {
     }
 
     public static String getString(final Class callerCalss,
-                                   final String resourceKey, final Locale locale,
-                                   final String defaultValue, final ClassLoader classloader) {
+                                   final String resourceKey,
+                                   final Locale locale,
+                                   final String defaultValue,
+                                   final ClassLoader classloader) {
         final String base = PathUtils.getClassPath(callerCalss);
         return getResourceString(base,
                 resourceKey,
@@ -195,13 +207,16 @@ public abstract class ResourceBundleManager {
     }
 
     private static String getResourceString(final String baseName,
-                                            final String resourceKey, final Locale locale,
-                                            final String defaultValue, final ClassLoader classloader) {
+                                            final String resourceKey,
+                                            final Locale locale,
+                                            final String defaultValue,
+                                            final ClassLoader classloader) {
         try {
             // retrieve a resource bundle
             IResourceBundle rb = I18nUtils.getOrCreateBundle(baseName,
                     locale,
-                    classloader);
+                    classloader,
+                    _encoding);
 
             final String result = rb.getString(resourceKey);
             return result != null ? result : defaultValue;
@@ -220,7 +235,8 @@ public abstract class ResourceBundleManager {
         // retrieve a resource bundle
         final IResourceBundle rb = I18nUtils.getOrCreateBundle(baseName,
                 locale,
-                classloader);
+                classloader,
+                _encoding);
 
         return rb != null
                 ? rb.getProperties()

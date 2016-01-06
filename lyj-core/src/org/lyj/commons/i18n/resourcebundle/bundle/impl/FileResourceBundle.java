@@ -25,12 +25,13 @@
 package org.lyj.commons.i18n.resourcebundle.bundle.impl;
 
 import org.lyj.commons.i18n.resourcebundle.bundle.IResourceBundle;
+import org.lyj.commons.lang.Base64;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.StringUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -44,6 +45,8 @@ public final class FileResourceBundle
 
     private static final String EXTENSION_SEPARATOR = ".";
     private static final String EXTENSION = ".properties";
+
+    private final String _encoding;
     private Boolean _active = false;
     private Properties _properties;
     private Throwable _error;
@@ -58,7 +61,9 @@ public final class FileResourceBundle
      * @param locale desired Locale.
      */
     public FileResourceBundle(final String path,
-                              final Locale locale) {
+                              final Locale locale,
+                              final String encoding) {
+        _encoding = encoding;
         _properties = new Properties();
         if (StringUtils.hasText(path)) {
             final File file = this.solveFile(path, locale);
@@ -67,9 +72,9 @@ public final class FileResourceBundle
             } else {
                 LoggingUtils.getLogger(FileResourceBundle.class)
                         .log(Level.FINEST,
-                        String.format("Unable to find file [%s] for locale [%s]. "
-                                + "Please, check file path or locale is not NULL.",
-                                path, null != locale ? locale.toString() : "NULL"));
+                                String.format("Unable to find file [%s] for locale [%s]. "
+                                                + "Please, check file path or locale is not NULL.",
+                                        path, null != locale ? locale.toString() : "NULL"));
             }
         }
     }
@@ -77,7 +82,9 @@ public final class FileResourceBundle
     /**
      * Creates a new instance of FileResourceBundle
      */
-    public FileResourceBundle(final File file) {
+    public FileResourceBundle(final File file,
+                              final String encoding) {
+        _encoding = encoding;
         _properties = new Properties();
         this.loadProperties(_properties, file);
     }
@@ -130,7 +137,8 @@ public final class FileResourceBundle
             return;
         }
         try {
-            final FileInputStream reader = new FileInputStream(file);
+            final Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), _encoding));
+            //final FileInputStream reader = new FileInputStream(file);
             properties.load(reader);
             _active = true;
         } catch (Throwable t) {

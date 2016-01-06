@@ -25,6 +25,7 @@
 package org.lyj.commons.i18n.resourcebundle.bundle.impl;
 
 import org.lyj.commons.i18n.resourcebundle.bundle.IResourceBundle;
+import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.LocaleUtils;
 
 import java.util.Enumeration;
@@ -50,7 +51,9 @@ public final class ClassResourceBundle
      * Creates a new instance of ClassResourceBundle
      */
     public ClassResourceBundle(final String baseName,
-                               final Locale locale, final ClassLoader classloader) {
+                               final Locale locale,
+                               final ClassLoader classloader,
+                               final String encoding) {
         _active = false;
         _baseName = baseName;
         _locale = locale;
@@ -58,9 +61,16 @@ public final class ClassResourceBundle
                 ? classloader
                 : ClassLoader.getSystemClassLoader();
         try {
-            _rb = null != locale
-                    ? ResourceBundle.getBundle(baseName, locale, cl)
-                    : ResourceBundle.getBundle(baseName, Locale.getDefault(), cl);
+            if(encoding.equals(CharEncoding.UTF_8)){
+                _rb = null != locale
+                        ? ResourceBundle.getBundle(baseName, locale, cl, new UTF8Control())
+                        : ResourceBundle.getBundle(baseName, Locale.getDefault(), cl, new UTF8Control());
+            } else {
+                _rb = null != locale
+                        ? ResourceBundle.getBundle(baseName, locale, cl)
+                        : ResourceBundle.getBundle(baseName, Locale.getDefault(), cl);
+            }
+
             if (null != locale && null != _rb) {
                 final boolean match = LocaleUtils.like(locale, _rb.getLocale());
                 if (!match) {
