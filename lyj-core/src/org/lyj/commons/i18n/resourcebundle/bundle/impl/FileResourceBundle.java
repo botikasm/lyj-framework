@@ -25,13 +25,11 @@
 package org.lyj.commons.i18n.resourcebundle.bundle.impl;
 
 import org.lyj.commons.i18n.resourcebundle.bundle.IResourceBundle;
-import org.lyj.commons.lang.Base64;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.StringUtils;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Properties;
 

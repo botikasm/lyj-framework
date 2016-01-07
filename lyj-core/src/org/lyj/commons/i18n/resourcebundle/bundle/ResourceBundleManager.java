@@ -21,7 +21,6 @@
 package org.lyj.commons.i18n.resourcebundle.bundle;
 
 
-import org.lyj.IConstants;
 import org.lyj.commons.i18n.utils.I18nUtils;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.logging.Level;
