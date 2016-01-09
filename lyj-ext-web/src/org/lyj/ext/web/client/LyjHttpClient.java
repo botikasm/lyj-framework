@@ -172,10 +172,16 @@ public class LyjHttpClient
 
     private HttpClient client() {
         if (null == __client) {
-            HttpClientOptions options = new HttpClientOptions()
-                    .setDefaultHost(_host)
-                    .setDefaultPort(_port)
-                    .setKeepAlive(_keep_alive)
+            HttpClientOptions options = new HttpClientOptions();
+
+            if (StringUtils.hasText(_host)) {
+                options.setDefaultHost(_host);
+                if (_port > 0) {
+                    options.setDefaultPort(_port);
+                }
+            }
+
+            options.setKeepAlive(_keep_alive)
                     .setIdleTimeout(_idle_timeout)
                     .setConnectTimeout(_connection_timeout);
             __client = vertx.createHttpClient(options);
@@ -204,14 +210,14 @@ public class LyjHttpClient
         //-- headers --//
         request.putHeader("content-type", "application/x-www-form-urlencoded");
 
-        if(this.exceedBodyLimit(body)){
-            request.putHeader("Content-Length", body.length()+"");
+        if (!this.exceedBodyLimit(body)) {
+            request.putHeader("Content-Length", body.length() + "");
             request.write(body);
         } else {
             // write body chunked
             request.setChunked(true);
             String[] chunks = StringUtils.chunk(body, _chunk_size);
-            for(String chunk:chunks){
+            for (String chunk : chunks) {
                 request.write(chunk);
             }
         }

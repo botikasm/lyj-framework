@@ -46,8 +46,7 @@ public class LyjHttpClientTest {
         final LyjHttpClient client = LyjHttpClient.create().run().get();
         client.setChunkBody(true); // force chunks
         client.setChunkSize(1);
-        client.setDefaultHost(HOST)
-                .setDefaultPort(PORT);
+        client.setDefaultHost(HOST).setDefaultPort(PORT);//;
         final String response = client.post(url, json.getJSONObject()).run().get();
         System.out.println(response);
 
