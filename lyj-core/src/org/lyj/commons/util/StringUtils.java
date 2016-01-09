@@ -36,7 +36,7 @@ public final class StringUtils {
      * <code>\u000a</code> linefeed LF ('\n').
      *
      * @see <a href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#101089">JLF: Escape Sequences
-     *      for Character and String Literals</a>
+     * for Character and String Literals</a>
      */
     public static final char LF = '\n';
 
@@ -44,7 +44,7 @@ public final class StringUtils {
      * <code>\u000d</code> carriage return CR ('\r').
      *
      * @see <a href="http://java.sun.com/docs/books/jls/third_edition/html/lexical.html#101089">JLF: Escape Sequences
-     *      for Character and String Literals</a>
+     * for Character and String Literals</a>
      */
     public static final char CR = '\r';
 
@@ -52,6 +52,21 @@ public final class StringUtils {
     private StringUtils() {
     }
 
+
+    /**
+     * Split a string into an array of strings of a defined lenght. <br>
+     * Default chunk size is 1024 bytes
+     *
+     * @param str the string to split
+     * @return the string split into a string array
+     */
+    public static String[] chunk(final String str) {
+        return split(str, ", \t\n\r\f");
+    }
+
+    public static String[] chunk(final String str, final int chunkSize) {
+        return str.split("(?<=\\G.{"+chunkSize+"})");
+    }
 
     /**
      * Split a string into an array of strings. Use comma and space
@@ -81,14 +96,13 @@ public final class StringUtils {
     }
 
 
-
     /**
      * Split a string into an array of strings.
      *
-     * @param str   the string to split
-     * @param delimiters        the delimiter characters, assembled as String (each of
-     *                          those characters is individually considered as delimiter)
-     * @param trimTokens        trim the tokens via String's
+     * @param str        the string to split
+     * @param delimiters the delimiter characters, assembled as String (each of
+     *                   those characters is individually considered as delimiter)
+     * @param trimTokens trim the tokens via String's
      * @return the string split into a string array
      */
     public static String[] split(final String str,
@@ -119,8 +133,9 @@ public final class StringUtils {
                                  final String delimiters,
                                  final boolean trimTokens,
                                  final boolean ignoreEmptyTokens) {
-       return split(str, delimiters, trimTokens, ignoreEmptyTokens, false);
+        return split(str, delimiters, trimTokens, ignoreEmptyTokens, false);
     }
+
     /**
      * Tokenize the given String into a String array via a StringTokenizer.
      * <p>The given delimiters string is supposed to consist of any number of
@@ -148,7 +163,7 @@ public final class StringUtils {
                                  final boolean unique) {
 
         final StringTokenizer st = new StringTokenizer(str, delimiters);
-        final Collection<String> result = unique ? new LinkedHashSet<String>() :new LinkedList<String>();
+        final Collection<String> result = unique ? new LinkedHashSet<String>() : new LinkedList<String>();
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
             if (trimTokens) {
@@ -173,7 +188,7 @@ public final class StringUtils {
     }
 
     public static String[] splitUnique(final String str,
-                                 final String[] delimiters) {
+                                       final String[] delimiters) {
         return split(str, delimiters, true, true, true);
     }
 
@@ -328,9 +343,9 @@ public final class StringUtils {
      * @param toSplit   the string to split
      * @param delimiter to split the string up with
      * @return a two element array with index 0 being before the delimiter, and
-     *         index 1 being after the delimiter (neither element includes the
-     *         delimiter); or
-     *         <code>null</code> if the delimiter wasn't found in the given input String
+     * index 1 being after the delimiter (neither element includes the
+     * delimiter); or
+     * <code>null</code> if the delimiter wasn't found in the given input String
      */
     public static String[] splitFirst(final String toSplit,
                                       final String delimiter) {
@@ -359,9 +374,9 @@ public final class StringUtils {
      * @param toSplit   the string to split
      * @param delimiter to split the string up with
      * @return a two element array with index 0 being before the delimiter, and
-     *         index 1 being after the delimiter (neither element includes the
-     *         delimiter); or
-     *         <code>null</code> if the delimiter wasn't found in the given input String
+     * index 1 being after the delimiter (neither element includes the
+     * delimiter); or
+     * <code>null</code> if the delimiter wasn't found in the given input String
      */
     public static String[] splitAt(final int count, final String toSplit,
                                    final String delimiter) {
@@ -533,7 +548,7 @@ public final class StringUtils {
      * <p/>
      * <p>A <code>null</code> String will return <code>false</code>.
      * A <code>null</code> or zero length search array will return <code>false</code>.</p>
-     * <p/>
+     * <p>
      * <pre>
      * StringUtils.containsAny(null, *)                = false
      * StringUtils.containsAny("", *)                  = false
@@ -547,7 +562,7 @@ public final class StringUtils {
      * @param str         the String to check, may be null
      * @param searchChars the chars to search for, may be null
      * @return the <code>true</code> if any of the chars are found,
-     *         <code>false</code> if no match or null input
+     * <code>false</code> if no match or null input
      * @since 2.4
      */
     public static boolean containsAny(final String str, final char[] searchChars) {
@@ -571,7 +586,7 @@ public final class StringUtils {
      * <p>A <code>null</code> String will return <code>true</code>.
      * A <code>null</code> invalid character array will return <code>true</code>.
      * An empty String ("") always returns true.</p>
-     * <p/>
+     * <p>
      * <pre>
      * StringUtils.containsNone(null, *)       = true
      * StringUtils.containsNone(*, null)       = true
@@ -821,7 +836,7 @@ public final class StringUtils {
      * @param str the String to check, may be
      *            <code>null</code>
      * @return <code>true</code> if the String is not null, length > 0, and not
-     *         whitespace only
+     * whitespace only
      * @see Character#isWhitespace
      */
     public static boolean hasText(final String str) {
@@ -1136,7 +1151,7 @@ public final class StringUtils {
      * @param text    Original text. i.e. "prefixHello world!"
      * @param matcher String to serach inside original text. i.e. "prefix"
      * @return The subtring or the original text if no matcher was found in
-     *         original text. i.e. "Hello world!"
+     * original text. i.e. "Hello world!"
      */
     public static String substring(final String text,
                                    final String matcher) {
@@ -1417,8 +1432,8 @@ public final class StringUtils {
      *
      * @param str the input String (e.g. "myString")
      * @return the quoted String (e.g. "'myString'"), or
-     *         <code>null<code> if the input was
-     *         <code>null</code>
+     * <code>null<code> if the input was
+     * <code>null</code>
      */
     public static String quote(String str) {
         return (str != null ? "'" + str + "'" : null);
@@ -1430,8 +1445,8 @@ public final class StringUtils {
      * @param str       the input String (e.g. "myString")
      * @param quoteChar Character to use for quote.
      * @return the quoted String (e.g. "'myString'"), or
-     *         <code>null<code> if the input was
-     *         <code>null</code>
+     * <code>null<code> if the input was
+     * <code>null</code>
      */
     public static String quote(String str, String quoteChar) {
         return (str != null ? quoteChar + str + quoteChar : null);
@@ -1443,7 +1458,7 @@ public final class StringUtils {
      *
      * @param obj the input Object (e.g. "myString")
      * @return the quoted String (e.g. "'myString'"), or the input object as-is
-     *         if not a String
+     * if not a String
      */
     public static Object quoteIfString(Object obj) {
         return (obj instanceof String ? quote((String) obj) : obj);
@@ -1478,7 +1493,7 @@ public final class StringUtils {
      * @param str the String to capitalize, may be
      *            <code>null</code>
      * @return the capitalized String,
-     *         <code>null</code> if null
+     * <code>null</code> if null
      */
     public static String capitalize(String str) {
         return changeFirstCharacterCase(str, true);
@@ -1492,7 +1507,7 @@ public final class StringUtils {
      * @param str the String to uncapitalize, may be
      *            <code>null</code>
      * @return the uncapitalized String,
-     *         <code>null</code> if null
+     * <code>null</code> if null
      */
     public static String uncapitalize(String str) {
         return changeFirstCharacterCase(str, false);
