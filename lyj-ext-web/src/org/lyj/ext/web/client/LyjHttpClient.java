@@ -17,8 +17,7 @@ import java.util.Map;
  * Http Client wrapper.
  * Keep alive is FALSE by default.
  */
-public class LyjHttpClient
-        extends AbstractVerticle {
+public class LyjHttpClient {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -164,9 +163,13 @@ public class LyjHttpClient
     }
 
     public void post(final String url, final JSONObject params,
-                     final Delegates.SingleResultCallback<String> callback) throws Exception {
+                     final Delegates.SingleResultCallback<String> callback) {
         final Map<String, Object> map = JsonWrapper.toMap(params);
         this.postString(url, StringUtils.toQueryString(map), callback);
+    }
+
+    public void get(final String url, final Delegates.SingleResultCallback<String> callback){
+        this.getString(url, callback);
     }
 
     // ------------------------------------------------------------------------
@@ -186,7 +189,7 @@ public class LyjHttpClient
             options.setKeepAlive(_keep_alive)
                     .setIdleTimeout(_idle_timeout)
                     .setConnectTimeout(_connection_timeout);
-            __client = vertx.createHttpClient(options);
+            __client = Vertx.vertx().createHttpClient(options);
         }
         return __client;
     }
@@ -195,7 +198,8 @@ public class LyjHttpClient
         return _body_limit > 0 && StringUtils.hasText(body) && body.length() > _body_limit;
     }
 
-    private void postString(final String url, final String body, final Delegates.SingleResultCallback<String> callback) {
+    private void postString(final String url, final String body,
+                            final Delegates.SingleResultCallback<String> callback) {
         HttpClientRequest request = this.client().post(url, (response) -> {
             response.bodyHandler(totalBuffer -> {
                 Delegates.invoke(callback, null, totalBuffer.toString());
@@ -228,33 +232,39 @@ public class LyjHttpClient
         request.end();
     }
 
+    private void getString(final String url,
+                           final Delegates.SingleResultCallback<String> callback) {
+        HttpClientRequest request = this.client().get(url, (response) -> {
+            response.bodyHandler(totalBuffer -> {
+                Delegates.invoke(callback, null, totalBuffer.toString());
+            });
+            response.exceptionHandler(e -> {
+                Delegates.invoke(callback, e, null);
+            });
+        });
+
+        request.exceptionHandler(e -> {
+            Delegates.invoke(callback, e, null);
+        });
+
+        // close request and send data
+        request.end();
+    }
+
     // ------------------------------------------------------------------------
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
     public static void create(final Delegates.SingleResultCallback<LyjHttpClient> callback) {
         try {
-            // deploy App Server
-            Vertx vertx = Vertx.vertx();
-            LyjHttpClient client = new LyjHttpClient();
-            vertx.deployVerticle(client, stringAsyncResult -> {
-                Delegates.invoke(callback, null, client);
-            });
+            Delegates.invoke(callback, null, new LyjHttpClient());
         } catch (Exception e) {
             Delegates.invoke(callback, e, null);
         }
     }
 
-    public static Task<LyjHttpClient> create() {
-        return new Task<LyjHttpClient>(t -> {
-            create((err, client) -> {
-                if (null != err) {
-                    t.fail(err);
-                } else {
-                    t.success(client);
-                }
-            });
-        });
+    public static LyjHttpClient create() {
+        return new LyjHttpClient();
     }
 
 }
