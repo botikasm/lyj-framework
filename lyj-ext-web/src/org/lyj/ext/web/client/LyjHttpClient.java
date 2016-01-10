@@ -14,7 +14,8 @@ import org.lyj.commons.util.StringUtils;
 import java.util.Map;
 
 /**
- * Http Client wrapper
+ * Http Client wrapper.
+ * Keep alive is FALSE by default.
  */
 public class LyjHttpClient
         extends AbstractVerticle {
@@ -26,7 +27,7 @@ public class LyjHttpClient
     private final static int DEF_BODY_SIZE_LIMIT = 4096; // byte limit
     private final static int DEF_TIMEOUT = 60000; // 1 minute
     private final static int DEF_PORT = 80;
-    private final static int DEF_CHUNK_SIZE = 1024;
+    private final static int DEF_CHUNK_SIZE = DEF_BODY_SIZE_LIMIT;
 
 
     // ------------------------------------------------------------------------
@@ -180,7 +181,6 @@ public class LyjHttpClient
                     options.setDefaultPort(_port);
                 }
             }
-
             options.setKeepAlive(_keep_alive)
                     .setIdleTimeout(_idle_timeout)
                     .setConnectTimeout(_connection_timeout);
