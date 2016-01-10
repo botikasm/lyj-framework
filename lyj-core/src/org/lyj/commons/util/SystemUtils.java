@@ -108,6 +108,7 @@ public abstract class SystemUtils {
 
 
     private static final String REPORT_SEP = "------------------------------------------";
+    private static final String REPORT_TAB = "    ";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -228,24 +229,24 @@ public abstract class SystemUtils {
 
         //-- header --//
         sb.append(REPORT_SEP).append("\n");
-        sb.append(" ").append(DateWrapper.parse(DateUtils.now()).toString("yyyy MM dd, hh:mm:ss")).append("\n");
+        sb.append(" ").append(DateWrapper.parse(DateUtils.now()).toString("yyyy MM dd, HH:mm:ss")).append("\n");
         sb.append(REPORT_SEP).append("\n");
 
         //-- os --//
-        sb.append("\t");
+        sb.append(REPORT_TAB);
         sb.append("OS: ").append(getOperatingSystem());
         sb.append(" - ").append(getOSVersion());
         sb.append(" - ").append(getOSAchitecture());
         sb.append("\n");
 
         //-- cpu --//
-        sb.append("\t").append("CPU: ").append(countProcessors()).append("\n");
+        sb.append(REPORT_TAB).append("CPU: ").append(countProcessors()).append("\n");
 
         //-- mem --//
-        sb.append("\t").append("Max Memory: ").append(FormatUtils.formatNumber(ConversionUtils.bytesToMbyte(getMaxMemory(), 2), LocaleUtils.DEFAULT)).append(" MB\n");
-        sb.append("\t").append("Available Memory: ").append(FormatUtils.formatNumber(ConversionUtils.bytesToMbyte(getTotalMemory(), 2), LocaleUtils.DEFAULT)).append(" MB\n");
-        sb.append("\t").append("Used Memory: ").append(FormatUtils.formatNumber(ConversionUtils.bytesToMbyte(getTotalMemory() - getFreeMemory(), 2), LocaleUtils.DEFAULT)).append(" MB\n");
-        sb.append("\t").append("Free Memory: ").append(FormatUtils.formatNumber(ConversionUtils.bytesToMbyte(getFreeMemory(), 2), LocaleUtils.DEFAULT)).append(" MB\n");
+        sb.append(REPORT_TAB).append("Max Memory: ").append(FormatUtils.formatNumber(ConversionUtils.bytesToMbyte(getMaxMemory(), 2), LocaleUtils.DEFAULT)).append(" MB\n");
+        sb.append(REPORT_TAB).append("Available Memory: ").append(FormatUtils.formatNumber(ConversionUtils.bytesToMbyte(getTotalMemory(), 2), LocaleUtils.DEFAULT)).append(" MB\n");
+        sb.append(REPORT_TAB).append("Used Memory: ").append(FormatUtils.formatNumber(ConversionUtils.bytesToMbyte(getTotalMemory() - getFreeMemory(), 2), LocaleUtils.DEFAULT)).append(" MB\n");
+        sb.append(REPORT_TAB).append("Free Memory: ").append(FormatUtils.formatNumber(ConversionUtils.bytesToMbyte(getFreeMemory(), 2), LocaleUtils.DEFAULT)).append(" MB\n");
 
         sb.append(REPORT_SEP).append("\n");
 
