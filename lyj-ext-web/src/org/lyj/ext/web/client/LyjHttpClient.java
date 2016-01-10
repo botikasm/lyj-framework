@@ -158,7 +158,8 @@ public class LyjHttpClient
                     t.success(result);
                 }
             });
-        }).setTimeout(_connection_timeout + 1000);
+        });
+        task.setTimeout(_connection_timeout + 5000); // set a longer timeout for task
         return task;
     }
 
