@@ -22,6 +22,14 @@ public class SystemUtilsTest {
         System.out.println(arch);
     }
 
+    @Test
+    public void testReport() throws Exception {
+        String status = SystemUtils.printSystemStatus();
+
+        System.out.println(status);
+
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------

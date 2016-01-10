@@ -471,5 +471,9 @@ public class DateWrapper {
         return null;
     }
 
+    public static DateWrapper parse(final Date date) {
+        return new DateWrapper(date);
+    }
+
 
 }
