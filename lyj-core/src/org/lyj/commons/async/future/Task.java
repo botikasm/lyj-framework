@@ -34,6 +34,8 @@ public class Task<T> {
         TERMINATED;
     }
 
+    private static final int DEF_TIMEOUT = 1000 * 60 * 5; // 5 minutes default timeout for a task
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
@@ -50,6 +52,7 @@ public class Task<T> {
     private Exception _error;
     private T _data;
     private State _state;
+    private int _timeout;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -60,6 +63,7 @@ public class Task<T> {
         _callback_action = callback;
         _error = null;
         _state = State.NEW;
+        _timeout = DEF_TIMEOUT;
         _id = RandomUtils.getTimeBasedRandomLong(true, true);
     }
 
@@ -81,6 +85,15 @@ public class Task<T> {
 
     public Throwable getError() {
         return _error;
+    }
+
+    public Task<T> setTimeout(final int milliseconds) {
+        _timeout = milliseconds;
+        return this;
+    }
+
+    public int getTimeout() {
+        return _timeout;
     }
 
     //-- THREAD --//
@@ -126,13 +139,18 @@ public class Task<T> {
     }
 
     public T get() throws Exception {
-        return this.get(1, TimeUnit.MINUTES);
+        return this.get(_timeout, TimeUnit.MILLISECONDS);
     }
 
     public T get(final long timeout, final TimeUnit unit) throws Exception {
         // join execution
         try {
-            _executor.awaitTermination(timeout, unit);
+            if(!_executor.awaitTermination(timeout, unit)) {
+
+                //-- TIMEOUT --//
+               this.fail(new Exception("task timeout"));
+
+            }
         } catch (InterruptedException e) {
             // interrupted
         }
@@ -148,7 +166,7 @@ public class Task<T> {
     public T getSilent() {
         T result = null;
         try {
-            result = this.get(1, TimeUnit.MINUTES);
+            result = this.get(_timeout, TimeUnit.MILLISECONDS);
         } catch (Throwable ignored) {
         }
         return result;
@@ -157,7 +175,7 @@ public class Task<T> {
     public T getSilent(final TimeUnit unit) {
         T result = null;
         try {
-            result = this.get(1, unit);
+            result = this.get(_timeout, unit);
         } catch (Throwable ignored) {
         }
         return result;
@@ -251,22 +269,22 @@ public class Task<T> {
     // ------------------------------------------------------------------------
 
     @FunctionalInterface
-    public interface ActionCallback<T>  {
+    public interface ActionCallback<T> {
         void handle(final Task<T> self) throws Exception;
     }
 
     @FunctionalInterface
-    public interface ResultCallback<T>  {
+    public interface ResultCallback<T> {
         void handle(final T data);
     }
 
     @FunctionalInterface
-    public interface ErrorCallback  {
+    public interface ErrorCallback {
         void handle(final Exception err);
     }
 
     @FunctionalInterface
-    public interface ExitCallback<T>  {
+    public interface ExitCallback<T> {
         void handle(final Throwable t, final T data);
     }
 

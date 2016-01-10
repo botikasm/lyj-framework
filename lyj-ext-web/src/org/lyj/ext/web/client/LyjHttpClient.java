@@ -150,7 +150,7 @@ public class LyjHttpClient
     // ------------------------------------------------------------------------
 
     public Task<String> post(final String url, final JSONObject params) {
-        return new Task<String>(t -> {
+        Task<String> task = new Task<String>(t -> {
             this.post(url, params, (err, result) -> {
                 if (null != err) {
                     t.fail(err);
@@ -158,7 +158,8 @@ public class LyjHttpClient
                     t.success(result);
                 }
             });
-        });
+        }).setTimeout(_connection_timeout + 1000);
+        return task;
     }
 
     public void post(final String url, final JSONObject params,
