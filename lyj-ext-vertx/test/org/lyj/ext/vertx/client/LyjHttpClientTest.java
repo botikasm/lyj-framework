@@ -1,15 +1,14 @@
-package org.lyj.ext.web.client;
+package org.lyj.ext.vertx.client;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.SystemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by angelogeminiani on 09/01/16.
@@ -83,9 +82,11 @@ public class LyjHttpClientTest {
         final int port = 80;
         final String url = "/";
 
+        System.out.println(SystemUtils.printSystemStatus());
+
         List<Task<String>> tasks = new ArrayList<>();
 
-        for(int i=0;i<3;i++){
+        for(int i=0;i<100;i++){
             tasks.add(new Task<String>( t->{
                 LyjHttpClient.create((err, client)->{
                     if(null!=err) {
@@ -101,7 +102,7 @@ public class LyjHttpClientTest {
                                 t.fail(err2);
                                 System.out.println(err2.toString());
                             } else {
-                                System.out.println(response.length());
+                                //System.out.println(response.length());
                                 t.success(response);
                             }
                         } );
@@ -112,7 +113,11 @@ public class LyjHttpClientTest {
 
         Async.joinAll(tasks);
 
+        System.out.println(SystemUtils.printSystemStatus());
 
+        Runtime.getRuntime().gc();
+
+        System.out.println(SystemUtils.printSystemStatus());
 
     }
 

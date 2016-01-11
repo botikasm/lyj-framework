@@ -1,6 +1,5 @@
-package org.lyj.ext.web.client;
+package org.lyj.ext.vertx.client;
 
-import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -10,6 +9,7 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.vertx.VertxFactory;
 
 import java.util.Map;
 
@@ -33,6 +33,7 @@ public class LyjHttpClient {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private final Vertx _vertx;
     private HttpClient __client; //lazy
 
     private String _host;
@@ -49,7 +50,8 @@ public class LyjHttpClient {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    private LyjHttpClient() {
+    private LyjHttpClient(final Vertx vertx) {
+        _vertx = vertx;
         _connection_timeout = DEF_TIMEOUT;
         _idle_timeout = 0;
         _keep_alive = false;
@@ -58,6 +60,10 @@ public class LyjHttpClient {
         _chunk_body = false;
         _body_limit = DEF_BODY_SIZE_LIMIT;
         _chunk_size = DEF_CHUNK_SIZE;
+    }
+
+    private LyjHttpClient() {
+        this(VertxFactory.vertx());
     }
 
     // ------------------------------------------------------------------------
@@ -189,7 +195,7 @@ public class LyjHttpClient {
             options.setKeepAlive(_keep_alive)
                     .setIdleTimeout(_idle_timeout)
                     .setConnectTimeout(_connection_timeout);
-            __client = Vertx.vertx().createHttpClient(options);
+            __client = _vertx.createHttpClient(options);
         }
         return __client;
     }
@@ -203,14 +209,17 @@ public class LyjHttpClient {
         HttpClientRequest request = this.client().post(url, (response) -> {
             response.bodyHandler(totalBuffer -> {
                 Delegates.invoke(callback, null, totalBuffer.toString());
+                this.client().close();
             });
             response.exceptionHandler(e -> {
                 Delegates.invoke(callback, e, null);
+                this.client().close();
             });
         });
 
         request.exceptionHandler(e -> {
             Delegates.invoke(callback, e, null);
+            this.client().close();
         });
 
         //-- headers --//
@@ -234,21 +243,19 @@ public class LyjHttpClient {
 
     private void getString(final String url,
                            final Delegates.SingleResultCallback<String> callback) {
-        HttpClientRequest request = this.client().get(url, (response) -> {
+        HttpClient client = _vertx.createHttpClient();
+        client.getNow(80, "www.funnygain.com", "/index.html", (response) -> {
             response.bodyHandler(totalBuffer -> {
                 Delegates.invoke(callback, null, totalBuffer.toString());
+                this.client().close();
             });
             response.exceptionHandler(e -> {
                 Delegates.invoke(callback, e, null);
+                this.client().close();
             });
         });
 
-        request.exceptionHandler(e -> {
-            Delegates.invoke(callback, e, null);
-        });
 
-        // close request and send data
-        request.end();
     }
 
     // ------------------------------------------------------------------------
