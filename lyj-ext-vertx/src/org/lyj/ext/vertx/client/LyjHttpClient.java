@@ -1,5 +1,6 @@
 package org.lyj.ext.vertx.client;
 
+import com.hazelcast.spi.TraceableOperation;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -11,6 +12,7 @@ import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.vertx.VertxFactory;
 
+import java.net.URL;
 import java.util.Map;
 
 /**
@@ -171,11 +173,19 @@ public class LyjHttpClient {
     public void post(final String url, final JSONObject params,
                      final Delegates.SingleResultCallback<String> callback) {
         final Map<String, Object> map = JsonWrapper.toMap(params);
-        this.postString(url, StringUtils.toQueryString(map), callback);
+        final HttpClient client = this.client();
+        this.doPostResponseString(client, url, StringUtils.toQueryString(map), (err, response) -> {
+            client.close();
+            Delegates.invoke(callback, err, response);
+        });
     }
 
-    public void get(final String url, final Delegates.SingleResultCallback<String> callback){
-        this.getString(url, callback);
+    public void get(final String url, final Delegates.SingleResultCallback<String> callback) {
+        final HttpClient client = this.client();
+        this.doGetResponseString(client, url, (err, response) -> {
+            client.close();
+            Delegates.invoke(callback, err, response);
+        });
     }
 
     // ------------------------------------------------------------------------
@@ -204,22 +214,19 @@ public class LyjHttpClient {
         return _body_limit > 0 && StringUtils.hasText(body) && body.length() > _body_limit;
     }
 
-    private void postString(final String url, final String body,
-                            final Delegates.SingleResultCallback<String> callback) {
-        HttpClientRequest request = this.client().post(url, (response) -> {
+    private void doPostResponseString(final HttpClient client, final String url, final String body,
+                                      final Delegates.SingleResultCallback<String> callback) {
+        HttpClientRequest request = client.post(url, (response) -> {
             response.bodyHandler(totalBuffer -> {
                 Delegates.invoke(callback, null, totalBuffer.toString());
-                this.client().close();
             });
             response.exceptionHandler(e -> {
                 Delegates.invoke(callback, e, null);
-                this.client().close();
             });
         });
 
         request.exceptionHandler(e -> {
             Delegates.invoke(callback, e, null);
-            this.client().close();
         });
 
         //-- headers --//
@@ -241,21 +248,25 @@ public class LyjHttpClient {
         request.end();
     }
 
-    private void getString(final String url,
-                           final Delegates.SingleResultCallback<String> callback) {
-        HttpClient client = _vertx.createHttpClient();
-        client.getNow(80, "www.funnygain.com", "/index.html", (response) -> {
-            response.bodyHandler(totalBuffer -> {
-                Delegates.invoke(callback, null, totalBuffer.toString());
-                this.client().close();
+    private void doGetResponseString(final HttpClient client,
+                                     final String surl,
+                                     final Delegates.SingleResultCallback<String> callback) {
+        try {
+            final URL url = new URL(surl);
+            final int port = url.getPort();
+            final String host = url.getHost();
+            final String path = url.getPath();
+            client.getNow(port > 0 ? port : 80, host, StringUtils.hasLength(path) ? path : "/", (response) -> {
+                response.bodyHandler(totalBuffer -> {
+                    Delegates.invoke(callback, null, totalBuffer.toString());
+                });
+                response.exceptionHandler(e -> {
+                    Delegates.invoke(callback, e, null);
+                });
             });
-            response.exceptionHandler(e -> {
-                Delegates.invoke(callback, e, null);
-                this.client().close();
-            });
-        });
-
-
+        } catch (Throwable t) {
+            Delegates.invoke(callback, t, null);
+        }
     }
 
     // ------------------------------------------------------------------------

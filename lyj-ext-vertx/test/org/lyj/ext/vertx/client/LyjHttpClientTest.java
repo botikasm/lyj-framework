@@ -20,8 +20,6 @@ public class LyjHttpClientTest {
     // ------------------------------------------------------------------------
 
 
-
-
     // ------------------------------------------------------------------------
     //                      b e f o r e
     // ------------------------------------------------------------------------
@@ -49,10 +47,10 @@ public class LyjHttpClientTest {
 
         List<Task<String>> tasks = new ArrayList<>();
 
-        for(int i=0;i<1;i++){
-            tasks.add(new Task<String>( t->{
-                LyjHttpClient.create((err, client)->{
-                    if(null!=err) {
+        for (int i = 0; i < 1; i++) {
+            tasks.add(new Task<String>(t -> {
+                LyjHttpClient.create((err, client) -> {
+                    if (null != err) {
                         t.fail(err);
                     } else {
                         client.setChunkBody(true); // force chunks
@@ -60,14 +58,14 @@ public class LyjHttpClientTest {
                         client.setConnectTimeout(1000);
                         client.setDefaultHost(host).setDefaultPort(port);
 
-                        client.post(url, json.getJSONObject(), (err2, response)->{
-                            if(null!=err2) {
+                        client.post(url, json.getJSONObject(), (err2, response) -> {
+                            if (null != err2) {
                                 t.fail(err2);
                             } else {
                                 t.success(response);
                                 System.out.println(response);
                             }
-                        } );
+                        });
                     }
                 });
             }));
@@ -78,46 +76,49 @@ public class LyjHttpClientTest {
 
     @Test
     public void testGet() throws Exception {
-        final String host = "http://www.funnygain.com";
-        final int port = 80;
-        final String url = "/";
+        final String url = "http://www.funnygain.com";
 
+        System.out.println("INITIAL MEMORY");
         System.out.println(SystemUtils.printSystemStatus());
 
-        List<Task<String>> tasks = new ArrayList<>();
+        for (int x = 0; x < 10; x++) {
+            List<Task<String>> tasks = new ArrayList<>();
 
-        for(int i=0;i<100;i++){
-            tasks.add(new Task<String>( t->{
-                LyjHttpClient.create((err, client)->{
-                    if(null!=err) {
-                        t.fail(err);
-                    } else {
-                        client.setChunkBody(true); // force chunks
-                        client.setChunkSize(1);
-                        client.setConnectTimeout(1000);
-                        client.setDefaultHost(host).setDefaultPort(port);
+            for (int i = 0; i < 100; i++) {
+                tasks.add(new Task<String>(t -> {
+                    LyjHttpClient.create((err, client) -> {
+                        if (null != err) {
+                            t.fail(err);
+                        } else {
+                            client.setChunkBody(true); // force chunks
+                            client.setChunkSize(1);
+                            client.setConnectTimeout(1000);
 
-                        client.get(url, (err2, response)->{
-                            if(null!=err2) {
-                                t.fail(err2);
-                                System.out.println(err2.toString());
-                            } else {
-                                //System.out.println(response.length());
-                                t.success(response);
-                            }
-                        } );
-                    }
-                });
-            }));
+                            client.get(url, (err2, response) -> {
+                                if (null != err2) {
+                                    t.fail(err2);
+                                    System.out.println(err2.toString());
+                                } else {
+                                    //System.out.println(response.length());
+                                    t.success(response);
+                                }
+                            });
+                        }
+                    });
+                }));
+            }
+
+            Async.joinAll(tasks);
+
+            System.out.println("BEFORE GC");
+            System.out.println(SystemUtils.printSystemStatus());
+
+            Runtime.getRuntime().gc();
+
+            System.out.println("AFTER GC");
+            System.out.println(SystemUtils.printSystemStatus());
         }
 
-        Async.joinAll(tasks);
-
-        System.out.println(SystemUtils.printSystemStatus());
-
-        Runtime.getRuntime().gc();
-
-        System.out.println(SystemUtils.printSystemStatus());
 
     }
 
