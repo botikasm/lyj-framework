@@ -109,6 +109,10 @@ public class CompareUtils {
             return ((Double) o1).compareTo((Double) o2);
         } else if (o1 instanceof String) {
             return ((String) o1).compareTo((String) o2);
+        } else if (o1 instanceof Boolean) {
+            return ((Boolean) o1).compareTo((Boolean) o2);
+        } else if (o1 instanceof Float) {
+            return ((Float) o1).compareTo((Float) o2);
         }
         return -1;
     }
