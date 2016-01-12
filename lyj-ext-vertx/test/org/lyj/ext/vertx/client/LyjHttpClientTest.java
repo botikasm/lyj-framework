@@ -33,7 +33,7 @@ public class LyjHttpClientTest {
     //                      t e s t
     // ------------------------------------------------------------------------
 
-    //@Test
+    @Test
     public void testPost() throws Exception {
         final String host = "localhost";
         final int port = 4000;

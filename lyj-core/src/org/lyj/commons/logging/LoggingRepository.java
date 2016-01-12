@@ -24,6 +24,8 @@
 package org.lyj.commons.logging;
 
 import org.lyj.IConstants;
+import org.lyj.commons.event.Event;
+import org.lyj.commons.event.EventEmitter;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
@@ -42,12 +44,16 @@ import java.util.*;
  *
  * @author angelo.geminiani
  */
-public final class LoggingRepository {
+public final class LoggingRepository extends EventEmitter {
 
     // ------------------------------------------------------------------------
     //                      Constants
     // ------------------------------------------------------------------------
+
+    public static final String ON_LOG = "on_log";
+
     private static final String DEFAULT = "default";
+
     // ------------------------------------------------------------------------
     //                      Variables
     // ------------------------------------------------------------------------
@@ -58,6 +64,7 @@ public final class LoggingRepository {
     private boolean _fileEnabled;
     private boolean _consoleEnabled;
     private int _maxItems;
+    private boolean _enable_events;
 
     // ------------------------------------------------------------------------
     //                      Constructor
@@ -68,6 +75,7 @@ public final class LoggingRepository {
         _fileEnabled = true;
         _consoleEnabled = true;
         _maxItems = 500;
+        _enable_events = false;
         this.setFilePath(IConstants.PATH_LOG + "/logging.log");
     }
 
@@ -164,6 +172,14 @@ public final class LoggingRepository {
         return _level;
     }
 
+    public void setEnableEvents(final boolean value) {
+        _enable_events = value;
+    }
+
+    public boolean isEnableEvents() {
+        return _enable_events;
+    }
+
     public boolean isFileEnabled() {
         return _fileEnabled;
     }
@@ -226,6 +242,9 @@ public final class LoggingRepository {
                     logitems.remove(logitems.size() - 1);
                 }
                 // this.invokeListeners(item);
+                if(_enable_events){
+                    this.emitLogEvent(logger, item);
+                }
                 this.writeFile(logger);
                 this.writeConsole(item);
             }
@@ -307,6 +326,11 @@ public final class LoggingRepository {
         if (_consoleEnabled) {
             System.out.println(item);
         }
+    }
+
+    private void emitLogEvent(final Logger logger,final LogItem logItem){
+        final Event event = new Event(logger, ON_LOG, logItem);
+        super.emit(event);
     }
 
     // ------------------------------------------------------------------------
