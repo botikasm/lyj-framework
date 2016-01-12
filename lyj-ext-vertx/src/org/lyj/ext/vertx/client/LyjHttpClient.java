@@ -47,6 +47,7 @@ public class LyjHttpClient {
     private boolean _chunk_body;
     private int _body_limit;
     private int _chunk_size;
+    private boolean _try_compression;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -62,6 +63,7 @@ public class LyjHttpClient {
         _chunk_body = false;
         _body_limit = DEF_BODY_SIZE_LIMIT;
         _chunk_size = DEF_CHUNK_SIZE;
+        _try_compression = true;
     }
 
     private LyjHttpClient() {
@@ -152,6 +154,15 @@ public class LyjHttpClient {
         return _chunk_size;
     }
 
+    public LyjHttpClient setTryCompression(final boolean value) {
+        _try_compression = value;
+        return this;
+    }
+
+    public boolean istryCompression() {
+        return _try_compression;
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c    m e t h o d s
     // ------------------------------------------------------------------------
@@ -204,7 +215,8 @@ public class LyjHttpClient {
             }
             options.setKeepAlive(_keep_alive)
                     .setIdleTimeout(_idle_timeout)
-                    .setConnectTimeout(_connection_timeout);
+                    .setConnectTimeout(_connection_timeout)
+                    .setTryUseCompression(_try_compression);
             __client = _vertx.createHttpClient(options);
         }
         return __client;
