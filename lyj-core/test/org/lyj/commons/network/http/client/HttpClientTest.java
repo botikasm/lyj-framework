@@ -37,10 +37,12 @@ public class HttpClientTest {
         System.out.println("INITIAL MEMORY");
         System.out.println(SystemUtils.printSystemStatus());
 
-        for (int x = 0; x < 1; x++) {
+        // 5 threads
+        for (int x = 0; x < 5; x++) {
             List<Task<String>> tasks = new ArrayList<>();
 
-            for (int i = 0; i < 1; i++) {
+            // 3 concurrent requests
+            for (int i = 0; i < 3; i++) {
                 tasks.add(new Task<String>(t -> {
 
                     HttpClient client = new HttpClient();

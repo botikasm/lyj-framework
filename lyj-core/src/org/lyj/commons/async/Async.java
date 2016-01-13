@@ -34,7 +34,7 @@ import java.util.Set;
 public abstract class Async {
 
 
-    public static Thread invoke(final Delegates.Callback handler, final Object... args) {
+    public static Thread invoke(final Delegates.VarArgsCallback handler, final Object... args) {
         if (null != handler) {
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -50,7 +50,7 @@ public abstract class Async {
         return null;
     }
 
-    public static Thread delay(final Delegates.Callback handler, final int delay, final Object... args) {
+    public static Thread delay(final Delegates.VarArgsCallback handler, final int delay, final Object... args) {
         if (null != handler) {
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -81,7 +81,7 @@ public abstract class Async {
                                      final Delegates.ProgressCallback onProgress) {
         final int len = threads.length;
         //-- Async execution --//
-        invoke(new Delegates.Callback() {
+        invoke(new Delegates.VarArgsCallback() {
             @Override
             public void handle(Object... args) {
                 final int max = maxConcurrentThreads <= len ? maxConcurrentThreads : len;

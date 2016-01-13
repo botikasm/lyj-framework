@@ -3,17 +3,9 @@ package org.lyj.commons.network.http.client;
 import org.json.JSONObject;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.lang.CharEncoding;
-import org.lyj.commons.util.ByteUtils;
-import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
-import java.io.BufferedWriter;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
 
 /**
@@ -25,19 +17,17 @@ public class HttpClient {
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private final static int DEF_CONN_TIMEOUT = 60000; // 1 minute
-    private final static int DEF_IDLE_TIMEOUT = 15000;
-    private final static int DEF_PORT = 80;
-    private final static int DEF_CHUNK_SIZE = 4096;
+    public final static int DEF_CHUNK_SIZE = 4096;
+    public final static int DEF_CONN_TIMEOUT = 1000 * 60 * 5; // 5 minute
+    public final static int DEF_IDLE_TIMEOUT = DEF_CONN_TIMEOUT;
 
-    private final static String POST = "POST";
-    private final static String GET = "GET";
+    public final static String POST = "POST";
+    public final static String GET = "GET";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private boolean _use_ssl; // NOT IMPLEMENTED
     private String _char_encoding;
     private int _chunk_size;
     private boolean _do_chunk_body;
@@ -49,7 +39,6 @@ public class HttpClient {
     // ------------------------------------------------------------------------
 
     public HttpClient() {
-        _use_ssl = false;
         _char_encoding = CharEncoding.UTF_8;
         _chunk_size = DEF_CHUNK_SIZE;
         _do_chunk_body = true;
@@ -61,23 +50,55 @@ public class HttpClient {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public HttpClient setUseSSL(final boolean value) {
-        _use_ssl = value;
-        return this;
-    }
+    //--  p r o p e r t i e s  --//
 
-    public boolean isUseSSL() {
-        return _use_ssl;
-    }
-
-    public HttpClient setEncoding(final String value) {
+    public HttpClient setDefaultEncoding(final String value) {
         _char_encoding = value;
         return this;
     }
 
-    public String getEncoding() {
+    public String getDefaultEncoding() {
         return _char_encoding;
     }
+
+    public HttpClient setDefaultChunkBody(final boolean value) {
+        _do_chunk_body = value;
+        return this;
+    }
+
+    public boolean isDefaultChunkBody() {
+        return _do_chunk_body;
+    }
+
+
+    public int getDefaultConnectionTimeout() {
+        return _connection_timeout;
+    }
+
+    public HttpClient setDefaultConnectionTimeout(final int value) {
+        _connection_timeout = value;
+        return this;
+    }
+
+    public int getDefaultIdleTimeout() {
+        return _idle_timeout;
+    }
+
+    public HttpClient setDefaultIdleTimeout(final int value) {
+        _idle_timeout = value;
+        return this;
+    }
+
+    public int getDefaultChunkSize() {
+        return _chunk_size;
+    }
+
+    public HttpClient setDefaultChunkSize(final int value) {
+        _chunk_size = value;
+        return this;
+    }
+
+    //--  m e t h o d s  --//
 
     public void post(final String surl, final JSONObject params,
                      final Delegates.SingleResultCallback<String> callback) throws Exception {
@@ -88,8 +109,13 @@ public class HttpClient {
                      final Delegates.SingleResultCallback<String> callback){
 
         try{
-            final String response = this.post(surl, params);
-            Delegates.invoke(callback, null, response);
+            this.doPost(surl, params, (err, totalBuffer)->{
+                if(null!=err){
+                    Delegates.invoke(callback, err, "");
+                } else {
+                    Delegates.invoke(callback, null, totalBuffer.read());
+                }
+            });
         } catch(Throwable t){
             Delegates.invoke(callback, t, "");
         }
@@ -99,59 +125,31 @@ public class HttpClient {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private boolean exceedBodyLimit(final String body) {
-        return _chunk_size > 0 && StringUtils.hasText(body) && body.length() > _chunk_size;
-    }
-
-    private String post(final String surl, final Map<String, Object> params) throws Exception{
-        final URL url = new URL(surl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        final String body = StringUtils.toQueryString(params, _char_encoding);
-        final boolean is_chunked = _do_chunk_body && this.exceedBodyLimit(body);
-
-        conn.setReadTimeout(_idle_timeout);
-        conn.setConnectTimeout(_connection_timeout);
-        conn.setRequestMethod(POST);
-        conn.setDoInput(true);
-        conn.setDoOutput(true);
-        if(is_chunked) {
-            conn.setChunkedStreamingMode(_chunk_size);
-        }
-
-        try (OutputStream os = conn.getOutputStream()) {
-            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, _char_encoding))) {
-                if(is_chunked) {
-                    final String[] chunks = StringUtils.chunk(body, _chunk_size);
-                    for (String chunk : chunks) {
-                        writer.write(chunk);
-                    }
-                } else {
-                    writer.write(body);
-                }
-                writer.flush();
-            }
-        }
-
+    private void doPost(final String surl, final Map<String, Object> params,
+                      final Delegates.SingleResultCallback<HttpBuffer> callback) {
         try {
-            conn.connect();
-            final int code = conn.getResponseCode();
-            final String message = conn.getResponseMessage();
-            if (code == HttpURLConnection.HTTP_OK) {
-                try (InputStream in = conn.getInputStream()) {
-                    final byte[] bytes = ByteUtils.getBytes(in);
-                    if (bytes.length > 0) {
-                        return new String(bytes);
-                    }
-                }
-            } else {
-                throw new Exception(FormatUtils.format("", code, message));
-            }
-        }finally{
-            conn.disconnect();
-        }
+            HttpRequest request = new HttpRequest(POST, surl)
+                    .setEncoding(_char_encoding)
+                    .setChunkBody(_do_chunk_body)
+                    .setChunkSize(_chunk_size)
+                    .setConnectionTimeout(_connection_timeout)
+                    .setIdleTimeout(_idle_timeout);
 
-        return "";
+            final String body = StringUtils.toQueryString(params, _char_encoding);
+
+
+            request.errorHandler((err) -> {
+                Delegates.invoke(callback, err, null);
+            });
+
+            request.bodyHandler((totalBuffer) -> {
+                Delegates.invoke(callback, null, totalBuffer);
+            });
+
+            request.write(body).end();
+        } catch(Throwable t) {
+            Delegates.invoke(callback, t, null);
+        }
     }
 
 

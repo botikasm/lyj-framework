@@ -23,6 +23,8 @@
  */
 package org.lyj.commons.util;
 
+import org.lyj.commons.Delegates;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -49,7 +51,7 @@ public class ByteUtils {
 
     public static byte[] getBytes(final BufferedImage image, final String format) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ImageIO.write(image, null!=format?format:"jpg", baos);
+        ImageIO.write(image, null != format ? format : "jpg", baos);
         baos.flush();
         byte[] imageInByte = baos.toByteArray();
         baos.close();
@@ -73,6 +75,19 @@ public class ByteUtils {
             out.close();
         }
         return out.toByteArray();
+    }
+
+    public static void read(final InputStream is, final int bufferSize,
+                            final Delegates.Callback<byte[]> callback) throws IOException {
+
+        byte[] buffer = new byte[bufferSize];
+        int len;
+        while ((len = is.read(buffer)) >= 0) {
+            try (ByteArrayOutputStream out = new ByteArrayOutputStream(bufferSize)) {
+                out.write(buffer, 0, len);
+                Delegates.invoke(callback, out.toByteArray());
+            }
+        }
     }
 
     public static byte[] optBytes(final InputStream is) {
@@ -131,7 +146,7 @@ public class ByteUtils {
         ObjectInput in = null;
         try {
             in = new ObjectInputStream(bis);
-            return  in.readObject();
+            return in.readObject();
         } finally {
             if (null != in) in.close();
             bis.close();

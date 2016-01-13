@@ -34,6 +34,8 @@ import java.util.*;
  */
 public class Delegates {
 
+
+
     @FunctionalInterface
     public static interface Handler {
         void handle();
@@ -71,8 +73,13 @@ public class Delegates {
      * Simple handler for Async Action
      */
     @FunctionalInterface
-    public static interface Callback {
+    public static interface VarArgsCallback {
         void handle(final Object... args);
+    }
+
+    @FunctionalInterface
+    public static interface Callback<T> {
+        void handle(final T data);
     }
 
     @FunctionalInterface
@@ -99,6 +106,7 @@ public class Delegates {
     //               I n v o k e r
     // --------------------------------------------------------------------
 
+
     public static <T> T invoke(final FunctionArgs<T> callback, final Object... args) {
         if (null != callback) {
             return callback.handle(args);
@@ -112,9 +120,15 @@ public class Delegates {
         }
     }
 
-    public static void invoke(final Callback callback, final Object... args) {
+    public static void invoke(final VarArgsCallback callback, final Object... args) {
         if (null != callback) {
             callback.handle(args);
+        }
+    }
+
+    public static <T> void invoke(final Callback<T> callback, final T data) {
+        if (null != callback) {
+            callback.handle(data);
         }
     }
 
@@ -228,7 +242,7 @@ public class Delegates {
                 if (null != method) {
                     if (async) {
                         //Async.Action((args2)->{});
-                        Async.invoke(new Callback() {
+                        Async.invoke(new VarArgsCallback() {
                             @Override
                             public void handle(final Object... args2) {
                                 try {

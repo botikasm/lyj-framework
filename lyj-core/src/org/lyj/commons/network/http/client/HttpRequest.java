@@ -3,18 +3,17 @@ package org.lyj.commons.network.http.client;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.network.http.client.exceptions.BadStateException;
+import org.lyj.commons.network.http.client.exceptions.ConnectionException;
 import org.lyj.commons.network.http.client.exceptions.UnsupportedMethodException;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.MimeTypeUtils;
-import org.lyj.commons.util.StringUtils;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * http://stackoverflow.com/questions/9767952/how-to-add-parameters-to-httpurlconnection-using-post
@@ -25,13 +24,12 @@ public class HttpRequest {
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private final static int DEF_CHUNK_SIZE = 4096;
-    private final static int DEF_CONN_TIMEOUT = 60000; // 1 minute
-    private final static int DEF_IDLE_TIMEOUT = 15000;
 
-    private final static String POST = "POST";
-    private final static String GET = "GET";
+    private final static String POST = HttpClient.POST;
+    private final static String GET = HttpClient.GET;
     private final static String[] METHODS = new String[]{POST, GET};
+
+    private static final String HEADER_CONTENT_LENGHT = "content-lenght";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -52,7 +50,8 @@ public class HttpRequest {
     private HttpBuffer _buffer;
 
     // handlers
-    private Delegates.SingleResultCallback<HttpBuffer> _bodyHandler;
+    private Delegates.Callback<HttpBuffer> _bodyHandler;
+    private Delegates.Callback<Throwable> _errorHandler;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -64,16 +63,15 @@ public class HttpRequest {
         _url = url;
         _mimeType = MimeTypeUtils.MIME_FORM;
 
-        _chunk_size = DEF_CHUNK_SIZE;
+        _chunk_size = HttpClient.DEF_CHUNK_SIZE;
         _do_chunk_body = true;
-        _connection_timeout = DEF_CONN_TIMEOUT;
-        _idle_timeout = DEF_IDLE_TIMEOUT;
+        _connection_timeout = HttpClient.DEF_CONN_TIMEOUT;
+        _idle_timeout = HttpClient.DEF_IDLE_TIMEOUT;
         _char_encoding = CharEncoding.UTF_8;
 
         _headers = new HashMap<>();
         _buffer = new HttpBuffer();
 
-        this.init();
     }
 
     // ------------------------------------------------------------------------
@@ -81,6 +79,16 @@ public class HttpRequest {
     // ------------------------------------------------------------------------
 
     //-- p r o p e r t i e s --//
+
+    public HttpRequest bodyHandler(final Delegates.Callback<HttpBuffer> value) {
+        _bodyHandler = value;
+        return this;
+    }
+
+    public HttpRequest errorHandler(final Delegates.Callback<Throwable> value) {
+        _errorHandler = value;
+        return this;
+    }
 
     public HttpRequest setMimeType(final String value) {
         _mimeType = value;
@@ -127,6 +135,15 @@ public class HttpRequest {
         return this;
     }
 
+    public int getChunkSize() {
+        return _chunk_size;
+    }
+
+    public HttpRequest setChunkSize(final int value) {
+        _chunk_size = value;
+        return this;
+    }
+
     //-- a c t i o n --//
 
     public HttpRequest putHeader(final String key, final String value) {
@@ -135,7 +152,7 @@ public class HttpRequest {
     }
 
     public HttpRequest write(final String data) {
-        _buffer.add(data);
+        _buffer.write(data);
         return this;
     }
 
@@ -146,8 +163,8 @@ public class HttpRequest {
     public void end() {
         try {
             this.flush();
-        } catch(Throwable t){
-
+        } catch (Throwable t) {
+            this.handleError(t);
         }
     }
 
@@ -161,31 +178,140 @@ public class HttpRequest {
             _connection = (HttpURLConnection) url.openConnection();
             _connection.setConnectTimeout(_connection_timeout);
             _connection.setReadTimeout(_idle_timeout);
+
+            _connection.setRequestMethod(_method);
+            _connection.setDoInput(true);
+            _connection.setDoOutput(!_method.equals(GET)); // no output for get
+
         } else {
             // method not supported
             throw new UnsupportedMethodException(_method);
         }
     }
 
-    private boolean exceedBodyLimit(final String body) {
-        return _chunk_size > 0 && StringUtils.hasText(body) && body.length() > _chunk_size;
+    private void handleError(final Throwable t) {
+        Delegates.invoke(_errorHandler, t);
     }
 
-    private boolean doChunkBody(final String body) {
-        return _do_chunk_body && this.exceedBodyLimit(body);
+    private void handleBuffer(final HttpBuffer data) {
+        Delegates.invoke(_bodyHandler, data);
+    }
+
+    private boolean exceedBodyLimit(final int bodySize) {
+        return _chunk_size > 0 && bodySize > _chunk_size;
+    }
+
+    private boolean doChunkBody(final int bodySize) {
+        return _do_chunk_body && this.exceedBodyLimit(bodySize);
     }
 
     private boolean isSupportedMethod(final String method) {
         return CollectionUtils.contains(METHODS, method);
     }
 
-    private void flush() throws BadStateException {
+    private boolean containsHeader(final String akey) {
+        if (null != _headers) {
+            Set<String> keys = _headers.keySet();
+            for (final String key : keys) {
+                if (key.toLowerCase().equals(akey.toLowerCase())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void writeHeaders(final int bodySize, final boolean writeBody, final boolean writeChuncked) {
+        // write all headers
+        Set<String> keys = _headers.keySet();
+        for (final String key : keys) {
+            _connection.setRequestProperty(key, _headers.get(key));
+        }
+
+        if (writeBody) {
+            // content lenght
+            if (!this.containsHeader(HEADER_CONTENT_LENGHT)) {
+                _connection.setRequestProperty(HEADER_CONTENT_LENGHT, bodySize + "");
+            }
+        }
+    }
+
+    private void flush() {
+        // check connection exists
+        if (null == _connection) {
+            try {
+                this.init();
+            } catch (Throwable t) {
+                this.handleError(t);
+                return;
+            }
+        }
+
         if (null != _connection) {
+
+            boolean write_body = false;
+            boolean write_chunked = false;
+            int bodySize = null != _buffer ? _buffer.size() : 0;
+
+            // check if need write the body and if it is chunked
+            if (!_method.equals(GET)) {
+                // body
+                if (null != _buffer && _buffer.size() > 0) {
+                    write_body = true;
+                    // chunked?
+                    if (this.doChunkBody(_buffer.size())) {
+                        _connection.setChunkedStreamingMode(_chunk_size);
+                        write_chunked = true;
+                    }
+                }
+            }
+
+            // headers
+            this.writeHeaders(bodySize, write_body, write_chunked);
+            try {
+                // write the body to stream
+                if (write_body && null != _buffer) {
+                    try (OutputStream os = _connection.getOutputStream()) {
+                        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, _char_encoding))) {
+                            if (write_chunked) {
+                                final String[] chunks = _buffer.getStringChunks(_chunk_size);
+                                for (String chunk : chunks) {
+                                    writer.write(chunk);
+                                }
+                            } else {
+                                writer.write(_buffer.toString());
+                            }
+                            writer.flush();
+                        }
+                    }
+                }
+
+                // connect and get response
+                _connection.connect();
+                final int code = _connection.getResponseCode();
+                final String message = _connection.getResponseMessage();
+
+                if (code == HttpURLConnection.HTTP_OK) {
+                    try (InputStream in = _connection.getInputStream()) {
+                        this.handleBuffer(new HttpBuffer(in));
+                    }
+                } else {
+                    this.handleError(new ConnectionException(code, message));
+                }
+            } catch (Throwable t) {
+                this.handleError(t);
+            } finally {
+                _connection.disconnect();
+                _connection = null;
+                _buffer.clear();
+                _headers.clear();
+            }
 
         } else {
             // connection is not active, may be url was broken
-            throw new BadStateException("Missing Connection or Connection is not properly configured.");
+            this.handleError(new BadStateException("Missing Connection or Connection is not properly configured."));
         }
     }
+
 
 }

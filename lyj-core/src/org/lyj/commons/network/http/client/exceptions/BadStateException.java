@@ -1,7 +1,5 @@
 package org.lyj.commons.network.http.client.exceptions;
 
-import org.lyj.commons.util.FormatUtils;
-
 /**
  * Something wrong in request
  */
