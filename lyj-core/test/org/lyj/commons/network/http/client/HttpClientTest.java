@@ -29,10 +29,10 @@ public class HttpClientTest {
 
         Runtime.getRuntime().gc();
 
-        final String  large_string = ClassLoaderUtils.getResourceAsString(this.getClass().getClassLoader(), this.getClass(), "test.json");
-        if(StringUtils.hasText(large_string)){
-            json.put("large", large_string);
-        }
+        //final String  large_string = ClassLoaderUtils.getResourceAsString(this.getClass().getClassLoader(), this.getClass(), "test.json");
+        //if(StringUtils.hasText(large_string)){
+        //    json.put("large", large_string);
+        //}
 
         System.out.println("INITIAL MEMORY");
         System.out.println(SystemUtils.printSystemStatus());

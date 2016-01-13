@@ -7,6 +7,7 @@ import org.lyj.commons.network.http.client.exceptions.ConnectionException;
 import org.lyj.commons.network.http.client.exceptions.UnsupportedMethodException;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.MimeTypeUtils;
+import org.lyj.commons.util.StringUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * http://stackoverflow.com/questions/21996190/how-can-i-write-a-post-statement-to-an-httpurlconnection-thats-zipped
  */
 public class HttpRequest {
 
@@ -29,7 +30,11 @@ public class HttpRequest {
     private final static String GET = HttpClient.GET;
     private final static String[] METHODS = new String[]{POST, GET};
 
-    private static final String HEADER_CONTENT_LENGHT = "content-lenght";
+    public static final String HEADER_CONTENT_LENGTH = "Content-Length";
+    public static  final String HEADER_CHARSET = "charset";
+    public static  final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_CONTENT_TYPE_FORM = MimeTypeUtils.MIME_FORM;
+    public static final String HEADER_CONTENT_TYPE_JSON = MimeTypeUtils.MIME_JSON;
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -43,6 +48,7 @@ public class HttpRequest {
     private String _char_encoding;
     private int _connection_timeout;
     private int _idle_timeout;
+    private boolean _use_cache;
 
     private HttpURLConnection _connection;
 
@@ -68,6 +74,8 @@ public class HttpRequest {
         _connection_timeout = HttpClient.DEF_CONN_TIMEOUT;
         _idle_timeout = HttpClient.DEF_IDLE_TIMEOUT;
         _char_encoding = CharEncoding.UTF_8;
+
+        _use_cache = false;
 
         _headers = new HashMap<>();
         _buffer = new HttpBuffer();
@@ -106,6 +114,15 @@ public class HttpRequest {
 
     public boolean isChunkBody() {
         return _do_chunk_body;
+    }
+
+    public HttpRequest setUseCache(final boolean value) {
+        _use_cache = value;
+        return this;
+    }
+
+    public boolean isUseCache() {
+        return _use_cache;
     }
 
     public HttpRequest setEncoding(final String value) {
@@ -202,7 +219,10 @@ public class HttpRequest {
     }
 
     private boolean doChunkBody(final int bodySize) {
-        return _do_chunk_body && this.exceedBodyLimit(bodySize);
+        /**
+         * always chunk body or does not works
+         */
+        return _do_chunk_body || this.exceedBodyLimit(bodySize);
     }
 
     private boolean isSupportedMethod(final String method) {
@@ -230,8 +250,14 @@ public class HttpRequest {
 
         if (writeBody) {
             // content lenght
-            if (!this.containsHeader(HEADER_CONTENT_LENGHT)) {
-                _connection.setRequestProperty(HEADER_CONTENT_LENGHT, bodySize + "");
+            if (!this.containsHeader(HEADER_CONTENT_LENGTH)) {
+                _connection.setRequestProperty(HEADER_CONTENT_LENGTH, bodySize + "");
+            }
+            if (!this.containsHeader(HEADER_CONTENT_TYPE) && StringUtils.hasText(_mimeType)) {
+                _connection.setRequestProperty(HEADER_CONTENT_TYPE, _mimeType);
+            }
+            if (!this.containsHeader(HEADER_CHARSET) && StringUtils.hasText(_char_encoding)) {
+                _connection.setRequestProperty(HEADER_CHARSET, _char_encoding);
             }
         }
     }
@@ -248,6 +274,8 @@ public class HttpRequest {
         }
 
         if (null != _connection) {
+
+            _connection.setUseCaches(_use_cache); // cache
 
             boolean write_body = false;
             boolean write_chunked = false;
@@ -268,6 +296,8 @@ public class HttpRequest {
 
             // headers
             this.writeHeaders(bodySize, write_body, write_chunked);
+
+            // body
             try {
                 // write the body to stream
                 if (write_body && null != _buffer) {
@@ -288,6 +318,7 @@ public class HttpRequest {
 
                 // connect and get response
                 _connection.connect();
+
                 final int code = _connection.getResponseCode();
                 final String message = _connection.getResponseMessage();
 
