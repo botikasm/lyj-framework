@@ -2,6 +2,7 @@ package org.lyj.commons.network.http.client;
 
 import org.json.JSONObject;
 import org.lyj.commons.Delegates;
+import org.lyj.commons.async.future.Task;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
@@ -119,6 +120,30 @@ public class HttpClient {
         } catch(Throwable t){
             Delegates.invoke(callback, t, "");
         }
+    }
+
+    public Task<String> post(final String surl, final Map<String, Object> params){
+        return new Task<String>((t)->{
+            this.post(surl, params, (err, response)->{
+                if(null!=err){
+                    t.fail(err);
+                } else {
+                    t.success(response);
+                }
+            });
+        });
+    }
+
+    public Task<String> post(final String surl, final JSONObject params){
+        return new Task<String>((t)->{
+            this.post(surl, params, (err, response)->{
+                if(null!=err){
+                    t.fail(err);
+                } else {
+                    t.success(response);
+                }
+            });
+        });
     }
 
     // ------------------------------------------------------------------------

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * http://stackoverflow.com/questions/9767952/how-to-add-parameters-to-httpurlconnection-using-post
+ *
  */
 public class HttpRequest {
 
