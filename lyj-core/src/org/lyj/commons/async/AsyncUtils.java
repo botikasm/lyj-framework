@@ -39,7 +39,7 @@ public class AsyncUtils {
      * @return
      */
     public static Thread[] createArray(final int length, final Delegates.CreateRunnableCallback callback) {
-        final Thread[] result = new Thread[length];
+        Thread[] result = new Thread[length];
         for (int i = 0; i < length; i++) {
             final Runnable action = null != callback ? callback.handle(i, length) : getEmptyAction();
             result[i] = new Thread(action);

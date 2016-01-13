@@ -758,11 +758,16 @@ public final class StringUtils {
     }
 
     public static String toQueryString(final Map<String, ?> params) {
-        return toQueryString(params, "&");
+        return toQueryString(params, "&", CharEncoding.UTF_8);
+    }
+
+    public static String toQueryString(final Map<String, ?> params, final String charSet) {
+        return toQueryString(params, "&", charSet);
     }
 
     public static String toQueryString(final Map<String, ?> params,
-                                       final String separator) {
+                                       final String separator,
+                                       final String charSet) {
         final String sep = StringUtils.hasText(separator) ? separator : "&";
         if (!CollectionUtils.isEmpty(params)) {
             final StringBuilder result = new StringBuilder();
@@ -770,7 +775,7 @@ public final class StringUtils {
             for (final String key : keys) {
                 final String value = StringUtils.notNull(params.get(key), "");
                 if (StringUtils.hasText(value)) {
-                    StringUtils.append(key.concat("=").concat(encode(value)),
+                    StringUtils.append(encode(key, charSet).concat("=").concat(encode(value, charSet)),
                             result, sep);
                 }
             }
@@ -1591,8 +1596,12 @@ public final class StringUtils {
     }
 
     private static String encode(final String s) {
+        return encode(s, CharEncoding.getDefault());
+    }
+
+    private static String encode(final String s, final String charSet) {
         try {
-            return URLEncoder.encode(s, CharEncoding.getDefault());
+            return URLEncoder.encode(s, charSet);
         } catch (Exception ignored) {
         }
         return s;

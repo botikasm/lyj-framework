@@ -78,6 +78,8 @@ public class LyjHttpClientTest {
     public void testGet() throws Exception {
         final String url = "http://www.funnygain.com";
 
+        Runtime.getRuntime().gc();
+
         System.out.println("INITIAL MEMORY");
         System.out.println(SystemUtils.printSystemStatus());
 
@@ -86,6 +88,8 @@ public class LyjHttpClientTest {
 
             for (int i = 0; i < 100; i++) {
                 tasks.add(new Task<String>(t -> {
+                    t.success("");
+                    if(true) return;
                     LyjHttpClient.create((err, client) -> {
                         if (null != err) {
                             t.fail(err);

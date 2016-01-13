@@ -1,6 +1,5 @@
 package org.lyj.ext.vertx.client;
 
-import com.hazelcast.spi.TraceableOperation;
 import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
@@ -35,8 +34,8 @@ public class LyjHttpClient {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final Vertx _vertx;
-    private HttpClient __client; //lazy
+    private Vertx _vertx;
+    private HttpClient _client;
 
     private String _host;
     private int _port;
@@ -204,22 +203,19 @@ public class LyjHttpClient {
     // ------------------------------------------------------------------------
 
     private HttpClient client() {
-        if (null == __client) {
-            HttpClientOptions options = new HttpClientOptions();
+        HttpClientOptions options = new HttpClientOptions();
 
-            if (StringUtils.hasText(_host)) {
-                options.setDefaultHost(_host);
-                if (_port > 0) {
-                    options.setDefaultPort(_port);
-                }
+        if (StringUtils.hasText(_host)) {
+            options.setDefaultHost(_host);
+            if (_port > 0) {
+                options.setDefaultPort(_port);
             }
-            options.setKeepAlive(_keep_alive)
-                    .setIdleTimeout(_idle_timeout)
-                    .setConnectTimeout(_connection_timeout)
-                    .setTryUseCompression(_try_compression);
-            __client = _vertx.createHttpClient(options);
         }
-        return __client;
+        options.setKeepAlive(_keep_alive)
+                .setIdleTimeout(_idle_timeout)
+                .setConnectTimeout(_connection_timeout)
+                .setTryUseCompression(_try_compression);
+        return _vertx.createHttpClient(options);
     }
 
     private boolean exceedBodyLimit(final String body) {

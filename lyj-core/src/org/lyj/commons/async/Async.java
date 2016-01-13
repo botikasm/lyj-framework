@@ -36,7 +36,7 @@ public abstract class Async {
 
     public static Thread invoke(final Delegates.Callback handler, final Object... args) {
         if (null != handler) {
-            final Thread t = new Thread(new Runnable() {
+            Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     handler.handle(args);
@@ -52,7 +52,7 @@ public abstract class Async {
 
     public static Thread delay(final Delegates.Callback handler, final int delay, final Object... args) {
         if (null != handler) {
-            final Thread t = new Thread(new Runnable() {
+            Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -109,7 +109,7 @@ public abstract class Async {
         if (null == runnableFunction) {
             return new Thread[0];
         }
-        final Thread[] result = new Thread[length];
+        Thread[] result = new Thread[length];
         final int max = maxConcurrentThreads <= length ? maxConcurrentThreads : length;
         final Thread[] concurrent = new Thread[max];
         int count = 0;

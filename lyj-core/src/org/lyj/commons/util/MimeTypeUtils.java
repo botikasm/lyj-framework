@@ -47,6 +47,8 @@ public class MimeTypeUtils {
     public static final String MIME_HTML = MimeTypeUtils.getMimeType(".html") + CHARSET;
     public static final String MIME_XML = MimeTypeUtils.getMimeType(".xml") + CHARSET;
     public static final String MIME_XMLRSS = MimeTypeUtils.getMimeType(".rss") + CHARSET;
+    public static final String MIME_FORM = "application/x-www-form-urlencoded";
+
     private final Map<String, String> _filetypemap;
 
     private MimeTypeUtils() {
