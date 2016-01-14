@@ -29,48 +29,57 @@ public class HttpClientTest {
 
         Runtime.getRuntime().gc();
 
-        //final String  large_string = ClassLoaderUtils.getResourceAsString(this.getClass().getClassLoader(), this.getClass(), "test.json");
-        //if(StringUtils.hasText(large_string)){
-        //    json.put("large", large_string);
-        //}
+        final String large_string = ClassLoaderUtils.getResourceAsString(this.getClass().getClassLoader(), this.getClass(), "test.json");
+        if (StringUtils.hasText(large_string)) {
+            json.put("large", large_string);
+        }
 
         System.out.println("INITIAL MEMORY");
         System.out.println(SystemUtils.printSystemStatus());
 
-        // 5 threads
-        for (int x = 0; x < 5; x++) {
-            List<Task<String>> tasks = new ArrayList<>();
+        List<Task<String>> tasks = new ArrayList<>();
 
-            // 3 concurrent requests
-            for (int i = 0; i < 3; i++) {
-                tasks.add(new Task<String>(t -> {
+        for (int loop = 0; loop < 20; loop++) {
+            // 5 threads
+            for (int x = 0; x < 1; x++) {
 
-                    HttpClient client = new HttpClient();
-                    client.post(url, json.getJSONObject(), (err, result)->{
-                        if(null!=err){
-                            t.fail(err);
-                            System.out.println(err);
-                        } else {
-                            t.success(result);
-                            System.out.println(result);
-                        }
-                    });
 
-                }));
+                // 3 concurrent requests
+                for (int i = 0; i < 1; i++) {
+                    tasks.add(this.post(url, json));
+                }
+
+                System.out.println("BEFORE GC");
+                System.out.println(SystemUtils.printSystemStatus());
+
+                Runtime.getRuntime().gc();
+
+                System.out.println("AFTER GC");
+                System.out.println(SystemUtils.printSystemStatus());
             }
 
-            Async.joinAll(tasks);
-
-            System.out.println("BEFORE GC");
-            System.out.println(SystemUtils.printSystemStatus());
-
-            Runtime.getRuntime().gc();
-
-            System.out.println("AFTER GC");
-            System.out.println(SystemUtils.printSystemStatus());
+            System.out.println("LOOP: " + loop);
         }
 
-
+        Async.joinAll(tasks);
 
     }
+
+    private Task<String> post(final String url, final JsonWrapper params) {
+        return new Task<String>(t -> {
+
+            HttpClient client = new HttpClient();
+            client.post(url, params.getJSONObject(), (err, result) -> {
+                if (null != err) {
+                    t.fail(err);
+                    System.out.println(err);
+                } else {
+                    t.success(result);
+                    System.out.println(result);
+                }
+            });
+
+        }).run();
+    }
+
 }

@@ -31,6 +31,14 @@ public class HttpBuffer {
         this.read(io);
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            _buffer = null;
+        } catch (Exception e) {
+        }
+        super.finalize();
+    }
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------

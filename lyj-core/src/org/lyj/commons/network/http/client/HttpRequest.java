@@ -31,8 +31,8 @@ public class HttpRequest {
     private final static String[] METHODS = new String[]{POST, GET};
 
     public static final String HEADER_CONTENT_LENGTH = "Content-Length";
-    public static  final String HEADER_CHARSET = "charset";
-    public static  final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_CHARSET = "charset";
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
     public static final String HEADER_CONTENT_TYPE_FORM = MimeTypeUtils.MIME_FORM;
     public static final String HEADER_CONTENT_TYPE_JSON = MimeTypeUtils.MIME_JSON;
 
@@ -81,6 +81,35 @@ public class HttpRequest {
         _buffer = new HttpBuffer();
 
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            if (null != _connection) {
+                try {
+                    _connection.disconnect();
+                } catch (Throwable ignored) {
+                } finally {
+                    _connection = null;
+                }
+                try {
+                    _headers.clear();
+                } catch (Throwable ignored) {
+                } finally {
+                    _headers = null;
+                }
+                try {
+                    _buffer.clear();
+                } catch (Throwable ignored) {
+                } finally {
+                    _buffer = null;
+                }
+            }
+        } catch (Exception e) {
+        }
+        super.finalize();
+    }
+
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
