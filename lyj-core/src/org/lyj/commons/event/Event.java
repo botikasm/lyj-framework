@@ -82,8 +82,9 @@ public class Event {
         return JsonWrapper.get(_json, FLD_DATA);
     }
 
-    public void setData(final Object data) {
+    public Event setData(final Object data) {
         this.put(FLD_DATA, data);
+        return this;
     }
 
     protected void put(final String key, final Object value) {
