@@ -131,10 +131,31 @@ public class ImageIOUtils {
     }
 
     public static BufferedImage readBytes(final byte[] bytes) throws IOException {
-        try (InputStream in = new ByteArrayInputStream(bytes)){
+        try (InputStream in = new ByteArrayInputStream(bytes)) {
             return ImageIO.read(in);
         }
     }
+
+    public static void writeBase64(final String base64, final String fileName) throws IOException {
+        writeBase64(base64, new File(fileName));
+    }
+
+    public static void writeBase64(final String base64, final File file) throws IOException {
+        final BufferedImage image = readBase64(base64);
+        write(image, file);
+    }
+
+    public static void write(final BufferedImage image, final String fileName) throws IOException {
+        write(image, new File(fileName));
+    }
+
+    public static void write(final BufferedImage image, final File file) throws IOException {
+        if (null != image) {
+            final String ext = PathUtils.getFilenameExtension(file.getName(), false);
+            ImageIO.write(image, ext, file);
+        }
+    }
+
 
     public static ImageSize getImageSize(final File file) {
         final ImageSize size = new ImageSize();

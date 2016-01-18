@@ -179,11 +179,22 @@ public abstract class AbstractService
 
     protected void findOne(final String collection_name, final Bson filter,
                            final Delegates.SingleResultCallback<Document> callback) {
+        this.findOne(collection_name, filter, null, callback);
+    }
+
+    protected void findOne(final String collection_name,
+                           final Bson filter,
+                           final Bson projection,
+                           final Delegates.SingleResultCallback<Document> callback) {
         this.getCollection(collection_name, (err, collection) -> {
             if (null == err) {
-                collection.find(filter).first((final Object item, final Throwable error) -> {
+                FindIterable<Document> iterable = collection.find().filter(filter);
+                if (null != projection) {
+                    iterable = iterable.projection(projection);
+                }
+                iterable.first((item, error) -> {
                     if (null == error) {
-                        Delegates.invoke(callback, null, (Document) item);
+                        Delegates.invoke(callback, null, item);
                     } else {
                         Delegates.invoke(callback, error, null);
                     }

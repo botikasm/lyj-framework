@@ -102,7 +102,7 @@ public class LyjMongoObjects {
     }
 
     public static Document asDocument(final Object... pairs) {
-        final Document result = new Document();
+        Document result = new Document();
         final int len = pairs.length;
         for (int i = 0; i < len - 1; i += 2) {
             String key = StringUtils.toString(pairs[i]);
@@ -110,6 +110,14 @@ public class LyjMongoObjects {
             if (StringUtils.hasText(key)) {
                 result.put(key, value);
             }
+        }
+        return result;
+    }
+
+    public static Bson asProjection(final String ... names){
+        Document result = new Document();
+        for(String name:names){
+            result.put(name, 1);
         }
         return result;
     }
