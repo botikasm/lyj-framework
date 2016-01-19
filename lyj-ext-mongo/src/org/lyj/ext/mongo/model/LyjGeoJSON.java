@@ -5,6 +5,7 @@ import org.lyj.commons.util.CollectionUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;
 import org.lyj.ext.mongo.utils.LyjMongoObjects;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -103,6 +104,22 @@ public class LyjGeoJSON
     public LyjGeoJSON setCoordinates(final List value){
         this.put(COORDINATES, value);
         return this;
+    }
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static LyjGeoJSON buildPoint(final double longitude,
+                                        final double latidude){
+        List<Double> coordinates = new LinkedList<Double>();
+        coordinates.add( new Double(longitude) );
+        coordinates.add( new Double(latidude) );
+
+        LyjGeoJSON result = new LyjGeoJSON();
+        result.setCoordinates(coordinates);
+
+        return result;
     }
 
 }
