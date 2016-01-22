@@ -38,6 +38,7 @@ public interface ILyjMongoConstants {
     public static final String $SUM = "$sum";
     public static final String $SKIP = "$skip";
     public static final String $LIMIT = "$limit";
+    public static final String $GEO_NEAR = "$geoNear";
 
     // ------------------------------------------------------------------------
     //                      G E O - T Y P E S

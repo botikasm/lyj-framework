@@ -213,6 +213,9 @@ public class Lyj {
         FileDeployer.register(deployer);
     }
 
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
 
     private static void initLanguages() {
         __langMap = new JsonWrapper(new JSONObject());

@@ -46,7 +46,10 @@ public class LyjMongoCommands
      * @param distanceMultiplier Optional. The factor to multiply all distances returned by the query. For example, use
      *                           the distanceMultiplier to convert radians, as returned by a spherical query,
      *                           to kilometers by multiplying by the radius of the Earth.
-     * @param includeLocs        Optional. If this is true, the query returns the location of the matching documents in the results. The default is false. This option is useful when a location field contains multiple locations. To specify a field within an embedded document, use dot notation.
+     * @param includeLocs        Optional. If this is true, the query returns the location of the matching documents
+     *                           in the results.
+     *                           The default is false. This option is useful when a location field contains multiple
+     *                           locations. To specify a field within an embedded document, use dot notation.
      * @return geoNear command
      */
     public static Document geoNear(final String collection, final Double longitute, final Double latitude,

@@ -154,13 +154,19 @@ public abstract class DateUtils {
                 result = (double) (diff / 1000d);
                 break;
             case MINUTE:
-                result = (double) (diff / (1000d * 60L));
+                result = (double) (diff / (1000d * 60d));
                 break;
             case HOUR:
                 result = (double) (diff / (1000d * 60d * 60d));
                 break;
             case DAY:
                 result = (double) (diff / (1000d * 60d * 60d * 24d));
+                break;
+            case YEAR:
+                result = (double) (diff / (1000d * 60d * 60d * 24d * 365d));
+                break;
+            case MONTH:
+                result = (double) (diff / (1000d * 60d * 60d * 24d * 365d) / 12d);
                 break;
         }
         return result;

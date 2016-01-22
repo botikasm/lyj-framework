@@ -1,8 +1,9 @@
-package org.lyj.ext.mongo.utils;
+package org.lyj.ext.mongo.utils.aggregation;
 
 import org.bson.Document;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.mongo.ILyjMongoConstants;
+import org.lyj.ext.mongo.utils.LyjMongoObjects;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -14,6 +15,11 @@ import java.util.Map;
  * <p>
  * In Aggregation the sequence order of commands is important.
  * To filter an aggregation remember to declare a "$match" as first command.
+ *
+ * DOCUMENTATION:<br>
+ *     $geoNear: https://docs.mongodb.org/manual/reference/command/geoNear/#dbcmd.geoNear
+ *
+ *
  */
 public class LyjMongoAggregate
         implements ILyjMongoConstants {
@@ -52,6 +58,11 @@ public class LyjMongoAggregate
 
     public LyjMongoAggregate match(final String key, final Object value) {
         this.get($MATCH).put(key, value);
+        return this;
+    }
+
+    public LyjMongoAggregate geoNear(final LyjGeoNearOptions value) {
+        this.getSimple($GEO_NEAR).put($GEO_NEAR, value.asBson());
         return this;
     }
 
@@ -131,6 +142,13 @@ public class LyjMongoAggregate
             _condition.put(key, new Document(key, new Document()));
         }
         return (Document) _condition.get(key).get(key);
+    }
+
+    private Document getSimple(final String key) {
+        if (!_condition.containsKey(key)) {
+            _condition.put(key, new Document());
+        }
+        return (Document) _condition.get(key);
     }
 
     // ------------------------------------------------------------------------

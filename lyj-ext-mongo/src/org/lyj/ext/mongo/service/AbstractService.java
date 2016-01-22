@@ -273,7 +273,7 @@ public abstract class AbstractService
         });
     }
 
-    public Task<List<String>> findIdsTask(final String collection_name, final Bson filter,
+    protected Task<List<String>> findIdsTask(final String collection_name, final Bson filter,
                                           final int skip, final int limit, final Bson sort) {
         return new Task<List<String>>((t) -> {
             this.findIds(collection_name, filter, skip, limit, sort, (err, result) -> {

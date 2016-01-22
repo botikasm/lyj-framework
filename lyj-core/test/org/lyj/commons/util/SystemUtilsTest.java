@@ -30,6 +30,14 @@ public class SystemUtilsTest {
 
     }
 
+    @Test
+    public void testOpenUrl() throws Exception {
+        String url = "file:///Users/angelogeminiani/Desktop/002629086197.pdf";
+
+        SystemUtils.openURL(url);
+
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------

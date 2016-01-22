@@ -3,6 +3,7 @@ package org.lyj.ext.mongo.utils;
 import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Test;
+import org.lyj.ext.mongo.utils.filter.LyjMongoFilter;
 
 import java.util.Arrays;
 

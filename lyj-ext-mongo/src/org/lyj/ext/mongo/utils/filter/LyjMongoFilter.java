@@ -1,4 +1,4 @@
-package org.lyj.ext.mongo.utils;
+package org.lyj.ext.mongo.utils.filter;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -229,6 +229,11 @@ public class LyjMongoFilter
 
     public static LyjMongoFilter create(final String filter) {
         return new LyjMongoFilter(filter);
+    }
+
+    public static Document in(final Document filter, final String fieldName, final Collection list){
+        filter.put(fieldName, new Document($IN, list));
+        return filter;
     }
 
 }
