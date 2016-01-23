@@ -212,6 +212,18 @@ public class Timed
         }
     }
 
+    public boolean isRunning(){
+        return null!=__scheduler && !__scheduler.isShutdown() && !__scheduler.isTerminated();
+    }
+
+    public boolean isShutdown(){
+        return null!=__scheduler && __scheduler.isShutdown();
+    }
+
+    public boolean isTerminated(){
+        return null!=__scheduler && __scheduler.isTerminated();
+    }
+
     // --------------------------------------------------------------------
     //               p r i v a t e
     // --------------------------------------------------------------------

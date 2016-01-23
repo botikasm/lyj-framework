@@ -28,31 +28,48 @@ import org.json.JSONObject;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
+import java.io.Serializable;
+
 /**
  *
  *
  */
-public class Event {
+public class Event
+        implements Serializable {
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    private static final String FLD_TIMESTAMP = "timestamp";
     private static final String FLD_SENDER = "sender";
     private static final String FLD_NAME = "name";
+    private static final String FLD_TAG = "tag";
     private static final String FLD_DATA = "data";
+
+    // ------------------------------------------------------------------------
+    //                      f i e l d s
+    // ------------------------------------------------------------------------
 
     private final JSONObject _json;
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
     public Event(final Object sender,
                  final String name) {
-        _json = new JSONObject();
-        this.put(FLD_SENDER, sender);
-        this.put(FLD_NAME, name);
+        this(sender, name, null);
     }
 
     public Event(final Object sender,
                  final String name,
                  final Object data) {
         _json = new JSONObject();
+        this.put(FLD_TIMESTAMP, System.currentTimeMillis());
         this.put(FLD_SENDER, sender);
         this.put(FLD_NAME, name);
+
         this.setData(data);
     }
 
@@ -69,13 +86,20 @@ public class Event {
         return JsonWrapper.get(_json, FLD_SENDER);
     }
 
-    /*
-    public void setSender(Object sender) {
-        _sender = sender;
-    }
-    */
     public String getName() {
         return JsonWrapper.getString(_json, FLD_NAME);
+    }
+
+    public String getTag() {
+        return JsonWrapper.getString(_json, FLD_TAG);
+    }
+
+    public Event setTag(final String value) {
+        if (StringUtils.hasText(value)) {
+            this.put(FLD_TAG, value);
+        }
+
+        return this;
     }
 
     public Object getData() {
@@ -83,7 +107,10 @@ public class Event {
     }
 
     public Event setData(final Object data) {
-        this.put(FLD_DATA, data);
+        if (null != data) {
+            this.put(FLD_DATA, data);
+        }
+
         return this;
     }
 

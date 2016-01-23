@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by angelogeminiani on 21/08/14.
+ *
  */
 public final class EventDispatcher {
 

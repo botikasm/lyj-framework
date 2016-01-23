@@ -43,9 +43,14 @@ public class EventListeners
 
     private final List<IEventListener> _listeners;
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
     public EventListeners() {
         _listeners = Collections.synchronizedList(new LinkedList<IEventListener>());
     }
+
 
     @Override
     protected void finalize() throws Throwable {
@@ -54,6 +59,10 @@ public class EventListeners
         }
         super.finalize();
     }
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
 
     @Override
     public String toString() {
@@ -65,6 +74,7 @@ public class EventListeners
 
         return result.toString();
     }
+
 
     public int size() {
         synchronized (_listeners) {

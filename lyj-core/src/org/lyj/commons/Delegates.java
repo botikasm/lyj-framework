@@ -101,6 +101,14 @@ public class Delegates {
     }
 
 
+    // --------------------------------------------------------------------
+    //               C o l l e c t i o n s
+    // --------------------------------------------------------------------
+
+    @FunctionalInterface
+    public static interface IterationBoolCallback<T> {
+        boolean handle(final T item, final int index, final Object key);
+    }
 
     // --------------------------------------------------------------------
     //               I n v o k e r
@@ -147,6 +155,14 @@ public class Delegates {
     public static void invoke(final ProgressCallback callback, final int index, final int length, final double progress) {
         if (null != callback) {
             callback.handle(index, length, progress);
+        }
+    }
+
+    public static <T> boolean invoke(final IterationBoolCallback<T> callback, final T item, final int index, final Object key) {
+        if (null != callback) {
+            return callback.handle(item, index, key);
+        } else {
+            return false;
         }
     }
 
