@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Event bus container
  */
-public class EventBusData {
+public class MessageBusData {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -19,14 +19,14 @@ public class EventBusData {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final List<EventBusDataItem> _events;
+    private final List<MessageBusDataItem> _events;
     private final int _timeout;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public EventBusData(final int timeout) {
+    public MessageBusData(final int timeout) {
         _events = new ArrayList<>();
         _timeout = timeout;
     }
@@ -65,20 +65,20 @@ public class EventBusData {
         return _events.size();
     }
 
-    public EventBusData clear() {
+    public MessageBusData clear() {
         synchronized (_events) {
             _events.clear();
         }
         return this;
     }
 
-    public EventBusData add(final Event event) {
+    public MessageBusData add(final Event event) {
         return this.add(event, _timeout);
     }
 
-    public EventBusData add(final Event event, final int timeout) {
+    public MessageBusData add(final Event event, final int timeout) {
         synchronized (_events) {
-            _events.add(new EventBusDataItem(event, timeout));
+            _events.add(new MessageBusDataItem(event, timeout));
         }
         return this;
     }
@@ -86,7 +86,7 @@ public class EventBusData {
     public Event[] listen(final String listenerId, final String tag, final String name) {
         synchronized (_events) {
             final List<Event> response = new ArrayList<>();
-            for (final EventBusDataItem event : _events) {
+            for (final MessageBusDataItem event : _events) {
                 if (this.match(event, listenerId, tag, name)) {
                     response.add(event.setListened(listenerId).event());
                 }
@@ -99,12 +99,12 @@ public class EventBusData {
     //                      p a c k a g e
     // ------------------------------------------------------------------------
 
-    void reject(final Delegates.IterationBoolCallback<EventBusDataItem> callback) {
+    void reject(final Delegates.IterationBoolCallback<MessageBusDataItem> callback) {
         synchronized (_events) {
             if (null != callback) {
                 int count = _events.size();
                 for (int i = count - 1; i > -1; i--) {
-                    final EventBusDataItem event = _events.get(i);
+                    final MessageBusDataItem event = _events.get(i);
                     if (callback.handle(event, i, event.event().getName())) {
                         // remove
                         _events.remove(i);
@@ -118,7 +118,7 @@ public class EventBusData {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private boolean match(final EventBusDataItem item, final String listenerId, final String tag, final String name) {
+    private boolean match(final MessageBusDataItem item, final String listenerId, final String tag, final String name) {
         return !item.isListened(listenerId) && item.match(tag, name);
     }
 

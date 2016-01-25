@@ -3,7 +3,7 @@ package org.lyj.commons.event.bus;
 import org.lyj.commons.event.Event;
 import org.lyj.commons.event.EventListeners;
 import org.lyj.commons.event.IEventListener;
-import org.lyj.commons.event.bus.utils.EventListenerTask;
+import org.lyj.commons.event.bus.utils.MessageListenerTask;
 import org.lyj.commons.util.RandomUtils;
 
 /**
@@ -11,17 +11,17 @@ import org.lyj.commons.util.RandomUtils;
  * <p>
  * To create an EventListener use EventBus.createListener() method.
  */
-public class EventListener {
+public class MessageListener {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final EventBus _bus;
+    private final MessageBus _bus;
 
     private final String _id;
     private final EventListeners _listeners;
-    private final EventListenerTask _task;
+    private final MessageListenerTask _task;
 
     private String _event_tag;
     private String _event_name;
@@ -30,11 +30,11 @@ public class EventListener {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    EventListener(final EventBus bus, final int interval) {
+    MessageListener(final MessageBus bus, final int interval) {
         _bus = bus;
         _id = RandomUtils.randomUUID();
         _listeners = new EventListeners();
-        _task = new EventListenerTask(interval);
+        _task = new MessageListenerTask(interval);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class EventListener {
      * @param value The Event Tag to filter
      * @return this
      */
-    public EventListener setEventTag(final String value) {
+    public MessageListener setEventTag(final String value) {
         _event_tag = value;
         return this;
     }
@@ -81,7 +81,7 @@ public class EventListener {
      * @param value The Event Name to filter
      * @return this
      */
-    public EventListener setEventName(final String value) {
+    public MessageListener setEventName(final String value) {
         _event_name = value;
         return this;
     }

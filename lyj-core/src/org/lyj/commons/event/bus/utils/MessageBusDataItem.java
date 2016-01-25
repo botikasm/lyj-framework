@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Wrap Event into container
  */
-public class EventBusDataItem {
+public class MessageBusDataItem {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -24,7 +24,7 @@ public class EventBusDataItem {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public EventBusDataItem(final Event event, final int timeout){
+    public MessageBusDataItem(final Event event, final int timeout){
         _event = event;
         _timeout = timeout;
         _timestamp = System.currentTimeMillis();
@@ -71,7 +71,7 @@ public class EventBusDataItem {
         }
     }
 
-    public EventBusDataItem setListened(final String id){
+    public MessageBusDataItem setListened(final String id){
         synchronized (_listeners){
             _listeners.add(id);
         }

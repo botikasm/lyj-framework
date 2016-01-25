@@ -1,8 +1,8 @@
 package org.lyj.commons.event.bus;
 
 import org.lyj.commons.event.Event;
-import org.lyj.commons.event.bus.utils.EventBusData;
-import org.lyj.commons.event.bus.utils.EventBusGC;
+import org.lyj.commons.event.bus.utils.MessageBusData;
+import org.lyj.commons.event.bus.utils.MessageBusGC;
 import org.lyj.commons.util.RandomUtils;
 
 /**
@@ -19,7 +19,7 @@ import org.lyj.commons.util.RandomUtils;
  *  Each event bus has an internal thread that works as a garbage collector.
  *
  */
-public class EventBus {
+public class MessageBus {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -32,8 +32,8 @@ public class EventBus {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final EventBusGC _gc;
-    private final EventBusData _data;
+    private final MessageBusGC _gc;
+    private final MessageBusData _data;
     private final String _id;
 
     private boolean _disposed;
@@ -42,13 +42,13 @@ public class EventBus {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public EventBus(){
+    public MessageBus(){
         this(DEF_EVENT_TIMEOUT, DEF_INTERVAL);
     }
 
-    public EventBus(final int eventTimeout, final int gcInterval){
-        _data = new EventBusData(eventTimeout);
-        _gc = new EventBusGC(this, gcInterval);
+    public MessageBus(final int eventTimeout, final int gcInterval){
+        _data = new MessageBusData(eventTimeout);
+        _gc = new MessageBusGC(this, gcInterval);
         _id = RandomUtils.randomUUID();
         _disposed = false;
     }
@@ -84,11 +84,11 @@ public class EventBus {
         return _data.size();
     }
 
-    public EventBusData events(){
+    public MessageBusData events(){
         return _data;
     }
 
-    public EventBus emit(final Event event){
+    public MessageBus emit(final Event event){
         if(!_gc.isRunning()){
             _gc.start();
         }
@@ -100,8 +100,8 @@ public class EventBus {
 
     //-- factory --//
 
-    public EventListener createListener(){
-        return new EventListener(this, (int)(DEF_INTERVAL*0.5));
+    public MessageListener createListener(){
+        return new MessageListener(this, (int)(DEF_INTERVAL*0.5));
     }
 
     // ------------------------------------------------------------------------
@@ -122,11 +122,11 @@ public class EventBus {
 
     //-- singleton --//
 
-    private static EventBus __instance;
+    private static MessageBus __instance;
 
-    public static EventBus getInstance(){
+    public static MessageBus getInstance(){
         if(null==__instance){
-            __instance = new EventBus();
+            __instance = new MessageBus();
         }
         return __instance;
     }

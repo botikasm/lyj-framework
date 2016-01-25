@@ -8,7 +8,7 @@ import org.lyj.commons.event.Event;
 /**
  * Test fo EventBus
  */
-public class EventBusTest {
+public class MessageBusTest {
 
     @Before
     public void setUp() throws Exception {
@@ -28,17 +28,17 @@ public class EventBusTest {
         final Event event1 = new Event(this, "on_test").setTag("sample");
         final Event event2 = new Event(this, "on_test2").setTag("sample2");
 
-        EventBus bus = new EventBus().emit(event1).emit(event2);
+        MessageBus bus = new MessageBus().emit(event1).emit(event2);
 
         System.out.println(bus.toString());
 
-        EventListener listener = bus.createListener();
+        MessageListener listener = bus.createListener();
 
         listener.on((event)->{
             System.out.println("LISTENER: " + event.toString());
         });
 
-        EventListener listener_tag = bus.createListener().setEventTag("sample2");
+        MessageListener listener_tag = bus.createListener().setEventTag("sample2");
 
         listener_tag.on((event)->{
             System.out.println("LISTENER TAG: " + event.toString());
