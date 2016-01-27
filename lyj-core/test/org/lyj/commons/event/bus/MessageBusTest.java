@@ -52,9 +52,9 @@ public class MessageBusTest {
         }
 
         bus = null;
-        listener.clear(); // clear references to completely remove handlers references
+        listener.stop(); // clear references to completely remove handlers references
         listener = null;
-        listener_tag.clear();
+        listener_tag.stop();
         listener_tag = null;
 
         System.gc();

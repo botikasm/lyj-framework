@@ -40,7 +40,7 @@ public class MessageListener {
     @Override
     public void finalize() throws Throwable {
         try {
-            this.clear();
+            this.stop();
         } finally {
             super.finalize();
         }
@@ -90,7 +90,7 @@ public class MessageListener {
      * Clear all listeners and stop internat thread.
      * Internal thread run again when new listeners are added to queue.
      */
-    public void clear() {
+    public void stop() {
         synchronized (_listeners) {
             _listeners.clear();
             _task.stop(true);
