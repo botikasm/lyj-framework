@@ -41,6 +41,8 @@ public abstract class AbstractService
 
     public static final String ID = ILyjMongoConstants.F_ID;
 
+    private static final String $PUSH = ILyjMongoConstants.$PUSH;
+
     // ------------------------------------------------------------------------
     //                      a b s t r a c t
     // ------------------------------------------------------------------------
@@ -274,7 +276,7 @@ public abstract class AbstractService
     }
 
     protected Task<List<String>> findIdsTask(final String collection_name, final Bson filter,
-                                          final int skip, final int limit, final Bson sort) {
+                                             final int skip, final int limit, final Bson sort) {
         return new Task<List<String>>((t) -> {
             this.findIds(collection_name, filter, skip, limit, sort, (err, result) -> {
                 if (null != err) {
@@ -354,6 +356,33 @@ public abstract class AbstractService
         this.update(collection_name, id, data, callback);
     }
 
+    protected void push(final String collection_name, final String id, final String fieldName, final Bson data,
+                        final Delegates.SingleResultCallback<UpdateResult> callback) {
+        this.push(collection_name, id, new Document(fieldName, data), callback);
+    }
+
+    protected void push(final String collection_name, final String id, final Bson data,
+                        final Delegates.SingleResultCallback<UpdateResult> callback) {
+        this.getCollection(collection_name, (err, collection) -> {
+            if (null == err) {
+                final Document update = new Document($PUSH, data);
+                final Bson filter = eq(ID, id);
+                collection.updateOne(filter, update, new SingleResultCallback<UpdateResult>() {
+                    @Override
+                    public void onResult(UpdateResult result, Throwable error) {
+                        if (null == error) {
+                            Delegates.invoke(callback, null, result);
+                        } else {
+                            Delegates.invoke(callback, error, null);
+                        }
+                    }
+                });
+            } else {
+                Delegates.invoke(callback, err, null);
+            }
+        });
+    }
+
     protected void remove(final String collection_name, final String id,
                           final Delegates.SingleResultCallback<Document> callback) {
         this.getCollection(collection_name, (err, collection) -> {
@@ -395,8 +424,8 @@ public abstract class AbstractService
                                          final Delegates.SingleResultCallback<List<String>> callback) {
         try {
             final List<String> id_list = this.findIdsTask(collection_name, filter, 0, 0, null).run().get();
-            this.removeAll(collection_name, filter, (err, deleteResult)->{
-                if(null!=err){
+            this.removeAll(collection_name, filter, (err, deleteResult) -> {
+                if (null != err) {
                     Delegates.invoke(callback, err, null);
                 } else {
                     Delegates.invoke(callback, null, id_list);

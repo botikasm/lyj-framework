@@ -93,6 +93,10 @@ public abstract class AbstractModel
         return LyjMongoObjects.getArrayOfString(_document, key, addIfNone);
     }
 
+    public Document getDocument(final String key) {
+        return LyjMongoObjects.getDocument(_document, key);
+    }
+
     public List<Document> getArrayOfDocument(final String key) {
         return LyjMongoObjects.getArrayOfDocument(_document, key);
     }

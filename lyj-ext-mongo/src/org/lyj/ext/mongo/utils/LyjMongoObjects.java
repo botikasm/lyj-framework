@@ -114,9 +114,9 @@ public class LyjMongoObjects {
         return result;
     }
 
-    public static Bson asProjection(final String ... names){
+    public static Bson asProjection(final String... names) {
         Document result = new Document();
-        for(String name:names){
+        for (String name : names) {
             result.put(name, 1);
         }
         return result;
@@ -200,6 +200,11 @@ public class LyjMongoObjects {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    public static Document getDocument(final Document document, final String key) {
+        final Object result = document.get(key);
+        return result instanceof Bson ? (Document) result : null;
     }
 
     public static List<Document> getArrayOfDocument(final Document document, final String key) {

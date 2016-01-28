@@ -10,6 +10,10 @@ public interface ILyjMongoConstants {
     public static final String F_ID = "_id";
     public static final String F_COLLECTION = "_collection";
 
+    // ------------------------------------------------------------------------
+    //                      O P E R A T O R S
+    // ------------------------------------------------------------------------
+
     public static final String $NUMBER_LONG = "$numberLong";
 
     public static final String $NE = "$ne";
@@ -19,7 +23,7 @@ public interface ILyjMongoConstants {
     public static final String $OR = "$or";
     public static final String $AND = "$and";
 
-
+    public static final String $PUSH = "$push";
 
     public static final String TYPE = "type";
     public static final String COORDINATES = "coordinates";

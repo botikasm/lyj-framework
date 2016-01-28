@@ -28,7 +28,8 @@ public class MessageBusTest {
         final Event event1 = new Event(this, "on_test").setTag("sample");
         final Event event2 = new Event(this, "on_test2").setTag("sample2");
 
-        MessageBus bus = new MessageBus().emit(event1).emit(event2);
+        MessageBus bus = MessageBus.getInstance();
+       bus.emit(event1).emit(event2);
 
         System.out.println(bus.toString());
 
