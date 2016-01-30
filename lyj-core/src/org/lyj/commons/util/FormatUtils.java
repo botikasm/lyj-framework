@@ -190,7 +190,7 @@ public class FormatUtils {
                 final String placeholder = buf.toString().substring(startIndex + prefix.length(), endIndex);
                 Object propVal;
                 if (contextData.containsKey(placeholder)) {
-                    if (placeholder.indexOf(".") == -1) {
+                    if (!placeholder.contains(".")) {
                         // simple property
                         propVal = contextData.get(placeholder);
                     } else {
