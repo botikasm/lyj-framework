@@ -45,7 +45,10 @@ import java.util.Map;
  */
 public class YahooPlaceFinder {
 
-    private final String _appId;
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
     private static final String FLD_RESULTSET = "ResultSet";
     private static final String FLD_ERROR = FLD_RESULTSET + ".Error";
     private static final String FLD_ERRORMSG = FLD_RESULTSET + ".ErrorMessage";
@@ -58,9 +61,23 @@ public class YahooPlaceFinder {
     private static final String GEOCODING = "web://query.yahooapis.com/v1/public/yql?q=select+*+from+geo.placefinder+where+text=\"{address}\"&appid={appid}&format=json";
     private static final String GEOCODING_COORD = "web://where.yahooapis.com/geocode?locale={locale}&location={address}&flags=JC&appid={appid}";
 
+    // ------------------------------------------------------------------------
+    //                      fields
+    // ------------------------------------------------------------------------
+
+    private final String _appId;
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
     public YahooPlaceFinder(final String appId) {
         _appId = appId;
     }
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
 
     /**
      * Returns Address object.

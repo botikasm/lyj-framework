@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.mutex;
+package org.lyj.commons.async.mutex;
 
 import java.util.Collections;
 import java.util.HashMap;

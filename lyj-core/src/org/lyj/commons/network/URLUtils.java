@@ -41,15 +41,27 @@ import java.util.Map;
  */
 public class URLUtils {
 
-    private static final String CHARSET = CharEncoding.getDefault();
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
 
     public static final String TYPE_ALL = IConstants.TYPE_ALL;
     public static final String TYPE_JSON = IConstants.TYPE_JSON;
     public static final String TYPE_TEXT = IConstants.TYPE_TEXT;
     public static final String TYPE_HTML = IConstants.TYPE_HTML;
 
+    private static final String CHARSET = CharEncoding.getDefault();
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
     private URLUtils() {
     }
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
 
     public static String getUrlContent(final String uri) {
         return getUrlContent(uri, 3000);

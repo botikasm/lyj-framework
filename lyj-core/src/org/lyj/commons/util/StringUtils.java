@@ -775,7 +775,7 @@ public final class StringUtils {
             for (final String key : keys) {
                 final String value = StringUtils.notNull(params.get(key), "");
                 if (StringUtils.hasText(value)) {
-                    StringUtils.append(encode(key, charSet).concat("=").concat(encode(value, charSet)),
+                    StringUtils.append(urlEncode(key, charSet).concat("=").concat(urlEncode(value, charSet)),
                             result, sep);
                 }
             }
@@ -784,6 +784,21 @@ public final class StringUtils {
         return "";
     }
 
+    public static String urlEncodeSpaces(final String s) {
+        return StringUtils.replaceDuplicates(StringUtils.replace(s, new String[]{" ", "\n", "\t"}, "+"), "+");
+    }
+
+    public static String urlEncode(final String s) {
+        return urlEncode(s, CharEncoding.getDefault());
+    }
+
+    public static String urlEncode(final String s, final String charSet) {
+        try {
+            return URLEncoder.encode(urlEncodeSpaces(s), charSet);
+        } catch (Exception ignored) {
+        }
+        return s;
+    }
 
     public static InputStream toInputStream(final String text) {
         return toInputStream(CharEncoding.getDefault(), text);
@@ -1593,18 +1608,6 @@ public final class StringUtils {
         }
 
         return regex.toString();
-    }
-
-    private static String encode(final String s) {
-        return encode(s, CharEncoding.getDefault());
-    }
-
-    private static String encode(final String s, final String charSet) {
-        try {
-            return URLEncoder.encode(s, charSet);
-        } catch (Exception ignored) {
-        }
-        return s;
     }
 
     private static String[] _splitLastOrFirst(final String toSplit,

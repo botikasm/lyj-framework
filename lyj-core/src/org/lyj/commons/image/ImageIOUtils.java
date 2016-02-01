@@ -115,13 +115,13 @@ public class ImageIOUtils {
         return image;
     }
 
-    public static String readBase64(final File file) throws IOException, ImageReadException {
+    public static String toBase64(final File file) throws IOException, ImageReadException {
         final BufferedImage image = readExt(file);
         final String format = PathUtils.getFilenameExtension(file.getAbsolutePath(), false);
-        return readBase64(image, format);
+        return toBase64(image, format);
     }
 
-    public static String readBase64(final BufferedImage image, final String format) throws IOException {
+    public static String toBase64(final BufferedImage image, final String format) throws IOException {
         return Base64.encodeBytes(ByteUtils.getBytes(image, format));
     }
 
