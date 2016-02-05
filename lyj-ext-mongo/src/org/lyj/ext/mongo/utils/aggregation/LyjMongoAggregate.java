@@ -98,6 +98,16 @@ public class LyjMongoAggregate
         return this;
     }
 
+    public LyjMongoAggregate sum(final String sumAlias, final String fieldName) {
+        this.get($GROUP).put("sum" + StringUtils.capitalize(sumAlias), new Document($SUM, "$".concat(fieldName)));
+        return this;
+    }
+
+    public LyjMongoAggregate sum(final String sumAlias, final Document expression) {
+        this.get($GROUP).put("sum" + sumAlias, new Document($SUM, expression));
+        return this;
+    }
+
     public LyjMongoAggregate avg(final String avgAlias, final String fieldName) {
         this.get($GROUP).put("avg" + StringUtils.capitalize(avgAlias), new Document($AVG, "$".concat(fieldName)));
         return this;
@@ -125,6 +135,15 @@ public class LyjMongoAggregate
 
     public LyjMongoAggregate min(final String minAlias, final Document expression) {
         this.get($GROUP).put("min" + minAlias, new Document($MIN, expression));
+        return this;
+    }
+
+    public LyjMongoAggregate skip(final int value) {
+        this.getSimple($SKIP).put($SKIP, value);
+        return this;
+    }
+    public LyjMongoAggregate limit(final int value) {
+        this.getSimple($LIMIT).put($LIMIT, value);
         return this;
     }
 
