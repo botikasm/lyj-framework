@@ -1,11 +1,11 @@
 package org.lyj.commons.logging;
 
 /**
- * Created by angelogeminiani on 22/12/15.
+ * Log emitter.
  */
 public interface ILogEmitter {
 
-    Logger getLogger();
+    Logger logger();
 
     void log(final Level level, final String methodName, final String message);
 

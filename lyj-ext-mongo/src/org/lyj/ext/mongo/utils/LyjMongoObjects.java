@@ -204,7 +204,18 @@ public class LyjMongoObjects {
 
     public static Document getDocument(final Document document, final String key) {
         final Object result = document.get(key);
-        return result instanceof Bson ? (Document) result : null;
+        return getDocument(document, key, false);
+    }
+
+    public static Document getDocument(final Document document, final String key,
+                                       final boolean addIfNone) {
+        final Object result = document.get(key);
+        if(null==result && addIfNone) {
+            document.put(key, new Document());
+            return (Document) document.get(key);
+        } else {
+            return result instanceof Bson ? (Document) result : null;
+        }
     }
 
     public static List<Document> getArrayOfDocument(final Document document, final String key) {

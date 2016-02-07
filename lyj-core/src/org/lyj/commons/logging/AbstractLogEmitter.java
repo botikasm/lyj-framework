@@ -31,7 +31,7 @@ public class AbstractLogEmitter
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
 
-    public Logger getLogger() {
+    public Logger logger() {
         return _logger;
     }
 
@@ -40,7 +40,7 @@ public class AbstractLogEmitter
     }
 
     public void log(final Level level, final String methodName, final String message, final Throwable t) {
-        final Logger logger = this.getLogger();
+        final Logger logger = this.logger();
         final String name = logger.getShortName().concat(".").concat(methodName);
         final String pattern = null == t ? "[%s] %s" : "[%s] %s: %s";
         final Object[] params = null == t ? new Object[]{name, message} : new Object[]{name, message, t};
