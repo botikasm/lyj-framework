@@ -1,0 +1,6 @@
+{
+  "stage":"app/gui/screens/stage.fxml",
+  "size" : {"width":800, "height":600},
+  "title":"Main Form",
+  "auto-show":"true"
+}

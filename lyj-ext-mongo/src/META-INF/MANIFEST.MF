@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Class-Path: bson-3.2.0-rc0.jar mongodb-driver-async-3.2.0-rc0.jar mong
+ odb-driver-core-3.2.0-rc0.jar
+Main-Class: 
+

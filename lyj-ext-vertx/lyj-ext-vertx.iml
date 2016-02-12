@@ -9,7 +9,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="junit:junit:4.12" level="application" />
-    <orderEntry type="module" module-name="lyj-core" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
@@ -20,5 +19,6 @@
         <jarDirectory url="file://$MODULE_DIR$/vendor/vert.x-3.2.0-full/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="module" module-name="lyj-core" />
   </component>
 </module>

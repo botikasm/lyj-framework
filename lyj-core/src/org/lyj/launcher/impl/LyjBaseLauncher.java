@@ -18,53 +18,52 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.image;
+package org.lyj.launcher.impl;
+
+
+import org.lyj.launcher.LyjLauncher;
 
 /**
- *
+ * Basic Launcher implementation.
  */
-public class ImageSize {
+public class LyjBaseLauncher
+        extends LyjLauncher {
 
-    // ------------------------------------------------------------------------
-    //                      f i e l d s
-    // ------------------------------------------------------------------------
-
-    private int _width;
-    private int _height;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public ImageSize() {
-        _width = 0;
-        _height = 0;
-    }
-
-    public ImageSize(final int width, final int height) {
-        _width = width;
-        _height = height;
+    public LyjBaseLauncher(final String[] args) {
+        super(args);
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public int getWidth() {
-        return _width;
-    }
-
-    public void setWidth(int width) {
-        _width = width;
-    }
-
-    public int getHeight() {
-        return _height;
-    }
-
-    public void setHeight(int height) {
-        _height = height;
+    @Override
+    public void ready() {
+        // nothing to doat the moment
     }
 
 
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    /**
+     * Lyj main method. This retrieves the Lyj home directory, creates the
+     * classpath and invokes run().
+     *
+     * @param args command line arguments
+     */
+    public static void main(final String[] args) {
+        final LyjLauncher main = new LyjBaseLauncher(args);
+        main.run();
+    }
 }

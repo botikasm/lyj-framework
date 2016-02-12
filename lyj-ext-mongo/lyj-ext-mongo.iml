@@ -8,8 +8,8 @@
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="lyj-core" />
     <orderEntry type="library" scope="TEST" name="junit:junit:4.12" level="application" />
     <orderEntry type="library" name="mongodb-async" level="application" />
+    <orderEntry type="module" module-name="lyj-core" />
   </component>
 </module>

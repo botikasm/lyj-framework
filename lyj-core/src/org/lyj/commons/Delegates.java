@@ -38,7 +38,7 @@ public class Delegates {
 
     @FunctionalInterface
     public static interface Handler {
-        void handle();
+        void handle() throws Exception;
     }
 
     // --------------------------------------------------------------------
@@ -114,6 +114,12 @@ public class Delegates {
     //               I n v o k e r
     // --------------------------------------------------------------------
 
+
+    public static void invoke(final Handler callback) throws Throwable {
+        if (null != callback) {
+            callback.handle();
+        }
+    }
 
     public static <T> T invoke(final FunctionArgs<T> callback, final Object... args) {
         if (null != callback) {

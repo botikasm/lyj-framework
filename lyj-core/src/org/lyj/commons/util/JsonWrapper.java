@@ -460,10 +460,14 @@ public final class JsonWrapper implements Cloneable {
     }
 
     public double optDouble(final String key) {
+        return this.optDouble(key, 0.0);
+    }
+
+    public double optDouble(final String key, final double defValue) {
         if (this.isJSONObject()) {
-            return _object.optDouble(key);
+            return _object.optDouble(key, defValue);
         }
-        return 0.0;
+        return defValue;
     }
 
     public int optInt(final String key) {

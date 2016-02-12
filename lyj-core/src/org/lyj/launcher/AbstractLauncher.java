@@ -23,6 +23,7 @@ package org.lyj.launcher;
 
 import org.lyj.IConstants;
 import org.lyj.Lyj;
+import org.lyj.commons.Delegates;
 import org.lyj.commons.cmdline.cmdparser.CmdLineParser;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.logging.Level;
@@ -38,7 +39,11 @@ import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class AbstractLauncher {
+public abstract class AbstractLauncher {
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
 
     // launcher args variables.
     private static final String APPDIR = "APPDIR"; // user.dir
@@ -52,12 +57,21 @@ abstract class AbstractLauncher {
     private static final String CLASSPATH_SMARTLY = Lyj.class.getCanonicalName();
     private static final String LAUCHER_CLASS = "org/lyj/launcher/LyjLauncher.class";
 
+    // ------------------------------------------------------------------------
+    //                      f i e l d s
+    // ------------------------------------------------------------------------
+
     private final String[] _args;
     private final Map<String, Object> _argsMap;
     private String[] _argsRemain;
     private Class _runnerClass;
     private Object _runnerInstance;
     private boolean _initialized;
+    private Delegates.Handler _handler;
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
 
     protected AbstractLauncher(final String[] args) {
         _args = args;
@@ -76,6 +90,15 @@ abstract class AbstractLauncher {
             x.printStackTrace();
             System.exit(2);
         }
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+
+    public AbstractLauncher handle(final Delegates.Handler callback){
+        _handler = callback;
+        return this;
     }
 
     public final void run() {
@@ -109,6 +132,10 @@ abstract class AbstractLauncher {
         return ConversionUtils.toInteger(_argsMap.get(name));
     }
 
+    // ------------------------------------------------------------------------
+    //                      a b s t r a c t
+    // ------------------------------------------------------------------------
+
     public abstract void ready();
 
     // ------------------------------------------------------------------------
@@ -127,7 +154,11 @@ abstract class AbstractLauncher {
 
             // ready method
             this.ready();
-
+            if(null!=_handler){
+                try {
+                    Delegates.invoke(_handler);
+                }catch(Throwable ignored){}
+            }
         } catch (Exception x) {
             System.err.println("Uncaught exception: ");
             x.printStackTrace();
@@ -237,6 +268,7 @@ abstract class AbstractLauncher {
      */
     private static ClassLoader createClassLoader(final File home)
             throws IOException {
+        /**
         final String classpath = System.getProperty(SYSPROP_CLASSPATH, DEFAULT_CLASSPATH);
         final String[] classes = classpath.split(",");
 
@@ -245,9 +277,9 @@ abstract class AbstractLauncher {
             final String cleanPath = path.replaceAll("\\*", "");
             FileUtils.mkdirs(PathUtils.getAbsolutePath(cleanPath));
         }
-
+        **/
         // creates and set the new class loader as context class loader
-        final LyjClassLoader loader = new LyjClassLoader(home, classes);
+        final LyjClassLoader loader = new LyjClassLoader(home, new String[0]);
         Thread.currentThread().setContextClassLoader(loader);
 
         return loader;

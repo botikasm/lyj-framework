@@ -18,30 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.image;
+package org.lyj.gui.utils;
 
 /**
  *
  */
-public class ImageSize {
+public class Size {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private int _width;
-    private int _height;
+    private double _width;
+    private double _height;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public ImageSize() {
+    public Size() {
         _width = 0;
         _height = 0;
     }
 
-    public ImageSize(final int width, final int height) {
+    public Size(final double width, final double height) {
         _width = width;
         _height = height;
     }
@@ -50,19 +50,19 @@ public class ImageSize {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public int getWidth() {
+    public double getWidth() {
         return _width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(double width) {
         _width = width;
     }
 
-    public int getHeight() {
+    public double getHeight() {
         return _height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(double height) {
         _height = height;
     }
 
