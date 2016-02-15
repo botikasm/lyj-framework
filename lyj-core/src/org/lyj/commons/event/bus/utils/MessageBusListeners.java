@@ -55,7 +55,7 @@ public class MessageBusListeners {
         }
     }
 
-    public void stop(){
+    public void stop() {
         _task.stop(true);
     }
 
@@ -89,15 +89,15 @@ public class MessageBusListeners {
             final List<MessageListener> remove_list = new ArrayList<>();
 
             for (final MessageListener listener : _listeners) {
-                final String id = listener.getId();
-                final String name = listener.getEventName();
-                final String[] tags = listener.getEventTags();
-                final Event[] events = eventBus.listen(id, tags, name);
-                if (events.length > 0) {
-                    if (listener.isEmpty()) {
-                        // remove
-                        remove_list.add(listener);
-                    } else {
+                if (listener.isEmpty()) {
+                    // remove
+                    remove_list.add(listener);
+                } else {
+                    final String id = listener.getId();
+                    final String name = listener.getEventName();
+                    final String[] tags = listener.getEventTags();
+                    final Event[] events = eventBus.listen(id, tags, name);
+                    if (events.length > 0) {
                         final IEventListener[] executors = listener.listeners();
                         if (executors.length > 0) {
                             for (final Event event : events) {
@@ -162,7 +162,7 @@ public class MessageBusListeners {
         public void start() {
             super.start((t) -> {
                 try {
-                    if(null!=_listeners && _listeners.size()>0){
+                    if (null != _listeners && _listeners.size() > 0) {
                         this.run();
                     } else {
                         t.stop();
@@ -182,7 +182,7 @@ public class MessageBusListeners {
             if (null != _listeners) {
                 try {
                     _listeners.process(_listeners._bus.events());
-                }catch(Throwable ignored){
+                } catch (Throwable ignored) {
                 }
             }
         }
