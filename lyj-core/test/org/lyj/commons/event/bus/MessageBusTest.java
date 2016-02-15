@@ -25,22 +25,30 @@ public class MessageBusTest {
 
         System.out.println("start testing event bus");
 
+        SampleListenerClass class_listener = new SampleListenerClass();
+
         final Event event1 = new Event(this, "on_test").setTag("sample");
         final Event event2 = new Event(this, "on_test2").setTag("sample2");
 
         MessageBus bus = MessageBus.getInstance();
        bus.emit(event1).emit(event2);
 
+        class_listener.clear();
+        class_listener = null;
+
+        System.gc();
+
         System.out.println(bus.toString());
 
         MessageListener listener = bus.createListener();
-
         listener.on((event)->{
             System.out.println("LISTENER ALL: " + event.toString());
         });
 
-        MessageListener listener_tag = bus.createListener().setEventTag("sample2");
+        //listener.clear(); // clear references to completely remove handlers references
+        listener = null;
 
+        MessageListener listener_tag = bus.createListener().setEventTag("sample2");
         listener_tag.on((event)->{
             System.out.println("LISTENER TAG 2: " + event.toString());
         });
@@ -58,11 +66,10 @@ public class MessageBusTest {
         }
 
         bus = null;
-        listener.stop(); // clear references to completely remove handlers references
-        listener = null;
-        listener_tag.stop();
+
+        listener_tag.clear();
         listener_tag = null;
-        listener_multi_tag.stop();
+        listener_multi_tag.clear();
         listener_multi_tag = null;
 
         System.gc();

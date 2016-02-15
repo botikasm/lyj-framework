@@ -1,12 +1,9 @@
 package org.lyj.commons.event.bus;
 
-import org.lyj.commons.event.Event;
 import org.lyj.commons.event.EventListeners;
 import org.lyj.commons.event.IEventListener;
-import org.lyj.commons.event.bus.listener.MessageListenerTask;
 import org.lyj.commons.util.RandomUtils;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,11 +18,10 @@ public class MessageListener {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final MessageBus _bus;
+    //private final MessageBus _bus;
 
     private final String _id;
     private final EventListeners _listeners;
-    private final MessageListenerTask _task;
 
     private final Set<String> _event_tags;
     private String _event_name;
@@ -34,18 +30,16 @@ public class MessageListener {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    MessageListener(final MessageBus bus, final int interval) {
-        _bus = bus;
+    MessageListener() {
         _id = RandomUtils.randomUUID();
         _listeners = new EventListeners();
-        _task = new MessageListenerTask(interval);
         _event_tags = new HashSet<>();
     }
 
     @Override
     public void finalize() throws Throwable {
         try {
-            this.stop();
+            this.clear();
         } finally {
             super.finalize();
         }
@@ -104,10 +98,9 @@ public class MessageListener {
      * Clear all listeners and stop internat thread.
      * Internal thread run again when new listeners are added to queue.
      */
-    public void stop() {
+    public void clear() {
         synchronized (_listeners) {
             _listeners.clear();
-            _task.stop(true);
         }
     }
 
@@ -117,7 +110,6 @@ public class MessageListener {
      */
     public void on(final IEventListener callback) {
         synchronized (_listeners) {
-            //this.waikeupTask();
             _listeners.add(callback);
         }
     }
@@ -136,25 +128,5 @@ public class MessageListener {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void waikeupTask() {
-        if (!_bus.isDisposed() && !_task.isRunning()) {
-            _task.start((interruptor) -> {
-                if (!_bus.isDisposed()) {
-                    final Event[] events = _bus.listen(_id, _event_tags, _event_name);
-                    final IEventListener[] listeners = _listeners.toArray();
-                    for (final Event event : events) {
-                        for (final IEventListener listener : listeners) {
-                            try {
-                                listener.on(event);
-                            } catch (Throwable ignored) {
-                            }
-                        }
-                    }
-                } else {
-                    interruptor.stop();
-                }
-            });
-        }
-    }
 
 }

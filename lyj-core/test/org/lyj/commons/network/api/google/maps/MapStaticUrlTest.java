@@ -2,7 +2,7 @@ package org.lyj.commons.network.api.google.maps;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 
 

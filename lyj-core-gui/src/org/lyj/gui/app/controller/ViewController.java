@@ -1,11 +1,6 @@
 package org.lyj.gui.app.controller;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import org.lyj.Lyj;
-import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.i18n.DictionaryController;
 import org.lyj.commons.logging.AbstractLogEmitter;

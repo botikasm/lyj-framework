@@ -38,7 +38,7 @@ public class Loop {
         this(initialDelay, runInterval, 0);
     }
 
-    public Loop(final int initialDelay, final int runInterval, final int timeout) {
+    private Loop(final int initialDelay, final int runInterval, final int timeout) {
         _initial_delay = initialDelay;
         _run_interval = runInterval;
         _timeout = timeout;
@@ -84,6 +84,10 @@ public class Loop {
 
     public boolean isRunning() {
         return null != _thread && _thread.isAlive() && !_thread.isInterrupted();
+    }
+
+    public long duration(){
+        return _time_end - _time_start;
     }
 
     // --------------------------------------------------------------------

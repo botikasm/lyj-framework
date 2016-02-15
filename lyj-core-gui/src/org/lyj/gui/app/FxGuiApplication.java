@@ -2,18 +2,12 @@ package org.lyj.gui.app;
 
 
 import javafx.application.Application;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.lyj.commons.i18n.DictionaryController;
 import org.lyj.commons.util.PathUtils;
-import org.lyj.gui.app.controller.ViewController;
 import org.lyj.gui.config.ConfigScene;
 import org.lyj.gui.utils.FXMLLoderUtils;
 import org.lyj.launcher.LyjLauncher;
