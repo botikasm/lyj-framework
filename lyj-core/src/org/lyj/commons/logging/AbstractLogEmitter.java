@@ -1,6 +1,8 @@
 package org.lyj.commons.logging;
 
 import org.lyj.commons.logging.util.LoggingUtils;
+import org.lyj.commons.util.ExceptionUtils;
+import org.lyj.commons.util.FormatUtils;
 
 /**
  * Utility abstract class for Log Emitters (all classes needing a logger)
@@ -58,6 +60,14 @@ public class AbstractLogEmitter
 
     public void error(final String methodName, final String message) {
         this.log(Level.SEVERE, methodName, message);
+    }
+
+    public void error(final String methodName, final Throwable error) {
+        this.log(Level.SEVERE, methodName, ExceptionUtils.getMessage(error));
+    }
+
+    public void error(final String methodName, final String template, final Object...args) {
+        this.log(Level.SEVERE, methodName, FormatUtils.format(template, args));
     }
 
     public void warning(final String methodName, final String message) {

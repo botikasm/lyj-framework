@@ -1,0 +1,7 @@
+{
+  "http": {
+    "host": "http://services.funnygain.com",
+    "port": 4000,
+    "path_api": "api/"
+  }
+}

@@ -123,6 +123,22 @@ public class HttpClient {
         }
     }
 
+    public void get(final String surl, final Map<String, Object> params,
+                     final Delegates.SingleResultCallback<String> callback){
+
+        try{
+            this.doGet(surl, params, (err, totalBuffer)->{
+                if(null!=err){
+                    Delegates.invoke(callback, err, "");
+                } else {
+                    Delegates.invoke(callback, null, totalBuffer.read());
+                }
+            });
+        } catch(Throwable t){
+            Delegates.invoke(callback, t, "");
+        }
+    }
+
     public Task<String> post(final String surl, final Map<String, Object> params){
         return new Task<String>((t)->{
             this.post(surl, params, (err, response)->{
@@ -178,5 +194,31 @@ public class HttpClient {
         }
     }
 
+    private void doGet(final String surl, final Map<String, Object> params,
+                        final Delegates.SingleResultCallback<HttpBuffer> callback) {
+        try {
+            HttpRequest request = new HttpRequest(GET, surl)
+                    .setEncoding(_char_encoding)
+                    .setChunkBody(_do_chunk_body)
+                    .setChunkSize(_chunk_size)
+                    .setConnectionTimeout(_connection_timeout)
+                    .setIdleTimeout(_idle_timeout);
+
+            final String body = StringUtils.toQueryString(params, _char_encoding);
+
+
+            request.errorHandler((err) -> {
+                Delegates.invoke(callback, err, null);
+            });
+
+            request.bodyHandler((totalBuffer) -> {
+                Delegates.invoke(callback, null, totalBuffer);
+            });
+
+            request.write(body).end();
+        } catch(Throwable t) {
+            Delegates.invoke(callback, t, null);
+        }
+    }
 
 }

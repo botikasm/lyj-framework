@@ -1,8 +1,6 @@
 package org.lyj.gui.config;
 
-import org.json.JSONObject;
 import org.lyj.Lyj;
-import org.lyj.commons.image.ImageSize;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.gui.utils.Size;
@@ -10,7 +8,7 @@ import org.lyj.gui.utils.Size;
 /**
  * Helper class to wrap scene configuration
  */
-public class GuiConfiguration {
+public class ConfigScene {
 
 
     // ------------------------------------------------------------------------
@@ -22,6 +20,7 @@ public class GuiConfiguration {
     private static final String PATH_STAGE = "stage";
     private static final String PATH_SIZE_WIDTH = "size.width";
     private static final String PATH_SIZE_HEIGHT = "size.height";
+    private static final String PATH_ICON = "icon";
     private static final String PATH_AUTO_SHOW = "auto-show";
 
     // ------------------------------------------------------------------------
@@ -34,7 +33,7 @@ public class GuiConfiguration {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public GuiConfiguration() {
+    public ConfigScene() {
 
     }
 
@@ -70,6 +69,10 @@ public class GuiConfiguration {
         return this.configuration().deepBoolean(PATH_AUTO_SHOW, true);
     }
 
+    public String icon() {
+        return this.configuration().deepString(PATH_ICON);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -85,11 +88,11 @@ public class GuiConfiguration {
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
-    private GuiConfiguration __instance;
+    private ConfigScene __instance;
 
-    public GuiConfiguration instance() {
+    public ConfigScene instance() {
         if (null == __instance) {
-            __instance = new GuiConfiguration();
+            __instance = new ConfigScene();
         }
         return __instance;
     }

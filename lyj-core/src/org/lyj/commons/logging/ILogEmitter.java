@@ -17,4 +17,8 @@ public interface ILogEmitter {
 
     void error(final String methodName, final String message);
 
+    void error(final String methodName, final String template, final Object... args);
+
+    void error(final String methodName, final Throwable error);
+
 }

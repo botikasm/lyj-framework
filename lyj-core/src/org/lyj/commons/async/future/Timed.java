@@ -85,7 +85,7 @@ public class Timed
     // --------------------------------------------------------------------
 
     public Timed() {
-        this(TimeUnit.MILLISECONDS, 0, 0, 0, 0); // one shot task
+        this(TimeUnit.MILLISECONDS, 0, 1, 0, 1); // one shot task
     }
 
     public Timed(final long delayBetweenRuns) {
@@ -402,10 +402,12 @@ public class Timed
 
                     boolean stop = interruptor.isStopped();
 
-                    // if reached max number of iterations, stop
-                    final int max_iterations = _sender.getShutdownAfterCount();
-                    if (max_iterations > 0 && count >= max_iterations) {
-                        stop = true;
+                    if(!stop) {
+                        // if reached max number of iterations, stop
+                        final int max_iterations = _sender.getShutdownAfterCount();
+                        if (max_iterations > 0 && count >= max_iterations) {
+                            stop = true;
+                        }
                     }
 
                     if (stop) {

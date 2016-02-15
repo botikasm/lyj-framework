@@ -21,7 +21,7 @@ public class TimedTest {
         // start first thread
         alarmClock1.start((t) -> {
             try {
-                final String msg = FormatUtils.format("[%s] Stop after 10 loop. #%s",t.id(), t.count());
+                final String msg = FormatUtils.format("[%s] Stop after 10 loop. #%s", t.id(), t.count());
                 System.out.println(msg);
                 Thread.sleep((long) (Math.random() * 1000));
             } catch (Throwable ignored) {
@@ -38,7 +38,7 @@ public class TimedTest {
                 1, // run each 1 second
                 0, 3);
         alarmClock2.start((t) -> {
-            final String msg = FormatUtils.format("[%s] Stop after 3 loop. #%s",t.id(), t.count());
+            final String msg = FormatUtils.format("[%s] Stop after 3 loop. #%s", t.id(), t.count());
             System.out.println(msg);
         });
 
@@ -49,7 +49,7 @@ public class TimedTest {
                 1, // run each 1 second
                 0, 0);
         alarmClock3.start((t) -> {
-            final String msg = FormatUtils.format("[%s] Stop after 5 loop. #%s",t.id(), t.count());
+            final String msg = FormatUtils.format("[%s] Stop after 5 loop. #%s", t.id(), t.count());
             System.out.println(msg);
             if (t.count() > 4) { // stop after 5 loop
                 t.stop();
@@ -61,4 +61,14 @@ public class TimedTest {
         alarmClock2.join();
         alarmClock3.join();
     }
+
+    @Test
+    public void testStopInfinite() throws Exception {
+        Timed loop = new Timed();
+        loop.start((interruptor) -> {
+            interruptor.stop();
+        });
+        loop.join();
+    }
+
 }

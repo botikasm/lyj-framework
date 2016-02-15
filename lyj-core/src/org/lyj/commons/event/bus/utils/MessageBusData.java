@@ -5,6 +5,7 @@ import org.lyj.commons.event.Event;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Event bus container
@@ -83,12 +84,14 @@ public class MessageBusData {
         return this;
     }
 
-    public Event[] listen(final String listenerId, final String tag, final String name) {
+    public Event[] listen(final String listenerId, final Set<String> tags, final String name) {
         synchronized (_events) {
             final List<Event> response = new ArrayList<>();
             for (final MessageBusDataItem event : _events) {
-                if (this.match(event, listenerId, tag, name)) {
-                    response.add(event.setListened(listenerId).event());
+                for(final String tag:tags) {
+                    if (this.match(event, listenerId, tag, name)) {
+                        response.add(event.setListened(listenerId).event());
+                    }
                 }
             }
             return response.toArray(new Event[response.size()]);

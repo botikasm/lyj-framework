@@ -5,6 +5,10 @@ import org.lyj.commons.event.bus.utils.MessageBusData;
 import org.lyj.commons.event.bus.utils.MessageBusGC;
 import org.lyj.commons.util.RandomUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 /**
  *  Event container.
  *
@@ -36,6 +40,8 @@ public class MessageBus {
     private final MessageBusData _data;
     private final String _id;
 
+    private List<MessageListener> _listeners;
+
     private boolean _disposed;
 
     // ------------------------------------------------------------------------
@@ -51,6 +57,8 @@ public class MessageBus {
         _gc = new MessageBusGC(this, gcInterval);
         _id = RandomUtils.randomUUID();
         _disposed = false;
+
+        _listeners = new ArrayList<>();
     }
 
     @Override
@@ -96,20 +104,20 @@ public class MessageBus {
         return this;
     }
 
-
-
     //-- factory --//
 
     public MessageListener createListener(){
-        return new MessageListener(this, (int)(DEF_INTERVAL*0.5));
+        final MessageListener listener = new MessageListener(this, (int)(DEF_INTERVAL*0.5));
+        _listeners.add(listener);
+        return listener;
     }
 
     // ------------------------------------------------------------------------
     //                      p a c k a g e
     // ------------------------------------------------------------------------
 
-    Event[] listen(final String listenerId, final String tag, final String name){
-        return _data.listen(listenerId, tag, name);
+    Event[] listen(final String listenerId, final Set<String> tags, final String name){
+        return _data.listen(listenerId, tags, name);
     }
 
     // ------------------------------------------------------------------------

@@ -2,19 +2,25 @@ package org.lyj.gui.app;
 
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import org.lyj.commons.Delegates;
+import org.lyj.commons.i18n.DictionaryController;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.gui.app.controller.ViewController;
-import org.lyj.gui.config.GuiConfiguration;
+import org.lyj.gui.config.ConfigScene;
+import org.lyj.gui.utils.FXMLLoderUtils;
 import org.lyj.launcher.LyjLauncher;
 import org.lyj.launcher.impl.LyjBaseLauncher;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public abstract class FxGuiApplication
@@ -25,14 +31,15 @@ public abstract class FxGuiApplication
 
     private LyjLauncher _launcher;
     private Stage _primary_stage;
-    private GuiConfiguration _configuration;
+    private ConfigScene _configuration;
+    private DictionaryController _i18n;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public FxGuiApplication() {
-
+    public FxGuiApplication(final DictionaryController dictionary) {
+        _i18n = dictionary;
     }
 
     // ------------------------------------------------------------------------
@@ -52,7 +59,7 @@ public abstract class FxGuiApplication
         this.init(this.args());
 
         // create configuration after deployer initialization.
-        _configuration = new GuiConfiguration();
+        _configuration = new ConfigScene();
     }
 
     // ------------------------------------------------------------------------
@@ -88,7 +95,7 @@ public abstract class FxGuiApplication
         return _launcher;
     }
 
-    public GuiConfiguration configuration() {
+    public ConfigScene configuration() {
         return _configuration;
     }
 
@@ -96,24 +103,22 @@ public abstract class FxGuiApplication
         return _primary_stage;
     }
 
-    public FXMLLoader loader(final String path) throws IOException {
-        final FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(getClass().getResource(path));
-        final Object controller = loader.getController();
-        if(controller instanceof ViewController) {
-            ((ViewController)controller).setApplication(this);
-        }
-        return loader;
+    public DictionaryController i18n() {
+        return null != _i18n ? _i18n : new DictionaryController();
     }
 
     public Parent loadChild(final Parent container, final String path) throws IOException {
-        final FXMLLoader loader = this.loader(path);
-        Parent child = loader.load();
+        return FXMLLoderUtils.loadChild(this, container, path);
+    }
 
-        if (null != child) {
-            container.getChildrenUnmodifiable().add(child);
-        }
-        return child;
+    public Parent load(final String path) throws IOException {
+        return FXMLLoderUtils.load(this, path);
+    }
+
+    @Override
+    public void stop(){
+        System.out.println("Stage is closing");
+        // Save file
     }
 
     // ------------------------------------------------------------------------
@@ -125,21 +130,43 @@ public abstract class FxGuiApplication
         return null != params ? params.toArray(new String[params.size()]) : new String[0];
     }
 
-    private void ready() throws Exception {
-        this.initStage();
-        this.ready(_primary_stage);
+    private void ready() {
+        try {
+            this.initStage();
+            this.ready(_primary_stage);
+        } catch (Throwable t) {
+
+        }
     }
 
     private void initStage() throws IOException {
         if (this.configuration().hasStage()) {
-            final Parent root = this.loader(this.configuration().stage()).load();
+            final Parent root = FXMLLoderUtils.load(this, this.configuration().stage());
             final Scene scene = new Scene(root, this.configuration().width(), this.configuration().height());
             _primary_stage.setTitle(this.configuration().title());
             _primary_stage.setScene(scene);
+            final Image icon = this.getImage(this.configuration().icon());
+            if (null != icon) {
+                _primary_stage.getIcons().add(icon);
+            }
             if (this.configuration().autoShow()) {
                 _primary_stage.show();
             }
+            // handle close in primary stage
+           // _primary_stage.addEventHandler();
         }
+    }
+
+    private Image getImage(final String path) {
+        if (PathUtils.isAbsolute(path)) {
+            return new Image(path);
+        } else {
+            InputStream is = getClass().getResourceAsStream(path);
+            if (null != is) {
+                return new Image(is);
+            }
+        }
+        return null;
     }
 
 

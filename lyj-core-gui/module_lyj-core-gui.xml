@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_lyj-core-gui" default="compile.module.lyj-core-gui">
+  <dirname property="module.lyj-core-gui.basedir" file="${ant.file.module_lyj-core-gui}"/>
+  
+  <property name="module.jdk.home.lyj-core-gui" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.lyj-core-gui" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.lyj-core-gui" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.lyj-core-gui" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="lyj-core-gui.output.dir" value="${module.lyj-core-gui.basedir}/../../funny_gain_gui/out/production/lyj-core-gui"/>
+  <property name="lyj-core-gui.testoutput.dir" value="${module.lyj-core-gui.basedir}/../../funny_gain_gui/out/test/lyj-core-gui"/>
+  
+  <path id="lyj-core-gui.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="lyj-core-gui.module.production.classpath">
+    <path refid="${module.jdk.classpath.lyj-core-gui}"/>
+    <pathelement location="${lyj-core.output.dir}"/>
+  </path>
+  
+  <path id="lyj-core-gui.runtime.production.module.classpath">
+    <pathelement location="${lyj-core-gui.output.dir}"/>
+    <path refid="lyj-core.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="lyj-core-gui.module.classpath">
+    <path refid="${module.jdk.classpath.lyj-core-gui}"/>
+    <pathelement location="${lyj-core-gui.output.dir}"/>
+    <pathelement location="${lyj-core.testoutput.dir}"/>
+    <pathelement location="${lyj-core.output.dir}"/>
+  </path>
+  
+  <path id="lyj-core-gui.runtime.module.classpath">
+    <pathelement location="${lyj-core-gui.testoutput.dir}"/>
+    <pathelement location="${lyj-core-gui.output.dir}"/>
+    <path refid="lyj-core.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.lyj-core-gui">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.lyj-core-gui">
+    <patternset refid="excluded.from.module.lyj-core-gui"/>
+  </patternset>
+  
+  <path id="lyj-core-gui.module.sourcepath">
+    <dirset dir="${module.lyj-core-gui.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.lyj-core-gui" depends="compile.module.lyj-core-gui.production,compile.module.lyj-core-gui.tests" description="Compile module lyj-core-gui"/>
+  
+  <target name="compile.module.lyj-core-gui.production" depends="register.custom.compilers,compile.module.lyj-core" description="Compile module lyj-core-gui; production classes">
+    <mkdir dir="${lyj-core-gui.output.dir}"/>
+    <javac2 destdir="${lyj-core-gui.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.lyj-core-gui}/javac">
+      <compilerarg line="${compiler.args.lyj-core-gui}"/>
+      <bootclasspath refid="lyj-core-gui.module.bootclasspath"/>
+      <classpath refid="lyj-core-gui.module.production.classpath"/>
+      <src refid="lyj-core-gui.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.lyj-core-gui"/>
+    </javac2>
+    
+    <copy todir="${lyj-core-gui.output.dir}">
+      <fileset dir="${module.lyj-core-gui.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.lyj-core-gui.tests" depends="register.custom.compilers,compile.module.lyj-core-gui.production" description="compile module lyj-core-gui; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.lyj-core-gui" description="cleanup module">
+    <delete dir="${lyj-core-gui.output.dir}"/>
+    <delete dir="${lyj-core-gui.testoutput.dir}"/>
+  </target>
+</project>

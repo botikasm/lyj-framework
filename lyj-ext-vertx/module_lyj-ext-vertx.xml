@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_lyj-ext-vertx" default="compile.module.lyj-ext-vertx">
+  <dirname property="module.lyj-ext-vertx.basedir" file="${ant.file.module_lyj-ext-vertx}"/>
+  
+  <property name="module.jdk.home.lyj-ext-vertx" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.lyj-ext-vertx" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.lyj-ext-vertx" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.lyj-ext-vertx" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="lyj-ext-vertx.output.dir" value="${module.lyj-ext-vertx.basedir}/../../funny_gain_gui/out/production/lyj-ext-vertx"/>
+  <property name="lyj-ext-vertx.testoutput.dir" value="${module.lyj-ext-vertx.basedir}/../../funny_gain_gui/out/test/lyj-ext-vertx"/>
+  
+  <path id="lyj-ext-vertx.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="lyj-ext-vertx.module.production.classpath">
+    <path refid="${module.jdk.classpath.lyj-ext-vertx}"/>
+    <fileset dir="${basedir}/../lyj/lyj-ext-vertx/vendor/vert.x-3.2.0-full/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+    <pathelement location="${lyj-core.output.dir}"/>
+  </path>
+  
+  <path id="lyj-ext-vertx.runtime.production.module.classpath">
+    <pathelement location="${lyj-ext-vertx.output.dir}"/>
+    <fileset dir="${basedir}/../lyj/lyj-ext-vertx/vendor/vert.x-3.2.0-full/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+    <path refid="lyj-core.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="lyj-ext-vertx.module.classpath">
+    <path refid="${module.jdk.classpath.lyj-ext-vertx}"/>
+    <pathelement location="${lyj-ext-vertx.output.dir}"/>
+    <path refid="library.junit:junit:4.12.classpath"/>
+    <fileset dir="${basedir}/../lyj/lyj-ext-vertx/vendor/vert.x-3.2.0-full/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+    <pathelement location="${lyj-core.testoutput.dir}"/>
+    <pathelement location="${lyj-core.output.dir}"/>
+  </path>
+  
+  <path id="lyj-ext-vertx.runtime.module.classpath">
+    <pathelement location="${lyj-ext-vertx.testoutput.dir}"/>
+    <pathelement location="${lyj-ext-vertx.output.dir}"/>
+    <path refid="library.junit:junit:4.12.classpath"/>
+    <fileset dir="${basedir}/../lyj/lyj-ext-vertx/vendor/vert.x-3.2.0-full/lib">
+      <patternset refid="library.patterns"/>
+    </fileset>
+    <path refid="lyj-core.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.lyj-ext-vertx">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.lyj-ext-vertx">
+    <patternset refid="excluded.from.module.lyj-ext-vertx"/>
+  </patternset>
+  
+  <path id="lyj-ext-vertx.module.sourcepath">
+    <dirset dir="${module.lyj-ext-vertx.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  <path id="lyj-ext-vertx.module.test.sourcepath">
+    <dirset dir="${module.lyj-ext-vertx.basedir}">
+      <include name="test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.lyj-ext-vertx" depends="compile.module.lyj-ext-vertx.production,compile.module.lyj-ext-vertx.tests" description="Compile module lyj-ext-vertx"/>
+  
+  <target name="compile.module.lyj-ext-vertx.production" depends="register.custom.compilers,compile.module.lyj-core" description="Compile module lyj-ext-vertx; production classes">
+    <mkdir dir="${lyj-ext-vertx.output.dir}"/>
+    <javac2 destdir="${lyj-ext-vertx.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.lyj-ext-vertx}/javac">
+      <compilerarg line="${compiler.args.lyj-ext-vertx}"/>
+      <bootclasspath refid="lyj-ext-vertx.module.bootclasspath"/>
+      <classpath refid="lyj-ext-vertx.module.production.classpath"/>
+      <src refid="lyj-ext-vertx.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.lyj-ext-vertx"/>
+    </javac2>
+    
+    <copy todir="${lyj-ext-vertx.output.dir}">
+      <fileset dir="${module.lyj-ext-vertx.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.lyj-ext-vertx.tests" depends="register.custom.compilers,compile.module.lyj-ext-vertx.production" description="compile module lyj-ext-vertx; test classes" unless="skip.tests">
+    <mkdir dir="${lyj-ext-vertx.testoutput.dir}"/>
+    <javac2 destdir="${lyj-ext-vertx.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.lyj-ext-vertx}/javac">
+      <compilerarg line="${compiler.args.lyj-ext-vertx}"/>
+      <bootclasspath refid="lyj-ext-vertx.module.bootclasspath"/>
+      <classpath refid="lyj-ext-vertx.module.classpath"/>
+      <src refid="lyj-ext-vertx.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.lyj-ext-vertx"/>
+    </javac2>
+    
+    <copy todir="${lyj-ext-vertx.testoutput.dir}">
+      <fileset dir="${module.lyj-ext-vertx.basedir}/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.lyj-ext-vertx" description="cleanup module">
+    <delete dir="${lyj-ext-vertx.output.dir}"/>
+    <delete dir="${lyj-ext-vertx.testoutput.dir}"/>
+  </target>
+</project>

@@ -2,5 +2,6 @@
   "stage":"app/gui/screens/stage.fxml",
   "size" : {"width":800, "height":600},
   "title":"Main Form",
+  "icon":"resources/icons/icon.png",
   "auto-show":"true"
 }
