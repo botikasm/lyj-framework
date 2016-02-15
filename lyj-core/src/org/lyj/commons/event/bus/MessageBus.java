@@ -130,8 +130,6 @@ public class MessageBus {
     // ------------------------------------------------------------------------
 
     private void startLoopEvents() {
-        _loop.interrupt();
-        _loop.join(100);
         if (!_loop.isRunning()) {
             _loop.start((interruptor) -> {
                 interruptor.pause();
