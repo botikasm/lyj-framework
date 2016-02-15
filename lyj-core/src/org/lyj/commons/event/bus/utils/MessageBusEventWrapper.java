@@ -1,4 +1,4 @@
-package org.lyj.commons.event.bus.emitter;
+package org.lyj.commons.event.bus.utils;
 
 import org.lyj.commons.event.Event;
 import org.lyj.commons.util.StringUtils;

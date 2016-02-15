@@ -1,11 +1,8 @@
 package org.lyj.commons.event.bus;
 
-import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.event.Event;
-import org.lyj.commons.event.bus.emitter.MessageBusEvents;
-import org.lyj.commons.event.bus.emitter.MessageBusGC;
-import org.lyj.commons.event.bus.emitter.MessageBusListeners;
-import org.lyj.commons.event.bus.listener.MessageListenerTask;
+import org.lyj.commons.event.bus.utils.MessageBusEvents;
+import org.lyj.commons.event.bus.utils.MessageBusListeners;
 import org.lyj.commons.util.RandomUtils;
 
 /**
@@ -34,11 +31,9 @@ public class MessageBus {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final MessageBusGC _gc;
     private final MessageBusEvents _events;
     private final String _id;
     private final MessageBusListeners _listeners;
-    private final MessageListenerTask _loop;
 
     private boolean _disposed;
 
@@ -51,22 +46,18 @@ public class MessageBus {
     }
 
     public MessageBus(final int eventTimeout, final int gcInterval) {
-        _events = new MessageBusEvents(eventTimeout);
-        _gc = new MessageBusGC(this, gcInterval);
         _id = RandomUtils.randomUUID();
         _disposed = false;
-        _listeners = new MessageBusListeners();
-        _loop = new MessageListenerTask((int)(gcInterval*0.5));
+        _listeners = new MessageBusListeners(this, (int) (gcInterval * 0.5));
+        _events = new MessageBusEvents(this, eventTimeout, gcInterval);
     }
 
     @Override
     public void finalize() throws Throwable {
         try {
             _disposed = true;
-            _gc.stop(true);
             _events.clear();
             _listeners.clear();
-            _loop.stop(true);
         } catch (Throwable ignored) {
             // nothing useful to do here
         } finally {
@@ -88,8 +79,8 @@ public class MessageBus {
         return _disposed;
     }
 
-    public int size() {
-        return _events.size();
+    public MessageBusListeners listeners() {
+        return _listeners;
     }
 
     public MessageBusEvents events() {
@@ -97,9 +88,6 @@ public class MessageBus {
     }
 
     public MessageBus emit(final Event event) {
-        if (!_gc.isRunning()) {
-            _gc.start();
-        }
         _events.add(event);
         return this;
     }
@@ -107,9 +95,7 @@ public class MessageBus {
     //-- factory --//
 
     public MessageListener createListener() {
-        synchronized (_listeners){
-            // start if not running
-            this.startLoopEvents();
+        synchronized (_listeners) {
             // create listener
             final MessageListener listener = new MessageListener();
             return _listeners.add(listener);
@@ -123,16 +109,6 @@ public class MessageBus {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
-
-    private void startLoopEvents() {
-        if (!_loop.isRunning()) {
-            _loop.start((interruptor) -> {
-                //interruptor.pause();
-                _listeners.process(_events);
-                //interruptor.resume();
-            });
-        }
-    }
 
     // ------------------------------------------------------------------------
     //                      S T A T I C

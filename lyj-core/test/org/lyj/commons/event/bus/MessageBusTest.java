@@ -58,7 +58,7 @@ public class MessageBusTest {
         // emit another event
         bus.emit(new Event(this, "on_test3").setTag("tag 3"));
 
-        while(bus.size()>0){
+        while(bus.events().size()>0){
             Thread.sleep(3000);
         }
 

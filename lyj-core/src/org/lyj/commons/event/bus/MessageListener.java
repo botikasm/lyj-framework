@@ -22,9 +22,10 @@ public class MessageListener {
 
     private final String _id;
     private final EventListeners _listeners;
-
     private final Set<String> _event_tags;
     private String _event_name;
+
+    private boolean _initialized;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -34,6 +35,7 @@ public class MessageListener {
         _id = RandomUtils.randomUUID();
         _listeners = new EventListeners();
         _event_tags = new HashSet<>();
+        _initialized = false;
     }
 
     @Override
@@ -111,7 +113,12 @@ public class MessageListener {
     public void on(final IEventListener callback) {
         synchronized (_listeners) {
             _listeners.add(callback);
+            _initialized = true;
         }
+    }
+
+    public boolean isEmpty(){
+        return _initialized && _listeners.size()==0;
     }
 
     // ------------------------------------------------------------------------

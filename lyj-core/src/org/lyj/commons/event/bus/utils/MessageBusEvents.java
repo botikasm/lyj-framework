@@ -1,12 +1,17 @@
-package org.lyj.commons.event.bus.emitter;
+package org.lyj.commons.event.bus.utils;
 
 import org.lyj.commons.Delegates;
+import org.lyj.commons.async.future.Timed;
 import org.lyj.commons.event.Event;
+import org.lyj.commons.event.bus.MessageBus;
 import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.ExceptionUtils;
+import org.lyj.commons.util.FormatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Event bus container
@@ -21,21 +26,27 @@ public class MessageBusEvents {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private final MessageBus _bus;
     private final List<MessageBusEventWrapper> _events;
     private final int _timeout;
+
+    private final EventsGC _gc;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public MessageBusEvents(final int timeout) {
+    public MessageBusEvents(final MessageBus bus, final int timeout, final int gcInterval) {
+        _bus = bus;
         _events = new ArrayList<>();
         _timeout = timeout;
+        _gc = new EventsGC(this, gcInterval);
     }
 
     @Override
     public void finalize() throws Throwable {
         try {
+            _gc.stop(true);
             _events.clear();
         } finally {
             super.finalize();
@@ -80,6 +91,9 @@ public class MessageBusEvents {
 
     public MessageBusEvents add(final Event event, final int timeout) {
         synchronized (_events) {
+            if (!_gc.isRunning()) {
+                _gc.start();
+            }
             _events.add(new MessageBusEventWrapper(event, timeout));
         }
         return this;
@@ -113,10 +127,14 @@ public class MessageBusEvents {
     }
 
     // ------------------------------------------------------------------------
-    //                      p a c k a g e
+    //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    void reject(final Delegates.IterationBoolCallback<MessageBusEventWrapper> callback) {
+    private boolean match(final MessageBusEventWrapper item, final String listenerId, final String tag, final String name) {
+        return !item.isListened(listenerId) && item.match(tag, name);
+    }
+
+    private void reject(final Delegates.IterationBoolCallback<MessageBusEventWrapper> callback) {
         synchronized (_events) {
             if (null != callback) {
                 int count = _events.size();
@@ -132,11 +150,70 @@ public class MessageBusEvents {
     }
 
     // ------------------------------------------------------------------------
-    //                      p r i v a t e
+    //                      E M B E D D E D
     // ------------------------------------------------------------------------
 
-    private boolean match(final MessageBusEventWrapper item, final String listenerId, final String tag, final String name) {
-        return !item.isListened(listenerId) && item.match(tag, name);
-    }
 
+    private static class EventsGC
+            extends Timed {
+
+
+        // ------------------------------------------------------------------------
+        //                      c o n s t
+        // ------------------------------------------------------------------------
+
+        // ------------------------------------------------------------------------
+        //                      f i e l d s
+        // ------------------------------------------------------------------------
+
+        private MessageBusEvents _events;
+
+        // ------------------------------------------------------------------------
+        //                      c o n s t r u c t o r
+        // ------------------------------------------------------------------------
+
+        public EventsGC(final MessageBusEvents events, final int interval) {
+            super(TimeUnit.MILLISECONDS, 0, interval, 0, 0);
+
+            _events = events;
+        }
+
+        @Override
+        public void finalize() throws Throwable {
+            try {
+
+            }finally{
+                super.finalize();
+            }
+        }
+
+        // ------------------------------------------------------------------------
+        //                      p u b l i c
+        // ------------------------------------------------------------------------
+
+        public void start(){
+            super.start((t) -> {
+                try {
+                    this.run();
+                } catch (Throwable err) {
+                    super.error("run", FormatUtils.format("Error running garbage collector for EventBus: %s",
+                            ExceptionUtils.getMessage(err)));
+                }
+            });
+        }
+
+        // ------------------------------------------------------------------------
+        //                      p r i v a t e
+        // ------------------------------------------------------------------------
+
+        private void run(){
+            if(null!=_events){
+                // loop on all events and remove older than 2 seconds
+                _events.reject((event, index, key)->{
+                    return event.isExpired(); // remove expired
+                });
+            }
+        }
+
+    }
 }
