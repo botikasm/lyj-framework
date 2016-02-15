@@ -45,15 +45,23 @@ public class MessageBusListeners {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public int size() {
+        return _listeners.size();
+    }
+
     public void clear() {
         synchronized (_listeners) {
             _listeners.clear();
         }
     }
 
+    public void stop(){
+        _task.stop(true);
+    }
+
     public MessageListener add(final MessageListener listener) {
         synchronized (_listeners) {
-            if(!_task.isRunning()){
+            if (!_task.isRunning()) {
                 _task.start();
             }
             if (!_listeners.contains(listener)) {
@@ -63,8 +71,20 @@ public class MessageBusListeners {
         }
     }
 
+    public MessageListener remove(final MessageListener listener) {
+        synchronized (_listeners) {
+            if (!_listeners.contains(listener)) {
+                _listeners.remove(listener);
+            }
+            return listener;
+        }
+    }
 
-    public void process(final MessageBusEvents eventBus) {
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private void process(final MessageBusEvents eventBus) {
         synchronized (_listeners) {
             final List<MessageListener> remove_list = new ArrayList<>();
 
@@ -102,11 +122,6 @@ public class MessageBusListeners {
             }
         }
     }
-
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-
 
     // ------------------------------------------------------------------------
     //                      E M B E D D E D
@@ -147,7 +162,11 @@ public class MessageBusListeners {
         public void start() {
             super.start((t) -> {
                 try {
-                    this.run();
+                    if(null!=_listeners && _listeners.size()>0){
+                        this.run();
+                    } else {
+                        t.stop();
+                    }
                 } catch (Throwable err) {
                     super.error("run", FormatUtils.format("Error running garbage collector for EventBus: %s",
                             ExceptionUtils.getMessage(err)));
@@ -161,7 +180,10 @@ public class MessageBusListeners {
 
         private void run() {
             if (null != _listeners) {
-                _listeners.process(_listeners._bus.events());
+                try {
+                    _listeners.process(_listeners._bus.events());
+                }catch(Throwable ignored){
+                }
             }
         }
 

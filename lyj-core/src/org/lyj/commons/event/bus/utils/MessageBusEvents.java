@@ -85,6 +85,10 @@ public class MessageBusEvents {
         return this;
     }
 
+    public void stop() {
+        _gc.stop(true);
+    }
+
     public MessageBusEvents add(final Event event) {
         return this.add(event, _timeout);
     }
@@ -100,21 +104,21 @@ public class MessageBusEvents {
     }
 
     public Event[] listen(final String listenerId, final Set<String> tags, final String name) {
-        return this.listen(listenerId, null!=tags?tags.toArray(new String[tags.size()]):new String[0], name);
+        return this.listen(listenerId, null != tags ? tags.toArray(new String[tags.size()]) : new String[0], name);
     }
 
     public Event[] listen(final String listenerId, final String[] tags, final String name) {
         synchronized (_events) {
             final List<Event> response = new ArrayList<>();
             for (final MessageBusEventWrapper event : _events) {
-                if(CollectionUtils.isEmpty(tags)) {
+                if (CollectionUtils.isEmpty(tags)) {
                     // no tag filter
                     if (this.match(event, listenerId, null, name)) {
                         response.add(event.setListened(listenerId).event());
                     }
                 } else {
                     // tag filter
-                    for(final String tag:tags) {
+                    for (final String tag : tags) {
                         if (this.match(event, listenerId, tag, name)) {
                             response.add(event.setListened(listenerId).event());
                         }
@@ -182,7 +186,7 @@ public class MessageBusEvents {
         public void finalize() throws Throwable {
             try {
 
-            }finally{
+            } finally {
                 super.finalize();
             }
         }
@@ -191,10 +195,14 @@ public class MessageBusEvents {
         //                      p u b l i c
         // ------------------------------------------------------------------------
 
-        public void start(){
+        public void start() {
             super.start((t) -> {
                 try {
-                    this.run();
+                    if(null!=_events && _events.size()>0){
+                        this.run();
+                    } else {
+                        t.stop(); // no events, no thread
+                    }
                 } catch (Throwable err) {
                     super.error("run", FormatUtils.format("Error running garbage collector for EventBus: %s",
                             ExceptionUtils.getMessage(err)));
@@ -206,10 +214,10 @@ public class MessageBusEvents {
         //                      p r i v a t e
         // ------------------------------------------------------------------------
 
-        private void run(){
-            if(null!=_events){
+        private void run() {
+            if (null != _events) {
                 // loop on all events and remove older than 2 seconds
-                _events.reject((event, index, key)->{
+                _events.reject((event, index, key) -> {
                     return event.isExpired(); // remove expired
                 });
             }

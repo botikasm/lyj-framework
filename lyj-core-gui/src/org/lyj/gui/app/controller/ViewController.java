@@ -36,7 +36,7 @@ public abstract class ViewController
     @Override
     public final void initialize(URL location, ResourceBundle resources) {
         _fxml_initialized = true;
-        Loop l = new Loop(100, 500, 10000);
+        Loop l = new Loop(100, 500);
         l.start((i) -> {
             if (_fxml_initialized && null != _application) {
                 i.stop();

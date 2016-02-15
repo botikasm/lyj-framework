@@ -31,7 +31,7 @@ public class MessageListener {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    MessageListener() {
+    public MessageListener() {
         _id = RandomUtils.randomUUID();
         _listeners = new EventListeners();
         _event_tags = new HashSet<>();

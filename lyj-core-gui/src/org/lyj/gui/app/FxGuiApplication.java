@@ -112,7 +112,7 @@ public abstract class FxGuiApplication
     @Override
     public void stop(){
         System.out.println("Stage is closing");
-        // Save file
+        System.gc();
     }
 
     // ------------------------------------------------------------------------

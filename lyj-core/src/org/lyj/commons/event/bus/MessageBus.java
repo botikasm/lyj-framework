@@ -92,14 +92,17 @@ public class MessageBus {
         return this;
     }
 
+    public void clearAll() {
+        _listeners.clear();
+        _events.clear();
+    }
+
     //-- factory --//
 
     public MessageListener createListener() {
-        synchronized (_listeners) {
-            // create listener
-            final MessageListener listener = new MessageListener();
-            return _listeners.add(listener);
-        }
+        // create listener
+        final MessageListener listener = new MessageListener();
+        return _listeners.add(listener);
     }
 
     // ------------------------------------------------------------------------
