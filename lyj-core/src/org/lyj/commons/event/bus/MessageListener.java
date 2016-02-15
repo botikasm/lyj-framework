@@ -3,12 +3,11 @@ package org.lyj.commons.event.bus;
 import org.lyj.commons.event.Event;
 import org.lyj.commons.event.EventListeners;
 import org.lyj.commons.event.IEventListener;
-import org.lyj.commons.event.bus.utils.MessageListenerTask;
+import org.lyj.commons.event.bus.listener.MessageListenerTask;
 import org.lyj.commons.util.RandomUtils;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -118,8 +117,18 @@ public class MessageListener {
      */
     public void on(final IEventListener callback) {
         synchronized (_listeners) {
-            this.waikeupTask();
+            //this.waikeupTask();
             _listeners.add(callback);
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p a c k a g e
+    // ------------------------------------------------------------------------
+
+    public IEventListener[] listeners(){
+        synchronized (_listeners){
+            return _listeners.toArray();
         }
     }
 

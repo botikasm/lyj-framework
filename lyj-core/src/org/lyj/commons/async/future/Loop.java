@@ -52,6 +52,7 @@ public class Loop {
 
     public Loop start(final LoopHandler callback) {
         if (null != callback) {
+            _interruptor.reset();
             _callback = callback;
             this.run();
         }
@@ -104,7 +105,9 @@ public class Loop {
                     _interruptor.inc();
 
                     if (null != _callback) {
-                        _callback.handle(_interruptor);
+                        if(!_interruptor.isPaused()){
+                            _callback.handle(_interruptor);
+                        }
                     } else {
                         _interruptor.stop();
                     }
@@ -142,14 +145,31 @@ public class Loop {
     public static class LoopInterruptor {
 
         private boolean _stopped;
+        private boolean _paused;
         private long _count;
 
+        public void reset(){
+            _count = 0;
+            _stopped = false;
+        }
         public void stop() {
             _stopped = true;
         }
 
+        public void pause() {
+            _paused = true;
+        }
+
+        public void resume() {
+            _paused = false;
+        }
+
         public boolean isStopped() {
             return _stopped;
+        }
+
+        public boolean isPaused() {
+            return _paused;
         }
 
         public long count(){

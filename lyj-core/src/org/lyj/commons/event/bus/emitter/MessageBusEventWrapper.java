@@ -1,4 +1,4 @@
-package org.lyj.commons.event.bus.utils;
+package org.lyj.commons.event.bus.emitter;
 
 import org.lyj.commons.event.Event;
 import org.lyj.commons.util.StringUtils;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Wrap Event into container
  */
-public class MessageBusDataItem {
+public class MessageBusEventWrapper {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -24,7 +24,7 @@ public class MessageBusDataItem {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public MessageBusDataItem(final Event event, final int timeout){
+    public MessageBusEventWrapper(final Event event, final int timeout){
         _event = event;
         _timeout = timeout;
         _timestamp = System.currentTimeMillis();
@@ -71,7 +71,7 @@ public class MessageBusDataItem {
         }
     }
 
-    public MessageBusDataItem setListened(final String id){
+    public MessageBusEventWrapper setListened(final String id){
         synchronized (_listeners){
             _listeners.add(id);
         }

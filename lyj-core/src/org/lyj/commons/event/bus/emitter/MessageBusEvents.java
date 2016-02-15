@@ -1,7 +1,8 @@
-package org.lyj.commons.event.bus.utils;
+package org.lyj.commons.event.bus.emitter;
 
 import org.lyj.commons.Delegates;
 import org.lyj.commons.event.Event;
+import org.lyj.commons.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Set;
 /**
  * Event bus container
  */
-public class MessageBusData {
+public class MessageBusEvents {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -20,14 +21,14 @@ public class MessageBusData {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final List<MessageBusDataItem> _events;
+    private final List<MessageBusEventWrapper> _events;
     private final int _timeout;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public MessageBusData(final int timeout) {
+    public MessageBusEvents(final int timeout) {
         _events = new ArrayList<>();
         _timeout = timeout;
     }
@@ -66,34 +67,47 @@ public class MessageBusData {
         return _events.size();
     }
 
-    public MessageBusData clear() {
+    public MessageBusEvents clear() {
         synchronized (_events) {
             _events.clear();
         }
         return this;
     }
 
-    public MessageBusData add(final Event event) {
+    public MessageBusEvents add(final Event event) {
         return this.add(event, _timeout);
     }
 
-    public MessageBusData add(final Event event, final int timeout) {
+    public MessageBusEvents add(final Event event, final int timeout) {
         synchronized (_events) {
-            _events.add(new MessageBusDataItem(event, timeout));
+            _events.add(new MessageBusEventWrapper(event, timeout));
         }
         return this;
     }
 
     public Event[] listen(final String listenerId, final Set<String> tags, final String name) {
+        return this.listen(listenerId, null!=tags?tags.toArray(new String[tags.size()]):new String[0], name);
+    }
+
+    public Event[] listen(final String listenerId, final String[] tags, final String name) {
         synchronized (_events) {
             final List<Event> response = new ArrayList<>();
-            for (final MessageBusDataItem event : _events) {
-                for(final String tag:tags) {
-                    if (this.match(event, listenerId, tag, name)) {
+            for (final MessageBusEventWrapper event : _events) {
+                if(CollectionUtils.isEmpty(tags)) {
+                    // no tag filter
+                    if (this.match(event, listenerId, null, name)) {
                         response.add(event.setListened(listenerId).event());
+                    }
+                } else {
+                    // tag filter
+                    for(final String tag:tags) {
+                        if (this.match(event, listenerId, tag, name)) {
+                            response.add(event.setListened(listenerId).event());
+                        }
                     }
                 }
             }
+
             return response.toArray(new Event[response.size()]);
         }
     }
@@ -102,12 +116,12 @@ public class MessageBusData {
     //                      p a c k a g e
     // ------------------------------------------------------------------------
 
-    void reject(final Delegates.IterationBoolCallback<MessageBusDataItem> callback) {
+    void reject(final Delegates.IterationBoolCallback<MessageBusEventWrapper> callback) {
         synchronized (_events) {
             if (null != callback) {
                 int count = _events.size();
                 for (int i = count - 1; i > -1; i--) {
-                    final MessageBusDataItem event = _events.get(i);
+                    final MessageBusEventWrapper event = _events.get(i);
                     if (callback.handle(event, i, event.event().getName())) {
                         // remove
                         _events.remove(i);
@@ -121,7 +135,7 @@ public class MessageBusData {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private boolean match(final MessageBusDataItem item, final String listenerId, final String tag, final String name) {
+    private boolean match(final MessageBusEventWrapper item, final String listenerId, final String tag, final String name) {
         return !item.isListened(listenerId) && item.match(tag, name);
     }
 

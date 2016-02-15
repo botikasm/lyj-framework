@@ -1,8 +1,10 @@
 package org.lyj.commons.event.bus;
 
+import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.event.Event;
-import org.lyj.commons.event.bus.utils.MessageBusData;
-import org.lyj.commons.event.bus.utils.MessageBusGC;
+import org.lyj.commons.event.bus.emitter.MessageBusEvents;
+import org.lyj.commons.event.bus.emitter.MessageBusGC;
+import org.lyj.commons.event.bus.emitter.MessageBusListeners;
 import org.lyj.commons.util.RandomUtils;
 
 import java.util.ArrayList;
@@ -10,18 +12,17 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *  Event container.
- *
- *  To add an event to event bus call EventBus.emit().
- *
- *  To listen events from EventBus, create a listener calling EventBus.createListener();
- *
- *  The EventBus allow to implement the event pattern with no danger for crossed references and memory leak.
- *  Event emitters and event listeners are decoupled and never referenced each other.
- *
- *  EventBus can be used as a singleton object or creating new instances.
- *  Each event bus has an internal thread that works as a garbage collector.
- *
+ * Event container.
+ * <p>
+ * To add an event to event bus call EventBus.emit().
+ * <p>
+ * To listen events from EventBus, create a listener calling EventBus.createListener();
+ * <p>
+ * The EventBus allow to implement the event pattern with no danger for crossed references and memory leak.
+ * Event emitters and event listeners are decoupled and never referenced each other.
+ * <p>
+ * EventBus can be used as a singleton object or creating new instances.
+ * Each event bus has an internal thread that works as a garbage collector.
  */
 public class MessageBus {
 
@@ -37,10 +38,10 @@ public class MessageBus {
     // ------------------------------------------------------------------------
 
     private final MessageBusGC _gc;
-    private final MessageBusData _data;
+    private final MessageBusEvents _events;
     private final String _id;
-
-    private List<MessageListener> _listeners;
+    private final MessageBusListeners _listeners;
+    private final Loop _loop;
 
     private boolean _disposed;
 
@@ -48,26 +49,28 @@ public class MessageBus {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public MessageBus(){
+    public MessageBus() {
         this(DEF_EVENT_TIMEOUT, DEF_INTERVAL);
     }
 
-    public MessageBus(final int eventTimeout, final int gcInterval){
-        _data = new MessageBusData(eventTimeout);
+    public MessageBus(final int eventTimeout, final int gcInterval) {
+        _events = new MessageBusEvents(eventTimeout);
         _gc = new MessageBusGC(this, gcInterval);
         _id = RandomUtils.randomUUID();
         _disposed = false;
-
-        _listeners = new ArrayList<>();
+        _listeners = new MessageBusListeners();
+        _loop = new Loop(100, (int) (gcInterval * 0.5), 0);
     }
 
     @Override
     public void finalize() throws Throwable {
-        try{
+        try {
             _disposed = true;
             _gc.stop(true);
-            _data.clear();
-        } catch(Throwable ignored){
+            _events.clear();
+            _listeners.clear();
+            _loop.interrupt();
+        } catch (Throwable ignored) {
             // nothing useful to do here
         } finally {
             super.finalize();
@@ -75,54 +78,68 @@ public class MessageBus {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return this.getClass().getSimpleName() + " [" + _id + "] " +
-                _data.toString();
+                _events.toString();
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public boolean isDisposed(){
+    public boolean isDisposed() {
         return _disposed;
     }
 
-    public int size(){
-        return _data.size();
+    public int size() {
+        return _events.size();
     }
 
-    public MessageBusData events(){
-        return _data;
+    public MessageBusEvents events() {
+        return _events;
     }
 
-    public MessageBus emit(final Event event){
-        if(!_gc.isRunning()){
+    public MessageBus emit(final Event event) {
+        if (!_gc.isRunning()) {
             _gc.start();
         }
-        _data.add(event);
+        _events.add(event);
         return this;
     }
 
     //-- factory --//
 
-    public MessageListener createListener(){
-        final MessageListener listener = new MessageListener(this, (int)(DEF_INTERVAL*0.5));
-        _listeners.add(listener);
-        return listener;
+    public MessageListener createListener() {
+        // start if not running
+        this.startLoopEvents();
+        // create listener
+        final MessageListener listener = new MessageListener(this, (int) (DEF_INTERVAL * 0.5));
+        return _listeners.add(listener);
     }
 
     // ------------------------------------------------------------------------
     //                      p a c k a g e
     // ------------------------------------------------------------------------
 
-    Event[] listen(final String listenerId, final Set<String> tags, final String name){
-        return _data.listen(listenerId, tags, name);
+    Event[] listen(final String listenerId, final Set<String> tags, final String name) {
+        return _events.listen(listenerId, tags, name);
     }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private void startLoopEvents() {
+        _loop.interrupt();
+        _loop.join(100);
+        if (!_loop.isRunning()) {
+            _loop.start((interruptor) -> {
+                interruptor.pause();
+                _listeners.process(_events);
+                interruptor.resume();
+            });
+        }
+    }
 
     // ------------------------------------------------------------------------
     //                      S T A T I C
@@ -132,13 +149,12 @@ public class MessageBus {
 
     private static MessageBus __instance;
 
-    public static MessageBus getInstance(){
-        if(null==__instance){
+    public static MessageBus getInstance() {
+        if (null == __instance) {
             __instance = new MessageBus();
         }
         return __instance;
     }
-
 
 
 }

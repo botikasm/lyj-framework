@@ -36,13 +36,18 @@ public class MessageBusTest {
         MessageListener listener = bus.createListener();
 
         listener.on((event)->{
-            System.out.println("LISTENER: " + event.toString());
+            System.out.println("LISTENER ALL: " + event.toString());
         });
 
         MessageListener listener_tag = bus.createListener().setEventTag("sample2");
 
         listener_tag.on((event)->{
-            System.out.println("LISTENER TAG: " + event.toString());
+            System.out.println("LISTENER TAG 2: " + event.toString());
+        });
+
+        MessageListener listener_multi_tag = bus.createListener().setEventTag("sample2").addEventTag("tag 3");
+        listener_multi_tag.on((event)->{
+            System.out.println("LISTENER MULTI TAG: " + event.getTag());
         });
 
         // emit another event
@@ -57,6 +62,8 @@ public class MessageBusTest {
         listener = null;
         listener_tag.stop();
         listener_tag = null;
+        listener_multi_tag.stop();
+        listener_multi_tag = null;
 
         System.gc();
 

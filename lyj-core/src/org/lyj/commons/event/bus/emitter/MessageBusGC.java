@@ -1,4 +1,4 @@
-package org.lyj.commons.event.bus.utils;
+package org.lyj.commons.event.bus.emitter;
 
 import org.lyj.commons.async.future.Timed;
 import org.lyj.commons.event.bus.MessageBus;
