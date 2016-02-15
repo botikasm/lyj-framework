@@ -5,6 +5,7 @@ import org.lyj.commons.event.Event;
 import org.lyj.commons.event.bus.emitter.MessageBusEvents;
 import org.lyj.commons.event.bus.emitter.MessageBusGC;
 import org.lyj.commons.event.bus.emitter.MessageBusListeners;
+import org.lyj.commons.event.bus.listener.MessageListenerTask;
 import org.lyj.commons.util.RandomUtils;
 
 /**
@@ -37,7 +38,7 @@ public class MessageBus {
     private final MessageBusEvents _events;
     private final String _id;
     private final MessageBusListeners _listeners;
-    private final Loop _loop;
+    private final MessageListenerTask _loop;
 
     private boolean _disposed;
 
@@ -55,7 +56,7 @@ public class MessageBus {
         _id = RandomUtils.randomUUID();
         _disposed = false;
         _listeners = new MessageBusListeners();
-        _loop = new Loop(100, (int) (gcInterval * 0.5));
+        _loop = new MessageListenerTask((int)(gcInterval*0.5));
     }
 
     @Override
@@ -65,7 +66,7 @@ public class MessageBus {
             _gc.stop(true);
             _events.clear();
             _listeners.clear();
-            _loop.interrupt();
+            _loop.stop(true);
         } catch (Throwable ignored) {
             // nothing useful to do here
         } finally {
@@ -119,12 +120,6 @@ public class MessageBus {
     //                      p a c k a g e
     // ------------------------------------------------------------------------
 
-    /*
-    Event[] listen(final String listenerId, final Set<String> tags, final String name) {
-        return _events.listen(listenerId, tags, name);
-    }
-    */
-
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -132,9 +127,9 @@ public class MessageBus {
     private void startLoopEvents() {
         if (!_loop.isRunning()) {
             _loop.start((interruptor) -> {
-                interruptor.pause();
+                //interruptor.pause();
                 _listeners.process(_events);
-                interruptor.resume();
+                //interruptor.resume();
             });
         }
     }

@@ -33,16 +33,13 @@ public class MessageBusTest {
         MessageBus bus = MessageBus.getInstance();
        bus.emit(event1).emit(event2);
 
-        class_listener.clear();
-        class_listener = null;
-
-        System.gc();
+        System.gc(); // force GC
 
         System.out.println(bus.toString());
 
         MessageListener listener = bus.createListener();
         listener.on((event)->{
-            System.out.println("LISTENER ALL: " + event.toString());
+            System.out.println("LISTENER ALL: " + event.getTag());
         });
 
         //listener.clear(); // clear references to completely remove handlers references
@@ -50,7 +47,7 @@ public class MessageBusTest {
 
         MessageListener listener_tag = bus.createListener().setEventTag("sample2");
         listener_tag.on((event)->{
-            System.out.println("LISTENER TAG 2: " + event.toString());
+            System.out.println("LISTENER TAG 2: " + event.getTag());
         });
 
         MessageListener listener_multi_tag = bus.createListener().setEventTag("sample2").addEventTag("tag 3");
@@ -75,6 +72,9 @@ public class MessageBusTest {
         System.gc();
 
         Thread.sleep(3000);
+
+        class_listener.clear();
+        class_listener = null;
 
         System.gc();
 
