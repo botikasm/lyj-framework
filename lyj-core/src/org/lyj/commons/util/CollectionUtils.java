@@ -1448,8 +1448,12 @@ public abstract class CollectionUtils {
      * null.
      */
     public static <T> T getFirst(Collection<T> collection) {
+        return getFirst(collection, null);
+    }
+
+    public static <T> T getFirst(Collection<T> collection, final T defVal) {
         if (isEmpty(collection)) {
-            return null;
+            return defVal;
         } else {
             return collection.iterator().next();
         }

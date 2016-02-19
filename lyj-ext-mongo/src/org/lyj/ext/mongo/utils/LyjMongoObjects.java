@@ -189,7 +189,11 @@ public class LyjMongoObjects {
             final Object value = document.get(key);
             if (null == value || !(value instanceof List)) {
                 if (addIfNone) {
-                    document.put(key, new ArrayList<>());
+                    final List<String> list = new ArrayList<>();
+                    if(value instanceof String){
+                        list.add((String)value);
+                    }
+                    document.put(key, list);
                     return (List<String>) document.get(key);
                 } else {
                     return new ArrayList<>();
