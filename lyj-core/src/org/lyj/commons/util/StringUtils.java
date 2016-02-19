@@ -758,16 +758,17 @@ public final class StringUtils {
     }
 
     public static String toQueryString(final Map<String, ?> params) {
-        return toQueryString(params, "&", CharEncoding.UTF_8);
+        return toQueryString(params, "&", CharEncoding.UTF_8, false);
     }
 
-    public static String toQueryString(final Map<String, ?> params, final String charSet) {
-        return toQueryString(params, "&", charSet);
+    public static String toQueryString(final Map<String, ?> params, final String charSet, final boolean encodeSpaces) {
+        return toQueryString(params, "&", charSet, encodeSpaces);
     }
 
     public static String toQueryString(final Map<String, ?> params,
                                        final String separator,
-                                       final String charSet) {
+                                       final String charSet,
+                                       final boolean encodeSpaces) {
         final String sep = StringUtils.hasText(separator) ? separator : "&";
         if (!CollectionUtils.isEmpty(params)) {
             final StringBuilder result = new StringBuilder();
@@ -775,7 +776,9 @@ public final class StringUtils {
             for (final String key : keys) {
                 final String value = StringUtils.notNull(params.get(key), "");
                 if (StringUtils.hasText(value)) {
-                    StringUtils.append(urlEncode(key, charSet).concat("=").concat(urlEncode(value, charSet)),
+                    StringUtils.append(urlEncode(key, charSet, false)
+                            .concat("=")
+                            .concat(urlEncode(value, charSet, encodeSpaces)),
                             result, sep);
                 }
             }
@@ -788,13 +791,17 @@ public final class StringUtils {
         return StringUtils.replaceDuplicates(StringUtils.replace(s, new String[]{" ", "\n", "\t"}, "+"), "+");
     }
 
-    public static String urlEncode(final String s) {
-        return urlEncode(s, CharEncoding.getDefault());
+    public static String urlDecodeSpaces(final String s) {
+        return StringUtils.replaceDuplicates(StringUtils.replace(s, new String[]{"+"}, " "), " ");
     }
 
-    public static String urlEncode(final String s, final String charSet) {
+    public static String urlEncode(final String s) {
+        return urlEncode(s, CharEncoding.getDefault(), false);
+    }
+
+    public static String urlEncode(final String s, final String charSet, final boolean encodeSpaces) {
         try {
-            return URLEncoder.encode(urlEncodeSpaces(s), charSet);
+            return URLEncoder.encode(encodeSpaces?urlEncodeSpaces(s):s, charSet);
         } catch (Exception ignored) {
         }
         return s;

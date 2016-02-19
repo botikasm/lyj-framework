@@ -26,9 +26,10 @@ public class MessageBusListeners {
     // ------------------------------------------------------------------------
 
     private final MessageBus _bus;
-    private final int _interval;
     private final List<MessageListener> _listeners;
-    private final ListenersTask _task;
+
+    private ListenersTask _task;
+    private int _interval;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -44,6 +45,22 @@ public class MessageBusListeners {
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public int getInterval(){
+        return _interval;
+    }
+
+    public void setInterval(final int value){
+        _interval = value;
+
+        // reset task
+        if(null!=_task) {
+            _task.stop(true);
+            _task = null;
+            _task = new ListenersTask(this, value);
+            _task.start();
+        }
+    }
 
     public int size() {
         return _listeners.size();
@@ -80,6 +97,7 @@ public class MessageBusListeners {
         }
     }
 
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -90,7 +108,7 @@ public class MessageBusListeners {
 
             for (final MessageListener listener : _listeners) {
                 if (listener.isEmpty()) {
-                    // remove
+                    // remove because has no executors
                     remove_list.add(listener);
                 } else {
                     final String id = listener.getId();

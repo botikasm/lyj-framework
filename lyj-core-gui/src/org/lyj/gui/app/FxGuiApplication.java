@@ -4,12 +4,17 @@ package org.lyj.gui.app;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.lyj.commons.i18n.DictionaryController;
+import org.lyj.commons.logging.AbstractLogEmitter;
+import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.gui.app.components.ComponentFactory;
+import org.lyj.gui.app.utils.GuiObject;
 import org.lyj.gui.config.ConfigScene;
-import org.lyj.gui.utils.FXMLLoderUtils;
 import org.lyj.launcher.LyjLauncher;
 import org.lyj.launcher.impl.LyjBaseLauncher;
 
@@ -25,8 +30,12 @@ public abstract class FxGuiApplication
 
     private LyjLauncher _launcher;
     private Stage _primary_stage;
+    private AbstractViewController _primary_controller;
     private ConfigScene _configuration;
     private DictionaryController _i18n;
+
+    private final AbstractLogEmitter _logger;
+    private final ComponentFactory _factory;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -34,6 +43,8 @@ public abstract class FxGuiApplication
 
     public FxGuiApplication(final DictionaryController dictionary) {
         _i18n = dictionary;
+        _logger = new AbstractLogEmitter(LoggingUtils.getLogger(this));
+        _factory = new ComponentFactory(this);
     }
 
     // ------------------------------------------------------------------------
@@ -101,18 +112,24 @@ public abstract class FxGuiApplication
         return null != _i18n ? _i18n : new DictionaryController();
     }
 
-    public Parent loadChild(final Parent container, final String path) throws IOException {
-        return FXMLLoderUtils.loadChild(this, container, path);
-    }
-
-    public Parent load(final String path) throws IOException {
-        return FXMLLoderUtils.load(this, path);
+    public ComponentFactory factory() {
+        return _factory;
     }
 
     @Override
-    public void stop(){
-        System.out.println("Stage is closing");
-        System.gc();
+    public void stop() {
+        this.logger().debug("stop", "Stage is closing");
+        if (null != _primary_controller) {
+            _primary_controller.doExit();
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r o t e c t e d
+    // ------------------------------------------------------------------------
+
+    protected AbstractLogEmitter logger() {
+        return _logger;
     }
 
     // ------------------------------------------------------------------------
@@ -135,8 +152,8 @@ public abstract class FxGuiApplication
 
     private void initStage() throws IOException {
         if (this.configuration().hasStage()) {
-            final Parent root = FXMLLoderUtils.load(this, this.configuration().stage());
-            final Scene scene = new Scene(root, this.configuration().width(), this.configuration().height());
+            final GuiObject gui_root = this.factory().root();
+            final Scene scene = new Scene(gui_root.view(), this.configuration().width(), this.configuration().height());
             _primary_stage.setTitle(this.configuration().title());
             _primary_stage.setScene(scene);
             final Image icon = this.getImage(this.configuration().icon());
@@ -146,8 +163,7 @@ public abstract class FxGuiApplication
             if (this.configuration().autoShow()) {
                 _primary_stage.show();
             }
-            // handle close in primary stage
-           // _primary_stage.addEventHandler();
+            _primary_controller = gui_root.controller();
         }
     }
 

@@ -95,10 +95,10 @@ public class MessageBusEvents {
 
     public MessageBusEvents add(final Event event, final int timeout) {
         synchronized (_events) {
+            _events.add(new MessageBusEventWrapper(event, timeout));
             if (!_gc.isRunning()) {
                 _gc.start();
             }
-            _events.add(new MessageBusEventWrapper(event, timeout));
         }
         return this;
     }

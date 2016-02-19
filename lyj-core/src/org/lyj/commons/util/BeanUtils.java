@@ -85,6 +85,16 @@ public abstract class BeanUtils {
             }
             return false;
         }
+
+        public static Class getObjectClass(Class aclass) {
+            final PrimitiveClasses[] array = PrimitiveClasses.values();
+            for (final PrimitiveClasses item : array) {
+                if (item.getObjectClass().equals(aclass) || item.getPrimitiveClass().equals(aclass)) {
+                    return item.getObjectClass();
+                }
+            }
+            return aclass;
+        }
     }
 
     private static final Class[] PRIMITIVE_CLASSES = {
@@ -436,6 +446,26 @@ public abstract class BeanUtils {
             return false;
         }
         return to.isAssignableFrom(from.getClass());
+    }
+
+    public static boolean equals(final Class cls1, final Class cls2){
+        if(null!=cls1 && null!=cls2) {
+            final Class clso1 = PrimitiveClasses.getObjectClass(cls1);
+            final Class clso2 = PrimitiveClasses.getObjectClass(cls2);
+            return clso1.equals(clso2);
+        }
+        return false;
+    }
+
+    public static boolean similar(final Class cls1, final Class cls2){
+        if(null!=cls1 && null!=cls2) {
+            final Class clso1 = PrimitiveClasses.getObjectClass(cls1);
+            final Class clso2 = PrimitiveClasses.getObjectClass(cls2);
+            boolean equals = clso1.equals(clso2);
+            boolean assignable = clso1.isAssignableFrom(clso2) || clso2.isAssignableFrom(clso1);
+            return equals || assignable;
+        }
+        return false;
     }
 
     // -----------------------------------------------------------------------

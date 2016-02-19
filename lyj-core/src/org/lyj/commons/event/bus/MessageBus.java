@@ -25,7 +25,8 @@ public class MessageBus {
     // ------------------------------------------------------------------------
 
     private static final int DEF_EVENT_TIMEOUT = 2 * 1000;
-    private static final int DEF_INTERVAL = 2 * 1000;
+    private static final int DEF_GC_INTERVAL = 2 * 1000;
+    private static final int DEF_LISTEN_INTERVAL = 500;
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -42,13 +43,13 @@ public class MessageBus {
     // ------------------------------------------------------------------------
 
     public MessageBus() {
-        this(DEF_EVENT_TIMEOUT, DEF_INTERVAL);
+        this(DEF_EVENT_TIMEOUT, DEF_GC_INTERVAL, DEF_LISTEN_INTERVAL);
     }
 
-    public MessageBus(final int eventTimeout, final int gcInterval) {
+    public MessageBus(final int eventTimeout, final int gcInterval, final int listenInterval) {
         _id = RandomUtils.randomUUID();
         _disposed = false;
-        _listeners = new MessageBusListeners(this, (int) (gcInterval * 0.5));
+        _listeners = new MessageBusListeners(this, listenInterval);
         _events = new MessageBusEvents(this, eventTimeout, gcInterval);
     }
 
@@ -112,6 +113,10 @@ public class MessageBus {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private void init(){
+
+    }
 
     // ------------------------------------------------------------------------
     //                      S T A T I C

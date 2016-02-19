@@ -30,6 +30,8 @@ import java.util.Map.Entry;
 public abstract class CollectionUtils {
 
 
+
+
     public static interface IterationResponseCallback<T> {
         T handle(final T item, final int index, final Object key);
     }
@@ -281,6 +283,23 @@ public abstract class CollectionUtils {
         String[] newArr = new String[array.length + 1];
         System.arraycopy(array, 0, newArr, 1, array.length);
         newArr[0] = str;
+        return newArr;
+    }
+
+    /**
+     * Insert the given object to beginning of array.
+     * @param array the array to insert to (can be
+     *              <code>null</code>)
+     * @param item the object to insert in first position
+     * @return the new array (never <code>null</code>)
+     */
+    public static Object[] insertToArray(Object[] array, Object item) {
+        if (isEmpty(array)) {
+            return new Object[]{item};
+        }
+        Object[] newArr = new Object[array.length + 1];
+        System.arraycopy(array, 0, newArr, 1, array.length);
+        newArr[0] = item;
         return newArr;
     }
 
@@ -1506,6 +1525,32 @@ public abstract class CollectionUtils {
             }
         }
         return null;
+    }
+
+    public static boolean equals(final Class[] arr1, final Class[] arr2) {
+        if(null!=arr1 && null!=arr2 && arr1.length==arr2.length){
+            for(int i=0;i<arr1.length;i++){
+                Class cls1 = arr1[i];
+                Class cls2 = arr2[i];
+                if(!BeanUtils.similar(cls1, cls2)){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean equals(final Object[] arr1, final Object[] arr2) {
+        if(null!=arr1 && null!=arr2 && arr1.length==arr2.length){
+            for(int i=0;i<arr1.length;i++){
+                if(!arr1[i].equals(arr2[i])){
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     // ------------------------------------------------------------------------

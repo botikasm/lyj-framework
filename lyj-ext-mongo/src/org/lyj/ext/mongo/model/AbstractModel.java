@@ -32,7 +32,6 @@ public abstract class AbstractModel
 
     public AbstractModel(final Class<? extends AbstractSchema> schemaClass) {
         this(schemaClass, new Document(), "");
-        this.initDefaults();
     }
 
     public AbstractModel(final Class<? extends AbstractSchema> schemaClass,
@@ -50,6 +49,8 @@ public abstract class AbstractModel
         _schema = this.getSchema(schemaClass);
         _document = document;
         _id_prefix = null != id_prefix ? id_prefix : "";
+
+        this.initDefaults(false);
     }
 
     @Override
@@ -210,16 +211,22 @@ public abstract class AbstractModel
         return result;
     }
 
-    private void initDefaults() {
+    private void initDefaults(final boolean overwrite) {
         if (null != _schema) {
-            _document.put(F_ID, _id_prefix.concat(this.UUID()));
-            _document.put(F_COLLECTION, _schema.getCollectionName());
+            if(!_document.containsKey(F_ID)){
+                _document.put(F_ID, _id_prefix.concat(this.UUID()));
+            }
+            if(overwrite || !_document.containsKey(F_COLLECTION)){
+                _document.put(F_COLLECTION, _schema.getCollectionName());
+            }
 
             final LyjMongoField[] fields = _schema.fields();
             for (final LyjMongoField field : fields) {
                 final Object value = field.getDefaultValue();
                 if (null != value) {
-                    _document.put(field.getName(), value); // 1450804004452
+                    if(overwrite || !_document.containsKey(field.getName())){
+                        _document.put(field.getName(), value); // 1450804004452
+                    }
                 }
             }
         }

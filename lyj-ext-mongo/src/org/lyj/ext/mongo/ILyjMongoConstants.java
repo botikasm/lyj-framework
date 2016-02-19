@@ -20,6 +20,8 @@ public interface ILyjMongoConstants {
     public static final String $NIN = "$nin";
     public static final String $IN = "$in";
 
+    public static final String $REGEX = "$regex";
+
     public static final String $OR = "$or";
     public static final String $AND = "$and";
 

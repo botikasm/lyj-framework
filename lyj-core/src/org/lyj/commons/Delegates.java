@@ -55,10 +55,24 @@ public class Delegates {
         T handle(final Object... args);
     }
 
+    /**
+     * Callback is defined with two generic parameters: the first parameter
+     * specifies the type of the object passed in to the <code>call</code> method,
+     * with the second parameter specifying the return type of the method.
+     *
+     * @param <P> The type of the argument provided to the <code>call</code> method.
+     * @param <R> The type of the return type of the <code>call</code> method.
+     */
+    @FunctionalInterface
+    public static interface FunctionArg<P, R>{
+        R call(P param);
+    }
+
     @FunctionalInterface
     public static interface Function<T>{
         T handle();
     }
+
 
     // --------------------------------------------------------------------
     //               E v e n t s

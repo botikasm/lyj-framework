@@ -225,7 +225,7 @@ public class MapStaticUrl {
                 final Object value = args[count.value()];
                 if (null != value) {
                     return encode
-                            ? StringUtils.urlEncode(value.toString(), CharEncoding.getDefault())
+                            ? StringUtils.urlEncode(value.toString(), CharEncoding.getDefault(), true)
                             : value.toString();
                 } else {
                     return "";

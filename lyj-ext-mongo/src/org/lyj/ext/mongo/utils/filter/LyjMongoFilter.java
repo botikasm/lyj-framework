@@ -55,6 +55,11 @@ public class LyjMongoFilter
         return this;
     }
 
+    public LyjMongoFilter like(final String fieldName, final Object value) {
+        _filter.put(fieldName, new Document($REGEX, value));
+        return this;
+    }
+
     public LyjMongoFilter notEquals(final String fieldName, final Object value) {
         _filter.put(fieldName, new Document($NE, value));
         return this;
@@ -89,6 +94,8 @@ public class LyjMongoFilter
         _filter.put($AND, Arrays.asList(conditions));
         return this;
     }
+
+
 
     // ------------------------------------------------------------------------
     //                      G E O

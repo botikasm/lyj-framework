@@ -3,7 +3,7 @@ package org.lyj.gui.config;
 import org.lyj.Lyj;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.gui.utils.Size;
+import org.lyj.gui.app.utils.Size;
 
 /**
  * Helper class to wrap scene configuration

@@ -496,4 +496,26 @@ public abstract class AbstractService
     }
 
 
+    protected void upsert(final String collection_name, final Document item,
+                          final Delegates.SingleResultCallback<Document> callback) {
+        final String id = item.getString(ID);
+        if (StringUtils.hasText(id)) {
+            this.findById(collection_name, id, new Document(ID, 1), (err, existing) -> {
+                if (null != err) {
+                    Delegates.invoke(callback, err, null);
+                } else {
+                    if (null != existing) {
+                        item.remove(ID);
+                        this.update(collection_name, id, item, callback);
+                    } else {
+                        this.insert(collection_name, item, callback);
+                    }
+                }
+            });
+        } else {
+            Delegates.invoke(callback, new Exception("Unable to insert or update object: Missing ID"), null);
+        }
+    }
+
+
 }

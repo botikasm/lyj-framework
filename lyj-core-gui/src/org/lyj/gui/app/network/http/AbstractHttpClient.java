@@ -6,8 +6,9 @@ import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.network.http.client.HttpClient;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.gui.config.ConfigNetwork;
-import org.lyj.gui.utils.PlatformUtils;
+import org.lyj.gui.app.utils.PlatformUtils;
 
 import java.util.Map;
 
@@ -38,6 +39,10 @@ public class AbstractHttpClient
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
 
+    protected String path(final String endpoint, final String method) {
+        return PathUtils.concat(endpoint, method);
+    }
+
     protected void post(final String api_name, final Map<String, Object> params,
                         final Delegates.SingleResultCallback<JsonWrapper> callback) {
         Async.invoke((args) -> {
@@ -47,7 +52,11 @@ public class AbstractHttpClient
                     if (null != err) {
                         Delegates.invoke(callback, err, null);
                     } else {
-                        Delegates.invoke(callback, null, new JsonWrapper(response));
+                        try {
+                            Delegates.invoke(callback, null, this.parse(response));
+                        } catch (Throwable t) {
+                            Delegates.invoke(callback, t, null);
+                        }
                     }
                 });
             });
@@ -63,12 +72,17 @@ public class AbstractHttpClient
                     if (null != err) {
                         Delegates.invoke(callback, err, null);
                     } else {
-                        Delegates.invoke(callback, null, new JsonWrapper(response));
+                        try {
+                            Delegates.invoke(callback, null, this.parse(response));
+                        } catch (Throwable t) {
+                            Delegates.invoke(callback, t, null);
+                        }
                     }
                 });
             });
         });
     }
+
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
@@ -78,6 +92,16 @@ public class AbstractHttpClient
         HttpClient client = new HttpClient();
 
         return client;
+    }
+
+    private JsonWrapper parse(final String response) throws Exception {
+        final JsonWrapper json = new JsonWrapper(response);
+        final String error = json.isJSONObject() ? json.deepString("error"):"";
+        if (StringUtils.hasText(error)) {
+            throw new Exception(error);
+        } else {
+            return json;
+        }
     }
 
 }

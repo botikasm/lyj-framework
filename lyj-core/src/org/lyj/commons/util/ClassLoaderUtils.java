@@ -215,8 +215,11 @@ public class ClassLoaderUtils {
                                      final Object[] args) throws InstantiationException, IllegalAccessException,
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
         if (null != args && args.length > 0) {
-            final Class[] types = getTypes(args);
-            final Constructor ctor = cls.getConstructor(types);
+            Constructor ctor = getConstructor(cls, args);
+            if(null==ctor){
+                final Class[] types = getTypes(args);
+                ctor = cls.getConstructor(types);
+            }
             return ctor.newInstance(args);
         }
         return cls.newInstance();
@@ -346,6 +349,25 @@ public class ClassLoaderUtils {
                 }
             }
         }
+        return null;
+    }
+
+    private static Constructor getConstructor(final Class aclass, final Object[] args) throws NoSuchMethodException {
+        if(!CollectionUtils.isEmpty(args)) {
+            final Constructor[] constructors = aclass.getConstructors();
+            for(final Constructor constructor:constructors){
+                final Class[] types = constructor.getParameterTypes();
+                if(types.length==args.length) {
+                    final Class[] args_types = getTypes(args);
+                    if(CollectionUtils.equals(types, args_types)){
+                        return constructor;
+                    }
+                }
+            }
+        } else {
+            return aclass.getConstructor();
+        }
+
         return null;
     }
 

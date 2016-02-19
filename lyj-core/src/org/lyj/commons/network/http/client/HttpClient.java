@@ -177,7 +177,7 @@ public class HttpClient {
                     .setConnectionTimeout(_connection_timeout)
                     .setIdleTimeout(_idle_timeout);
 
-            final String body = StringUtils.toQueryString(params, _char_encoding);
+            final String body = StringUtils.toQueryString(params, _char_encoding, false);
 
 
             request.errorHandler((err) -> {
@@ -204,7 +204,7 @@ public class HttpClient {
                     .setConnectionTimeout(_connection_timeout)
                     .setIdleTimeout(_idle_timeout);
 
-            final String body = StringUtils.toQueryString(params, _char_encoding);
+            final String body = StringUtils.toQueryString(params, _char_encoding, true);
 
 
             request.errorHandler((err) -> {
