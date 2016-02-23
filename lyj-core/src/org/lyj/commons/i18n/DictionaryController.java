@@ -64,12 +64,7 @@ public class DictionaryController {
                 : "";
     }
 
-
-    // ------------------------------------------------------------------------
-    //                     p r o t e c t e d
-    // ------------------------------------------------------------------------
-
-    protected void register(final Class<? extends AbstractI18nBundle> dic) {
+    public void register(final Class<? extends AbstractI18nBundle> dic) {
         DictionaryRegistry.register(dic);
     }
 

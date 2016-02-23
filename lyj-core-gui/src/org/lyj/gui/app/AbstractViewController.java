@@ -56,7 +56,7 @@ public abstract class AbstractViewController
                 _gui = application.factory().loadFXML(this, fxml);
             }
         } catch (Throwable t) {
-            super.error("Constructor", ExceptionUtils.getMessage(t));
+            super.error("AbstractViewController#loadFXML", ExceptionUtils.getMessage(t));
         }
     }
 
@@ -98,6 +98,10 @@ public abstract class AbstractViewController
 
     public String i18n(final String key) {
         return i18n().get(lang(), key);
+    }
+
+    public String i18nFmt(final String key, final Object...args) {
+        return i18n().get(lang(), key, args);
     }
 
     public String i18n(final String id, final String prop) {

@@ -2,6 +2,8 @@ package org.lyj.gui.app.components;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import org.lyj.commons.logging.AbstractLogEmitter;
@@ -119,6 +121,8 @@ public class ComponentFactory
                 ((AnchorPane) container).getChildren().add(child);
             } else if (container instanceof TitledPane) {
                 ((TitledPane) container).setContent(child);
+            } else if (container instanceof ScrollPane) {
+                ((ScrollPane) container).setContent(child);
             }
         }
     }

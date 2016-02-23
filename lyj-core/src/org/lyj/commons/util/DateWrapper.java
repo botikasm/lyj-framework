@@ -476,4 +476,12 @@ public class DateWrapper {
     }
 
 
+    public static DateWrapper parse(final String date, final String pattern) {
+        try {
+            return new DateWrapper(date, pattern);
+        }catch(Throwable t) {
+            return new DateWrapper();
+        }
+    }
+
 }
