@@ -175,7 +175,7 @@ public abstract class AbstractSchema
     }
 
     private Task<LyjMongoIndex> initIndex(final LyjMongoIndex index) {
-        return new Task<LyjMongoIndex>((final Task<LyjMongoIndex> task) -> {
+        return new Task<LyjMongoIndex>((task) -> {
             final Set<String> names = index.getFieldNames();
             if (index.hasFields()) {
                 this.getCollection((err, collection) -> {

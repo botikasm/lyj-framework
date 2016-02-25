@@ -103,6 +103,29 @@ public abstract class DateUtils {
         return result;
     }
 
+    public static long to(final long value, int measureUnit) {
+        long result = value;
+        switch (measureUnit) {
+            case MILLISECOND:
+                result = value;
+                break;
+            case SECOND:
+                result = value / 1000;
+                break;
+            case MINUTE:
+                result = value / (1000 * 60);
+                break;
+            case HOUR:
+                result = value / (1000 * 60 * 60);
+                break;
+            case DAY:
+                result = value / (1000 * 60 * 60 *24);
+                break;
+        }
+        return result;
+    }
+
+
     /**
      * Return a date.
      *
