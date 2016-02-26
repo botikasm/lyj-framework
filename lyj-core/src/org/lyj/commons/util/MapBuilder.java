@@ -42,7 +42,7 @@ public class MapBuilder<K, V> {
         return new JSONObject(_map);
     }
 
-    public MapBuilder append(final K key, final V value){
+    public MapBuilder<K,V> append(final K key, final V value){
         _map.put(key, value);
         return this;
     }
@@ -52,6 +52,10 @@ public class MapBuilder<K, V> {
     // ------------------------------------------------------------------------
 
     public static <K,V> MapBuilder<K,V> create(){
+        return new MapBuilder<K,V>();
+    }
+
+    public static <K,V> MapBuilder<K,V> create(final Class<K> keyClass, final Class<V> valueClass){
         return new MapBuilder<K,V>();
     }
 

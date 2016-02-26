@@ -30,25 +30,71 @@ public class LocaleUtils {
     /**
      * Locales that are found so far.
      */
-    private static final Map<Locale, Locale> _founds = Collections.synchronizedMap(
-            new LinkedHashMap<Locale, Locale>(18));
+    private static final Map<Locale, Locale> _founds = MapBuilder.create(Locale.class, Locale.class)
+            .append(Locale.UK, Locale.UK)
+            .append(Locale.ENGLISH, Locale.ENGLISH)
+            .append(Locale.US, Locale.US)
+            .append(Locale.JAPAN, Locale.JAPAN)
+            .append(Locale.JAPANESE, Locale.JAPANESE)
+            .append(Locale.KOREA, Locale.KOREA)
+            .append(Locale.KOREAN, Locale.KOREAN)
+            .append(Locale.FRANCE, Locale.FRANCE)
+            .append(Locale.FRENCH, Locale.FRENCH)
+            .append(Locale.GERMANY, Locale.GERMANY)
+            .append(Locale.GERMAN, Locale.GERMAN)
+            .append(Locale.ITALY, Locale.ITALY)
+            .append(Locale.ITALIAN, Locale.ITALIAN)
+            .append(Locale.TRADITIONAL_CHINESE, Locale.TRADITIONAL_CHINESE)
+            .append(Locale.SIMPLIFIED_CHINESE, Locale.SIMPLIFIED_CHINESE)
+            .append(Locale.CHINA, Locale.CHINA)
+            .append(Locale.CHINESE, Locale.CHINESE)
+            .toMap();
 
-    static {
-        final Locale[] ls = new Locale[]{
-                Locale.UK, Locale.ENGLISH,
-                Locale.US,
-                Locale.JAPAN, Locale.JAPANESE,
-                Locale.KOREA, Locale.KOREAN,
-                Locale.FRANCE, Locale.FRENCH,
-                Locale.GERMANY, Locale.GERMAN,
-                Locale.ITALY, Locale.ITALIAN,
-                Locale.TRADITIONAL_CHINESE, Locale.SIMPLIFIED_CHINESE,
-                Locale.CHINA, Locale.CHINESE
-        };
-        for (int j = 0; j < ls.length; ++j) {
-            _founds.put(ls[j], ls[j]);
-        }
-    }
+    private static final Map<String, Locale> _langs = MapBuilder.create(String.class, Locale.class)
+            .append("Unknown", LocaleUtils.getCurrent())
+            .append("Italian", LocaleUtils.getLocale("it", "IT"))
+            .append("Russian", LocaleUtils.getLocale("ru", "RU"))
+            .append("English", LocaleUtils.getLocale("en", "US"))
+            .append("French", LocaleUtils.getLocale("fr", "FR"))
+            .append("German", LocaleUtils.getLocale("de", "DE"))
+            .append("Spanish", LocaleUtils.getLocale("es", "ES"))
+            .append("Afrikaans", LocaleUtils.getLocale("af", "AF"))
+            .append("Arabic", LocaleUtils.getLocale("ar", "AR"))
+            .append("Basque", LocaleUtils.getLocale("eu", "EU"))
+            .append("Belarusian", LocaleUtils.getLocale("be", "BE"))
+            .append("Bulgarian", LocaleUtils.getLocale("bg", "BG"))
+            .append("Catalan", LocaleUtils.getLocale("ca", "CA"))
+            .append("Chinese", LocaleUtils.getLocale("zh", "CN"))
+            .append("Czech", LocaleUtils.getLocale("cs", "CZ"))
+            .append("Danish", LocaleUtils.getLocale("da", "DK"))
+            .append("Dutch", LocaleUtils.getLocale("nl", "NL"))
+            .append("Estonian", LocaleUtils.getLocale("et", "ET"))
+            .append("Faroese", LocaleUtils.getLocale("fo", "FO"))
+            .append("Finnish", LocaleUtils.getLocale("fi", "FI"))
+            .append("Greek", LocaleUtils.getLocale("el", "EL"))
+            .append("Hebrew", LocaleUtils.getLocale("he", "HE"))
+            .append("Icelandic", LocaleUtils.getLocale("is", "IS"))
+            .append("Indonesian", LocaleUtils.getLocale("id", "ID"))
+            .append("Japanese", LocaleUtils.getLocale("ja", "JP"))
+            .append("Korean", LocaleUtils.getLocale("ko", "KO"))
+            .append("Latvian", LocaleUtils.getLocale("lv", "LV"))
+            .append("Lithuanian", LocaleUtils.getLocale("lt", "LT"))
+            .append("Norwegian", LocaleUtils.getLocale("no", "NO"))
+            .append("Polish", LocaleUtils.getLocale("pl", "PL"))
+            .append("Portuguese", LocaleUtils.getLocale("pt", "PT"))
+            .append("Romanian", LocaleUtils.getLocale("ro", "RO"))
+            .append("SerboCroatian", LocaleUtils.getLocale("sh", "CS"))
+            .append("Slovak", LocaleUtils.getLocale("sk", "SK"))
+            .append("Slovenian", LocaleUtils.getLocale("sl", "SI"))
+            .append("Swedish", LocaleUtils.getLocale("sv", "SE"))
+            .append("Thai", LocaleUtils.getLocale("th", "TH"))
+            .append("Turkish", LocaleUtils.getLocale("tr", "TR"))
+            .append("Ukrainian", LocaleUtils.getLocale("uk", "UA"))
+            .append("Vietnamese", LocaleUtils.getLocale("vi", "VN"))
+            .append("ChineseSimplified", LocaleUtils.getLocale("zh", "CN"))
+            .append("ChineseTraditional", LocaleUtils.getLocale("zh", "CN"))
+            .append("Hungarian", LocaleUtils.getLocale("hu", "HU"))
+            .toMap();
 
     /**
      * Returns the current locale; never null.
@@ -86,13 +132,13 @@ public class LocaleUtils {
 
     /**
      * Sets the locale for the current thread only.
-     * <p/>
+     * <p>
      * <p>Each thread could have an independent locale, called
      * the thread locale.
-     * <p/>
+     * <p>
      * <p>When Invoking this method under a thread that serves requests,
      * remember to clean up the setting upon completing each request.
-     * <p/>
+     * <p>
      * <pre><code>Locale old = Locales.setThreadLocal(newValue);
      * try {
      *  ...
@@ -110,23 +156,50 @@ public class LocaleUtils {
         return old;
     }
 
+    public static Locale getLocale(final String slocale) {
+        synchronized (_founds) {
+            if (StringUtils.hasText(slocale)) {
+                final String[] tokens = StringUtils.split(slocale, new String[]{"_", "-", ":"});
+                if (tokens.length == 1) {
+                    if (slocale.length() > 3) {
+                        return LocaleUtils.getLocale(_langs.get(slocale));
+                    } else {
+                        return LocaleUtils.getLocaleFromString(slocale);
+                    }
+                } else if (tokens.length == 2) {
+                    return LocaleUtils.getLocale(tokens[0], tokens[1]);
+                } else if (tokens.length == 3) {
+                    return LocaleUtils.getLocaleFromString(slocale);
+                } else {
+                    return LocaleUtils.getCurrent();
+                }
+            } else {
+                return LocaleUtils.getCurrent();
+            }
+        }
+    }
+
     /**
      * Converts a Locale to one of them being used before.
      * To save memory (since locale is used frequently), it is suggested
      * to pass thru this method after creating a new instance of Locale.<br>
      * Example, getLocale(new Locale(...)).
-     * <p/>
+     * <p>
      * <p>This method first look for any locale
      */
     public static Locale getLocale(final Locale locale) {
         synchronized (_founds) {
-            final Locale l = _founds.get(locale);
-            if (l != null) {
-                return l;
-            }
+            if (null != locale) {
+                final Locale l = _founds.get(locale);
+                if (l != null) {
+                    return l;
+                }
 
-            _founds.put(locale, locale);
-            return locale;
+                _founds.put(locale, locale);
+                return locale;
+            } else {
+                return LocaleUtils.getCurrent();
+            }
         }
     }
 
@@ -167,6 +240,7 @@ public class LocaleUtils {
 
     /**
      * Return lang code
+     *
      * @param slocale Locale as string. "it_IT", "it-IT"
      * @return Lang Code
      */
@@ -221,7 +295,7 @@ public class LocaleUtils {
      * @return Locale from String
      */
     public static Locale getLocaleFromString(final String localeString) {
-        Locale result = parseLocaleString(null!=localeString?localeString.toString():"");
+        Locale result = parseLocaleString(null != localeString ? localeString.toString() : "");
 
         if (null == result) {
             result = getLocale(getCurrent());
@@ -436,7 +510,7 @@ public class LocaleUtils {
      * European Monetary Union, the method returns the old national currencies
      * until December 31, 2001, and the Euro from January 1, 2002, local time
      * of the respective countries.
-     * <p/>
+     * <p>
      * The method returns <code>null</code> for territories that don't
      * have a currency, such as Antarctica or if the given locale
      * is not a supported ISO 3166 country code.
@@ -444,7 +518,7 @@ public class LocaleUtils {
      * @param locale the locale for whose country a <code>Currency</code>
      *               instance is needed
      * @return the <code>Currency</code> instance for the country of the given
-     *         locale, or null
+     * locale, or null
      */
     public static Currency getCurrency(final Locale locale) {
         try {
@@ -559,4 +633,10 @@ public class LocaleUtils {
                 ? tz.getDisplayName(loc)
                 : TimeZone.getDefault().getDisplayName(loc);
     }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+
 }

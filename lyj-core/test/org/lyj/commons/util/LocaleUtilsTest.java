@@ -28,4 +28,21 @@ public class LocaleUtilsTest {
         dfs = LocaleUtils.getDecimalFormatSymbols(new Locale("en", "US"));
         assertEquals(dfs.getDecimalSeparator(), '.');
     }
+
+    @Test
+    public void testGetLanguage() throws Exception {
+        String lang = LocaleUtils.getLocale("it").getLanguage();
+        assertEquals("it", lang);
+
+        lang = LocaleUtils.getLocale("Italian").getLanguage();
+        assertEquals("it", lang);
+
+        lang = LocaleUtils.getLocale("en").getLanguage();
+        assertEquals("en", lang);
+
+        lang = LocaleUtils.getLocale("English").getLanguage();
+        assertEquals("en", lang);
+
+    }
+
 }
