@@ -3,7 +3,7 @@ package org.lyj.commons.async.future;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.util.RandomUtils;
 
-import java.util.concurrent.*;
+import java.util.concurrent.TimeoutException;
 
 /**
  * functional async action

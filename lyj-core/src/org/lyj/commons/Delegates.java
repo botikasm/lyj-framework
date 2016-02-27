@@ -35,7 +35,6 @@ import java.util.*;
 public class Delegates {
 
 
-
     @FunctionalInterface
     public static interface Handler {
         void handle();
@@ -51,7 +50,7 @@ public class Delegates {
     }
 
     @FunctionalInterface
-    public static interface FunctionArgs<T>{
+    public static interface FunctionArgs<T> {
         T handle(final Object... args);
     }
 
@@ -64,12 +63,12 @@ public class Delegates {
      * @param <R> The type of the return type of the <code>call</code> method.
      */
     @FunctionalInterface
-    public static interface FunctionArg<P, R>{
+    public static interface FunctionArg<P, R> {
         R call(P param);
     }
 
     @FunctionalInterface
-    public static interface Function<T>{
+    public static interface Function<T> {
         T handle();
     }
 
@@ -97,7 +96,7 @@ public class Delegates {
     }
 
     @FunctionalInterface
-    public static interface SingleResultCallback<T>{
+    public static interface SingleResultCallback<T> {
         void handle(final Throwable err, final T data);
     }
 
@@ -130,60 +129,113 @@ public class Delegates {
 
 
     public static void invoke(final Handler callback) {
-        if (null != callback) {
-            callback.handle();
+        try {
+            if (null != callback) {
+                callback.handle();
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
     }
 
     public static <T> T invoke(final FunctionArgs<T> callback, final Object... args) {
-        if (null != callback) {
-            return callback.handle(args);
+        try {
+            if (null != callback) {
+                return callback.handle(args);
+            }
+            return null;
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
-        return null;
     }
 
     public static void invoke(final ExceptionCallback callback, final String message, final Throwable err) {
-        if (null != callback) {
-            callback.handle(message, err);
+        try {
+            if (null != callback) {
+                callback.handle(message, err);
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
     }
 
     public static void invoke(final VarArgsCallback callback, final Object... args) {
-        if (null != callback) {
-            callback.handle(args);
+        try {
+            if (null != callback) {
+                callback.handle(args);
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
     }
 
     public static <T> void invoke(final Callback<T> callback, final T data) {
-        if (null != callback) {
-            callback.handle(data);
+        try {
+            if (null != callback) {
+                callback.handle(data);
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
     }
 
     public static <T> void invoke(final SingleResultCallback<T> callback, final Throwable err, final T data) {
-        if (null != callback) {
-            callback.handle(err, data);
+        try {
+            if (null != callback) {
+                callback.handle(err, data);
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
     }
 
-    public static void invoke(final ResultCallback callback, final Throwable err, final Object...data) {
-        if (null != callback) {
-            callback.handle(err, data);
+    public static void invoke(final ResultCallback callback, final Throwable err, final Object... data) {
+        try {
+            if (null != callback) {
+                callback.handle(err, data);
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
     }
 
     public static void invoke(final ProgressCallback callback, final int index, final int length, final double progress) {
-        if (null != callback) {
-            callback.handle(index, length, progress);
+        try {
+            if (null != callback) {
+                callback.handle(index, length, progress);
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
     }
 
     public static <T> boolean invoke(final IterationBoolCallback<T> callback, final T item, final int index, final Object key) {
-        if (null != callback) {
-            return callback.handle(item, index, key);
-        } else {
-            return false;
+        try {
+            if (null != callback) {
+                return callback.handle(item, index, key);
+            } else {
+                return false;
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
         }
+    }
+
+    // --------------------------------------------------------------------
+    //               P R I V A T E
+    // --------------------------------------------------------------------
+
+    private static Logger logger() {
+        return LoggingUtils.getLogger(Delegates.class);
     }
 
     // --------------------------------------------------------------------

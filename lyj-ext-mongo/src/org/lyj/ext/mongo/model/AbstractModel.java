@@ -47,7 +47,7 @@ public abstract class AbstractModel
     public AbstractModel(final Class<? extends AbstractSchema> schemaClass, final Document document,
                          final String id_prefix) {
         _schema = this.getSchema(schemaClass);
-        _document = document;
+        _document = null != document ? document : new Document();
         _id_prefix = null != id_prefix ? id_prefix : "";
 
         this.initDefaults(false);
@@ -70,7 +70,7 @@ public abstract class AbstractModel
         _document.put(key, value);
     }
 
-    public void putAll(final Document document, final boolean overwrite){
+    public void putAll(final Document document, final boolean overwrite) {
         LyjMongoObjects.extend(_document, document, overwrite);
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractModel
         }
     }
 
-    public final void setId(final Object value){
+    public final void setId(final Object value) {
         put(F_ID, value);
     }
 
@@ -182,7 +182,6 @@ public abstract class AbstractModel
     public String UUID() {
         return RandomUtils.randomUUID(true);
     }
-
 
 
     // ------------------------------------------------------------------------
@@ -213,10 +212,10 @@ public abstract class AbstractModel
 
     private void initDefaults(final boolean overwrite) {
         if (null != _schema) {
-            if(!_document.containsKey(F_ID)){
+            if (!_document.containsKey(F_ID)) {
                 _document.put(F_ID, _id_prefix.concat(this.UUID()));
             }
-            if(overwrite || !_document.containsKey(F_COLLECTION)){
+            if (overwrite || !_document.containsKey(F_COLLECTION)) {
                 _document.put(F_COLLECTION, _schema.getCollectionName());
             }
 
@@ -224,7 +223,7 @@ public abstract class AbstractModel
             for (final LyjMongoField field : fields) {
                 final Object value = field.getDefaultValue();
                 if (null != value) {
-                    if(overwrite || !_document.containsKey(field.getName())){
+                    if (overwrite || !_document.containsKey(field.getName())) {
                         _document.put(field.getName(), value); // 1450804004452
                     }
                 }
