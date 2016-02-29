@@ -175,19 +175,19 @@ public abstract class AbstractSchema
     }
 
     private Task<LyjMongoIndex> initIndex(final LyjMongoIndex index) {
-        return new Task<LyjMongoIndex>((task) -> {
-            final Set<String> names = index.getFieldNames();
+        final String index_name = null!=index?index.getName():null;
+        return new Task<LyjMongoIndex>(index_name, (t) -> {
             if (index.hasFields()) {
                 this.getCollection((err, collection) -> {
                     if (null != err) {
-                        task.fail(err);
+                        t.fail(err);
                     } else {
                         this.createIndex(collection, index, (err1, response) -> {
                             if (null != err1) {
-                                task.fail(err1, index);
+                                t.fail(err1, index);
                             } else {
                                 index.setName(response);
-                                task.success(index);
+                                t.success(index);
                             }
                         });
                     }

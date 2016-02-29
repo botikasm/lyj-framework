@@ -95,7 +95,11 @@ public class LyjMongoIndex {
     }
 
     public boolean hasFields() {
-        return _fields.keySet().size() > 0;
+        try{
+            return null != _fields && _fields.keySet().size() > 0;
+        }catch(Throwable t){
+            return false;
+        }
     }
 
     public String getSignature() {

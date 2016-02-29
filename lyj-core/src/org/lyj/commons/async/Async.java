@@ -173,12 +173,12 @@ public abstract class Async {
         while (length > terminated.size()) {
             for (final Task task : tasks) {
                 try {
-                    final Task.State state = task.getState();
-                    if (Task.State.NEW.equals(state)) {
+                    final Task.TaskState state = task.getState();
+                    if (Task.TaskState.NEW.equals(state)) {
                         task.run();
-                    } else if (Task.State.RUNNABLE.equals(state)) {
+                    } else if (Task.TaskState.RUNNABLE.equals(state)) {
                         task.get();
-                    } else if (Task.State.TERMINATED.equals(state)) {
+                    } else if (Task.TaskState.TERMINATED.equals(state)) {
                         terminated.add(task.getId());
                     } else {
                         System.out.println(state);

@@ -1,6 +1,7 @@
 package org.lyj.commons.async.future;
 
 import org.lyj.commons.async.Async;
+import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.RandomUtils;
 
 import java.util.concurrent.TimeoutException;
@@ -8,9 +9,10 @@ import java.util.concurrent.TimeoutException;
 /**
  * functional async action
  */
-public class Task<T> {
+public class Task<T>
+        extends AbstractLogEmitter {
 
-    public enum State {
+    public enum TaskState {
         /**
          * Thread state for a thread which has not yet started.
          */
@@ -37,8 +39,9 @@ public class Task<T> {
     // ------------------------------------------------------------------------
 
     private final Long _id;
-    private Thread _thread;
-    private final TaskResponse<T> _interruptor;
+    private final String _name;
+    private final Thread _thread;
+    private final TaskInterruptor<T> _interruptor;
 
 
     // callbacks
@@ -47,9 +50,11 @@ public class Task<T> {
     private ResultCallback<T> _callback_result;
     private ExitCallback<T> _callback_exit;
 
+    private boolean _debug = false;
+    private boolean _running;
     private Exception _error;
     private T _data;
-    private State _state;
+    private TaskState _state;
     private long _execution_timeout;
     private int _initial_delay;
     private int _sleep;
@@ -62,21 +67,50 @@ public class Task<T> {
     // ------------------------------------------------------------------------
 
     public Task(final ActionCallback<T> callback) {
-        this(callback, 0, 100, 0);
+        this(null, callback);
     }
 
-    public Task(final ActionCallback<T> callback,
-                 final int initialDelay, final int sleep, final int timeout) {
+    public Task(final ActionCallback<T> callback, final int timeout) {
+        this(null, callback, timeout);
+    }
+
+    public Task(final String name, final ActionCallback<T> callback) {
+        this(name, callback, 0);
+    }
+
+    public Task(final String name, final ActionCallback<T> callback, final int timeout) {
+        this(name, callback, 0, 100, timeout);
+    }
+
+    public Task(final String name, final ActionCallback<T> callback,
+                final int initialDelay, final int sleep, final int timeout) {
+        _name = null != name ? name : RandomUtils.randomUUID();
         _callback_action = callback;
         _error = null;
-        _state = State.NEW;
+        _state = TaskState.NEW;
         _id = RandomUtils.getTimeBasedRandomLong(true, true);
 
         _initial_delay = initialDelay;
         _sleep = sleep;
         _execution_timeout = timeout;
 
-        _interruptor = new TaskResponse<T>();
+        _interruptor = new TaskInterruptor<T>();
+        _thread = new InternalJob<T>(this);
+
+        _running = false;
+
+        this.log("constructor", this.toString());
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getSimpleName()).append("{");
+        sb.append("name=").append(_name);
+        sb.append(", ");
+        sb.append("id=").append(_id);
+        sb.append("}");
+        return sb.toString();
     }
 
     // ------------------------------------------------------------------------
@@ -87,7 +121,9 @@ public class Task<T> {
         return _id;
     }
 
-    public State getState() {
+    public String getName() { return _name; }
+
+    public TaskState getState() {
         return _state;
     }
 
@@ -111,8 +147,8 @@ public class Task<T> {
     //-- THREAD --//
 
     public Task<T> run() {
-        if (!this.isRunning()) {
-            this.runThread();
+        if (!this.threadRunning()) {
+            this.threadRun();
         }
         return this;
     }
@@ -167,82 +203,26 @@ public class Task<T> {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void runThread() {
-        this.stop();
-        _thread = new Thread((Runnable) () -> {
-            try {
-                _state = State.RUNNABLE;
-                _time_start = System.currentTimeMillis();
-
-                // initial delay
-                if (_initial_delay > 0) {
-                    Thread.sleep(_initial_delay);
-                }
-
-                if (null != _callback_action) {
-                    Async.invoke((args)->{
-                        try {
-                            _callback_action.handle(_interruptor);
-                        } catch (Exception ex_error) {
-                            _interruptor.fail(ex_error);
-                        }
-                    });
-                } else {
-                    _interruptor.fail(new Exception("Wrong state: missing action to execute in Task."));
-                }
-
-                // wait finish
-                while (!_interruptor.finished()) {
-
-                    // run delay
-                    if (_sleep > 0) {
-                        Thread.sleep(_sleep);
-                    }
-
-                    // timeout
-                    if (_execution_timeout > 0 && System.currentTimeMillis() - _time_start > _execution_timeout) {
-                        _interruptor.fail(new TimeoutException("Task Action timeout ms: " + _execution_timeout));
-                    }
-                }
-
-            } catch (Exception t) {
-                _error = t;
-            } finally {
-                _time_end = System.currentTimeMillis();
-                _error = _interruptor.error();
-                _data = _interruptor.data();
-
-                // stop and reset interruptor
-                this.stop();
-
-                if(null!=_error){
-                    this.fail(_error, _data);
-                } else {
-                    this.success(_data);
-                }
-
-                // invoke exit callback if any
-                if (null != _callback_exit) {
-                    _callback_exit.handle(_error, _data);
-                }
-            }
-        });
-        _thread.start();
+    private boolean threadRunning() {
+        return _running || (null != _thread && _thread.isAlive() && !_thread.isInterrupted());
     }
 
-    private void stop() {
+    private void threadRun() {
+        _running = true;
+        if (null == _callback_action) {
+            _interruptor.fail(new Exception("Missing action."));
+        } else {
+            _thread.start();
+        }
+    }
+
+    private void threadStop() {
+        _state = TaskState.TERMINATED;
         if (null != _thread) {
-            if (this.isRunning()) {
+            if (_thread.isAlive() && !_thread.isInterrupted()) {
                 _thread.interrupt();
             }
-            _thread = null;
         }
-        _interruptor.reset();
-        _state = State.TERMINATED;
-    }
-
-    private boolean isRunning() {
-        return null != _thread && _thread.isAlive() && !_thread.isInterrupted();
     }
 
     private void fail(final Exception cause, final T data) {
@@ -254,7 +234,6 @@ public class Task<T> {
             }
         } catch (Throwable ignored) {
         }
-        this.stop();
     }
 
     private void success(final T data) {
@@ -265,7 +244,12 @@ public class Task<T> {
             }
         } catch (Throwable ignored) {
         }
-        this.stop();
+    }
+
+    private void log(final String methodName, final String message){
+        if(_debug){
+            super.info(methodName, message);
+        }
     }
 
     // ------------------------------------------------------------------------
@@ -274,7 +258,7 @@ public class Task<T> {
 
     @FunctionalInterface
     public interface ActionCallback<T> {
-        void handle(final TaskResponse<T> interruptor) throws Exception;
+        void handle(final TaskInterruptor<T> interruptor) throws Exception;
     }
 
     @FunctionalInterface
@@ -296,65 +280,146 @@ public class Task<T> {
     //               E M B E D D E D
     // --------------------------------------------------------------------
 
-    public static class TaskResponse<T> {
+    public static class TaskInterruptor<T> {
 
         private Exception _error;
         private T _data;
         private boolean _stopped = false;
 
 
+        private TaskInterruptor(){
+
+        }
+
         //-- PROPERTIES --//
 
-        public Exception error() {
+        private Exception error() {
             return _error;
         }
 
-        public T data() {
+        private T data() {
             return _data;
         }
 
-        public boolean finished() {
+        public synchronized boolean finished() {
             return _stopped;
         }
 
-        public void reset() {
-            _stopped = false;
-            _error = null;
-            _data = null;
-        }
         //-- CALLBACK --//
 
-        public void fail(final String cause) {
+        public synchronized void fail(final String cause) {
             this.fail(new Exception(cause));
         }
 
-        public void fail(final String cause, final T data) {
+        public synchronized void fail(final String cause, final T data) {
             this.fail(new Exception(cause), data);
         }
 
-        public void fail(final Throwable cause) {
+        public synchronized void fail(final Throwable cause) {
             this.fail(new Exception(cause));
         }
 
-        public void fail(final Throwable cause, final T data) {
+        public synchronized void fail(final Throwable cause, final T data) {
             this.fail(new Exception(cause), data);
         }
 
-        public void fail(final Exception cause) {
+        public synchronized void fail(final Exception cause) {
             this.fail(cause, null);
         }
 
-        public void fail(final Exception cause, final T data) {
+        public synchronized void fail(final Exception cause, final T data) {
             _error = cause;
             _data = data;
             _stopped = true;
         }
 
-        public void success(final T data) {
+        public synchronized void success(final T data) {
             _data = data;
             _stopped = true;
         }
 
+    }
+
+    // --------------------------------------------------------------------
+    //               E M B E D D E D
+    // --------------------------------------------------------------------
+
+    private static class InternalJob<T>
+            extends Thread {
+
+        private Task<T> _owner;
+        private TaskInterruptor<T> _interruptor;
+
+        public InternalJob(final Task<T> task) {
+            super();
+            _owner = task;
+            _interruptor = _owner._interruptor;
+        }
+
+        @Override
+        public String toString() {
+            return "id:" + _owner.getId();
+        }
+
+        @Override
+        public void run() {
+            try {
+                _owner._state = TaskState.RUNNABLE;
+                _owner._time_start = System.currentTimeMillis();
+
+                // initial delay
+                if (_owner._initial_delay > 0) {
+                    Thread.sleep(_owner._initial_delay);
+                }
+
+                Async.invoke((args) -> {
+                    try {
+                        _owner._callback_action.handle(_interruptor);
+                    } catch (Exception ex_error) {
+                        _interruptor.fail(ex_error);
+                    }
+                });
+
+                // wait finish
+                while (!_interruptor.finished() && !_owner._state.equals(TaskState.TERMINATED) && _owner.threadRunning()) {
+
+                    _owner.log("LOOP", _owner.toString());
+
+                    // run delay
+                    if (_owner._sleep > 0) {
+                        Thread.sleep(_owner._sleep);
+                    }
+
+                    // timeout
+                    if (_owner._execution_timeout > 0 && System.currentTimeMillis() - _owner._time_start > _owner._execution_timeout) {
+                        _interruptor.fail(new TimeoutException("Task Action timeout ms: " + _owner._execution_timeout));
+                    }
+                }
+
+            } catch (Exception t) {
+                _owner._error = t;
+            } finally {
+
+                _owner.log("EXIT LOOP", _owner.toString());
+
+                _owner._time_end = System.currentTimeMillis();
+                _owner._error = _interruptor.error();
+                _owner._data = _interruptor.data();
+
+                if (null != _owner._error) {
+                    _owner.fail(_owner._error, _owner._data);
+                } else {
+                    _owner.success(_owner._data);
+                }
+
+                // invoke exit callback if any
+                if (null != _owner._callback_exit) {
+                    _owner._callback_exit.handle(_owner._error, _owner._data);
+                }
+
+                _owner.threadStop();
+            }
+        }
     }
 
 }

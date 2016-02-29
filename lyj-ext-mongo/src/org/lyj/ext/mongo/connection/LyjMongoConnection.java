@@ -7,6 +7,7 @@ import com.mongodb.connection.ClusterSettings;
 import org.bson.BsonDocument;
 import org.json.JSONObject;
 import org.lyj.commons.Delegates;
+import org.lyj.commons.async.Async;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.*;
@@ -97,7 +98,7 @@ public class LyjMongoConnection {
                 String database = wrap.getString(DATABASE);
                 if (StringUtils.hasText(username) && StringUtils.hasText(password) && StringUtils.hasText(database)) {
                     final MongoCredential credential = this.getCredential(auth, database, username, password);
-                    if(null!=credential){
+                    if (null != credential) {
                         _credentials.add(credential);
                     }
                 }
@@ -165,6 +166,7 @@ public class LyjMongoConnection {
     }
 
     public void getDatabaseNames(final Delegates.SingleResultCallback<List<String>> callback) {
+
         if (_enabled) {
             if (_database_names.size() > 0) {
                 Delegates.invoke(callback, null, _database_names);
@@ -225,7 +227,7 @@ public class LyjMongoConnection {
     private MongoCredential getCredential(final String auth, final String database, final String username,
                                           final String password) {
         final MongoCredential result;
-        if(CREDENTIAL_NONE.equals(auth)){
+        if (CREDENTIAL_NONE.equals(auth)) {
             result = null;
         } else if (CREDENTIAL_MONGODB_CR.equals(auth)) {
             result = MongoCredential.createMongoCRCredential(username,
@@ -247,7 +249,7 @@ public class LyjMongoConnection {
                 .hosts(_hosts)
                 .description(_description).build();
 
-        if(_credentials.size()>0){
+        if (_credentials.size() > 0) {
             return MongoClientSettings.builder().credentialList(_credentials).clusterSettings(clusterSettings).build();
         } else {
             return MongoClientSettings.builder().clusterSettings(clusterSettings).build();
@@ -255,30 +257,30 @@ public class LyjMongoConnection {
     }
 
     private synchronized void getClient(final Delegates.SingleResultCallback<MongoClient> callback) {
-            if (null == _client) {
+        if (null == _client) {
 
-                _client = MongoClients.create(this.getSettings());
+            _client = MongoClients.create(this.getSettings());
 
-                final MongoIterable<String> names = _client.listDatabaseNames();
-                names.forEach((String s) -> {
-                    _database_names.add(s);
-                }, (Void aVoid, Throwable t) -> {
-                    _status = STATUS_CONNECTED;
-                    _error = null;
-                    if (null != t) {
-                        if (!this.manageException("listDatabaseNames", t)) {
-                            // GRAVE ERROR
-                            _status = STATUS_ERROR;
-                            _error = t;
-                        }
-                    } else {
-                        getLogger().info("Successfully Connected to Databases: " + CollectionUtils.toCommaDelimitedString(_database_names));
+            final MongoIterable<String> names = _client.listDatabaseNames();
+            names.forEach((String s) -> {
+                _database_names.add(s);
+            }, (Void aVoid, Throwable t) -> {
+                _status = STATUS_CONNECTED;
+                _error = null;
+                if (null != t) {
+                    if (!this.manageException("listDatabaseNames", t)) {
+                        // GRAVE ERROR
+                        _status = STATUS_ERROR;
+                        _error = t;
                     }
-                    Delegates.invoke(callback, _error, _client);
-                });
-            } else {
-                Delegates.invoke(callback, null, _client);
-            }
+                } else {
+                    getLogger().info("Successfully Connected to Databases: " + CollectionUtils.toCommaDelimitedString(_database_names));
+                }
+                Delegates.invoke(callback, _error, _client);
+            });
+        } else {
+            Delegates.invoke(callback, null, _client);
+        }
     }
 
     private boolean manageException(final String action, final Throwable t) {
