@@ -7,7 +7,7 @@ import org.lyj.commons.network.http.client.HttpClient;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.gui.config.ConfigNetwork;
+import org.lyj.config.network.ConfigNetwork;
 import org.lyj.gui.app.utils.PlatformUtils;
 
 import java.util.Map;
@@ -32,7 +32,7 @@ public class AbstractHttpClient
 
     public AbstractHttpClient(final ConfigNetwork config) {
         _config = config;
-        _api_root = PathUtils.concat(_config.connectionString(), _config.pathApi());
+        _api_root = PathUtils.concat(_config.connectionString(), _config.pathRoot());
     }
 
     // ------------------------------------------------------------------------

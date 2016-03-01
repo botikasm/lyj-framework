@@ -1,0 +1,12 @@
+{
+
+  "default": {
+    "token": "your-app-token-if-any",
+    "http": {
+      "host": "http://services.funnygain.com",
+      "port": 4000,
+      "root": "api/"
+    }
+  }
+
+}
