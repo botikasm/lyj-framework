@@ -66,6 +66,10 @@ public class Task<T>
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
+    public Task() {
+        this(null);
+    }
+
     public Task(final ActionCallback<T> callback) {
         this(null, callback);
     }
@@ -147,6 +151,13 @@ public class Task<T>
     //-- THREAD --//
 
     public Task<T> run() {
+        return this.run(null);
+    }
+
+    protected Task<T> run(final ActionCallback<T> callback_action) {
+        if(null!=callback_action){
+            _callback_action = callback_action;
+        }
         if (!this.threadRunning()) {
             this.threadRun();
         }

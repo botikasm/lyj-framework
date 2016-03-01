@@ -26,6 +26,7 @@ package org.lyj.commons.util;
 
 import java.text.DateFormatSymbols;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author
@@ -69,15 +70,90 @@ public abstract class DateUtils {
      * Zero year (1900) *
      */
     public static final int ZERO_YEAR = 1900;
+
+    public static final String sMILLISECOND = "millisecond";
+    public static final String sSECOND = "second";
+    public static final String sMINUTE = "minute";
+    public static final String sHOUR = "hour";
+    public static final String sDAY = "day";
+    public static final String sMONTH = "month";
+    public static final String sYEAR = "year";
+
+
     /**
      * no-working days
      */
     private static final int[] highDays = {Calendar.SUNDAY, Calendar.SATURDAY};
 
+    public static int UnitFromString(final String unit) {
+        if (sMILLISECOND.equals(unit)) {
+            return MILLISECOND;
+        } else if (sSECOND.equals(unit)) {
+            return SECOND;
+        } else if (sMINUTE.equals(unit)) {
+            return MINUTE;
+        } else if (sHOUR.equals(unit)) {
+            return HOUR;
+        } else if (sDAY.equals(unit)) {
+            return DAY;
+        } else {
+            return MILLISECOND;
+        }
+    }
+
+    public static String UnitFromInt(final int unit) {
+        if (MILLISECOND==unit) {
+            return sMILLISECOND;
+        } else if (SECOND==unit) {
+            return sSECOND;
+        } else if (MINUTE==unit) {
+            return sMINUTE;
+        } else if (HOUR==unit) {
+            return sHOUR;
+        } else if (DAY==unit) {
+            return sDAY;
+        } else {
+            return sMILLISECOND;
+        }
+    }
+
+    public static TimeUnit TimeUnitFromString(final String unit) {
+        if (sMILLISECOND.equals(unit)) {
+            return TimeUnit.MILLISECONDS;
+        } else if (sSECOND.equals(unit)) {
+            return TimeUnit.SECONDS;
+        } else if (sMINUTE.equals(unit)) {
+            return TimeUnit.MINUTES;
+        } else if (sHOUR.equals(unit)) {
+            return TimeUnit.HOURS;
+        } else if (sDAY.equals(unit)) {
+            return TimeUnit.DAYS;
+        } else {
+            return TimeUnit.MILLISECONDS;
+        }
+    }
+
+    public static TimeUnit TimeUnitFromInt(final int unit) {
+        if (MILLISECOND==unit) {
+            return TimeUnit.MILLISECONDS;
+        } else if (SECOND==unit) {
+            return TimeUnit.SECONDS;
+        } else if (MINUTE==unit) {
+            return TimeUnit.MINUTES;
+        } else if (HOUR==unit) {
+            return TimeUnit.HOURS;
+        } else if (DAY==unit) {
+            return TimeUnit.DAYS;
+        } else {
+            return TimeUnit.MILLISECONDS;
+        }
+    }
+
     /**
      * Return number of milliseconds in measure unit and multiplied for passed value.
      * Useful to get, for example, 35 minutes in milliseconds: milliseconds (35, DateUtils.MINUTES);
-     * @param value number of measure unit
+     *
+     * @param value       number of measure unit
      * @param measureUnit MILLISECOND, SECOND, MINUTE, HOUR, DAY
      * @return
      */
@@ -97,7 +173,7 @@ public abstract class DateUtils {
                 result = value * 1000 * 60 * 60;
                 break;
             case DAY:
-                result = value * 1000 * 60 * 60 *24;
+                result = value * 1000 * 60 * 60 * 24;
                 break;
         }
         return result;
@@ -119,7 +195,7 @@ public abstract class DateUtils {
                 result = value / (1000 * 60 * 60);
                 break;
             case DAY:
-                result = value / (1000 * 60 * 60 *24);
+                result = value / (1000 * 60 * 60 * 24);
                 break;
         }
         return result;
@@ -714,31 +790,31 @@ public abstract class DateUtils {
         return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
     }
 
-    public static long getDateLong(){
+    public static long getDateLong() {
         return getDateLong(DateUtils.now());
     }
 
-    public static List<Integer> getDateList(){
+    public static List<Integer> getDateList() {
         return getDateList(DateUtils.now());
     }
 
-    public static Integer[] getDateArray(){
+    public static Integer[] getDateArray() {
         return getDateArray(DateUtils.now());
     }
 
-    public static int getDateWeek(){
+    public static int getDateWeek() {
         return getDateWeek(DateUtils.now());
     }
 
-    public static String getDateString(){
+    public static String getDateString() {
         return getDateString(DateUtils.now(), "yyyy-MM-dd");
     }
 
-    public static long getDateLong(final Date date){
+    public static long getDateLong(final Date date) {
         return date.getTime();
     }
 
-    public static List<Integer> getDateList(final Date date){
+    public static List<Integer> getDateList(final Date date) {
         final DateWrapper datew = new DateWrapper(date);
         final List<Integer> list = new LinkedList<>();
         list.add(datew.getYear());
@@ -747,17 +823,17 @@ public abstract class DateUtils {
         return list;
     }
 
-    public static Integer[] getDateArray(final Date date){
+    public static Integer[] getDateArray(final Date date) {
         final List<Integer> list = DateUtils.getDateList(date);
         return list.toArray(new Integer[list.size()]);
     }
 
-    public static int getDateWeek(final Date date){
+    public static int getDateWeek(final Date date) {
         final DateWrapper datew = new DateWrapper(date);
         return datew.getWeek();
     }
 
-    public static String getDateString(final Date date, final String pattern){
+    public static String getDateString(final Date date, final String pattern) {
         final DateWrapper datew = new DateWrapper(date);
         return datew.toString(pattern);
     }

@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "module": {
+    "type": "FixedRate",
+    "unit": "millisecond",
+    "delay": "1000",
+    "count": "3",
+    "repeat": "2",
+    "next": [
+      {
+        "type": "WebRequest",
+        "method": "GET",
+        "url": "http://localhost:4000/api/debug/task/funny_gain_68j21/7b1ad7c0238c4cb36dea5875663a890a",
+        "params": {},
+        "next":[
+          {
+            "type":"SystemOut"
+          }
+        ]
+      }
+    ]
+  }
+}

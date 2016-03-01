@@ -83,7 +83,7 @@ public class Lyj {
     private void init() throws Exception {
 
         // register main configuration deployer that add remainig files
-        FileDeployer.register(new Deployer(PathUtils.getAbsolutePath(IConstants.PATH_CONFIGFILES), isSilent()));
+        //FileDeployer.register(new Deployer(PathUtils.getAbsolutePath(IConstants.PATH_CONFIGFILES), isSilent()));
 
         // packages are loaded
         // now run remaining deployers if any

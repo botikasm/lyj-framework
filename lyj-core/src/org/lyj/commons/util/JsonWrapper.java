@@ -856,12 +856,14 @@ public final class JsonWrapper implements Cloneable {
 
     public static Map<String, Object> toMap(final JSONArray jsonarray) {
         final Map<String, Object> result = new LinkedHashMap<String, Object>();
-        final int len = jsonarray.length();
-        for (int i = 0; i < len; i++) {
-            final String key = "param" + i;
-            final Object value = jsonarray.opt(i);
-            if (null != value) {
-                result.put(key, value);
+        if(null!=jsonarray) {
+            final int len = jsonarray.length();
+            for (int i = 0; i < len; i++) {
+                final String key = "param" + i;
+                final Object value = jsonarray.opt(i);
+                if (null != value) {
+                    result.put(key, value);
+                }
             }
         }
         return result;
@@ -869,12 +871,14 @@ public final class JsonWrapper implements Cloneable {
 
     public static Map<String, String> toMapOfString(final JSONObject json) {
         final Map<String, String> result = new LinkedHashMap<String, String>();
-        final Iterator iterator = json.keys();
-        while (iterator.hasNext()) {
-            final String key = iterator.next().toString();
-            final Object value = json.opt(key);
-            if (null != value) {
-                result.put(key, StringUtils.toString(value));
+        if(null!=json){
+            final Iterator iterator = json.keys();
+            while (iterator.hasNext()) {
+                final String key = iterator.next().toString();
+                final Object value = json.opt(key);
+                if (null != value) {
+                    result.put(key, StringUtils.toString(value));
+                }
             }
         }
         return result;
@@ -882,12 +886,14 @@ public final class JsonWrapper implements Cloneable {
 
     public static Map<String, String> toMapOfString(final JSONArray jsonarray) {
         final Map<String, String> result = new LinkedHashMap<String, String>();
-        final int len = jsonarray.length();
-        for (int i = 0; i < len; i++) {
-            final String key = "param" + i;
-            final Object value = jsonarray.opt(i);
-            if (null != value) {
-                result.put(key, StringUtils.toString(value));
+        if(null!=jsonarray) {
+            final int len = jsonarray.length();
+            for (int i = 0; i < len; i++) {
+                final String key = "param" + i;
+                final Object value = jsonarray.opt(i);
+                if (null != value) {
+                    result.put(key, StringUtils.toString(value));
+                }
             }
         }
         return result;
