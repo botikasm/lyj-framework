@@ -2,10 +2,13 @@ package org.lyj.automator.app.controllers.projects.modules.impl.runner;
 
 import org.json.JSONObject;
 import org.lyj.automator.app.controllers.projects.modules.AbstractModule;
+import org.lyj.automator.app.controllers.projects.modules.AbstractModuleExecutor;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.async.future.Timed;
+import org.lyj.commons.network.http.client.HttpClient;
 import org.lyj.commons.util.DateUtils;
+import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.JsonWrapper;
 
 import java.util.ArrayList;
@@ -68,8 +71,8 @@ public class ModWebRequest
         return super.json().deepJSONObject(PATH_PARAMS);
     }
 
-    public Map<String, String> getParamsMap() {
-        return JsonWrapper.toMapOfString(this.getParams());
+    public Map<String, Object> getParamsMap() {
+        return JsonWrapper.toMap(this.getParams());
     }
 
     public ModWebRequest setParams(final Map<String, String> value) {
@@ -99,25 +102,70 @@ public class ModWebRequest
     }
 
     private Task<Object> runThis(final Object input) {
-        final AbstractModule[] next = super.next();
 
-        final Task<Object> execution = new Task<Object>((exec) -> {
+        return new Executor(this, input).run();
+    }
+
+    // ------------------------------------------------------------------------
+    //                      I N N E R
+    // ------------------------------------------------------------------------
+
+    private static class Executor
+            extends AbstractModuleExecutor {
+
+        public Executor(final AbstractModule module,
+                        final Object input) {
+            super(module, input);
+        }
+
+        @Override
+        protected void execute(final TaskInterruptor<Object> interruptor) throws Exception {
             try {
+                final ModWebRequest module = (ModWebRequest) super.module();
+                Object output;
+
                 //-- execution implementation --//
-                for (final AbstractModule next_module : next) {
+                final String method = module.getMethod().toLowerCase();
+                final String url = module.getUrl();
+                final Map<String, Object> params = module.getParamsMap();
 
-                    next_module.run(this.getUrl()).get();
-
+                Task<String> task = new Task<>((t) -> {
+                    HttpClient http = new HttpClient();
+                    if (HttpClient.isPOST(method)) {
+                        http.post(url, params, (err, response) -> {
+                            if (null != err) {
+                                t.fail(err);
+                            } else {
+                                t.success(response);
+                            }
+                        });
+                    } else {
+                        http.get(url, params, (err, response) -> {
+                            if (null != err) {
+                                t.fail(err);
+                            } else {
+                                t.success(response);
+                            }
+                        });
+                    }
+                });
+                try {
+                    output = task.run().get();
+                }catch(Throwable t){
+                    output = t;
                 }
                 //-- execution implementation --//
 
-                exec.success(true);
-            } catch (Throwable t) {
-                exec.fail(t);
-            }
-        });
-        return execution.run();
-    }
+                Async.joinAll( super.doNext(output) );
 
+
+                interruptor.success(true);
+            } catch (Throwable t) {
+                interruptor.fail(t);
+            }
+        }
+
+
+    }
 
 }

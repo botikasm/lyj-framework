@@ -221,4 +221,16 @@ public class HttpClient {
         }
     }
 
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static boolean isPOST(final String method){
+        return StringUtils.hasText(method) && method.toUpperCase().equals(POST);
+    }
+
+    public static boolean isGET(final String method){
+        return StringUtils.hasText(method) && method.toUpperCase().equals(GET);
+    }
+
 }

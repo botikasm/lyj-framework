@@ -3,6 +3,7 @@ package org.lyj.automator.app.controllers.projects.modules.impl.output;
 import org.json.JSONObject;
 import org.lyj.automator.app.controllers.projects.modules.AbstractModule;
 import org.lyj.automator.app.controllers.projects.modules.AbstractModuleExecutor;
+import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.util.DateUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -59,7 +60,6 @@ public class ModSystemOut
     }
 
     private Task<Object> runThis(final Object input) {
-        final AbstractModule[] next = super.next();
 
         return new Executor(this, input).run();
     }
@@ -79,7 +79,11 @@ public class ModSystemOut
         @Override
         protected void execute(final TaskInterruptor<Object> interruptor) throws Exception {
             try {
+
                 System.out.println(this.getMessage(super.input()));
+
+                Async.joinAll( super.doNext(super.input()) );
+
                 interruptor.success(true);
             } catch (Throwable t) {
                 interruptor.fail(t);

@@ -2,6 +2,9 @@ package org.lyj.automator.app.controllers.projects.modules;
 
 import org.lyj.commons.async.future.Task;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Wrap module execution
  */
@@ -45,8 +48,12 @@ public abstract class AbstractModuleExecutor
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
 
-    protected Object input(){
+    protected Object input() {
         return _input;
+    }
+
+    protected AbstractModule module() {
+        return _module;
     }
 
     protected AbstractModule[] next() {
@@ -56,4 +63,12 @@ public abstract class AbstractModuleExecutor
         return new AbstractModule[0];
     }
 
+    protected List<Task<Object>> doNext(final Object input) {
+        final List<Task<Object>> response = new ArrayList<>();
+        final AbstractModule[] modules = this.next();
+        for (final AbstractModule module : modules) {
+            response.add(module.run(input));
+        }
+        return response;
+    }
 }

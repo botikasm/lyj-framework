@@ -2,11 +2,13 @@ package org.lyj.automator.app.controllers.projects.modules.impl.generator;
 
 import org.json.JSONObject;
 import org.lyj.automator.app.controllers.projects.modules.AbstractModule;
+import org.lyj.automator.app.controllers.projects.modules.AbstractModuleExecutor;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.async.future.Timed;
 import org.lyj.commons.util.DateUtils;
+import org.lyj.commons.util.FormatUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,24 +103,42 @@ public class ModFixedRate
     }
 
     private Task<Object> runThis(final Object input) {
-        final TimeUnit unit = DateUtils.TimeUnitFromString(this.getUnit());
-        final long delay = this.getDelay();
-        final int count = this.getCount();
-        final int repeat = this.getRepeat();
-        final AbstractModule[] next = super.next();
 
-        final Task<Object> execution = new Task<Object>((exec)->{
+        return new Executor(this, input).run();
+    }
+
+    // ------------------------------------------------------------------------
+    //                      I N N E R
+    // ------------------------------------------------------------------------
+
+    private static class Executor
+            extends AbstractModuleExecutor {
+
+        public Executor(final AbstractModule module,
+                        final Object input) {
+            super(module, input);
+        }
+
+        @Override
+        protected void execute(final TaskInterruptor<Object> interruptor) throws Exception {
             try {
                 //-- execution implementation --//
+                final ModFixedRate module = (ModFixedRate) super.module();
+                final TimeUnit unit = DateUtils.TimeUnitFromString(module.getUnit());
+                final long delay = module.getDelay();
+                final int count = module.getCount();
+                final int repeat = module.getRepeat();
+                final AbstractModule[] next = super.next();
+
                 final Timed timer = new Timed(unit, 0, delay, 0, repeat);
                 final List<Task<Object>> tasks = new ArrayList<>();
-                timer.start((interruptor) -> {
+                timer.start((timer_interruptor) -> {
                     for (int i = 0; i < count; i++) {
                         tasks.add(new Task<Object>((t) -> {
                             try {
-                                for (final AbstractModule next_module : next) {
-                                    next_module.run(interruptor).get();
-                                }
+
+                                Async.joinAll( super.doNext(timer_interruptor) );
+
                                 t.success(null);
                             } catch (Throwable err) {
                                 t.fail(err);
@@ -130,12 +150,13 @@ public class ModFixedRate
                 timer.join();
                 //-- execution implementation --//
 
-                exec.success(true);
-            }catch(Throwable t){
-                exec.fail(t);
+                interruptor.success(true);
+            } catch (Throwable t) {
+                interruptor.fail(t);
             }
-        });
-        return execution.run();
+        }
+
+
     }
 
 
