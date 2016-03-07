@@ -115,21 +115,45 @@ public class LyjMongo {
         }
     }
 
-    public void getCollection(final String databaseName,
+    public com.mongodb.client.MongoDatabase getDatabase(final String name) throws Exception {
+        return this.getDatabase(name, name);
+    }
+
+    public com.mongodb.client.MongoDatabase getDatabase(final String connectionName, final String databaseName) throws Exception {
+        LyjMongoConnection connection = this.getConnection(connectionName);
+        if (null != connection) {
+            return connection.getDatabase(databaseName);
+        } else {
+           throw new Exception("Connection not found: '" + connectionName + "'");
+        }
+    }
+
+    public <T> void getCollection(final String databaseName,
                               final String collectionName,
-                              final Delegates.SingleResultCallback<MongoCollection> callback) {
+                              final Delegates.SingleResultCallback<MongoCollection<T>> callback) {
         this.getCollection(databaseName, databaseName, collectionName, callback);
     }
 
-    public void getCollection(final String connectionName,
+    public <T> void getCollection(final String connectionName,
                               final String databaseName,
                               final String collectionName,
-                              final Delegates.SingleResultCallback<MongoCollection> callback) {
+                              final Delegates.SingleResultCallback<MongoCollection<T>> callback) {
         LyjMongoConnection connection = this.getConnection(connectionName);
         if (null != connection) {
             connection.getCollection(databaseName, collectionName, callback);
         } else {
             Delegates.invoke(callback, new Exception("Connection not found: '" + connectionName + "'"), null);
+        }
+    }
+
+    public <T> com.mongodb.client.MongoCollection<T> getCollection(final String connectionName,
+                                                            final String databaseName,
+                                                            final String collectionName) throws Exception {
+        LyjMongoConnection connection = this.getConnection(connectionName);
+        if (null != connection) {
+            return connection.getCollection(databaseName, collectionName);
+        } else {
+            throw new Exception("Connection not found: '" + connectionName + "'");
         }
     }
 

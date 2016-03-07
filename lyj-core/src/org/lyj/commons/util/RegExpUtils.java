@@ -114,7 +114,7 @@ public abstract class RegExpUtils {
     }
 
     public static boolean isValidEmail(String email) {
-        if (!StringUtils.hasText(email)) {
+        if (!StringUtils.hasText(email) || !email.contains("@")) {
             return false;
         }
         final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN);

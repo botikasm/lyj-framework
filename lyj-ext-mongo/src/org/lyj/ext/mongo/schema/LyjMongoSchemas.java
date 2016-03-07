@@ -33,6 +33,10 @@ public final class LyjMongoSchemas {
     }
 
     public void ensureIndexes(final Delegates.SingleResultCallback<Map<String, List<Document>>> callback) {
+        Delegates.invoke(callback, null, this.ensureIndexes());
+    }
+
+    public Map<String, List<Document>> ensureIndexes() {
         final Map<String, List<Document>> report = new LinkedHashMap<>();
         final Collection<AbstractSchema> schemas = _schemas.values();
         for (final AbstractSchema schema : schemas) {
@@ -42,7 +46,7 @@ public final class LyjMongoSchemas {
                 }
             });
         }
-        Delegates.invoke(callback, null, report);
+        return report;
     }
 
     public AbstractSchema get(final Class<? extends AbstractSchema> schemaClass) {

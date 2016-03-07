@@ -2,18 +2,20 @@ package org.lyj.ext.mongo.connection;
 
 
 import com.mongodb.*;
-import com.mongodb.async.client.*;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.connection.ClusterSettings;
 import org.bson.BsonDocument;
 import org.json.JSONObject;
 import org.lyj.commons.Delegates;
-import org.lyj.commons.async.Async;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.*;
 
 import java.util.LinkedList;
 import java.util.List;
+
 
 /**
  * Connection wrapper to native mongo
@@ -55,7 +57,8 @@ public class LyjMongoConnection {
 
     private String _status;
     private Throwable _error;
-    private MongoClient _client;
+    private com.mongodb.async.client.MongoClient _client_async;
+    private com.mongodb.MongoClient _client;
     private List<String> _database_names;
 
     // ------------------------------------------------------------------------
@@ -142,12 +145,12 @@ public class LyjMongoConnection {
         return _error;
     }
 
-    public void getDatabase(final String name, final Delegates.SingleResultCallback<MongoDatabase> callback) {
+    public void getDatabase(final String name, final Delegates.SingleResultCallback<com.mongodb.async.client.MongoDatabase> callback) {
         if (_enabled) {
-            this.getClient((err, client) -> {
+            this.getAsyncClient((err, client) -> {
                 if (null == err) {
                     if (null != client) {
-                        final MongoDatabase db = client.getDatabase(name);
+                        final com.mongodb.async.client.MongoDatabase db = client.getDatabase(name);
                         if (null != db) {
                             Delegates.invoke(callback, null, db);
                         } else {
@@ -165,6 +168,20 @@ public class LyjMongoConnection {
         }
     }
 
+    public MongoDatabase getDatabase(final String name) throws Exception {
+        final MongoClient client = getClient();
+        if (null != client) {
+            final MongoDatabase database = client.getDatabase(name);
+            if (null != database) {
+                return database;
+            } else {
+                throw new Exception("Database not found: '" + name + "'");
+            }
+        } else {
+            throw new Exception("Missing Client Response.");
+        }
+    }
+
     public void getDatabaseNames(final Delegates.SingleResultCallback<List<String>> callback) {
 
         if (_enabled) {
@@ -172,7 +189,7 @@ public class LyjMongoConnection {
                 Delegates.invoke(callback, null, _database_names);
             } else {
                 // getting client, implicitly generates a database names list
-                this.getClient((err, client) -> {
+                this.getAsyncClient((err, client) -> {
                     if (null == err) {
                         if (null != client) {
                             Delegates.invoke(callback, null, _database_names);
@@ -189,14 +206,39 @@ public class LyjMongoConnection {
         }
     }
 
-    public void getCollection(final String databaseName,
+    public List<String> getDatabaseNames() throws Exception {
+        if (_database_names.size() > 0) {
+            return _database_names;
+        } else {
+            final MongoClient client = getClient();
+            if (null != client) {
+                try {
+                    final MongoIterable<String> names = _client.listDatabaseNames();
+                    names.forEach((Block<String>) s -> {
+                        _database_names.add(s);
+                    });
+                }catch(Throwable t){
+                    if (!this.manageException("listDatabaseNames", t)) {
+                        // GRAVE ERROR
+                        _status = STATUS_ERROR;
+                        _error = t;
+                    }
+                }
+                return _database_names;
+            } else {
+                throw new Exception("Missing Client Response.");
+            }
+        }
+    }
+
+    public <T> void getCollection(final String databaseName,
                               final String collectionName,
-                              final Delegates.SingleResultCallback<MongoCollection> callback) {
+                              final Delegates.SingleResultCallback<com.mongodb.async.client.MongoCollection<T>> callback) {
         if (_enabled) {
             this.getDatabase(databaseName, (err, db) -> {
                 if (null == err) {
                     if (null != db) {
-                        final MongoCollection collection = db.getCollection(collectionName);
+                        final com.mongodb.async.client.MongoCollection collection = db.getCollection(collectionName);
                         if (null != collection) {
                             Delegates.invoke(callback, null, collection);
                         } else {
@@ -214,6 +256,21 @@ public class LyjMongoConnection {
         } else {
             Delegates.invoke(callback, new Exception("This Connection is not enabled."), null);
         }
+    }
+
+    public <T> MongoCollection<T> getCollection(final String databaseName,
+                                         final String collectionName) throws Exception {
+        final MongoDatabase database = getDatabase(databaseName);
+        if (null != database) {
+            final MongoCollection collection = database.getCollection(collectionName);
+            if (null != collection) {
+                return collection;
+            } else {
+                throw new Exception(FormatUtils.format("Collection '%s' not found in database '%s'.",
+                        collectionName, databaseName));
+            }
+        }
+        return null;
     }
 
     // ------------------------------------------------------------------------
@@ -243,25 +300,26 @@ public class LyjMongoConnection {
         return result;
     }
 
-    private MongoClientSettings getSettings() {
+    private com.mongodb.async.client.MongoClientSettings getAsyncSettings() {
         // hosts
         ClusterSettings clusterSettings = ClusterSettings.builder()
                 .hosts(_hosts)
                 .description(_description).build();
 
         if (_credentials.size() > 0) {
-            return MongoClientSettings.builder().credentialList(_credentials).clusterSettings(clusterSettings).build();
+            return com.mongodb.async.client.MongoClientSettings.builder().credentialList(_credentials).clusterSettings(clusterSettings).build();
         } else {
-            return MongoClientSettings.builder().clusterSettings(clusterSettings).build();
+            return com.mongodb.async.client.MongoClientSettings.builder().clusterSettings(clusterSettings).build();
         }
     }
 
-    private synchronized void getClient(final Delegates.SingleResultCallback<MongoClient> callback) {
-        if (null == _client) {
 
-            _client = MongoClients.create(this.getSettings());
+    private synchronized void getAsyncClient(final Delegates.SingleResultCallback<com.mongodb.async.client.MongoClient> callback) {
+        if (null == _client_async) {
 
-            final MongoIterable<String> names = _client.listDatabaseNames();
+            _client_async = com.mongodb.async.client.MongoClients.create(this.getAsyncSettings());
+
+            final com.mongodb.async.client.MongoIterable<String> names = _client_async.listDatabaseNames();
             names.forEach((String s) -> {
                 _database_names.add(s);
             }, (Void aVoid, Throwable t) -> {
@@ -276,11 +334,27 @@ public class LyjMongoConnection {
                 } else {
                     getLogger().info("Successfully Connected to Databases: " + CollectionUtils.toCommaDelimitedString(_database_names));
                 }
-                Delegates.invoke(callback, _error, _client);
+                Delegates.invoke(callback, _error, _client_async);
             });
         } else {
-            Delegates.invoke(callback, null, _client);
+            Delegates.invoke(callback, null, _client_async);
         }
+    }
+
+    private synchronized com.mongodb.MongoClient getClient() {
+        if (null == _client) {
+            try {
+                _client = new MongoClient(_hosts, _credentials);
+
+                _status = STATUS_CONNECTED;
+                _error = null;
+                getLogger().info("Successfully Connected to Databases: " + CollectionUtils.toCommaDelimitedString(_database_names));
+            } catch (Throwable t) {
+                _status = STATUS_ERROR;
+                _error = t;
+            }
+        }
+        return _client;
     }
 
     private boolean manageException(final String action, final Throwable t) {

@@ -1,5 +1,6 @@
 package org.lyj.ext.mongo.service;
 
+import com.mongodb.Block;
 import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.AggregateIterable;
 import com.mongodb.async.client.FindIterable;
@@ -11,10 +12,10 @@ import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
+import org.bson.BSON;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.lyj.commons.Delegates;
-import org.lyj.commons.async.future.Task;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.ConversionUtils;
@@ -55,8 +56,8 @@ public abstract class AbstractService
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void runCommand(final Bson command, final Delegates.SingleResultCallback<Object> callback) {
-        this.getDatabase((err, db) -> {
+    public void runCommandAsync(final Bson command, final Delegates.SingleResultCallback<Object> callback) {
+        this.getDatabaseAsync((err, db) -> {
             if (null == err) {
                 db.runCommand(command, (result, t) -> {
                     if (null != t) {
@@ -69,6 +70,11 @@ public abstract class AbstractService
                 Delegates.invoke(callback, err, null);
             }
         });
+    }
+
+    public Document runCommand(final Bson command) throws Exception {
+        final com.mongodb.client.MongoDatabase database = this.getDatabase();
+        return database.runCommand(command);
     }
 
     // ------------------------------------------------------------------------
@@ -85,15 +91,6 @@ public abstract class AbstractService
         return RandomUtils.randomUUID(true);
     }
 
-    protected void getDatabase(final Delegates.SingleResultCallback<MongoDatabase> callback) {
-        LyjMongo.getInstance().getDatabase(this.getConnectionName(), this.getDatabaseName(), callback);
-    }
-
-    protected void getCollection(final String collectionName,
-                                 final Delegates.SingleResultCallback<MongoCollection> callback) {
-        LyjMongo.getInstance().getCollection(this.getConnectionName(), this.getDatabaseName(), collectionName, callback);
-    }
-
     protected String toMD5(final String text) {
         if (StringUtils.hasText(text)) {
             return MD5.encode(text).toLowerCase();
@@ -101,10 +98,24 @@ public abstract class AbstractService
         return "";
     }
 
-    protected void count(final String collection_name, final Bson filter,
-                         final Delegates.SingleResultCallback<Integer> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    // ------------------------------------------------------------------------
+    //                      a s y n c
+    // ------------------------------------------------------------------------
+
+    protected void getDatabaseAsync(final Delegates.SingleResultCallback<MongoDatabase> callback) {
+        LyjMongo.getInstance().getDatabase(this.getConnectionName(), this.getDatabaseName(), callback);
+    }
+
+    protected <T> void getCollectionAsync(final String collectionName,
+                                          final Delegates.SingleResultCallback<MongoCollection<T>> callback) {
+        LyjMongo.getInstance().getCollection(this.getConnectionName(), this.getDatabaseName(), collectionName, callback);
+    }
+
+    protected void countAsync(final String collection_name, final Bson afilter,
+                              final Delegates.SingleResultCallback<Integer> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
+                final Bson filter = LyjMongoObjects.notNull(afilter);
                 collection.count(filter, (count, error) -> {
                     if (null == error) {
                         final int value = ConversionUtils.toInteger(count);
@@ -119,22 +130,24 @@ public abstract class AbstractService
         });
     }
 
-    protected void find(final String collection_name, final Bson filter,
-                        final Delegates.SingleResultCallback<List<Document>> callback) {
-        this.find(collection_name, filter, 0, 0, null, callback);
+    protected void findAsync(final String collection_name, final Bson filter,
+                             final Delegates.SingleResultCallback<List<Document>> callback) {
+        this.findAsync(collection_name, filter, 0, 0, null, callback);
     }
 
-    protected void find(final String collection_name, final Bson filter, final int skip, final int limit,
-                        final Bson sort, final Delegates.SingleResultCallback<List<Document>> callback) {
-        this.find(collection_name, filter, skip, limit, sort, null, callback);
+    protected void findAsync(final String collection_name, final Bson filter, final int skip, final int limit,
+                             final Bson sort, final Delegates.SingleResultCallback<List<Document>> callback) {
+        this.findAsync(collection_name, filter, skip, limit, sort, null, callback);
     }
 
-    protected void find(final String collection_name, final Bson filter, final int skip, final int limit,
-                        final Bson sort, final Bson projection, final Delegates.SingleResultCallback<List<Document>> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void findAsync(final String collection_name, final Bson afilter, final int skip, final int limit,
+                             final Bson sort, final Bson projection,
+                             final Delegates.SingleResultCallback<List<Document>> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 final List<Document> array = new LinkedList<Document>();
-                FindIterable<Document> iterable = collection.find().filter(filter).skip(skip).limit(limit);
+                final Bson filter = LyjMongoObjects.notNull(afilter);
+                FindIterable iterable = collection.find().filter(filter).skip(skip).limit(limit);
                 if (null != sort) {
                     iterable = iterable.sort(sort);
                 }
@@ -142,7 +155,7 @@ public abstract class AbstractService
                     iterable = iterable.projection(projection);
                 }
                 iterable.forEach((document) -> {
-                    array.add(document);
+                    array.add((Document) document);
                 }, (Void, error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, array);
@@ -156,11 +169,11 @@ public abstract class AbstractService
         });
     }
 
-    protected <T> void findField(final String collection_name, final Bson filter, final int skip, final int limit,
-                                 final Bson sort, final String fieldName, final boolean allow_duplicates,
-                                 final Delegates.SingleResultCallback<List<T>> callback) {
+    protected <T> void findFieldAsync(final String collection_name, final Bson filter, final int skip, final int limit,
+                                      final Bson sort, final String fieldName, final boolean allow_duplicates,
+                                      final Delegates.SingleResultCallback<List<T>> callback) {
         final Document projection = new Document(fieldName, 1);
-        this.find(collection_name, filter, skip, limit, sort, projection, (err, data) -> {
+        this.findAsync(collection_name, filter, skip, limit, sort, projection, (err, data) -> {
             if (null != err) {
                 Delegates.invoke(callback, err, null);
             } else {
@@ -179,49 +192,22 @@ public abstract class AbstractService
         });
     }
 
-    protected void findOne(final String collection_name, final Bson filter,
-                           final Delegates.SingleResultCallback<Document> callback) {
-        this.findOne(collection_name, filter, null, callback);
+    protected void findOneAsync(final String collection_name, final Bson filter,
+                                final Delegates.SingleResultCallback<Document> callback) {
+        this.findOneAsync(collection_name, filter, null, callback);
     }
 
-    protected void findOne(final String collection_name,
-                           final Bson filter,
-                           final Bson projection,
-                           final Delegates.SingleResultCallback<Document> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void findOneAsync(final String collection_name,
+                                final Bson filter,
+                                final Bson projection,
+                                final Delegates.SingleResultCallback<Document> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
-                FindIterable<Document> iterable = collection.find().filter(filter);
+                FindIterable iterable = collection.find().filter(filter);
                 if (null != projection) {
                     iterable = iterable.projection(projection);
                 }
                 iterable.first((item, error) -> {
-                    if (null == error) {
-                        Delegates.invoke(callback, null, item);
-                    } else {
-                        Delegates.invoke(callback, error, null);
-                    }
-                });
-            } else {
-                Delegates.invoke(callback, err, null);
-            }
-        });
-    }
-
-    protected void findById(final String collection_name, final String id,
-                            final Delegates.SingleResultCallback<Document> callback) {
-        this.findById(collection_name, id, null, callback);
-    }
-
-    protected void findById(final String collection_name, final String id,
-                            final Bson projection,
-                            final Delegates.SingleResultCallback<Document> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
-            if (null == err) {
-                FindIterable<Document> iterable = collection.find(eq(ID, id));
-                if (!LyjMongoObjects.isEmpty(projection)) {
-                    iterable = iterable.projection(projection);
-                }
-                iterable.first((final Document item, final Throwable error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, (Document) item);
                     } else {
@@ -234,34 +220,45 @@ public abstract class AbstractService
         });
     }
 
-    public Task<Document> findByIdTask(final String collection_name, final String id) {
-        return this.findByIdTask(collection_name, id, new Document());
+    protected void findByIdAsync(final String collection_name, final String id,
+                                 final Delegates.SingleResultCallback<Document> callback) {
+        this.findByIdAsync(collection_name, id, null, callback);
     }
 
-    public Task<Document> findByIdTask(final String collection_name, final String id, final Bson projection) {
-        return new Task<Document>((t) -> {
-            this.findById(collection_name, id, projection, (err, result) -> {
-                if (null != err) {
-                    t.fail(err);
-                } else {
-                    t.success(result);
+    protected void findByIdAsync(final String collection_name, final String id,
+                                 final Bson projection,
+                                 final Delegates.SingleResultCallback<Document> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
+            if (null == err) {
+                FindIterable iterable = collection.find(eq(ID, id));
+                if (!LyjMongoObjects.isEmpty(projection)) {
+                    iterable = iterable.projection(projection);
                 }
-            });
-        }).run();
+                iterable.first((item, error) -> {
+                    if (null == error) {
+                        Delegates.invoke(callback, null, (Document) item);
+                    } else {
+                        Delegates.invoke(callback, error, null);
+                    }
+                });
+            } else {
+                Delegates.invoke(callback, err, null);
+            }
+        });
     }
 
-    protected void findIds(final String collection_name, final Bson filter,
-                           final int skip, final int limit, final Bson sort,
-                           final Delegates.SingleResultCallback<List<String>> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void findIdsAsync(final String collection_name, final Bson filter,
+                                final int skip, final int limit, final Bson sort,
+                                final Delegates.SingleResultCallback<List<String>> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 final List<String> array = new LinkedList<String>();
-                FindIterable<Document> iterable = collection.find().filter(filter).projection(Projections.include(ID)).skip(skip).limit(limit);
+                FindIterable iterable = collection.find().filter(filter).projection(Projections.include(ID)).skip(skip).limit(limit);
                 if (null != sort) {
                     iterable = iterable.sort(sort);
                 }
                 iterable.forEach((document) -> {
-                    array.add(document.getString(ID));
+                    array.add(((Document) document).getString(ID));
                 }, (Void, error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, array);
@@ -275,22 +272,9 @@ public abstract class AbstractService
         });
     }
 
-    protected Task<List<String>> findIdsTask(final String collection_name, final Bson filter,
-                                             final int skip, final int limit, final Bson sort) {
-        return new Task<List<String>>((t) -> {
-            this.findIds(collection_name, filter, skip, limit, sort, (err, result) -> {
-                if (null != err) {
-                    t.fail(err);
-                } else {
-                    t.success(result);
-                }
-            });
-        }).run();
-    }
-
-    protected void exists(final String collection_name, final String id,
-                          final Delegates.SingleResultCallback<Boolean> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void existsAsync(final String collection_name, final String id,
+                               final Delegates.SingleResultCallback<Boolean> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 collection.count(eq(ID, id), (count, error) -> {
                     if (null == error) {
@@ -306,9 +290,9 @@ public abstract class AbstractService
         });
     }
 
-    protected void update(final String collection_name, final String id, final Bson data,
-                          final Delegates.SingleResultCallback<Document> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void updateAsync(final String collection_name, final String id, final Document data,
+                               final Delegates.SingleResultCallback<Document> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 final Document action = new Document("$set", data);
                 final FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();
@@ -326,9 +310,9 @@ public abstract class AbstractService
         });
     }
 
-    protected void update(final String collection_name, final Bson filter, final Bson data,
-                          final Delegates.SingleResultCallback<UpdateResult> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void updateAsync(final String collection_name, final Bson filter, final Document data,
+                               final Delegates.SingleResultCallback<UpdateResult> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 final Document action = new Document("$set", data);
                 final UpdateOptions options = new UpdateOptions();
@@ -350,23 +334,23 @@ public abstract class AbstractService
         });
     }
 
-    protected void updateField(final String collection_name, final String id, final String field_id,
-                               final Object field_value, final Delegates.SingleResultCallback<Document> callback) {
+    protected void updateFieldAsync(final String collection_name, final String id, final String field_id,
+                                    final Object field_value, final Delegates.SingleResultCallback<Document> callback) {
         final Document data = new Document(field_id, field_value);
-        this.update(collection_name, id, data, callback);
+        this.updateAsync(collection_name, id, data, callback);
     }
 
-    protected void push(final String collection_name, final String id, final String fieldName, final Bson data,
-                        final Delegates.SingleResultCallback<UpdateResult> callback) {
-        this.push(collection_name, id, new Document(fieldName, data), callback);
+    protected void pushAsync(final String collection_name, final String id, final String fieldName, final Document data,
+                             final Delegates.SingleResultCallback<UpdateResult> callback) {
+        this.pushAsync(collection_name, id, new Document(fieldName, data), callback);
     }
 
-    protected void push(final String collection_name, final String id, final Bson data,
-                        final Delegates.SingleResultCallback<UpdateResult> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void pushAsync(final String collection_name, final String id, final Document data,
+                             final Delegates.SingleResultCallback<UpdateResult> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 final Document update = new Document($PUSH, data);
-                final Bson filter = eq(ID, id);
+                final Document filter = new Document(ID, id);
                 collection.updateOne(filter, update, new SingleResultCallback<UpdateResult>() {
                     @Override
                     public void onResult(UpdateResult result, Throwable error) {
@@ -383,9 +367,9 @@ public abstract class AbstractService
         });
     }
 
-    protected void remove(final String collection_name, final String id,
-                          final Delegates.SingleResultCallback<Document> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void removeAsync(final String collection_name, final String id,
+                               final Delegates.SingleResultCallback<Document> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 collection.findOneAndDelete(eq(ID, id), (document, error) -> {
                     if (null == error) {
@@ -400,9 +384,9 @@ public abstract class AbstractService
         });
     }
 
-    protected void removeAll(final String collection_name, final Document filter,
-                             final Delegates.SingleResultCallback<DeleteResult> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void removeAllAsync(final String collection_name, final Bson filter,
+                                  final Delegates.SingleResultCallback<DeleteResult> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 collection.deleteMany(filter, new SingleResultCallback<DeleteResult>() {
                     @Override
@@ -420,11 +404,11 @@ public abstract class AbstractService
         });
     }
 
-    protected void removeAllAndReturnIds(final String collection_name, final Document filter,
-                                         final Delegates.SingleResultCallback<List<String>> callback) {
+    protected void removeAllAndReturnIdsAsync(final String collection_name, final Bson filter,
+                                              final Delegates.SingleResultCallback<List<String>> callback) {
         try {
-            final List<String> id_list = this.findIdsTask(collection_name, filter, 0, 0, null).run().get();
-            this.removeAll(collection_name, filter, (err, deleteResult) -> {
+            final List<String> id_list = this.findIds(collection_name, filter, 0, 0, null);
+            this.removeAllAsync(collection_name, filter, (err, deleteResult) -> {
                 if (null != err) {
                     Delegates.invoke(callback, err, null);
                 } else {
@@ -436,9 +420,9 @@ public abstract class AbstractService
         }
     }
 
-    protected void insert(final String collection_name, final Document item,
-                          final Delegates.SingleResultCallback<Document> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void insertAsync(final String collection_name, final Document item,
+                               final Delegates.SingleResultCallback<Document> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 // check _id
                 if (null == item.get(ID)) {
@@ -457,9 +441,9 @@ public abstract class AbstractService
         });
     }
 
-    protected void insert(final String collection_name, final List<Document> items,
-                          final Delegates.SingleResultCallback<List<Document>> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void insertAsync(final String collection_name, final List<Document> items,
+                               final Delegates.SingleResultCallback<List<Document>> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 collection.insertMany(items, (Void, error) -> {
                     if (null == error) {
@@ -474,14 +458,14 @@ public abstract class AbstractService
         });
     }
 
-    protected void aggregate(final String collection_name, final List<Document> pipeline,
-                             final Delegates.SingleResultCallback<List<Document>> callback) {
-        this.getCollection(collection_name, (err, collection) -> {
+    protected void aggregateAsync(final String collection_name, final List<Document> pipeline,
+                                  final Delegates.SingleResultCallback<List<Document>> callback) {
+        this.getCollectionAsync(collection_name, (err, collection) -> {
             if (null == err) {
                 final List<Document> array = new LinkedList<Document>();
-                final AggregateIterable<Document> iterable = collection.aggregate(pipeline);
+                final AggregateIterable iterable = collection.aggregate(pipeline);
                 iterable.forEach((document) -> {
-                    array.add(document);
+                    array.add((Document) document);
                 }, (Void, error) -> {
                     if (null == error) {
                         Delegates.invoke(callback, null, array);
@@ -496,19 +480,19 @@ public abstract class AbstractService
     }
 
 
-    protected void upsert(final String collection_name, final Document item,
-                          final Delegates.SingleResultCallback<Document> callback) {
+    protected void upsertAsync(final String collection_name, final Document item,
+                               final Delegates.SingleResultCallback<Document> callback) {
         final String id = item.getString(ID);
         if (StringUtils.hasText(id)) {
-            this.findById(collection_name, id, new Document(ID, 1), (err, existing) -> {
+            this.findByIdAsync(collection_name, id, new Document(ID, 1), (err, existing) -> {
                 if (null != err) {
                     Delegates.invoke(callback, err, null);
                 } else {
                     if (null != existing) {
                         item.remove(ID);
-                        this.update(collection_name, id, item, callback);
+                        this.updateAsync(collection_name, id, item, callback);
                     } else {
-                        this.insert(collection_name, item, callback);
+                        this.insertAsync(collection_name, item, callback);
                     }
                 }
             });
@@ -517,5 +501,211 @@ public abstract class AbstractService
         }
     }
 
+    // ------------------------------------------------------------------------
+    //                      s y n c
+    // ------------------------------------------------------------------------
+
+    protected com.mongodb.client.MongoDatabase getDatabase() throws Exception {
+        return LyjMongo.getInstance().getDatabase(this.getConnectionName(), this.getDatabaseName());
+    }
+
+    protected <T> com.mongodb.client.MongoCollection<T> getCollection(final String collectionName) throws Exception {
+        return LyjMongo.getInstance().getCollection(this.getConnectionName(), this.getDatabaseName(), collectionName);
+    }
+
+    protected long count(final String collection_name, final Bson filter) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        return collection.count(filter);
+    }
+
+    protected List<Document> find(final String collection_name, final Bson filter) throws Exception {
+        return this.find(collection_name, filter, 0, 0, null);
+    }
+
+    protected List<Document> find(final String collection_name, final Bson filter, final int skip, final int limit,
+                                  final Bson sort) throws Exception {
+        return this.find(collection_name, filter, skip, limit, sort, null);
+    }
+
+    protected List<Document> find(final String collection_name, final Bson afilter, final int skip, final int limit,
+                                  final Bson sort, final Bson projection) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+
+        final List<Document> array = new LinkedList<Document>();
+        final Bson filter = LyjMongoObjects.notNull(afilter);
+        com.mongodb.client.FindIterable<Document> iterable = collection.find().filter(filter).skip(skip).limit(limit);
+        if (null != sort) {
+            iterable = iterable.sort(sort);
+        }
+        if (null != projection) {
+            iterable = iterable.projection(projection);
+        }
+
+        iterable.forEach((Block<Document>) document -> {
+            if (null != document) {
+                array.add(document);
+            }
+        });
+        return array;
+    }
+
+    protected <T> List<T> findField(final String collection_name, final Bson afilter, final int skip, final int limit,
+                                    final Bson sort, final String fieldName, final boolean allow_duplicates) throws Exception {
+        final Bson projection = new Document(fieldName, 1);
+        final Bson filter = LyjMongoObjects.notNull(afilter);
+        final List<Document> data = this.find(collection_name, filter, skip, limit, sort, projection);
+        final List<T> result = new LinkedList<>();
+        for (final Document item : data) {
+            try {
+                final T value = (T) item.get(fieldName);
+                if (allow_duplicates || !result.contains(value)) {
+                    result.add(value);
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+        return result;
+    }
+
+    protected Document findOne(final String collection_name,
+                               final Bson filter) throws Exception {
+        return this.findOne(collection_name, filter, null);
+    }
+
+    protected Document findOne(final String collection_name,
+                               final Bson afilter,
+                               final Bson projection) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        final Bson filter = LyjMongoObjects.notNull(afilter);
+        com.mongodb.client.FindIterable<Document> iterable = collection.find().filter(filter);
+        if (null != projection) {
+            iterable = iterable.projection(projection);
+        }
+        return iterable.first();
+    }
+
+
+    protected Document findById(final String collection_name, final String id) throws Exception {
+        return this.findById(collection_name, id, new Document());
+    }
+
+    protected Document findById(final String collection_name, final String id, final Bson projection) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        com.mongodb.client.FindIterable<Document> iterable = collection.find(eq(ID, id));
+        if (!LyjMongoObjects.isEmpty(projection)) {
+            iterable = iterable.projection(projection);
+        }
+        return iterable.first();
+    }
+
+    protected List<String> findIds(final String collection_name, final Bson afilter,
+                                   final int skip, final int limit, final Bson sort) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        final List<String> array = new LinkedList<String>();
+        final Bson filter = LyjMongoObjects.notNull(afilter);
+        com.mongodb.client.FindIterable<Document> iterable = collection.find().filter(filter).projection(Projections.include(ID)).skip(skip).limit(limit);
+        if (null != sort) {
+            iterable = iterable.sort(sort);
+        }
+        iterable.forEach((Block<Document>) document -> {
+            array.add(document.getString(ID));
+        });
+        return array;
+    }
+
+    protected boolean exists(final String collection_name, final String id) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        return collection.count(eq(ID, id)) > 0;
+    }
+
+    protected Document update(final String collection_name, final String id, final Document data) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        final Document action = new Document("$set", data);
+        final FindOneAndUpdateOptions options = new FindOneAndUpdateOptions();
+        options.returnDocument(ReturnDocument.AFTER);
+        return collection.findOneAndUpdate(eq(ID, id), action, options);
+    }
+
+    protected UpdateResult update(final String collection_name, final Bson afilter, final Document data) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        final Document action = new Document("$set", data);
+        final UpdateOptions options = new UpdateOptions();
+        options.upsert(true);
+        final Bson filter = LyjMongoObjects.notNull(afilter);
+        return collection.updateMany(filter, action, options);
+    }
+
+    protected Document updateField(final String collection_name, final String id, final String field_id,
+                                   final Object field_value) throws Exception {
+        final Document data = new Document(field_id, field_value);
+        return this.update(collection_name, id, data);
+    }
+
+    protected UpdateResult push(final String collection_name, final String id, final String fieldName, final Document data) throws Exception {
+        return this.push(collection_name, id, new Document(fieldName, data));
+    }
+
+    protected UpdateResult push(final String collection_name, final String id, final Document data) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        final Document update = new Document($PUSH, data);
+        final Document filter = new Document(ID, id);
+        return collection.updateOne(filter, update);
+    }
+
+    protected Document remove(final String collection_name, final String id) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        return collection.findOneAndDelete(eq(ID, id));
+    }
+
+    protected DeleteResult removeAll(final String collection_name, final Bson filter) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        return collection.deleteMany(filter);
+
+    }
+
+    protected List<String> removeAllAndReturnIdsAsync(final String collection_name, final Document filter) throws Exception {
+        final List<String> id_list = this.findIds(collection_name, filter, 0, 0, null);
+        final DeleteResult deleteResult = this.removeAll(collection_name, filter);
+        return id_list;
+    }
+
+    protected Document insert(final String collection_name, final Document item) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        // check _id
+        if (null == item.get(ID)) {
+            item.put(ID, this.UUID());
+        }
+        collection.insertOne(item);
+        return item;
+    }
+
+    protected List<Document> insert(final String collection_name, final List<Document> items) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        collection.insertMany(items);
+        return items;
+    }
+
+    protected List<Document> aggregate(final String collection_name, final List<Document> pipeline) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        final List<Document> array = new LinkedList<Document>();
+        final com.mongodb.client.AggregateIterable<Document> iterable = collection.aggregate(pipeline);
+        iterable.forEach((Block<Document>) array::add);
+        return array;
+    }
+
+    protected Document upsert(final String collection_name, final Document item) throws Exception {
+        final String id = item.getString(ID);
+        if (StringUtils.hasText(id)) {
+            final Document existing = this.findById(collection_name, id, new Document(ID, 1));
+            if (null != existing) {
+                item.remove(ID);
+                return this.update(collection_name, id, item);
+            } else {
+                return this.insert(collection_name, item);
+            }
+        } else {
+            throw new Exception("Unable to insert or update object: Missing ID");
+        }
+    }
 
 }

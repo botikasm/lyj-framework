@@ -313,4 +313,8 @@ public class LyjMongoObjects {
         }
         return target;
     }
+
+    public static Bson notNull(final Bson bson) {
+        return null==bson?new Document():bson;
+    }
 }

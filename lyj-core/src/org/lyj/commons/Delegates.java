@@ -97,7 +97,7 @@ public class Delegates {
 
     @FunctionalInterface
     public static interface SingleResultCallback<T> {
-        void handle(final Throwable err, final T data);
+        void handle(final Throwable err, final T data) throws Exception;
     }
 
     @FunctionalInterface

@@ -40,7 +40,7 @@ import java.util.Map;
 public class AvatarUtils {
 
     //-- gravatar --//
-    public static final String GRAVATAR_URL = "web://www.gravatar.com/";
+    public static final String GRAVATAR_URL = "http://www.gravatar.com/";
     public static final String GRAVATAR_URL_SECURE = "https://secure.gravatar.com/";
     public static final String GRAVATAR_IMAGE_PREFIX = "avatar/";
 
@@ -57,7 +57,7 @@ public class AvatarUtils {
     };
 
     //-- robohash avatars --//
-    public static final String ROBO_HASH = "web://robohash.org/{0}";
+    public static final String ROBO_HASH = "http://robohash.org/{0}";
     public static final String ROBO_HASH_GRAVATAR = ROBO_HASH.concat("?gravatar=yes");
 
     private static final String OPT_GRAVATAR = "gravatar=yes";
@@ -119,6 +119,18 @@ public class AvatarUtils {
         }
 
         return base_url.concat(GRAVATAR_IMAGE_PREFIX).concat(md5(email)).concat(options.toString());
+    }
+
+    public static String getRobohashUrl(final String email) {
+        return getRobohashUrl(email, 0, 0, 128, 128);
+    }
+
+    public static String getRobohashUrl(final String email,
+                                        final int imgSet,
+                                        final int bgSet,
+                                        final int height,
+                                        final int width) {
+        return getAvatarUrl(email, false, imgSet, bgSet, height, width);
     }
 
     public static String getAvatarUrl(final String email,

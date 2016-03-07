@@ -6,8 +6,6 @@ import com.mongodb.async.client.MongoCollection;
 import com.mongodb.client.model.IndexOptions;
 import org.bson.Document;
 import org.lyj.commons.Delegates;
-import org.lyj.commons.async.Async;
-import org.lyj.commons.async.future.Task;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.commons.util.StringUtils;
@@ -131,70 +129,63 @@ public abstract class AbstractSchema
     }
 
     public void ensureIndexes(final Delegates.SingleResultCallback<List<Document>> callback) {
-        this.initIndexes(callback);
+        Delegates.invoke(callback, null, this.initIndexes());
+    }
+
+    public List<Document> ensureIndexes() {
+        return this.initIndexes();
     }
 
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
 
-    protected final void getCollection(final Delegates.SingleResultCallback<MongoCollection> callback) {
+    protected final <T> void getCollection(final Delegates.SingleResultCallback<MongoCollection<T>> callback) {
         LyjMongo.getInstance().getCollection(this.getConnectionName(),
                 this.getDatabaseName(), this.getCollectionName(), callback);
+    }
+
+    protected final <T> com.mongodb.client.MongoCollection<T> getCollection() throws Exception {
+        return LyjMongo.getInstance().getCollection(this.getConnectionName(),
+                this.getDatabaseName(), this.getCollectionName());
     }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void initIndexes(final Delegates.SingleResultCallback<List<Document>> callback) {
-        final Collection<Task<LyjMongoIndex>> tasks = new ArrayList<>();
-        final Collection<LyjMongoIndex> indexes = _indexes.values();
-        for (final LyjMongoIndex index : indexes) {
-            tasks.add(this.initIndex(index));
-        }
-
-        // run and wait
-        Async.joinAll(tasks);
-
+    private List<Document> initIndexes() {
         // create response
         final List<Document> response = new LinkedList<>();
 
-        // get response
-        for (final Task<LyjMongoIndex> task : tasks) {
-            final LyjMongoIndex index = task.getSilent();
+        final Collection<LyjMongoIndex> indexes = _indexes.values();
+        for (final LyjMongoIndex index : indexes) {
             if (null != index) {
-                final Document item = Document.parse(index.toString());
-                response.add(item);
-                if (task.hasError()) {
-                    item.put("error", ExceptionUtils.getMessage(task.getError()));
+                Exception error = null;
+                try {
+                    this.initIndex(index);
+                } catch (Exception err) {
+                    error = err;
                 }
+                final Document item = Document.parse(index.toString());
+                if (null != error) {
+                    item.put("error", ExceptionUtils.getMessage(error));
+                }
+                response.add(item);
             }
         }
-
-        Delegates.invoke(callback, null, response);
+        return response;
     }
 
-    private Task<LyjMongoIndex> initIndex(final LyjMongoIndex index) {
-        final String index_name = null!=index?index.getName():null;
-        return new Task<LyjMongoIndex>(index_name, (t) -> {
+    private void initIndex(final LyjMongoIndex index) throws Exception {
+        if (null != index) {
+            final String index_name = index.getName();
             if (index.hasFields()) {
-                this.getCollection((err, collection) -> {
-                    if (null != err) {
-                        t.fail(err);
-                    } else {
-                        this.createIndex(collection, index, (err1, response) -> {
-                            if (null != err1) {
-                                t.fail(err1, index);
-                            } else {
-                                index.setName(response);
-                                t.success(index);
-                            }
-                        });
-                    }
-                });
+                final com.mongodb.client.MongoCollection<Document> collection = this.getCollection();
+                final String name = this.createIndex(collection, index);
+                index.setName(name);
             }
-        });
+        }
     }
 
     private void createIndex(final MongoCollection collection, final LyjMongoIndex index,
@@ -215,6 +206,21 @@ public abstract class AbstractSchema
                 Delegates.invoke(callback, err, indexName);
             }
         });
+    }
+
+    private String createIndex(final com.mongodb.client.MongoCollection<Document> collection,
+                               final LyjMongoIndex index) {
+        // mongo index
+        final Document mongo_index = index.toDocument();
+        final IndexOptions options = new IndexOptions();
+        options.unique(index.isUnique());
+        if (StringUtils.hasText(index.getName())) {
+            options.name(index.getName());
+        }
+
+        // create new index or overwrite existing
+        //collection.createIndex(mongo_index, options, (final String indexName, final Throwable err)->{});
+        return collection.createIndex(mongo_index, options);
     }
 
 

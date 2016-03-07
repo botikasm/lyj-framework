@@ -32,6 +32,13 @@ public class LyjMongoField {
         _unique = unique;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("name=").append(_name);
+        return sb.toString();
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
