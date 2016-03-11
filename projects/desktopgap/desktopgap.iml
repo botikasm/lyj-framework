@@ -12,18 +12,5 @@
     <orderEntry type="module" module-name="lyj-core" />
     <orderEntry type="module" module-name="lyj-core-gui" />
     <orderEntry type="module" module-name="lyj-ext-netty" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/netty-4.1.0CR3" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/netty-4.1.0CR3" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.0CR3" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.0CR3" recursive="false" type="SOURCES" />
-      </library>
-    </orderEntry>
   </component>
 </module>

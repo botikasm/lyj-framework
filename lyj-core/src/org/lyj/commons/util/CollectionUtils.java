@@ -30,8 +30,6 @@ import java.util.Map.Entry;
 public abstract class CollectionUtils {
 
 
-
-
     public static interface IterationResponseCallback<T> {
         T handle(final T item, final int index, final Object key);
     }
@@ -45,7 +43,7 @@ public abstract class CollectionUtils {
     // Use to filter, map reduce or simply loop on items
     //---------------------------------------------------------------------
 
-    public static <T> void forEach (final Collection<T> items, final IterationCallback<T> callback) {
+    public static <T> void forEach(final Collection<T> items, final IterationCallback<T> callback) {
         if (null != callback && null != items) {
             int index = 0;
             for (final T item : items) {
@@ -74,7 +72,7 @@ public abstract class CollectionUtils {
         }
     }
 
-    public static <K,V> void forEach(final Map<K,V> map, final IterationCallback<V> callback) {
+    public static <K, V> void forEach(final Map<K, V> map, final IterationCallback<V> callback) {
         if (null != callback && null != map) {
             final Set<K> keys = map.keySet();
             int index = 0;
@@ -112,7 +110,7 @@ public abstract class CollectionUtils {
                 index++;
             }
         }
-        return result.toArray((T[])new Object[result.size()]);
+        return result.toArray((T[]) new Object[result.size()]);
     }
 
     public static JSONArray map(final JSONArray items, final IterationResponseCallback<Object> callback) {
@@ -129,7 +127,7 @@ public abstract class CollectionUtils {
         return result;
     }
 
-    public static <K,V> Map<K,V> map(final Map<K,V> map, final IterationResponseCallback<V> callback) {
+    public static <K, V> Map<K, V> map(final Map<K, V> map, final IterationResponseCallback<V> callback) {
         final Map<K, V> result = new HashMap<>();
         if (null != callback && null != map) {
             final Set<K> keys = map.keySet();
@@ -186,7 +184,7 @@ public abstract class CollectionUtils {
         return null;
     }
 
-    public static <K,V> V find(final Map<K,V> map, final IterationResponseCallback<V> callback) {
+    public static <K, V> V find(final Map<K, V> map, final IterationResponseCallback<V> callback) {
         if (null != callback && null != map) {
             final Set<K> keys = map.keySet();
             int index = 0;
@@ -246,6 +244,7 @@ public abstract class CollectionUtils {
         return newArr;
     }
 
+
     /**
      * Append the given String to the given String array, returning a new array
      * consisting of the input array contents plus the given String.
@@ -288,9 +287,10 @@ public abstract class CollectionUtils {
 
     /**
      * Insert the given object to beginning of array.
+     *
      * @param array the array to insert to (can be
      *              <code>null</code>)
-     * @param item the object to insert in first position
+     * @param item  the object to insert in first position
      * @return the new array (never <code>null</code>)
      */
     public static Object[] insertToArray(Object[] array, Object item) {
@@ -1020,6 +1020,50 @@ public abstract class CollectionUtils {
         return result.toArray(new Object[result.size()]);
     }
 
+    public static byte[] merge(byte[]... arrays) {
+        if (null != arrays && arrays.length > 0) {
+            // total lenght and lenghts
+            int len = 0;
+            int[] lengths = new int[arrays.length];
+            for(int i=0;i<arrays.length;i++){
+                lengths[i]=arrays[i].length;
+                len+=lengths[i];
+            }
+
+            int pos = 0;
+            byte[] response = new byte[len];
+            for (byte[] array : arrays) {
+                System.arraycopy(array, 0, response, pos, array.length);
+                pos += array.length;
+            }
+            return response;
+        } else {
+            return new byte[0];
+        }
+    }
+
+    public static int[] merge(int[]... arrays) {
+        if (null != arrays && arrays.length > 0) {
+            // total lenght and lenghts
+            int len = 0;
+            int[] lengths = new int[arrays.length];
+            for(int i=0;i<arrays.length;i++){
+                lengths[i]=arrays[i].length;
+                len+=lengths[i];
+            }
+
+            int pos = 0;
+            int[] response = new int[len];
+            for (int[] array : arrays) {
+                System.arraycopy(array, 0, response, pos, array.length);
+                pos += array.length;
+            }
+            return response;
+        } else {
+            return new int[0];
+        }
+    }
+
     /**
      * Combine a variable number of Collections.<br> Duplicates are not added to
      * result list, and order is mantained.
@@ -1532,11 +1576,11 @@ public abstract class CollectionUtils {
     }
 
     public static boolean equals(final Class[] arr1, final Class[] arr2) {
-        if(null!=arr1 && null!=arr2 && arr1.length==arr2.length){
-            for(int i=0;i<arr1.length;i++){
+        if (null != arr1 && null != arr2 && arr1.length == arr2.length) {
+            for (int i = 0; i < arr1.length; i++) {
                 Class cls1 = arr1[i];
                 Class cls2 = arr2[i];
-                if(!BeanUtils.similar(cls1, cls2)){
+                if (!BeanUtils.similar(cls1, cls2)) {
                     return false;
                 }
             }
@@ -1546,9 +1590,9 @@ public abstract class CollectionUtils {
     }
 
     public static boolean equals(final Object[] arr1, final Object[] arr2) {
-        if(null!=arr1 && null!=arr2 && arr1.length==arr2.length){
-            for(int i=0;i<arr1.length;i++){
-                if(!arr1[i].equals(arr2[i])){
+        if (null != arr1 && null != arr2 && arr1.length == arr2.length) {
+            for (int i = 0; i < arr1.length; i++) {
+                if (!arr1[i].equals(arr2[i])) {
                     return false;
                 }
             }

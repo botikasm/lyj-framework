@@ -1,58 +1,51 @@
-package org.lyj.desktopgap.app;
+package org.lyj.desktopgap.app.http;
 
-import org.lyj.desktopgap.app.http.WebServer;
+import org.lyj.Lyj;
+import org.lyj.desktopgap.deploy.htdocs.HtdocsDeployer;
+import org.lyj.ext.netty.server.web.HttpServer;
+import org.lyj.ext.netty.server.web.handlers.impl.ResourceHandler;
 
 /**
- * Main Application Controller
+ *
  */
-public class Application {
+public class WebServer
+        extends HttpServer {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private WebServer _web_server;
-
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    private Application() {
-        _web_server = new WebServer();
-
+    public WebServer() {
+        this.config().port(4000).portAutodetect(true).root(Lyj.getAbsolutePath(HtdocsDeployer.PATH));
+        this.handler(new ResourceHandler(this.config()));
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void start() {
-        _web_server.start();
+    @Override
+    public WebServer start() {
+        super.start();
+        super.logger().info("Web Server Started.");
+        return this;
     }
 
-    public void stop() {
-        _web_server.stop();
-    }
-
-    public String httDocsPath(final String path) {
-        return _web_server.path(path);
-    }
-
-    public String webUri(final String path) {
-        return _web_server.uri(path);
+    @Override
+    public WebServer stop() {
+        super.stop();
+        super.logger().info("Web Server stopped.");
+        return this;
     }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private static Application __instance;
 
-    public static Application instance() {
-        if (null == __instance) {
-            __instance = new Application();
-        }
-        return __instance;
-    }
 
 }

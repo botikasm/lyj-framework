@@ -191,6 +191,16 @@ public abstract class FileUtils {
         return 0;
     }
 
+    public static long getSize(final File file) {
+        final RandomAccessFile raf;
+        try {
+            raf = new RandomAccessFile(file, "r");
+            return raf.length();
+        } catch (Throwable ignore) {
+        }
+        return 0;
+    }
+
     public static long getSize(final InputStream is) {
         long size = 0L;
         try {

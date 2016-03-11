@@ -18,41 +18,53 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.desktopgap.deploy.htdocs;
+package org.lyj.gui.application.app.utils;
 
-
-import org.lyj.Lyj;
-import org.lyj.commons.io.repository.deploy.FileDeployer;
-
-public class HtdocsDeployer extends FileDeployer {
-
+/**
+ *
+ */
+public class Size {
 
     // ------------------------------------------------------------------------
-    //                      c o n s
+    //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    public static final String PATH = "htdocs";
+    private double _width;
+    private double _height;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public HtdocsDeployer(final boolean silent) {
-        super("", Lyj.getAbsolutePath(PATH),
-                silent, false, false, false);
+    public Size() {
+        _width = 0;
+        _height = 0;
+    }
+
+    public Size(final double width, final double height) {
+        _width = width;
+        _height = height;
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    @Override
-    public byte[] compile(byte[] data, final String filename) {
-        return data;
+    public double getWidth() {
+        return _width;
     }
 
-    @Override
-    public byte[] compress(byte[] data, final String filename) {
-        return null;
+    public void setWidth(double width) {
+        _width = width;
     }
+
+    public double getHeight() {
+        return _height;
+    }
+
+    public void setHeight(double height) {
+        _height = height;
+    }
+
+
 }

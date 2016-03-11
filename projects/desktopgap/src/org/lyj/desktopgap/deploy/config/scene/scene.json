@@ -1,7 +1,14 @@
 {
   "stage":"app/view/web/web.fxml",
+
   "size" : {"width":800, "height":600},
   "title":"DesktopGap",
-  "icon":"resources/icons/logo.png",
-  "auto-show":"true"
+  "icon":"assets/icon/logo.png",
+  "auto-show":"true",
+
+  "loader":"bull.gif",
+  "loader-time":3000,
+
+  "main":"index.html"
+
 }

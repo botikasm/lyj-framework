@@ -4,10 +4,11 @@ import javafx.stage.Stage;
 import org.lyj.Lyj;
 import org.lyj.commons.event.bus.MessageBus;
 import org.lyj.desktopgap.app.Application;
+import org.lyj.desktopgap.deploy.assets.AssetsDeployer;
 import org.lyj.desktopgap.deploy.config.ConfigurationDeployer;
 import org.lyj.desktopgap.deploy.htdocs.HtdocsDeployer;
 import org.lyj.desktopgap.i18n.Dictionary;
-import org.lyj.gui.app.FxGuiApplication;
+import org.lyj.gui.application.app.FxGuiApplication;
 
 /**
  * Main server class.
@@ -40,6 +41,7 @@ public class AppLauncher
 
         Lyj.registerDeployer(new ConfigurationDeployer(Lyj.isSilent()));
         Lyj.registerDeployer(new HtdocsDeployer(Lyj.isSilent()));
+        Lyj.registerDeployer(new AssetsDeployer(Lyj.isSilent()));
 
     }
 
@@ -51,7 +53,7 @@ public class AppLauncher
         // init message bus
         MessageBus.getInstance().listeners().setInterval(300);
 
-        _application = new Application();
+        _application = Application.instance();
         _application.start();
     }
 

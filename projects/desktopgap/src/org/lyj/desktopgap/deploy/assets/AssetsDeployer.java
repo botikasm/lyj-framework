@@ -18,26 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.desktopgap.deploy.htdocs;
+package org.lyj.desktopgap.deploy.assets;
 
 
 import org.lyj.Lyj;
 import org.lyj.commons.io.repository.deploy.FileDeployer;
 
-public class HtdocsDeployer extends FileDeployer {
+public class AssetsDeployer extends FileDeployer {
 
 
     // ------------------------------------------------------------------------
     //                      c o n s
     // ------------------------------------------------------------------------
 
-    public static final String PATH = "htdocs";
+    public static final String PATH = "assets";
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public HtdocsDeployer(final boolean silent) {
+    public AssetsDeployer(final boolean silent) {
         super("", Lyj.getAbsolutePath(PATH),
                 silent, false, false, false);
     }

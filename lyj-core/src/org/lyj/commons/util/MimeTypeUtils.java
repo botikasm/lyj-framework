@@ -338,6 +338,11 @@ public class MimeTypeUtils {
         getInstance()._filetypemap.put(fileExtension, mimeType);
     }
 
+    public static boolean isTextType(final String fileName) {
+        final String mimetype = MimeTypeUtils.getMimeType(fileName);
+        return mimetype.startsWith("text");
+    }
+
     public static boolean isImageType(final String fileName) {
         final String mimetype = MimeTypeUtils.getMimeType(fileName);
         return mimetype.startsWith("image");

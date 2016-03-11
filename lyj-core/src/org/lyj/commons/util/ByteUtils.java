@@ -29,6 +29,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.lang.reflect.Array;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author angelo.geminiani
@@ -43,6 +45,14 @@ public class ByteUtils {
             }
         }
         return false;
+    }
+
+    public static byte[] getBytes(final File file) throws IOException {
+        return Files.readAllBytes(Paths.get(file.getPath()));
+    }
+
+    public static byte[] getBytes(final String fileName) throws IOException {
+        return Files.readAllBytes(Paths.get(fileName));
     }
 
     public static byte[] getBytes(final BufferedImage image) throws IOException {

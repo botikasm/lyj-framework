@@ -27,7 +27,6 @@ import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.config.Deployer;
 
 import java.util.HashSet;
 import java.util.List;
