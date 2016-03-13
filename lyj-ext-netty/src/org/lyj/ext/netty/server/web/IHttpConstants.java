@@ -5,7 +5,8 @@ import java.util.regex.Pattern;
 /**
  * constants
  */
-public interface IHttpConstants {
+public interface IHttpConstants
+        extends org.lyj.commons.network.http.IHttpConstants, IHeaderNames {
 
 
     public static final String HTTP_DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss zzz";

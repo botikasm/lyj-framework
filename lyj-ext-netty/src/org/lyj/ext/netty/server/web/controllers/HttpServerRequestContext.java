@@ -102,6 +102,14 @@ public class HttpServerRequestContext {
         return this.hasLastHttpContent() ? (LastHttpContent) _content : null;
     }
 
+    public String method() {
+        try {
+            return _request.method().name().toUpperCase();
+        } catch (Throwable ignored) {
+            return "";
+        }
+    }
+
     public HttpResponseStatus status() {
         try {
             return _request.decoderResult().isSuccess() ? HttpResponseStatus.OK : HttpResponseStatus.BAD_REQUEST;

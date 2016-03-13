@@ -49,6 +49,10 @@ public class HttpServerRequest {
         return _context.host();
     }
 
+    public String method() {
+        return _context.method();
+    }
+
     public HttpVersion protocolVersion() {
         return _context.protocolVersion();
     }

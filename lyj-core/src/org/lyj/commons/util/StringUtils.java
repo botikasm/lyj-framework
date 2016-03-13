@@ -22,6 +22,7 @@ package org.lyj.commons.util;
 
 import org.lyj.IConstants;
 import org.lyj.Lyj;
+import org.lyj.commons.Delegates;
 import org.lyj.commons.lang.CharEncoding;
 
 import java.io.*;
@@ -334,6 +335,23 @@ public final class StringUtils {
         }
         return tokens;
     }
+
+    public static String[] split(final String str,
+                                 final String delimiter,
+                                 final Delegates.FunctionArg<String, String> callback) {
+        final String[] tokens = split(str, delimiter);
+        if(null!=callback){
+            try{
+                for(int i=0;i<tokens.length;i++){
+                    tokens[i] = callback.call(tokens[i]);
+                }
+            } catch (Throwable ignored) {
+            }
+        }
+
+        return tokens;
+    }
+
 
     /**
      * Split a String at the first occurrence of the delimiter. Does not include

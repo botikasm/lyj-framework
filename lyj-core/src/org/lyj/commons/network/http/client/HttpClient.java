@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.lang.CharEncoding;
+import org.lyj.commons.network.http.IHttpConstants;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
@@ -22,8 +23,8 @@ public class HttpClient {
     public final static int DEF_CONN_TIMEOUT = 1000 * 60 * 5; // 5 minute
     public final static int DEF_IDLE_TIMEOUT = DEF_CONN_TIMEOUT;
 
-    public final static String POST = "POST";
-    public final static String GET = "GET";
+    public final static String POST = IHttpConstants.METHOD_POST;
+    public final static String GET = IHttpConstants.METHOD_GET;
 
     // ------------------------------------------------------------------------
     //                      f i e l d s

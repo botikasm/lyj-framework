@@ -38,7 +38,7 @@ public class ResourceHandler
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public ResourceHandler(final HttpServerConfig config) {
+    private ResourceHandler(final HttpServerConfig config) {
         super(config);
         _root = config.root();
     }
@@ -143,4 +143,11 @@ public class ResourceHandler
         return null;
     }
 
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static ResourceHandler create(final HttpServerConfig config) {
+        return new ResourceHandler(config);
+    }
 }

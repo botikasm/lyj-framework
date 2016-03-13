@@ -3,7 +3,9 @@ package org.lyj.desktopgap.app.http;
 import org.lyj.Lyj;
 import org.lyj.desktopgap.deploy.htdocs.HtdocsDeployer;
 import org.lyj.ext.netty.server.web.HttpServer;
+import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
 import org.lyj.ext.netty.server.web.handlers.impl.ResourceHandler;
+import org.lyj.ext.netty.server.web.handlers.impl.RoutingHandler;
 
 /**
  *
@@ -15,13 +17,23 @@ public class WebServer
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private final RoutingHandler _router;
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     public WebServer() {
-        this.config().port(4000).portAutodetect(true).root(Lyj.getAbsolutePath(HtdocsDeployer.PATH));
-        this.handler(new ResourceHandler(this.config()));
+        super.config().port(4000).portAutodetect(true).root(Lyj.getAbsolutePath(HtdocsDeployer.PATH));
+
+        _router = RoutingHandler.create(super.config());
+
+        // #1 - add router as first handler
+        super.handler(_router);
+
+        // #2 - add basic http resource server (serve text and images)
+        super.handler(ResourceHandler.create(this.config()));
+
     }
 
     // ------------------------------------------------------------------------
@@ -40,6 +52,10 @@ public class WebServer
         super.stop();
         super.logger().info("Web Server stopped.");
         return this;
+    }
+
+    public IRouter router(){
+        return _router;
     }
 
     // ------------------------------------------------------------------------

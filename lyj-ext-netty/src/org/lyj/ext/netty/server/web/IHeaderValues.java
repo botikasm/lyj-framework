@@ -3,7 +3,7 @@ package org.lyj.ext.netty.server.web;
 /**
  * Header Values
  */
-public class IHeaderValues {
+public interface IHeaderValues {
     /**
      * {@code "application/x-www-form-urlencoded"}
      */

@@ -27,7 +27,7 @@ public class RequestInspectorHandler
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public RequestInspectorHandler(final HttpServerConfig config) {
+    private RequestInspectorHandler(final HttpServerConfig config) {
         super(config);
     }
 
@@ -102,6 +102,14 @@ public class RequestInspectorHandler
         }
 
         response.handled(true); // exit chain
+    }
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static RequestInspectorHandler create(final HttpServerConfig config) {
+        return new RequestInspectorHandler(config);
     }
 
 

@@ -706,6 +706,35 @@ public abstract class CollectionUtils {
         return new HashMap<String, Object>();
     }
 
+    public static Map<String, Object> toMap(final String queryString) {
+        final Map<String, Object> result = new HashMap<>();
+        final String[] tokens = StringUtils.split(queryString, "&", true);
+        if(tokens.length>0){
+            for(final String token:tokens){
+                final String[] key_pair = StringUtils.split(token, "=", true);
+                if(key_pair.length==2){
+                    final String key = key_pair[0];
+                    final String value = key_pair[1];
+                    if(result.containsKey(key)){
+                        final Object prev_val = result.get(key);
+                        if(prev_val instanceof List){
+                            final List list = (List)prev_val;
+                            list.add(value);
+                        } else {
+                            final List<String> list = new ArrayList<>();
+                            list.add(prev_val.toString());
+                            list.add(value);
+                            result.put(key, list);
+                        }
+                    } else {
+                        result.put(key, value);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     @SuppressWarnings("unchecked")
     public static Map<String, Object> toMap(final String[] tokens) {
         final Map<String, Object> result = new LinkedHashMap<String, Object>();
@@ -755,6 +784,8 @@ public abstract class CollectionUtils {
         }
         return result;
     }
+
+
 
     public static Object[] subtract(final Object[] valuestoremove,
                                     final Object[] targetarray) {
