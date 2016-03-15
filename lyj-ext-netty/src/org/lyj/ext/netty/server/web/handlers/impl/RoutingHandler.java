@@ -44,6 +44,11 @@ public class RoutingHandler
     // ------------------------------------------------------------------------
 
     @Override
+    public IRoute all(final String path) {
+        return _router.all(path);
+    }
+
+    @Override
     public IRoute get(final String path) {
         return _router.get(path);
     }
@@ -70,7 +75,6 @@ public class RoutingHandler
     public static RoutingHandler create(final HttpServerConfig config) {
         return new RoutingHandler(config);
     }
-
 
 
 }

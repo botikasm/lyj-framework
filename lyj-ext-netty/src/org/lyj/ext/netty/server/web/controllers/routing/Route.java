@@ -68,7 +68,7 @@ public class Route
 
     public RouteParsedPath match(final String method,
                          final String path) {
-        if (_methods.contains(method)) {
+        if (_methods.contains(method) || _methods.contains("*")) {
             return _url.parse(path);
         }
         return null;

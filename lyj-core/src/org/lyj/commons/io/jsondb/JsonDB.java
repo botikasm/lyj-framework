@@ -74,6 +74,10 @@ public class JsonDB {
         _syncObj = new Object();
     }
 
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+
     public JsonDB open(final String name) {
         if (!_open) {
             try {
@@ -89,10 +93,12 @@ public class JsonDB {
         return this;
     }
 
-    public void close() {
+    public JsonDB close() {
         _file_metadata = null;
         _matadata = null;
         _open = false;
+
+        return this;
     }
 
     public boolean isOpen() {
@@ -195,6 +201,14 @@ public class JsonDB {
             return false;
         }
         return true;
+    }
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static JsonDB create(final String root) {
+        return new JsonDB(root);
     }
 
 }

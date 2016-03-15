@@ -231,6 +231,7 @@ public class NetworkUtils {
             final InetAddress address = InetAddress.getByName(host);
             return address.isReachable(timeout);
         } catch (Throwable ignored) {
+            // System.out.println(ignored);
         }
         return false;
     }

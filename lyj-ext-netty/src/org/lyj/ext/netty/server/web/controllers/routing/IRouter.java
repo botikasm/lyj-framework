@@ -12,4 +12,11 @@ public interface IRouter {
     IRoute delete (final String path);
     IRoute put(final String path);
 
+    /**
+     * All methods
+     * @param path
+     * @return
+     */
+    IRoute all(final String path);
+
 }

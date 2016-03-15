@@ -1,6 +1,7 @@
-package org.lyj.desktopgap.app.http;
+package org.lyj.desktopgap.app.server;
 
 import org.lyj.Lyj;
+import org.lyj.desktopgap.app.server.api.ApiRouter;
 import org.lyj.desktopgap.deploy.htdocs.HtdocsDeployer;
 import org.lyj.ext.netty.server.web.HttpServer;
 import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
@@ -17,7 +18,7 @@ public class WebServer
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final RoutingHandler _router;
+    private final RoutingHandler _router; // exposed router
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -29,6 +30,7 @@ public class WebServer
         _router = RoutingHandler.create(super.config());
 
         // #1 - add router as first handler
+        super.handler(ApiRouter.create(super.config()));
         super.handler(_router);
 
         // #2 - add basic http resource server (serve text and images)

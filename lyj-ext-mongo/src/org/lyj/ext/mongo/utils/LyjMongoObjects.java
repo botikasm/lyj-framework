@@ -190,8 +190,8 @@ public class LyjMongoObjects {
             if (null == value || !(value instanceof List)) {
                 if (addIfNone) {
                     final List<String> list = new ArrayList<>();
-                    if(value instanceof String){
-                        list.add((String)value);
+                    if (value instanceof String) {
+                        list.add((String) value);
                     }
                     document.put(key, list);
                     return (List<String>) document.get(key);
@@ -214,11 +214,16 @@ public class LyjMongoObjects {
     public static Document getDocument(final Document document, final String key,
                                        final boolean addIfNone) {
         final Object result = document.get(key);
-        if(null==result && addIfNone) {
+        if (null == result && addIfNone) {
             document.put(key, new Document());
             return (Document) document.get(key);
         } else {
-            return result instanceof Bson ? (Document) result : null;
+            if (result instanceof String && StringUtils.isJSONObject(result)) {
+                return Document.parse((String)result);
+            } else if (result instanceof Bson) {
+                return (Document) result;
+            }
+            return null;
         }
     }
 
@@ -315,6 +320,6 @@ public class LyjMongoObjects {
     }
 
     public static Bson notNull(final Bson bson) {
-        return null==bson?new Document():bson;
+        return null == bson ? new Document() : bson;
     }
 }

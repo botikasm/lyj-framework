@@ -4,6 +4,7 @@ import javafx.stage.Stage;
 import org.lyj.Lyj;
 import org.lyj.commons.event.bus.MessageBus;
 import org.lyj.desktopgap.app.Application;
+import org.lyj.desktopgap.app.client.out.DesktopGapDeployer;
 import org.lyj.desktopgap.deploy.assets.AssetsDeployer;
 import org.lyj.desktopgap.deploy.config.ConfigurationDeployer;
 import org.lyj.desktopgap.deploy.htdocs.HtdocsDeployer;
@@ -42,7 +43,7 @@ public class AppLauncher
         Lyj.registerDeployer(new ConfigurationDeployer(Lyj.isSilent()));
         Lyj.registerDeployer(new HtdocsDeployer(Lyj.isSilent()));
         Lyj.registerDeployer(new AssetsDeployer(Lyj.isSilent()));
-
+        Lyj.registerDeployer(new DesktopGapDeployer(Lyj.isSilent()));
     }
 
     @Override

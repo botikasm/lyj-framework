@@ -32,6 +32,11 @@ public class Router
     // ------------------------------------------------------------------------
 
     @Override
+    public IRoute all(final String path) {
+        return this.addRoute(path, "*");
+    }
+
+    @Override
     public IRoute get(final String path) {
         return this.addRoute(path, IHttpConstants.METHOD_GET);
     }

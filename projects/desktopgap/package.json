@@ -1,0 +1,16 @@
+{
+  "name": "desktopgap",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./scr/org/lyj/desktopgap/app/client/src/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/org/lyj/desktopgap/app/client/src/index.js -o src/org/lyj/desktopgap/app/client/out/desktopgap.js",
+    "watch": "watchify browser.js -o static/bundle.js --debug --verbose"
+  },
+  "author": "Gian Angelo Geminiani",
+  "license": "ISC"
+}

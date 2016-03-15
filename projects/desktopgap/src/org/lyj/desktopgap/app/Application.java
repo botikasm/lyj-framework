@@ -1,6 +1,8 @@
 package org.lyj.desktopgap.app;
 
-import org.lyj.desktopgap.app.http.WebServer;
+import org.lyj.desktopgap.app.bus.GlobalMessageListener;
+import org.lyj.desktopgap.app.scheduledtask.ScheduledConnectionMonitor;
+import org.lyj.desktopgap.app.server.WebServer;
 
 /**
  * Main Application Controller
@@ -18,8 +20,14 @@ public class Application {
     // ------------------------------------------------------------------------
 
     private Application() {
+        // internal web server
         _web_server = new WebServer();
 
+        // global listener
+        GlobalMessageListener.init();
+
+        // start tasks
+        ScheduledConnectionMonitor.start();
     }
 
     // ------------------------------------------------------------------------
@@ -32,6 +40,10 @@ public class Application {
 
     public void stop() {
         _web_server.stop();
+
+        GlobalMessageListener.instance().stop();
+
+        ScheduledConnectionMonitor.stop();
     }
 
     public String httDocsPath(final String path) {

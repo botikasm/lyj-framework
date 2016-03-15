@@ -69,9 +69,7 @@ public class RoutingContext implements IHttpConstants {
     }
 
 
-
-
-    public void write(final String content){
+    public void write(final String content) {
         this.write(content, "");
     }
 
@@ -84,37 +82,38 @@ public class RoutingContext implements IHttpConstants {
         _response.flush();
     }
 
-    public void writeInternalServerError(final Throwable t){
+    public void writeInternalServerError(final Throwable t) {
         _response.writeErrorINTERNAL_SERVER_ERROR(t);
     }
 
-    public void writeInternalServerError(){
+    public void writeInternalServerError() {
         _response.writeErrorINTERNAL_SERVER_ERROR();
     }
 
-    public void writeJson(final String content){
+    public void writeJson(final Object content) {
+        final String json = validateJson(content);
         _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_JSON);
-        _response.headers().put(CONTENT_LENGTH, content.length() + "");
-        _response.write(validateJson(content));
+        _response.headers().put(CONTENT_LENGTH, json.length() + "");
+        _response.write(json);
         _response.flush();
     }
 
-    public void writeJsonError(final String error){
+    public void writeJsonError(final String error) {
         this.writeJson(validateJsonError(error));
     }
 
-    public void writeJsonError(final Throwable error){
+    public void writeJsonError(final Throwable error) {
         this.writeJson(validateJsonError(error));
     }
 
-    public void writeHtml(final String content){
+    public void writeHtml(final String content) {
         _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_HTML);
         _response.headers().put(CONTENT_LENGTH, content.length() + "");
         _response.write(content);
         _response.flush();
     }
 
-    public void writeXml(final String content){
+    public void writeXml(final String content) {
         _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_XML);
         _response.headers().put(CONTENT_LENGTH, content.length() + "");
         _response.write(content);
@@ -137,22 +136,22 @@ public class RoutingContext implements IHttpConstants {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private static String validateJson(final String text){
-        if(StringUtils.isJSON(text)){
-            return text;
+    private static String validateJson(final Object text) {
+        if (StringUtils.isJSON(text)) {
+            return text.toString();
         } else {
             final JSONObject json = new JSONObject();
-            json.putOpt("response", text);
+            json.putOpt("response", null!=text?text.toString():"");
             return json.toString();
         }
     }
 
-    private static String validateJsonError(final Throwable t){
+    private static String validateJsonError(final Throwable t) {
         return validateJsonError(t.toString());
     }
 
-    private static String validateJsonError(final String text){
-        if(StringUtils.isJSON(text)){
+    private static String validateJsonError(final String text) {
+        if (StringUtils.isJSON(text)) {
             return text;
         } else {
             final JSONObject json = new JSONObject();

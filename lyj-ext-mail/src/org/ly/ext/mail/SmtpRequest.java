@@ -1,5 +1,6 @@
 package org.ly.ext.mail;
 
+import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -21,7 +22,8 @@ import java.util.*;
 /**
  * Email Sender helper
  */
-public class SmtpRequest {
+public class SmtpRequest
+        extends AbstractLogEmitter {
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
@@ -36,6 +38,7 @@ public class SmtpRequest {
     private String _user = null;
     private String _password = null;
     private boolean _TLS = false;
+    private boolean _SSL = false;
     private String _mailFormat = MimeTypeUtils.getMimeType(".txt");
     private boolean _debug = false;
     private final List<String> _addresses;
@@ -65,16 +68,6 @@ public class SmtpRequest {
     }
 
 
-
-    public void run() throws Exception {
-        try {
-            this.sendMail();
-        } catch (Exception e) {
-            _exception = new Exception(ExceptionUtils.getRealMessage(e), e);
-            throw _exception;
-        }
-    }
-
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -89,116 +82,141 @@ public class SmtpRequest {
         return _TLS;
     }
 
-    public void setTLS(boolean TLS) {
+    public SmtpRequest setTLS(boolean TLS) {
         this._TLS = TLS;
+        return this;
+    }
+
+    public boolean isSSL() {
+        return _SSL;
+    }
+
+    public SmtpRequest setSSL(boolean value) {
+        this._SSL = value;
+        return this;
     }
 
     public boolean isDebug() {
         return _debug;
     }
 
-    public void setDebug(boolean debug) {
+    public SmtpRequest setDebug(boolean debug) {
         this._debug = debug;
+        return this;
     }
 
     public String getSmtpHost() {
         return _smtpHost;
     }
 
-    public void setSmtpHost(String value) {
+    public SmtpRequest setSmtpHost(String value) {
         _smtpHost = value;
+        return this;
     }
 
     public int getSmtpPort() {
         return _smtpPort;
     }
 
-    public void setSmtpPort(int value) {
+    public SmtpRequest setSmtpPort(int value) {
         _smtpPort = value;
+        return this;
     }
 
     public String getFrom() {
         return _from;
     }
 
-    public void setFrom(String value) {
+    public SmtpRequest setFrom(String value) {
         _from = this.checkAddress(value);
+        return this;
     }
 
     public String getTo() {
         return _to;
     }
 
-    public void setTo(String value) {
+    public SmtpRequest setTo(String value) {
         _to = this.checkAddress(value);
+        return this;
     }
 
     public String getSubject() {
         return _subject;
     }
 
-    public void setSubject(String value) {
+    public SmtpRequest setSubject(String value) {
         _subject = value;
+        return this;
     }
 
     public String getMessage() {
         return _message;
     }
 
-    public void setMessage(String value) {
+    public SmtpRequest setMessage(String value) {
         _message = value;
+        return this;
     }
 
     public String getUser() {
         return _user;
     }
 
-    public void setUser(String value) {
+    public SmtpRequest setUser(String value) {
         _user = value;
+        return this;
     }
 
     public String getPassword() {
         return _password;
     }
 
-    public void setPassword(String value) {
+    public SmtpRequest setPassword(String value) {
         _password = value;
+        return this;
     }
 
     public String getMailFormat() {
         return _mailFormat;
     }
 
-    public void setMailFormat(final String value) {
+    public SmtpRequest setMailFormat(final String value) {
         _mailFormat = value;
+        return this;
     }
 
-    public void addAddress(final String address) {
+    public SmtpRequest addAddress(final String address) {
         this.addAddresses(StringUtils.split(address, new String[]{";", ","}));
+        return this;
     }
 
-    public void addAddresses(String[] addresses) {
+    public SmtpRequest addAddresses(final String[] addresses) {
         for (final String address : addresses) {
             if (null != address && address.length() > 0) {
                 _addresses.add(checkAddress(address));
             }
         }
+        return this;
     }
 
     public String[] getAddresses() {
         return _addresses.toArray(new String[_addresses.size()]);
     }
 
-    public void clearAddresses() {
+    public SmtpRequest clearAddresses() {
         _addresses.clear();
+        return this;
     }
 
-    public void addFileAttachment(final String path) {
+    public SmtpRequest addFileAttachment(final String path) {
         _fileAttachments.add(new File(path));
+        return this;
     }
 
-    public void addFileAttachment(final File file) {
+    public SmtpRequest addFileAttachment(final File file) {
         _fileAttachments.add(file);
+        return this;
     }
 
     /**
@@ -210,11 +228,12 @@ public class SmtpRequest {
      * @param name   Name
      * @param stream InputStream
      */
-    public void addStreamAttachment(final String name, final InputStream stream) {
+    public SmtpRequest addStreamAttachment(final String name, final InputStream stream) {
         try {
             _streamAttachments.put(name, stream);
         } catch (Throwable ignored) {
         }
+        return this;
     }
 
     //--  m e t h o d s  --//
@@ -228,21 +247,12 @@ public class SmtpRequest {
             }
 
             // Create a mail session
-            final Properties props = new Properties();
-            props.put("mail.smtps.host", _smtpHost);
-            props.put("mail.smtps.port", "" + _smtpPort);
-            //props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.startssl.enable", "true");
-            props.put("mail.smtp.ssl.protocols", "SSLv3 TLSv1");
-            props.put("mail.smtps.auth", "true");
-            // close connection upon quit being sent
-            props.put("mail.smtps.quitwait", "false");
-
-
+            final Properties props = this.getProperties();
             final Authenticator auth = new SMTPAuthenticator(_user, _password);
             final Session session = Session.getInstance(props, auth);
             session.setDebug(isDebug());
-            final Transport transport = session.getTransport("smtps");
+
+            final Transport transport = session.getTransport("smtp");
             try {
                 transport.connect();
                 int count = _addresses.size();
@@ -251,10 +261,11 @@ public class SmtpRequest {
                     final InternetAddress[] addressTo = new InternetAddress[1];
                     addressTo[0] = new InternetAddress(mailAddress);
                     final InternetAddress addressFrom = new InternetAddress(_from);
+
                     // Construct the message
                     final Message msg = new MimeMessage(session);
                     msg.setSentDate(new Date());
-                    msg.setDescription("this is a smartly message");
+                    msg.setDescription("this is a lyj message");
                     msg.setFrom(addressFrom);
                     msg.setReplyTo(new InternetAddress[]{addressFrom});
                     msg.setRecipients(Message.RecipientType.TO, addressTo);
@@ -267,13 +278,13 @@ public class SmtpRequest {
                     msg.setContent(mp);
 
                     // Send the message
-                    transport.sendMessage(msg,msg.getAllRecipients());
+                    transport.sendMessage(msg, msg.getAllRecipients());
                 }
                 return true;
             } finally {
                 try {
                     transport.close();
-                } catch (MessagingException ex) {
+                } catch (Throwable ignored) {
                 }
             }
         } catch (Throwable t) {
@@ -282,7 +293,7 @@ public class SmtpRequest {
                     t.getClass().getSimpleName(),
                     ExceptionUtils.getRealMessage(t));
             _exception = new Exception(msg, t);
-            LoggingUtils.getLogger(this).severe(msg);
+            super.error("sendMail", msg);
         }
         return false;
     }
@@ -290,6 +301,34 @@ public class SmtpRequest {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private Properties getProperties(){
+        final Properties props = new Properties();
+
+        props.put("mail.smtp.host", _smtpHost);
+        props.put("mail.smtp.port", "" + _smtpPort);
+
+        if(_TLS){
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.startssl.enable", "true");
+            props.put("mail.smtp.ssl.protocols", "SSLv3 TLSv1");
+        }
+        if(_SSL){
+            props.put("mail.smtp.startssl.enable", "true");
+            props.put("mail.smtp.ssl.protocols", "SSLv3 TLSv1");
+
+            props.put("mail.smtp.socketFactory.port", "" + _smtpPort);
+            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        }
+        if(StringUtils.hasText(_user)){
+            props.put("mail.smtp.auth", "true");
+        }
+
+        // close connection upon quit being sent
+        props.put("mail.smtp.quitwait", "false");
+
+        return props;
+    }
 
     private Multipart getMailMultiPart() throws MessagingException {
         // simple body
