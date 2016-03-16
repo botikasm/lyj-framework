@@ -1,29 +1,24 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+lyj is a Java 8 library created to build both client side and server side applications.
 
-### What is this repository for? ###
+### Why lyj ###
 
 * Quick summary
 * Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* [Support](https://plus.google.com/u/0/+GianAngeloGeminiani)
 
-### How do I get set up? ###
+#### Quick Summary ####
+lyj is a light-weight java library (lyj-core) with some extensions and modules (projects).
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+Most important project is DesktopGap, that allow java developers to write awesome applications with an HTML gui.
 
-### Contribution guidelines ###
+lyj-ext-netty is a very light-weight web server (complete of routing) integrated in DesktopGap.
 
-* Writing tests
-* Code review
-* Other guidelines
+#### Current Version ####
+Current version is BETA 0.1.2
 
-### Who do I talk to? ###
+We are not ready for production and have a lack of documentation.
 
-* Repo owner or admin
-* Other community or team contact
+If you want contribute to libraries or documentation, you are welcome ([Write Me](https://plus.google.com/u/0/+GianAngeloGeminiani))
+
