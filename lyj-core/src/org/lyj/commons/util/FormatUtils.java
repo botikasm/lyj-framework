@@ -28,7 +28,7 @@ import java.util.*;
 
 public class FormatUtils {
 
-    public static interface FormatHandler{
+    public static interface FormatHandler {
         Object handle(final String placeholder);
     }
 
@@ -163,6 +163,12 @@ public class FormatUtils {
         return buf.toString();
     }
 
+    public static String formatTemplate(final String text,
+                                        final String prefix, final String suffix,
+                                        final Map<String, ?> contextData) {
+        return formatTemplate(text, prefix, suffix, contextData, 3);
+    }
+
     /**
      * Resolve placeholders in the given text, replacing them with corresponding
      * contextData values.
@@ -172,46 +178,55 @@ public class FormatUtils {
      * @param suffix      The placeholder's suffix (i.e. '}')
      * @param contextData Data containig values. Context Data map keys to
      *                    values. Keys are String and Values are Objects
+     * @param loopCount   Number of loops
      * @return the resolved String
      */
     public static String formatTemplate(final String text,
                                         final String prefix, final String suffix,
-                                        final Map<String, ?> contextData) {
+                                        final Map<String, ?> contextData,
+                                        final int loopCount) {
         if (null == text) {
             return null;
         }
 
         final StringBuilder buf = new StringBuilder(text);
+        int count=0;
+        while(count<loopCount){
+            count++;
 
-        int startIndex = text.indexOf(prefix);
-        while (startIndex != -1) {
-            final int endIndex = buf.toString().indexOf(suffix, startIndex + prefix.length());
-            if (endIndex != -1) {
-                final String placeholder = buf.toString().substring(startIndex + prefix.length(), endIndex);
-                Object propVal;
-                if (contextData.containsKey(placeholder)) {
-                    if (!placeholder.contains(".")) {
-                        // simple property
-                        propVal = contextData.get(placeholder);
+            int startIndex = buf.indexOf(prefix);
+            while (startIndex != -1) {
+                final int endIndex = buf.toString().indexOf(suffix, startIndex + prefix.length());
+                if (endIndex != -1) {
+                    final String placeholder = buf.toString().substring(startIndex + prefix.length(), endIndex);
+                    Object propVal;
+                    if (contextData.containsKey(placeholder)) {
+                        if (!placeholder.contains(".")) {
+                            // simple property
+                            propVal = contextData.get(placeholder);
+                        } else {
+                            // navigate object
+                            propVal = BeanUtils.getValueIfAny(contextData, placeholder);
+                        }
+                        if (null == propVal) {
+                            propVal = "";
+                        }
                     } else {
-                        // navigate object
-                        propVal = BeanUtils.getValueIfAny(contextData, placeholder);
+                        propVal = null;
                     }
-                    if (null == propVal) {
-                        propVal = "";
+                    if (propVal != null) {
+                        buf.replace(startIndex, endIndex + suffix.length(), propVal.toString());
+                        startIndex = buf.toString().indexOf(prefix, startIndex + propVal.toString().length());
+                    } else {
+                        // Could not resolve placeholder
+                        startIndex = buf.toString().indexOf(prefix, endIndex + suffix.length());
                     }
                 } else {
-                    propVal = null;
+                    startIndex = -1;
                 }
-                if (propVal != null) {
-                    buf.replace(startIndex, endIndex + suffix.length(), propVal.toString());
-                    startIndex = buf.toString().indexOf(prefix, startIndex + propVal.toString().length());
-                } else {
-                    // Could not resolve placeholder
-                    startIndex = buf.toString().indexOf(prefix, endIndex + suffix.length());
-                }
-            } else {
-                startIndex = -1;
+            }
+            if(!buf.toString().contains(prefix)){
+                break;
             }
         }
 
@@ -221,7 +236,7 @@ public class FormatUtils {
     public static String formatTemplate(final String text,
                                         final String prefix, final String suffix,
                                         final FormatHandler handler) {
-        if (null == text || null==handler) {
+        if (null == text || null == handler) {
             return null;
         }
 
@@ -247,7 +262,6 @@ public class FormatUtils {
 
         return buf.toString();
     }
-
 
 
     /**
@@ -640,7 +654,6 @@ public class FormatUtils {
         d = StringUtils.fillString(d, "0", 4);
         return "#,##0.".concat(d).concat(";(#,##0.").concat(d).concat(")");
     }
-
 
 
 }

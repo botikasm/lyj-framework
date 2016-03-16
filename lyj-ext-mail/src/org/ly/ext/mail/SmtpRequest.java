@@ -1,7 +1,6 @@
 package org.ly.ext.mail;
 
 import org.lyj.commons.logging.AbstractLogEmitter;
-import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.MimeTypeUtils;
@@ -25,25 +24,70 @@ import java.util.*;
 public class SmtpRequest
         extends AbstractLogEmitter {
 
+    private static final String MIME_TEXT = MimeTypeUtils.MIME_PLAINTEXT;
+    private static final String MIME_HTML = MimeTypeUtils.MIME_HTML;
+
+
+
+    /**
+     * The primary subtype for multipart, "mixed", is intended for use when the body parts are independent and intended
+     * to be displayed serially. Any multipart subtypes that an implementation does not recognize should be
+     * treated as being of subtype "mixed".
+     */
+    private static final String SUBTYPE_MIXED = "mixed";
+
+    /**
+     * The multipart/alternative type is syntactically identical to multipart/mixed, but the semantics are different.
+     * In particular, each of the parts is an "alternative" version of the same information.
+     * User agents should recognize that the content of the various parts are interchangeable.
+     * The user agent should either choose the "best" type based on the user's environment and preferences,
+     * or offer the user the available alternatives. In general, choosing the best type means displaying only
+     * the LAST part that can be displayed. This may be used, for example, to send mail in a fancy text format
+     * in such a way that it can easily be displayed anywhere
+     */
+    private static final String SUBTYPE_ALTERNATIVE = "alternative";
+
+    /**
+     * This document defines a "digest" subtype of the multipart Content-Type. This type is syntactically identical
+     * to multipart/mixed, but the semantics are different.
+     * In particular, in a digest, the default Content-Type value for a body part is changed from "text/plain" to
+     * "message/rfc822". This is done to allow a more readable digest format that is largely compatible
+     * (except for the quoting convention) with RFC 934
+     */
+    private static final String SUBTYPE_DIGEST = "digest";
+
+
+    /**
+     *This document defines a "parallel" subtype of the multipart Content-Type. This type is syntactically identical
+     * to multipart/mixed, but the semantics are different. In particular, in a parallel entity, all of the parts
+     * are intended to be presented in parallel, i.e., simultaneously, on hardware and software that are capable of
+     * doing so. Composing agents should be aware that many mail readers will lack this capability and will show
+     * the parts serially in any event.
+     */
+    private static final String SUBTYPE_PARALLEL = "parallel";
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private String _smtpHost;
-    private int _smtpPort = 25;
-    private String _from;
-    private String _to;
-    private String _subject;
-    private String _message;
+    private String _host;
+    private int _port = 25;
     private String _user = null;
     private String _password = null;
     private boolean _TLS = false;
     private boolean _SSL = false;
-    private String _mailFormat = MimeTypeUtils.getMimeType(".txt");
     private boolean _debug = false;
+
+    private String _from;
+    private String _to;
+    private String _subject;
+    private String _message_txt;
+    private String _message_html;
+
     private final List<String> _addresses;
     private final List<File> _fileAttachments;
     private final Map<String, InputStream> _streamAttachments;
+
     private Exception _exception;
 
     // ------------------------------------------------------------------------
@@ -74,124 +118,124 @@ public class SmtpRequest
 
     //--  p r o p e r t i e s  --//
 
-    public Exception getException() {
+    public Exception exception() {
         return _exception;
     }
 
-    public boolean isTLS() {
+    public boolean tls() {
         return _TLS;
     }
 
-    public SmtpRequest setTLS(boolean TLS) {
+    public SmtpRequest tls(boolean TLS) {
         this._TLS = TLS;
         return this;
     }
 
-    public boolean isSSL() {
+    public boolean ssl() {
         return _SSL;
     }
 
-    public SmtpRequest setSSL(boolean value) {
+    public SmtpRequest ssl(boolean value) {
         this._SSL = value;
         return this;
     }
 
-    public boolean isDebug() {
+    public boolean debug() {
         return _debug;
     }
 
-    public SmtpRequest setDebug(boolean debug) {
+    public SmtpRequest debug(boolean debug) {
         this._debug = debug;
         return this;
     }
 
-    public String getSmtpHost() {
-        return _smtpHost;
+    public String host() {
+        return _host;
     }
 
-    public SmtpRequest setSmtpHost(String value) {
-        _smtpHost = value;
+    public SmtpRequest host(String value) {
+        _host = value;
         return this;
     }
 
-    public int getSmtpPort() {
-        return _smtpPort;
+    public int port() {
+        return _port;
     }
 
-    public SmtpRequest setSmtpPort(int value) {
-        _smtpPort = value;
+    public SmtpRequest port(int value) {
+        _port = value;
         return this;
     }
 
-    public String getFrom() {
+    public String from() {
         return _from;
     }
 
-    public SmtpRequest setFrom(String value) {
+    public SmtpRequest from(String value) {
         _from = this.checkAddress(value);
         return this;
     }
 
-    public String getTo() {
+    public String to() {
         return _to;
     }
 
-    public SmtpRequest setTo(String value) {
+    public SmtpRequest to(String value) {
         _to = this.checkAddress(value);
         return this;
     }
 
-    public String getSubject() {
+    public String subject() {
         return _subject;
     }
 
-    public SmtpRequest setSubject(String value) {
+    public SmtpRequest subject(String value) {
         _subject = value;
         return this;
     }
 
-    public String getMessage() {
-        return _message;
+    public String bodyText() {
+        return _message_txt;
     }
 
-    public SmtpRequest setMessage(String value) {
-        _message = value;
+    public SmtpRequest bodyText(String value) {
+        _message_txt = value;
         return this;
     }
 
-    public String getUser() {
+    public String bodyHtml() {
+        return _message_html;
+    }
+
+    public SmtpRequest bodyHtml(String value) {
+        _message_html = value;
+        return this;
+    }
+
+    public String user() {
         return _user;
     }
 
-    public SmtpRequest setUser(String value) {
+    public SmtpRequest user(String value) {
         _user = value;
         return this;
     }
 
-    public String getPassword() {
+    public String password() {
         return _password;
     }
 
-    public SmtpRequest setPassword(String value) {
+    public SmtpRequest password(String value) {
         _password = value;
         return this;
     }
 
-    public String getMailFormat() {
-        return _mailFormat;
-    }
-
-    public SmtpRequest setMailFormat(final String value) {
-        _mailFormat = value;
+    public SmtpRequest address(final String address) {
+        this.addresses(StringUtils.split(address, new String[]{";", ","}));
         return this;
     }
 
-    public SmtpRequest addAddress(final String address) {
-        this.addAddresses(StringUtils.split(address, new String[]{";", ","}));
-        return this;
-    }
-
-    public SmtpRequest addAddresses(final String[] addresses) {
+    public SmtpRequest addresses(final String[] addresses) {
         for (final String address : addresses) {
             if (null != address && address.length() > 0) {
                 _addresses.add(checkAddress(address));
@@ -200,7 +244,7 @@ public class SmtpRequest
         return this;
     }
 
-    public String[] getAddresses() {
+    public String[] addresses() {
         return _addresses.toArray(new String[_addresses.size()]);
     }
 
@@ -209,12 +253,12 @@ public class SmtpRequest
         return this;
     }
 
-    public SmtpRequest addFileAttachment(final String path) {
+    public SmtpRequest attachment(final String path) {
         _fileAttachments.add(new File(path));
         return this;
     }
 
-    public SmtpRequest addFileAttachment(final File file) {
+    public SmtpRequest attachment(final File file) {
         _fileAttachments.add(file);
         return this;
     }
@@ -228,7 +272,7 @@ public class SmtpRequest
      * @param name   Name
      * @param stream InputStream
      */
-    public SmtpRequest addStreamAttachment(final String name, final InputStream stream) {
+    public SmtpRequest attachment(final String name, final InputStream stream) {
         try {
             _streamAttachments.put(name, stream);
         } catch (Throwable ignored) {
@@ -238,19 +282,19 @@ public class SmtpRequest
 
     //--  m e t h o d s  --//
 
-    public boolean sendMail() {
+    public boolean send() {
         try {
             // create addresses
             if (null != _to && _to.length() > 0) {
                 final String[] addresses = _to.split(";");
-                this.addAddresses(addresses);
+                this.addresses(addresses);
             }
 
             // Create a mail session
             final Properties props = this.getProperties();
             final Authenticator auth = new SMTPAuthenticator(_user, _password);
             final Session session = Session.getInstance(props, auth);
-            session.setDebug(isDebug());
+            session.setDebug(debug());
 
             final Transport transport = session.getTransport("smtp");
             try {
@@ -263,22 +307,21 @@ public class SmtpRequest
                     final InternetAddress addressFrom = new InternetAddress(_from);
 
                     // Construct the message
-                    final Message msg = new MimeMessage(session);
-                    msg.setSentDate(new Date());
-                    msg.setDescription("this is a lyj message");
-                    msg.setFrom(addressFrom);
-                    msg.setReplyTo(new InternetAddress[]{addressFrom});
-                    msg.setRecipients(Message.RecipientType.TO, addressTo);
+                    final Message message = new MimeMessage(session);
+                    message.setSentDate(new Date());
+                    message.setDescription("this is a lyj message");
+                    message.setFrom(addressFrom);
+                    message.setReplyTo(new InternetAddress[]{addressFrom});
+                    message.setRecipients(Message.RecipientType.TO, addressTo);
 
-                    msg.setSubject(_subject);
+                    message.setSubject(_subject);
 
                     //msg.setContent(_message, _mailFormat.toString());
                     final Multipart mp = this.getMailMultiPart();
-
-                    msg.setContent(mp);
+                    message.setContent(mp);
 
                     // Send the message
-                    transport.sendMessage(msg, msg.getAllRecipients());
+                    transport.sendMessage(message, message.getAllRecipients());
                 }
                 return true;
             } finally {
@@ -302,25 +345,25 @@ public class SmtpRequest
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private Properties getProperties(){
+    private Properties getProperties() {
         final Properties props = new Properties();
 
-        props.put("mail.smtp.host", _smtpHost);
-        props.put("mail.smtp.port", "" + _smtpPort);
+        props.put("mail.smtp.host", _host);
+        props.put("mail.smtp.port", "" + _port);
 
-        if(_TLS){
+        if (_TLS) {
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.startssl.enable", "true");
             props.put("mail.smtp.ssl.protocols", "SSLv3 TLSv1");
         }
-        if(_SSL){
+        if (_SSL) {
             props.put("mail.smtp.startssl.enable", "true");
             props.put("mail.smtp.ssl.protocols", "SSLv3 TLSv1");
 
-            props.put("mail.smtp.socketFactory.port", "" + _smtpPort);
+            props.put("mail.smtp.socketFactory.port", "" + _port);
             props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         }
-        if(StringUtils.hasText(_user)){
+        if (StringUtils.hasText(_user)) {
             props.put("mail.smtp.auth", "true");
         }
 
@@ -331,23 +374,29 @@ public class SmtpRequest
     }
 
     private Multipart getMailMultiPart() throws MessagingException {
-        // simple body
-        final MimeBodyPart body = new MimeBodyPart();
-        body.setContent(_message, _mailFormat);
-        //msg.setContent(_message, _mailFormat.toString());
+        final Multipart multipart = new MimeMultipart(SUBTYPE_ALTERNATIVE);
+
+        // add multipart message: order is important, first must be text
+        if (StringUtils.hasText(_message_txt)) {
+            final MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(_message_txt, MIME_TEXT);//"utf-8"
+            multipart.addBodyPart(textPart);
+        }
+
+        if (StringUtils.hasText(_message_html)) {
+            final MimeBodyPart htmlPart = new MimeBodyPart();
+            htmlPart.setContent(_message_html, MIME_HTML);//"text/html; charset=utf-8"
+            multipart.addBodyPart(htmlPart);
+        }
 
         // attachments
         final MimeBodyPart[] attachments = this.getAttachments();
-
-        final Multipart result = new MimeMultipart();
-        // add body
-        result.addBodyPart(body);
         // add attachments
         for (MimeBodyPart part : attachments) {
-            result.addBodyPart(part);
+            multipart.addBodyPart(part);
         }
 
-        return result;
+        return multipart;
     }
 
     private MimeBodyPart[] getAttachments() throws MessagingException {
@@ -372,7 +421,7 @@ public class SmtpRequest
                 final MimeBodyPart body = new MimeBodyPart();
                 body.setDataHandler(dh);
                 result.add(body);
-            } catch (Throwable t) {
+            } catch (Throwable ignored) {
             }
         }
 
