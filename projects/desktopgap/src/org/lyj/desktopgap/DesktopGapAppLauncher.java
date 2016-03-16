@@ -6,7 +6,7 @@ import org.lyj.commons.event.bus.MessageBus;
 import org.lyj.commons.util.ClassLoaderUtils;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.desktopgap.app.Application;
-import org.lyj.desktopgap.app.client.out.DesktopGapDeployer;
+import org.lyj.desktopgap.app.client.bin.DesktopGapDeployer;
 import org.lyj.desktopgap.deploy.assets.AssetsDeployer;
 import org.lyj.desktopgap.deploy.config.ConfigurationDeployer;
 import org.lyj.desktopgap.deploy.htdocs.HtdocsDeployer;
