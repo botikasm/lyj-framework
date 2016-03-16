@@ -3,6 +3,7 @@ package org.lyj.desktopgap.app;
 import org.lyj.desktopgap.app.bus.GlobalMessageListener;
 import org.lyj.desktopgap.app.scheduledtask.ScheduledConnectionMonitor;
 import org.lyj.desktopgap.app.server.WebServer;
+import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
 
 /**
  * Main Application Controller
@@ -52,6 +53,13 @@ public class Application {
 
     public String webUri(final String path) {
         return _web_server.uri(path);
+    }
+
+    public IRouter router() {
+        if (null != _web_server) {
+            return _web_server.router();
+        }
+        return null;
     }
 
     // ------------------------------------------------------------------------

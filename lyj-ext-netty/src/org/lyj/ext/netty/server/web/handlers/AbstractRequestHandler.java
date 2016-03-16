@@ -9,7 +9,8 @@ import org.lyj.ext.netty.server.web.HttpServerResponse;
 /**
  *
  */
-public abstract class AbstractRequestHandler extends AbstractLogEmitter {
+public abstract class AbstractRequestHandler
+        extends AbstractLogEmitter {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s

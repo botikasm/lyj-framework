@@ -33,6 +33,7 @@ public class ConfigurationDeployer extends FileDeployer {
     public ConfigurationDeployer(final boolean silent) {
         super("", Lyj.getConfigurationPath(),
                 silent, false, false, false);
+        super.setOverwrite(true);
     }
 
     // ------------------------------------------------------------------------

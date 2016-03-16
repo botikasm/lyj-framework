@@ -14,6 +14,7 @@ import org.lyj.gui.application.app.AbstractViewController;
 import org.lyj.gui.application.app.FxGuiApplication;
 import org.lyj.gui.application.app.utils.GuiObject;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -44,7 +45,15 @@ public class ComponentFactory
     // ------------------------------------------------------------------------
 
     public GuiObject root() throws IOException {
-        return loadFXML(_application.configuration().stage());
+        return loadFXMLFromPath(_application.configuration().stage());
+    }
+
+    public GuiObject guiFromPath(final String path) throws IOException {
+        return loadFXMLFromPath(path);
+    }
+
+    public GuiObject guiFromString(final String fxml) throws IOException {
+        return loadFXMLFromString(fxml);
     }
 
     public void addChild(final AbstractViewController container,
@@ -57,7 +66,7 @@ public class ComponentFactory
     public void addChild(final AbstractViewController master,
                          final Parent container,
                          final String childPath) throws IOException {
-        if (null!=master && null != container) {
+        if (null != master && null != container) {
             final GuiObject gui = this.loadFXML(null, childPath);
             if (gui.hasController()) {
                 this.addChild(master, container, gui.controller());
@@ -84,7 +93,7 @@ public class ComponentFactory
     public void addChild(final AbstractViewController master,
                          final Parent container,
                          final Class<? extends AbstractViewController> childClass,
-                         final Object...args) throws IOException {
+                         final Object... args) throws IOException {
         this.addChild(master, container, this.create(childClass, args));
     }
 
@@ -153,33 +162,46 @@ public class ComponentFactory
         return _application.getClass().getResource(path);
     }
 
-    private GuiObject loadFXML(final String path) throws IOException {
+    private GuiObject loadFXMLFromPath(final String path) throws IOException {
         final FXMLLoader loader = new FXMLLoader();
         loader.setLocation(this.getResource(path));
+
         final Parent result = loader.load();
         final Object controller = loader.getController();
+        return getGuiObject(result, controller);
+    }
+
+    private GuiObject loadFXMLFromString(final String fxml) throws IOException {
+        final FXMLLoader loader = new FXMLLoader();
+        final Parent result = loader.load(new ByteArrayInputStream(fxml.getBytes()));
+        final Object controller = loader.getController();
+        return getGuiObject(result, controller);
+    }
+
+    private GuiObject getGuiObject(final Parent parent,
+                                   final Object controller) {
         if (controller instanceof AbstractViewController) {
             ((AbstractViewController) controller).setApplication(_application);
         }
-        return new GuiObject(result, controller);
+        return new GuiObject(parent, controller);
     }
 
     private AbstractViewController create(final Class<? extends AbstractViewController> aclass,
-                                          final Object...args){
-        try{
-            if(!CollectionUtils.isEmpty(args)) {
-                final Object[] params = args[0]instanceof FxGuiApplication
+                                          final Object... args) {
+        try {
+            if (!CollectionUtils.isEmpty(args)) {
+                final Object[] params = args[0] instanceof FxGuiApplication
                         ? args
                         : CollectionUtils.insertToArray(args, _application);
                 return (AbstractViewController) ClassLoaderUtils.newInstance(aclass, params);
             } else {
                 try {
                     return (AbstractViewController) ClassLoaderUtils.newInstance(aclass, new Object[]{_application});
-                }catch(NoSuchMethodException t){
+                } catch (NoSuchMethodException t) {
                     return aclass.getConstructor().newInstance();
                 }
             }
-        }catch(Throwable err){
+        } catch (Throwable err) {
             super.error("create", ExceptionUtils.getMessage(err));
         }
         return null;

@@ -11,6 +11,7 @@ import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.gui.application.app.components.ComponentFactory;
 import org.lyj.gui.application.app.utils.GuiObject;
 import org.lyj.gui.application.config.ConfigScene;
@@ -28,6 +29,7 @@ public abstract class FxGuiApplication
     // ------------------------------------------------------------------------
 
     private LyjLauncher _launcher;
+    private String _primary_stage_fxml;
     private Stage _primary_stage;
     private AbstractViewController _primary_controller;
     private ConfigScene _configuration;
@@ -41,6 +43,12 @@ public abstract class FxGuiApplication
     // ------------------------------------------------------------------------
 
     public FxGuiApplication(final DictionaryController dictionary) {
+        this("", dictionary);
+    }
+
+    public FxGuiApplication(final String primaryStageFXML,
+                            final DictionaryController dictionary) {
+        _primary_stage_fxml = primaryStageFXML;
         _i18n = dictionary;
         _logger = new AbstractLogEmitter(LoggingUtils.getLogger(this));
         _factory = new ComponentFactory(this);
@@ -150,8 +158,10 @@ public abstract class FxGuiApplication
     }
 
     private void initStage() throws IOException {
-        if (this.configuration().hasStage()) {
-            final GuiObject gui_root = this.factory().root();
+        if (this.configuration().hasStage() || StringUtils.hasText(_primary_stage_fxml)) {
+            final GuiObject gui_root = StringUtils.hasText(_primary_stage_fxml)
+                    ? this.factory().guiFromString(_primary_stage_fxml)
+                    : this.factory().root();
             final Scene scene = new Scene(gui_root.view(), this.configuration().width(), this.configuration().height());
             _primary_stage.setTitle(this.configuration().title());
             _primary_stage.setScene(scene);
@@ -163,6 +173,8 @@ public abstract class FxGuiApplication
                 _primary_stage.show();
             }
             _primary_controller = gui_root.controller();
+        } else {
+            logger().warning("initStage", "Missing a primary stage. This application has not a GUI.");
         }
     }
 

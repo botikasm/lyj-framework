@@ -1,5 +1,4 @@
 {
-  "stage":"app/view/web/web.fxml",
 
   "size" : {"width":800, "height":600},
   "title":"DesktopGap",

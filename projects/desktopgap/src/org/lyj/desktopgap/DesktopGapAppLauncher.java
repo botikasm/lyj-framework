@@ -3,18 +3,21 @@ package org.lyj.desktopgap;
 import javafx.stage.Stage;
 import org.lyj.Lyj;
 import org.lyj.commons.event.bus.MessageBus;
+import org.lyj.commons.util.ClassLoaderUtils;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.desktopgap.app.Application;
 import org.lyj.desktopgap.app.client.out.DesktopGapDeployer;
 import org.lyj.desktopgap.deploy.assets.AssetsDeployer;
 import org.lyj.desktopgap.deploy.config.ConfigurationDeployer;
 import org.lyj.desktopgap.deploy.htdocs.HtdocsDeployer;
 import org.lyj.desktopgap.i18n.Dictionary;
+import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
 import org.lyj.gui.application.app.FxGuiApplication;
 
 /**
  * Main server class.
  */
-public class AppLauncher
+public class DesktopGapAppLauncher
         extends FxGuiApplication {
 
     // ------------------------------------------------------------------------
@@ -28,8 +31,8 @@ public class AppLauncher
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public AppLauncher() {
-        super(Dictionary.getInstance());
+    public DesktopGapAppLauncher() {
+        super(stageFxml(), Dictionary.getInstance());
     }
 
     // ------------------------------------------------------------------------
@@ -43,6 +46,8 @@ public class AppLauncher
         Lyj.registerDeployer(new ConfigurationDeployer(Lyj.isSilent()));
         Lyj.registerDeployer(new HtdocsDeployer(Lyj.isSilent()));
         Lyj.registerDeployer(new AssetsDeployer(Lyj.isSilent()));
+
+        // deploy desktopgap framework
         Lyj.registerDeployer(new DesktopGapDeployer(Lyj.isSilent()));
     }
 
@@ -74,6 +79,12 @@ public class AppLauncher
         return _test_mode;
     }
 
+    public IRouter router() {
+        if (null != _application) {
+            return _application.router();
+        }
+        return null;
+    }
 
     // ------------------------------------------------------------------------
     //                      S T A T I C
@@ -81,6 +92,12 @@ public class AppLauncher
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private static String stageFxml() {
+        final String root = PathUtils.getParent(PathUtils.getClassPath(DesktopGapAppLauncher.class));
+        final String path = PathUtils.concat(root, "/app/view/web/web.fxml");
+        return ClassLoaderUtils.getResourceAsString(DesktopGapAppLauncher.class.getClassLoader(), path);
     }
 
 }

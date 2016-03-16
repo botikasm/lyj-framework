@@ -32,7 +32,8 @@ public class AssetsDeployer extends FileDeployer {
     // ------------------------------------------------------------------------
 
     public static final String PATH = "assets";
-
+    public static final String PATH_GIF = PATH.concat("/gif");
+    public static final String PATH_GIF_LOADERS = PATH_GIF.concat("/loaders");
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------

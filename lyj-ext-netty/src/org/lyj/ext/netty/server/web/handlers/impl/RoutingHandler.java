@@ -1,5 +1,6 @@
 package org.lyj.ext.netty.server.web.handlers.impl;
 
+import org.lyj.commons.util.FormatUtils;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
 import org.lyj.ext.netty.server.web.HttpServerRequest;
 import org.lyj.ext.netty.server.web.HttpServerResponse;
@@ -45,27 +46,40 @@ public class RoutingHandler
 
     @Override
     public IRoute all(final String path) {
+        this.log("ALL", path);
         return _router.all(path);
     }
 
     @Override
     public IRoute get(final String path) {
+        this.log("GET", path);
         return _router.get(path);
     }
 
     @Override
     public IRoute post(final String path) {
+        this.log("POST", path);
         return _router.post(path);
     }
 
     @Override
     public IRoute delete(String path) {
+        this.log("DELETE", path);
         return _router.delete(path);
     }
 
     @Override
     public IRoute put(String path) {
+        this.log("PUT", path);
         return _router.put(path);
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private void log(final String method, final String path){
+        super.logger().info(FormatUtils.format("Added Route Handler for method '%s': %s", method, path));
     }
 
     // ------------------------------------------------------------------------
