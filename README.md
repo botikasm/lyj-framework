@@ -11,9 +11,11 @@ lyj is a Java 8 library created to build both client side and server side applic
 #### Quick Summary ####
 lyj is a light-weight java library (lyj-core) with some extensions and modules (projects).
 
-Most important project is DesktopGap, that allow java developers to write awesome applications with an HTML gui.
+Most important project is [DesktopGap](https://bitbucket.org/angelogeminiani/lyj/src/827bc77cf709fbfa3e0ac62d96ec57768f8c5551/projects/desktopgap/?at=master), that allow java developers to write awesome applications with an HTML gui.
 
 lyj-ext-netty is a very light-weight web server (complete of routing) integrated in DesktopGap.
+
+Another interesting project is [Automator](https://bitbucket.org/angelogeminiani/lyj/src/827bc77cf709fbfa3e0ac62d96ec57768f8c5551/projects/automator/?at=master), a modular application built to create web server stress tools.
 
 #### Current Version ####
 Current version is BETA 0.1.2
