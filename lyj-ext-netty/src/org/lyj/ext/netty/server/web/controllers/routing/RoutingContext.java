@@ -14,7 +14,8 @@ import java.util.Map;
 /**
  * The routing context
  */
-public class RoutingContext implements IHttpConstants {
+public class RoutingContext
+        implements IHttpConstants {
 
 
     // ------------------------------------------------------------------------
@@ -66,18 +67,48 @@ public class RoutingContext implements IHttpConstants {
         return _params;
     }
 
+    public Map<String, String> headers() {
+        return _response.headers();
+    }
+
+    // ------------------------------------------------------------------------
+    //                      r e s p o n s e   h e a d e r s
+    // ------------------------------------------------------------------------
+
+    public void addHeader(final String name, final String value) {
+        _response.headers().put(name, value);
+    }
+
+    public void removeHeader(final String name) {
+        _response.headers().remove(name);
+    }
+
+    public boolean hasHeader(final String name) {
+        return _response.headers().containsKey(name);
+    }
+
+    public String getHeader(final String name) {
+        return _response.headers().get(name);
+    }
+
+    public void removeHeaderAccessControlAllowOrigin() {
+        this.removeHeader(ACCESS_CONTROL_ALLOW_ORIGIN);
+    }
+
+    public void addHeaderAccessControlAllowOriginAll() {
+        this.addHeaderAccessControlAllowOrigin("*");
+    }
+
+    public void addHeaderAccessControlAllowOrigin(final String value) {
+        this.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, value);
+    }
+
+    // ------------------------------------------------------------------------
+    //                      w r i t e    r e s p o n s e   c o n t e n t
+    // ------------------------------------------------------------------------
 
     public void write(final String content) {
         this.write(content, "");
-    }
-
-    public void write(final String content,
-                      final String content_type) {
-        _response.headers().put(CONTENT_TYPE,
-                StringUtils.hasText(content_type) ? content_type : MimeTypeUtils.MIME_PLAINTEXT);
-        _response.headers().put(CONTENT_LENGTH, content.length() + "");
-        _response.write(content);
-        _response.flush();
     }
 
     public void writeInternalServerError(final Throwable t) {
@@ -88,14 +119,6 @@ public class RoutingContext implements IHttpConstants {
         _response.writeErrorINTERNAL_SERVER_ERROR();
     }
 
-    public void writeJson(final Object content) {
-        final String json = validateJson(content);
-        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_JSON);
-        _response.headers().put(CONTENT_LENGTH, json.length() + "");
-        _response.write(json);
-        _response.flush();
-    }
-
     public void writeJsonError(final String error) {
         this.writeJson(validateJsonError(error));
     }
@@ -104,11 +127,37 @@ public class RoutingContext implements IHttpConstants {
         this.writeJson(validateJsonError(error));
     }
 
-    public void writeErroMissingParams(final String...names) {
+    public void writeErroMissingParams(final String... names) {
         this.writeJson(validateJsonError(new Exception("Bad Request, missing some parameters: " + CollectionUtils.toCommaDelimitedString(names))));
     }
 
+    public void write(final String content,
+                      final String content_type) {
+        if(StringUtils.hasText(_config.headerAccessControlAllowOrigin())){
+            _response.headers().put(ACCESS_CONTROL_ALLOW_ORIGIN, _config.headerAccessControlAllowOrigin());
+        }
+        _response.headers().put(CONTENT_TYPE,
+                StringUtils.hasText(content_type) ? content_type : MimeTypeUtils.MIME_PLAINTEXT);
+        _response.headers().put(CONTENT_LENGTH, content.length() + "");
+        _response.write(content);
+        _response.flush();
+    }
+
+    public void writeJson(final Object content) {
+        if(StringUtils.hasText(_config.headerAccessControlAllowOrigin())){
+            _response.headers().put(ACCESS_CONTROL_ALLOW_ORIGIN, _config.headerAccessControlAllowOrigin());
+        }
+        final String json = validateJson(content);
+        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_JSON);
+        _response.headers().put(CONTENT_LENGTH, json.length() + "");
+        _response.write(json);
+        _response.flush();
+    }
+
     public void writeHtml(final String content) {
+        if(StringUtils.hasText(_config.headerAccessControlAllowOrigin())){
+            _response.headers().put(ACCESS_CONTROL_ALLOW_ORIGIN, _config.headerAccessControlAllowOrigin());
+        }
         _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_HTML);
         _response.headers().put(CONTENT_LENGTH, content.length() + "");
         _response.write(content);
@@ -116,6 +165,9 @@ public class RoutingContext implements IHttpConstants {
     }
 
     public void writeXml(final String content) {
+        if(StringUtils.hasText(_config.headerAccessControlAllowOrigin())){
+            _response.headers().put(ACCESS_CONTROL_ALLOW_ORIGIN, _config.headerAccessControlAllowOrigin());
+        }
         _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_XML);
         _response.headers().put(CONTENT_LENGTH, content.length() + "");
         _response.write(content);
@@ -143,7 +195,7 @@ public class RoutingContext implements IHttpConstants {
             return text.toString();
         } else {
             final JSONObject json = new JSONObject();
-            json.putOpt("response", null!=text?text.toString():"");
+            json.putOpt("response", null != text ? text.toString() : "");
             return json.toString();
         }
     }

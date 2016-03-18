@@ -31,8 +31,8 @@ public class HttpServerConfig {
     private boolean _use_ssl;
     private boolean _use_compression;
     private int _cache_seconds;
+    private String _header_access_control_allow_origin; // for rest methods
     private final List<String> _index_files;
-
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -49,6 +49,8 @@ public class HttpServerConfig {
         _port_detection_try = 100; // try 100 times to get a free port
         _cache_seconds = 60;
         _host = "localhost";
+
+        _header_access_control_allow_origin = ""; // empty=none, "*"=all
 
         _index_files = Arrays.asList(INDEX_FILES);
     }
@@ -171,6 +173,21 @@ public class HttpServerConfig {
     public int cacheSeconds() {
         return _cache_seconds;
     }
+
+    /**
+     * Set "Access-Control-Allow-Origin" header for all response
+     * @param value If empty the header is not setted. "*" is for ALL
+     * @return
+     */
+    public HttpServerConfig headerAccessControlAllowOrigin(final String value){
+        _header_access_control_allow_origin = value;
+        return this;
+    }
+
+    public String headerAccessControlAllowOrigin(){
+        return _header_access_control_allow_origin;
+    }
+
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
