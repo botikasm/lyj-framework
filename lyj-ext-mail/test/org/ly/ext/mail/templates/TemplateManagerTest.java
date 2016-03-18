@@ -11,14 +11,14 @@ import static org.junit.Assert.*;
 /**
  * Created by angelogeminiani on 14/03/16.
  */
-public class EmailTemplateManagerTest {
+public class TemplateManagerTest {
 
     @Test
     public void testGetSubject() throws Exception {
 
         LocaleUtils.setCurrent(Locale.ENGLISH);
 
-        final EmailTemplateManager templates = new EmailTemplateManager();
+        final TemplateManager templates = new TemplateManager();
         final String subject_it = templates.getSubject("it", "sample");
         final String subject_en = templates.getSubject("en", "sample");
         final String subject_jp = templates.getSubject("jp", "sample");
@@ -33,7 +33,7 @@ public class EmailTemplateManagerTest {
 
     @Test
     public void testGetFile() throws Exception {
-        final EmailTemplateManager templates = new EmailTemplateManager();
+        final TemplateManager templates = new TemplateManager();
         final String file_it = templates.getHtml("it", "sample");
         final String file_en = templates.getText("en", "sample");
         assertTrue(StringUtils.hasText(file_it));

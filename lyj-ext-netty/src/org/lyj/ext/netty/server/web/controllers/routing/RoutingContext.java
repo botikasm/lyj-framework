@@ -1,12 +1,10 @@
 package org.lyj.ext.netty.server.web.controllers.routing;
 
 import org.json.JSONObject;
+import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.MimeTypeUtils;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.ext.netty.server.web.HttpServerConfig;
-import org.lyj.ext.netty.server.web.HttpServerRequest;
-import org.lyj.ext.netty.server.web.HttpServerResponse;
-import org.lyj.ext.netty.server.web.IHttpConstants;
+import org.lyj.ext.netty.server.web.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +25,7 @@ public class RoutingContext implements IHttpConstants {
     private final HttpServerRequest _request;
     private final HttpServerResponse _response;
     private final String _uri;
-    private final Map<String, Object> _params;
+    private final HttpParams _params;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -40,7 +38,7 @@ public class RoutingContext implements IHttpConstants {
         _request = request;
         _response = response;
         _uri = _request.uri();
-        _params = new HashMap<>(_request.params());
+        _params = new HttpParams(_request.params());
     }
 
     // ------------------------------------------------------------------------
@@ -64,7 +62,7 @@ public class RoutingContext implements IHttpConstants {
         return _response.handled();
     }
 
-    public Map<String, Object> params() {
+    public HttpParams params() {
         return _params;
     }
 
@@ -104,6 +102,10 @@ public class RoutingContext implements IHttpConstants {
 
     public void writeJsonError(final Throwable error) {
         this.writeJson(validateJsonError(error));
+    }
+
+    public void writeErroMissingParams(final String...names) {
+        this.writeJson(validateJsonError(new Exception("Bad Request, missing some parameters: " + CollectionUtils.toCommaDelimitedString(names))));
     }
 
     public void writeHtml(final String content) {

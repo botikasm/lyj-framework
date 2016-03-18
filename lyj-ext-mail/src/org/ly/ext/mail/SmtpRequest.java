@@ -1,5 +1,6 @@
 package org.ly.ext.mail;
 
+import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -24,7 +25,7 @@ import java.util.*;
 public class SmtpRequest
         extends AbstractLogEmitter {
 
-    private static final String MIME_TEXT = MimeTypeUtils.MIME_PLAINTEXT;
+    private static final String MIME_TEXT = MimeTypeUtils.getMimeType(".txt");
     private static final String MIME_HTML = MimeTypeUtils.MIME_HTML;
 
 
@@ -332,11 +333,11 @@ public class SmtpRequest
             }
         } catch (Throwable t) {
             final String msg = FormatUtils.format("SEND EMAIL ERROR: " +
-                            "'%s' error sending mail: [%s].",
+                            "'%s' error sending mail: \n%s.",
                     t.getClass().getSimpleName(),
-                    ExceptionUtils.getRealMessage(t));
+                    t);
             _exception = new Exception(msg, t);
-            super.error("sendMail", msg);
+            super.error("send", msg);
         }
         return false;
     }
@@ -379,7 +380,7 @@ public class SmtpRequest
         // add multipart message: order is important, first must be text
         if (StringUtils.hasText(_message_txt)) {
             final MimeBodyPart textPart = new MimeBodyPart();
-            textPart.setText(_message_txt, MIME_TEXT);//"utf-8"
+            textPart.setText(_message_txt, CharEncoding.UTF_8);//"utf-8"
             multipart.addBodyPart(textPart);
         }
 

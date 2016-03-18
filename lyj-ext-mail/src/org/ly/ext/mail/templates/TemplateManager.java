@@ -19,7 +19,7 @@ import org.lyj.commons.util.StringUtils;
  * - Create template files in same package.
  *
  */
-public class EmailTemplateManager
+public class TemplateManager
         extends DictionaryController {
 
     // ------------------------------------------------------------------------
@@ -34,7 +34,7 @@ public class EmailTemplateManager
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    protected EmailTemplateManager() {
+    protected TemplateManager() {
 
         //-- uncomment this to test sample template --//
         // super.register(Sample.class);
@@ -45,7 +45,8 @@ public class EmailTemplateManager
     // ------------------------------------------------------------------------
 
     public String getSubject(final String lang, final String templateName) {
-        return super.get(lang, templateName + "." + SUBJECT);
+        final String name = PathUtils.getFilename(templateName.toLowerCase(), false);
+        return super.get(lang, name + "." + SUBJECT);
     }
 
     public String getHtml(final String lang, final String templateName) {
@@ -62,13 +63,13 @@ public class EmailTemplateManager
     // ------------------------------------------------------------------------
 
     public String getTemplate(final String lang, final String templateName, final String type) {
-        final String prefix = templateName.toLowerCase();
-        String resource = super.get(lang, prefix + "." + type);
+        final String name = PathUtils.getFilename(templateName.toLowerCase(), false);
+        String resource = super.get(lang, name + "." + type);
         if(!StringUtils.hasText(resource)){
-            resource = prefix + "_" + lang + "." + type; // try with a default pattern
+            resource = name + "_" + lang + "." + type; // try with a default pattern
         }
         if(StringUtils.hasText(resource)){
-            return this.readFile(prefix, resource);
+            return this.readFile(templateName.toLowerCase(), resource);
         } else {
             return "";
         }
