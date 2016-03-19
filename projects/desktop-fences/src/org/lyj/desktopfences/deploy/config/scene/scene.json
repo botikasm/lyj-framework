@@ -1,0 +1,13 @@
+{
+
+  "size" : {"width":1024, "height":800},
+  "title":"XStep",
+  "icon":"assets/icon/icon.png",
+  "auto-show":"true",
+
+  "loader":"stair.gif",
+  "loader-time":3000,
+
+  "main":"index.html"
+
+}

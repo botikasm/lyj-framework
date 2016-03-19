@@ -1,0 +1,115 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+body{
+    font-family: 'Open Sans', sans-serif;
+    padding: 0;
+    margin: 0;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: default;
+}
+
+a{
+    text-decoration: none;
+    color: #ffffff;
+    cursor: unset;
+}
+
+.menu-link:hover{
+    background-color: #40d1ff;
+}
+
+.menu-title{
+    padding-left: 4%;
+}
+
+
+.workspace{
+    width: 100%;
+    background-color: black;
+    cursor: default;
+}
+
+
+.detail{
+    color: #000;
+}
+
+.tabs{
+    float: none;
+    list-style: none;
+    position: relative;
+    margin: 0;
+    text-align: left;
+}
+
+.tabs ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.tabs li{
+    display: inline-block;
+    cursor: default;
+    padding: 1px 5px 1px 1px;
+}
+
+
+label{
+    font-weight: lighter;
+}
+
+.tabs label{
+    display: block;
+    padding: 6px 14px;
+    border-radius: 3px 3px 0 0;
+    font-size: 12px;
+    font-weight: normal;
+    text-transform: uppercase;
+    background: #0094f2;
+    position: relative;
+    top: 1px;
+    -moz-transition: all 0.1s ease-in-out;
+    -o-transition: all 0.1s ease-in-out;
+    -webkit-transition: all 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+}
+
+.tabs label:hover {
+    background: #0c8ee2;
+}
+
+.tabs .current label{
+    background: #0069e2;
+}
+
+.form{
+    width: 30%;
+    color: #5c5c5c;
+}
+
+.content{
+    color: #000;
+    height: 100%;
+    background-color: #bedcff;
+    padding: 3%;
+}
+
+.topbar{
+    color: #656565;
+    top: 10px;
+    margin: 2%;
+}
+
+.topbar-buttons{
+    color:#ffffff;
+    top:2%;
+    right: 0;
+    overflow:hidden;
+    position:absolute;
+}
+.topbar-buttons button{
+
+}
