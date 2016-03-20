@@ -34,7 +34,7 @@ public class DesktopMonitor
 
         super.start((t)->{
             try{
-                if(!this.isRunning() && !_running){
+                if(!_running){
                     _running = true;
                     this.run();
                 }
