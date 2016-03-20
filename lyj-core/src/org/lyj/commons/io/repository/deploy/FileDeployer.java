@@ -107,7 +107,7 @@ public abstract class FileDeployer {
     //                      Public
     // ------------------------------------------------------------------------
 
-    public FileDeployerSettings getSettings() {
+    public FileDeployerSettings settings() {
         return _settings;
     }
 
@@ -184,8 +184,8 @@ public abstract class FileDeployer {
     }
 
     private void init() {
-        _settings.getPreprocessorValues().put(DIRECTIVE_DEBUG_APP, _debugApp + "");
-        _settings.getPreprocessorValues().put(DIRECTIVE_DEBUG_JS, _debugJs + "");
+        _settings.preprocessorModel().put(DIRECTIVE_DEBUG_APP, _debugApp + "");
+        _settings.preprocessorModel().put(DIRECTIVE_DEBUG_JS, _debugJs + "");
     }
 
     private void logStart() {
@@ -250,7 +250,7 @@ public abstract class FileDeployer {
                                 if (null != compiledData && compiledData.length > 0) {
                                     // replace data with compiled data
                                     binaryData = compiledData;
-                                    final String outExt = _settings.getCompileFiles().get(ext);
+                                    final String outExt = _settings.compileFileExts().get(ext);
                                     if (StringUtils.hasText(outExt) && !outExt.equalsIgnoreCase(ext)) {
                                         // change target file name
                                         targetPath = PathUtils.changeFileExtension(targetPath, outExt);
@@ -354,11 +354,8 @@ public abstract class FileDeployer {
     private byte[] preProcess(final byte[] text) throws UnsupportedEncodingException {
         String result = new String(text);
         if (StringUtils.hasText(result)) {
-            final Set<String> keys = _settings.getPreprocessorValues().keySet();
-            for (final String key : keys) {
-                if (result.contains(key)) {
-                    result = StringUtils.replace(result, key, _settings.getPreprocessorValues().get(key));
-                }
+            if(!CollectionUtils.isEmpty(_settings.preprocessorModel())){
+                result = FormatUtils.formatTemplate(result, "{{", "}}", _settings.preprocessorModel());
             }
         }
         return result.getBytes(CharEncoding.getDefault());
@@ -473,9 +470,9 @@ public abstract class FileDeployer {
 
     {
         //-- init pre-processor values --//
-        _globalSettings.getPreprocessorValues().put(DIRECTIVE_VERSION, DIRECTIVE_VERSION_VALUE);
+        _globalSettings.preprocessorModel().put(DIRECTIVE_VERSION, DIRECTIVE_VERSION_VALUE);
         //-- add exclusions --//
-        _globalSettings.getExcludeFiles().add(".class");
+        _globalSettings.excludeFileOrExts().add(".class");
     }
 
     public static FileDeployerSettings getGlobalSettings() {
@@ -483,19 +480,19 @@ public abstract class FileDeployer {
     }
 
     public static Set<String> getPreProcessorFiles() {
-        return _globalSettings.getPreProcessorFiles();
+        return _globalSettings.preprocessorFileExts();
     }
 
     public static Map<String, String> getPreprocessorValues() {
-        return _globalSettings.getPreprocessorValues();
+        return _globalSettings.preprocessorModel();
     }
 
     public static Set<String> getCompressFiles() {
-        return _globalSettings.getCompressFiles();
+        return _globalSettings.compressFileExts();
     }
 
     public static Map<String, String> getCompileFiles() {
-        return _globalSettings.getCompileFiles();
+        return _globalSettings.compileFileExts();
     }
 
     /**

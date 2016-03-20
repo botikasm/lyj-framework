@@ -4,6 +4,7 @@ package org.lyj.desktopfences;
 
 import javafx.stage.Stage;
 import org.lyj.Lyj;
+import org.lyj.desktopfences.app.DesktopFences;
 import org.lyj.desktopfences.app.client.ApiController;
 import org.lyj.desktopfences.deploy.assets.AssetsDeployer;
 import org.lyj.desktopfences.deploy.config.ConfigurationDeployer;
@@ -11,20 +12,18 @@ import org.lyj.desktopfences.deploy.htdocs.HtdocsDeployer;
 import org.lyj.desktopgap.DesktopGapAppLauncher;
 
 
-public class Application
+public class DesktopFencesLauncher
         extends DesktopGapAppLauncher {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private boolean _test_mode;
-
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public Application() {
+    public DesktopFencesLauncher() {
 
     }
 
@@ -46,8 +45,8 @@ public class Application
     public void ready(final Stage primaryStage) throws Exception {
         super.ready(primaryStage);
 
-        //-- add custom client API --//
-        ApiController.install(super.router());
+        // bootstrap main application controller
+        DesktopFences.init(super.router(), super.isTestMode()).start();
     }
 
     // ------------------------------------------------------------------------

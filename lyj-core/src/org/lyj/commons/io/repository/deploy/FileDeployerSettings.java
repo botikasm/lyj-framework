@@ -47,11 +47,11 @@ public class FileDeployerSettings {
 
     public FileDeployerSettings(final FileDeployerSettings parent) {
         if (null != parent) {
-            _compileFiles.putAll(parent.getCompileFiles());
-            _compressFiles.addAll(parent.getCompressFiles());
-            _excludeFiles.addAll(parent.getExcludeFiles());
-            _preprocessorFiles.addAll(parent.getPreProcessorFiles());
-            _preprocessorValues.putAll(parent.getPreprocessorValues());
+            _compileFiles.putAll(parent.compileFileExts());
+            _compressFiles.addAll(parent.compressFileExts());
+            _excludeFiles.addAll(parent.excludeFileOrExts());
+            _preprocessorFiles.addAll(parent.preprocessorFileExts());
+            _preprocessorValues.putAll(parent.preprocessorModel());
         }
     }
 
@@ -63,23 +63,23 @@ public class FileDeployerSettings {
         _preprocessorValues.clear();
     }
 
-    public Set<String> getExcludeFiles() {
+    public Set<String> excludeFileOrExts() {
         return _excludeFiles;
     }
 
-    public Set<String> getPreProcessorFiles() {
+    public Set<String> preprocessorFileExts() {
         return _preprocessorFiles;
     }
 
-    public Map<String, String> getPreprocessorValues() {
+    public Map<String, String> preprocessorModel() {
         return _preprocessorValues;
     }
 
-    public Set<String> getCompressFiles() {
+    public Set<String> compressFileExts() {
         return _compressFiles;
     }
 
-    public Map<String, String> getCompileFiles() {
+    public Map<String, String> compileFileExts() {
         return _compileFiles;
     }
 

@@ -16,3 +16,6 @@ Write me on my [G+](https://plus.google.com/u/0/+GianAngeloGeminiani) profile fo
 ##Contribute
 If you want contribute you are obviously welcome.
 Write me on my [G+](https://plus.google.com/u/0/+GianAngeloGeminiani) profile.
+
+##Binary And SetUp
+Coming soon: that's a work in progress...

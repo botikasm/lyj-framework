@@ -9,7 +9,7 @@ import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
 public class ApiController {
 
 
-    private static final String PATH_API = "/xstep";
+    private static final String PATH_API = "/fences";
     private static final String PATH_API_UTILS = PATH_API.concat("/utils");
 
     // ------------------------------------------------------------------------

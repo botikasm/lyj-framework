@@ -32,7 +32,7 @@ public class DesktopGapAppLauncher
     // ------------------------------------------------------------------------
 
     public DesktopGapAppLauncher() {
-        super(stageFxml(), Dictionary.getInstance());
+        super(stageFxml(), Dictionary.instance());
     }
 
     // ------------------------------------------------------------------------
@@ -47,8 +47,6 @@ public class DesktopGapAppLauncher
         Lyj.registerDeployer(new HtdocsDeployer(Lyj.isSilent()));
         Lyj.registerDeployer(new AssetsDeployer(Lyj.isSilent()));
 
-        // deploy desktopgap framework
-        Lyj.registerDeployer(new DesktopGapDeployer(Lyj.isSilent()));
     }
 
     @Override
@@ -59,8 +57,12 @@ public class DesktopGapAppLauncher
         // init message bus
         MessageBus.getInstance().listeners().setInterval(300);
 
+        // start application and web server
         _application = Application.instance();
         _application.start();
+
+        // deploy desktopgap framework (at least, but befor web view navigation)
+        DesktopGapDeployer.create().deploy();
     }
 
     @Override

@@ -11,9 +11,19 @@ public class PathUtilsTest {
 
 
     @Test
-    public void testgetAbsolutePath() throws Exception {
+    public void testGetAbsolutePath() throws Exception {
 
         String absolute = PathUtils.getAbsolutePath("./log/test.log");
+
+        assertTrue(PathUtils.isAbsolute(absolute));
+        System.out.println(absolute);
+
+    }
+
+    @Test
+    public void testGetDesktopDirectory() throws Exception {
+
+        String absolute = PathUtils.getDesktopDirectory();
 
         assertTrue(PathUtils.isAbsolute(absolute));
         System.out.println(absolute);

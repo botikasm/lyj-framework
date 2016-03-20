@@ -1,11 +1,11 @@
 {
 
   "size" : {"width":1024, "height":800},
-  "title":"XStep",
+  "title":"Desktop Fences",
   "icon":"assets/icon/icon.png",
   "auto-show":"true",
 
-  "loader":"stair.gif",
+  "loader":"bull.gif",
   "loader-time":3000,
 
   "main":"index.html"

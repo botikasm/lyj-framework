@@ -35,7 +35,7 @@ public class Dictionary
 
     private static DictionaryController __instance;
 
-    public static DictionaryController getInstance(){
+    public static DictionaryController instance(){
         if(null==__instance){
             __instance = new Dictionary();
         }

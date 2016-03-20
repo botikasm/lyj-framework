@@ -15,9 +15,6 @@ public class ApiUtils {
     //                      C O N S T
     // ------------------------------------------------------------------------
 
-    private static final String CONTENT_JSON = "application/json; charset=utf-8";
-    private static final String CONTENT_TEXT = "text/plain; charset=utf-8";
-
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------

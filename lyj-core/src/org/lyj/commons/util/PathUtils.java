@@ -48,6 +48,9 @@ public abstract class PathUtils
 
     private static final boolean IS_WINDOWS = SystemUtils.isWindows();
     private static final String TEMP = "/temp";
+    private static final String PATH_DESKTOP_WIN = "Desktop";
+    private static final String PATH_DESKTOP_MAC = "Desktop";
+    private static final String PATH_DESKTOP_LINUX = "Desktop";
 
     /**
      * Returns temp folder.
@@ -76,6 +79,33 @@ public abstract class PathUtils
         } catch (Throwable ignored) {
         }
         return temp;
+    }
+
+    public static String getDesktopDirectory() {
+        final String desktop;
+        if (SystemUtils.isLinux()) {
+            desktop = PATH_DESKTOP_LINUX;
+        } else if (SystemUtils.isMac()) {
+            desktop = PATH_DESKTOP_MAC;
+        } else if (SystemUtils.isWindows()) {
+            desktop = PATH_DESKTOP_WIN;
+        } else {
+            desktop = PATH_DESKTOP_MAC;
+        }
+
+        return concat(IConstants.USER_HOME, desktop);
+    }
+
+    public static String getDesktopDirectory(final String subFolder,
+                                             final boolean create) {
+        final String response = concat(getDesktopDirectory(), subFolder);
+        if (create) {
+            try {
+                FileUtils.mkdirs(response);
+            } catch (Throwable ignored) {
+            }
+        }
+        return response;
     }
 
     /**
@@ -219,7 +249,7 @@ public abstract class PathUtils
      *
      * @param path the file path (may be <code>null</code>)
      * @return the path with stripped filename extension,
-     *         or <code>null</code> if none
+     * or <code>null</code> if none
      */
     public static String stripFilenameExtension(final String path) {
         if (path == null) {
@@ -358,8 +388,8 @@ public abstract class PathUtils
      *
      * @param path Path to validate. i.e. "c:\\path"
      * @return validated path. i.e. : "c:/mypath/". If original path
-     *         is a file name
-     *         (i.e. "c:/myfile.txt"), no separator is added at the and of path.
+     * is a file name
+     * (i.e. "c:/myfile.txt"), no separator is added at the and of path.
      */
     public static String validateFolderSeparator(final String path) {
         final String result = PathUtils.toUnixPath(path);
@@ -500,7 +530,7 @@ public abstract class PathUtils
      * @param startingPoint Starting page
      * @param destination   Destination page
      * @return Relative URL for web navigation from "startingPoint" to "destination.".<br>
-     *         i.e. getRelativePath("/folder1/page1.html", "home.html") returns "../home.html"
+     * i.e. getRelativePath("/folder1/page1.html", "home.html") returns "../home.html"
      */
     public static String getRelativePath(final String startingPoint, final String destination) {
         final String prefix = getPathLevelsPrefix(startingPoint);

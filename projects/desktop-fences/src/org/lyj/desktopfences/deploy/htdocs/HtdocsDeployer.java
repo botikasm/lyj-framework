@@ -45,11 +45,18 @@ public class HtdocsDeployer extends FileDeployer {
                 false,
                 false);
         super.setOverwrite(true); // overwrite default desktopgap index page
+        super.settings().excludeFileOrExts().add("/src/*"); // TODO: implement directory exclusion
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+
+    @Override
+    public void deploy() {
+        super.deploy();
+    }
 
     @Override
     public byte[] compile(byte[] data, final String filename) {

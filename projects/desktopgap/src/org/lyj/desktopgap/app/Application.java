@@ -3,6 +3,7 @@ package org.lyj.desktopgap.app;
 import org.lyj.desktopgap.app.bus.GlobalMessageListener;
 import org.lyj.desktopgap.app.scheduledtask.ScheduledConnectionMonitor;
 import org.lyj.desktopgap.app.server.WebServer;
+import org.lyj.ext.netty.server.web.HttpServerConfig;
 import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
 
 /**
@@ -42,8 +43,10 @@ public class Application {
     public void stop() {
         _web_server.stop();
 
+        //-- close internal global listener --//
         GlobalMessageListener.instance().stop();
 
+        //-- close scheduled tasks--//
         ScheduledConnectionMonitor.stop();
     }
 
@@ -58,6 +61,13 @@ public class Application {
     public IRouter router() {
         if (null != _web_server) {
             return _web_server.router();
+        }
+        return null;
+    }
+
+    public HttpServerConfig webConfig(){
+        if(null!=_web_server){
+            return _web_server.config();
         }
         return null;
     }
