@@ -46,7 +46,7 @@ public class DataController extends AbstractLogEmitter implements IConstants {
             item.put(ID, key);
             item.put(FLD_VALUE, value);
             return collection.upsert(item);
-        } catch (JsonDBInvalidItemException t) {
+        } catch (Throwable t) {
             return null;
         }
     }

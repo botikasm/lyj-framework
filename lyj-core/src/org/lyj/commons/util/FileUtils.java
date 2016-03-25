@@ -192,13 +192,21 @@ public abstract class FileUtils {
     }
 
     public static long getSize(final File file) {
-        final RandomAccessFile raf;
+        long result= 0;
+        RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(file, "r");
-            return raf.length();
+            result = raf.length();
         } catch (Throwable ignore) {
+        } finally {
+            try {
+                if (null != raf) {
+                    raf.close();
+                }
+            } catch (Throwable ignored) {
+            }
         }
-        return 0;
+        return result;
     }
 
     public static long getSize(final InputStream is) {
@@ -386,8 +394,8 @@ public abstract class FileUtils {
     /**
      * Copy a chunk of given input to output.
      *
-     * @param in  the stream to copy from
-     * @param out the stream to copy to
+     * @param in     the stream to copy from
+     * @param out    the stream to copy to
      * @param offset skip bytes length
      * @param length read length
      * @throws IOException
@@ -634,6 +642,21 @@ public abstract class FileUtils {
                                  final String includeWildChars,
                                  final String excludeWildChars,
                                  int deepLevel) {
+        list(fileList,
+                startDir, // starting dir
+                includeWildChars, // include tokens
+                excludeWildChars, // exclude tokens
+                deepLevel, // max deep level
+                false
+        );
+    }
+
+    public static void list(final List<File> fileList,
+                            final File startDir,
+                            final String includeWildChars,
+                            final String excludeWildChars,
+                            final int deepLevel,
+                            final boolean includeDir) {
         final String iwc;
         if (!StringUtils.hasLength(includeWildChars)) {
             iwc = "*.*";
@@ -649,11 +672,12 @@ public abstract class FileUtils {
         final String[] iwcTokens = StringUtils.split(iwc, ",");
         final String[] ewcTokens = StringUtils.split(ewc, ",");
         listAllFiles(fileList,
-                startDir, // starting dir
-                iwcTokens, // include tokens
-                ewcTokens, // exclude tokens
-                0, // current level
-                deepLevel // max deep level
+                startDir,   // starting dir
+                iwcTokens,  // include tokens
+                ewcTokens,  // exclude tokens
+                0,          // current level
+                deepLevel,  // max deep level
+                includeDir  // include also directory names
         );
     }
 
@@ -705,7 +729,8 @@ public abstract class FileUtils {
                                      final String[] includeWildChars,
                                      final String[] excludeWildChars,
                                      final int currentLevel,
-                                     final int deepLevel) {
+                                     final int deepLevel,
+                                     final boolean includeDir) {
         int level = currentLevel;
         if (startDir.exists() && startDir.isDirectory()) {
             final File[] files = startDir.listFiles();
@@ -717,9 +742,13 @@ public abstract class FileUtils {
                             fileList.add(file);
                         }
                     } else if (file.isDirectory()) {
+                        if (includeDir) {
+                            fileList.add(file);
+                        }
                         if ((deepLevel > -1) && (level >= deepLevel)) {
                             continue;
                         }
+
                         level++;
                         try {
                             listAllFiles(fileList,
@@ -727,7 +756,8 @@ public abstract class FileUtils {
                                     includeWildChars,
                                     excludeWildChars,
                                     level,
-                                    deepLevel);
+                                    deepLevel,
+                                    includeDir);
                         } catch (Exception e) {
                         }
                         level--;

@@ -65,6 +65,8 @@ public final class JsonWrapper implements Cloneable {
                 _array = (JSONArray) data;
             } else if (data instanceof JSONObject) {
                 _object = (JSONObject) data;
+            } else if (data instanceof Map) {
+                _object = new JSONObject((Map)data);
             } else {
                 this.parse(data.toString());
             }
@@ -182,6 +184,16 @@ public final class JsonWrapper implements Cloneable {
 
     public JSONObject getJSONObject() {
         return _object;
+    }
+
+    public Map<String, Object> getMap() {
+        if (null != _object) {
+            return toMap(_object);
+        } else if (null != _array) {
+            return toMap(_array);
+        } else {
+            return new HashMap<>();
+        }
     }
 
     public JSONArray getJSONArray() {
@@ -856,7 +868,7 @@ public final class JsonWrapper implements Cloneable {
 
     public static Map<String, Object> toMap(final JSONArray jsonarray) {
         final Map<String, Object> result = new LinkedHashMap<String, Object>();
-        if(null!=jsonarray) {
+        if (null != jsonarray) {
             final int len = jsonarray.length();
             for (int i = 0; i < len; i++) {
                 final String key = "param" + i;
@@ -871,7 +883,7 @@ public final class JsonWrapper implements Cloneable {
 
     public static Map<String, String> toMapOfString(final JSONObject json) {
         final Map<String, String> result = new LinkedHashMap<String, String>();
-        if(null!=json){
+        if (null != json) {
             final Iterator iterator = json.keys();
             while (iterator.hasNext()) {
                 final String key = iterator.next().toString();
@@ -886,7 +898,7 @@ public final class JsonWrapper implements Cloneable {
 
     public static Map<String, String> toMapOfString(final JSONArray jsonarray) {
         final Map<String, String> result = new LinkedHashMap<String, String>();
-        if(null!=jsonarray) {
+        if (null != jsonarray) {
             final int len = jsonarray.length();
             for (int i = 0; i < len; i++) {
                 final String key = "param" + i;
@@ -1502,13 +1514,30 @@ public final class JsonWrapper implements Cloneable {
     }
 
     public static JSONObject removeOne(final JSONArray array,
-                                       final String key, final String value) {
+                                       final String key,
+                                       final String value) {
         final int length = array.length();
         for (int i = length - 1; i > -1; i--) {
             final Object item = array.get(i);
             if ((item instanceof JSONObject)
                     && ((JSONObject) item).has(key)
                     && ((JSONObject) item).optString(key).equalsIgnoreCase(value)) {
+                array.remove(i);
+                return (JSONObject) item;
+            }
+        }
+        return null;
+    }
+
+    public static JSONObject removeOne(final JSONArray array,
+                                       final String key,
+                                       final Object value) {
+        final int length = array.length();
+        for (int i = length - 1; i > -1; i--) {
+            final Object item = array.get(i);
+            if ((item instanceof JSONObject)
+                    && ((JSONObject) item).has(key)
+                    && ((JSONObject) item).opt(key).equals(value)) {
                 array.remove(i);
                 return (JSONObject) item;
             }

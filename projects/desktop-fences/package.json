@@ -1,0 +1,15 @@
+{
+  "name": "desktop-fences",
+  "version": "1.0.0",
+  "description": "##About I started **Desktop Fences** because I was tired of my confusing desktop. Disordered desktops affect creativity and productivity, that's true!",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/org/lyj/desktopfences/deploy/htdocs/src/index.js -o src/org/lyj/desktopfences/deploy/htdocs/bin/app.js"
+  },
+  "author": "Gian Angelo Geminiani",
+  "license": "MIT"
+}

@@ -222,7 +222,7 @@ public class MapStaticUrl {
         return FormatUtils.formatTemplate(template, "{", "}", (key) -> {
             try {
                 count.inc();
-                final Object value = args[count.value()];
+                final Object value = args[count.valueAsInt()];
                 if (null != value) {
                     return encode
                             ? StringUtils.urlEncode(value.toString(), CharEncoding.getDefault(), true)

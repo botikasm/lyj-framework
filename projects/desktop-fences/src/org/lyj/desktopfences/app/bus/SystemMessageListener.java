@@ -6,7 +6,8 @@ import org.lyj.desktopfences.app.DesktopFences;
 import org.lyj.desktopgap.app.bus.GlobalMessageListener;
 
 /**
- * Main message listener
+ * Main message listener.
+ *
  */
 public class SystemMessageListener
         extends AbstractLogEmitter {
@@ -46,6 +47,7 @@ public class SystemMessageListener
     private void onSystem(final Event event){
         if(EVENT_QUIT.equals(event.getName())){
             DesktopFences.instance().stop();
+
         }
     }
 

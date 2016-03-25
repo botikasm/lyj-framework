@@ -119,6 +119,22 @@ public class JsonDBCollection {
         }
     }
 
+    public JSONObject upsert(final JSONObject item) {
+        //-- prepare item --//
+        if (item.has(ID)) {
+            // update
+            final JSONObject existing = JsonWrapper.removeOne(this.getData(), ID, item.optString(ID));
+            if (null != existing) {
+                return this.update(existing, item);
+            } else {
+                return this.insert(item);
+            }
+        } else {
+            // insert
+            return this.insert(item);
+        }
+    }
+
     public String upsertAsString(final String item) {
         try {
             return this.upsert(new JSONObject(item)).toString();
@@ -126,6 +142,26 @@ public class JsonDBCollection {
             this.handle(t);
         }
         return "";
+    }
+
+    public JSONObject removeOne(final String key, final String value) {
+        try {
+            final JSONArray data = this.getData();
+            return JsonWrapper.removeOne(data, key, value);
+        } catch (Throwable t) {
+            this.handle(t);
+        }
+        return null;
+    }
+
+    public long count() {
+        try {
+            final JSONArray data = this.getData();
+            return data.length();
+        } catch (Throwable t) {
+            this.handle(t);
+        }
+        return 0;
     }
 
     // ------------------------------------------------------------------------
@@ -151,22 +187,6 @@ public class JsonDBCollection {
         return __data;
     }
 
-    private JSONObject upsert(final JSONObject item) {
-        //-- prepare item --//
-        if (item.has(ID)) {
-            // update
-            final JSONObject existing = JsonWrapper.removeOne(this.getData(), ID, item.optString(ID));
-            if (null != existing) {
-                return this.update(existing, item);
-            } else {
-                return this.insert(item);
-            }
-        } else {
-            // insert
-            return this.insert(item);
-        }
-    }
-
     private JSONObject update(final JSONObject existing,
                               final JSONObject item) {
         JsonWrapper.extend(existing, item, true);
@@ -183,9 +203,11 @@ public class JsonDBCollection {
     }
 
     private void add(final JSONObject item) {
-        //-- add to store and save --/
-        this.getData().put(item);
-        this.save();
+        synchronized (this) {
+            //-- add to store and save --//
+            this.getData().put(item);
+            this.save();
+        }
     }
 
     private String read() {

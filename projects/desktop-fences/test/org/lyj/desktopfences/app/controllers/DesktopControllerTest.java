@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.lyj.desktopfences.TestInitializer;
 
-import static org.junit.Assert.*;
-
 /**
  *
  */

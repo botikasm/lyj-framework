@@ -1,15 +1,15 @@
 package org.lyj.desktopfences.app.controllers.archive;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.lyj.commons.util.*;
+import org.lyj.commons.cryptograph.MD5;
+import org.lyj.commons.util.DateUtils;
+import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.MapBuilder;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.desktopfences.app.IConstants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -21,11 +21,15 @@ public class ArchiveFile {
     // ------------------------------------------------------------------------
 
     private static final String ID = IConstants.ID;
-    private static final String ORIGIN = "origin";
+    private static final String CRC = "crc";
+    private static final String PATH_ORIGIN = "path_origin";    // original path
+    private static final String PATH_LOGIC = "path_logic";      // original logic structure
+    private static final String PATH_TARGET = "path_target";    // archive path
     private static final String NAME = "name";
-    private static final String EXT = "ext";
+    private static final String EXT = "extension";
     private static final String TITLE = "title";
     private static final String SIZE = "size";
+    private static final String DIRECTORY = "directory";
     private static final String DATE_LAST_MODIFIED = "date_last_modified";
     private static final String DATE_CREATION = "date_creation";
 
@@ -36,19 +40,28 @@ public class ArchiveFile {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final JsonWrapper _data;
+    private final MapBuilder<String, Object> _data;
+    private File _file;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    private ArchiveFile(final JSONObject data) {
-        _data = new JsonWrapper(data);
+    private ArchiveFile(final Map<String, Object> data) {
+        _data = MapBuilder.create(data);
     }
 
     private ArchiveFile(final File file) {
-        this(new JSONObject());
+        this(new HashMap<String, Object>());
+
+        _file = file;
+
         this.load(file);
+    }
+
+    @Override
+    public String toString() {
+        return _data.toString();
     }
 
     // ------------------------------------------------------------------------
@@ -61,16 +74,43 @@ public class ArchiveFile {
     }
 
     public String id() {
-        return _data.optString(ID);
+        return _data.getString(ID);
     }
 
-    public ArchiveFile origin(final String value) {
-        _data.put(ORIGIN, value);
+    public ArchiveFile crc(final long value) {
+        _data.put(CRC, value);
         return this;
     }
 
-    public String origin() {
-        return _data.optString(ORIGIN);
+    public long crc() {
+        return _data.getLong(CRC);
+    }
+
+    public ArchiveFile pathOrigin(final String value) {
+        _data.put(PATH_ORIGIN, value);
+        return this;
+    }
+
+    public String pathOrigin() {
+        return _data.getString(PATH_ORIGIN);
+    }
+
+    public ArchiveFile pathLogic(final String value) {
+        _data.put(PATH_LOGIC, value);
+        return this;
+    }
+
+    public String pathLogic() {
+        return _data.getString(PATH_LOGIC);
+    }
+
+    public ArchiveFile pathArchive(final String value) {
+        _data.put(PATH_TARGET, value);
+        return this;
+    }
+
+    public String pathArchive() {
+        return _data.getString(PATH_TARGET);
     }
 
     public ArchiveFile name(final String value) {
@@ -79,7 +119,7 @@ public class ArchiveFile {
     }
 
     public String name() {
-        return _data.optString(NAME);
+        return _data.getString(NAME);
     }
 
     public ArchiveFile title(final String value) {
@@ -88,16 +128,25 @@ public class ArchiveFile {
     }
 
     public String title() {
-        return _data.optString(TITLE);
+        return _data.getString(TITLE);
+    }
+
+    public ArchiveFile directory(final String value) {
+        _data.put(DIRECTORY, value);
+        return this;
+    }
+
+    public String directory() {
+        return _data.getString(DIRECTORY);
     }
 
     public ArchiveFile ext(final String value) {
-        _data.put(EXT, value.toLowerCase());
+        _data.put(EXT, null != value ? value.toLowerCase() : "");
         return this;
     }
 
     public String ext() {
-        return _data.optString(EXT);
+        return _data.getString(EXT);
     }
 
     public ArchiveFile size(final long value) {
@@ -106,7 +155,7 @@ public class ArchiveFile {
     }
 
     public long size() {
-        return _data.optLong(SIZE);
+        return _data.getLong(SIZE);
     }
 
     public ArchiveFile creationDate(final long value) {
@@ -115,11 +164,11 @@ public class ArchiveFile {
     }
 
     public long creationDate() {
-        return _data.optLong(DATE_CREATION);
+        return _data.getLong(DATE_CREATION);
     }
 
     public Date creationDateAsDate() {
-        return new Date(_data.optLong(DATE_CREATION));
+        return new Date(_data.getLong(DATE_CREATION));
     }
 
     public ArchiveFile lastModified(final long value) {
@@ -128,37 +177,48 @@ public class ArchiveFile {
     }
 
     public long lastModified() {
-        return _data.optLong(DATE_LAST_MODIFIED);
+        return _data.getLong(DATE_LAST_MODIFIED);
     }
 
     public Date lastModifiedAsDate() {
-        return new Date(_data.optLong(DATE_LAST_MODIFIED));
+        return new Date(_data.getLong(DATE_LAST_MODIFIED));
     }
 
-    public ArchiveFile category(final JSONArray value) {
+    public ArchiveFile category(final Set<String> value) {
         _data.put(CATEGORY, value);
         return this;
     }
 
-    public JSONArray category() {
-        return _data.optJSONArray(CATEGORY);
+    public Set<String> category() {
+        if (!_data.has(CATEGORY)) {
+            this.category(new HashSet<>());
+        }
+        return _data.getSet(CATEGORY);
     }
 
-    public ArchiveFile tag(final JSONArray value) {
+    public ArchiveFile tag(final Set<String> value) {
         _data.put(TAG, value);
         return this;
     }
 
-    public JSONArray tag() {
-        if(!_data.has(TAG)){
-            this.tag(new JSONArray());
+    public Set<String> tag() {
+        if (!_data.has(TAG)) {
+            this.tag(new HashSet<>());
         }
-        return _data.optJSONArray(TAG);
+        return _data.getSet(TAG);
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public Map<String, Object> map() {
+        return null != _data ? _data.toMap() : new HashMap<>();
+    }
+
+    public boolean isDirectory() {
+        return null != _file && _file.isDirectory();
+    }
 
     public void reloadTags() {
         // category
@@ -166,16 +226,27 @@ public class ArchiveFile {
 
     }
 
+    public void addCategory(final String value){
+        this.category().add(value);
+    }
+
+    public void addTag(final String value){
+        this.tag().add(value);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
     private void load(final File file) {
-        this.id(FileUtils.getCRC(file) + "");
-        this.origin(file.getAbsolutePath());
+        this.id(MD5.encode(file.getAbsolutePath()));
+        //this.crc(FileUtils.getCRC(file)); // require much time to read entire file
+        this.pathOrigin(file.getAbsolutePath());
+        this.pathLogic(PathUtils.subtract(PathUtils.getDesktopDirectory(), this.pathOrigin()));
+        this.directory(PathUtils.getParent(this.pathLogic()));
         this.name(file.getName());
         this.title(PathUtils.getFilename(file.getName(), false));
-        this.ext(PathUtils.getFilenameExtension(file.getName(), false));
+        this.ext(PathUtils.getFilenameExtensionNotNull(file.getName(), false));
         this.size(FileUtils.getSize(file));
         this.creationDate(DateUtils.now().getTime());
         this.lastModified(file.lastModified());
@@ -183,16 +254,16 @@ public class ArchiveFile {
         this.category(evalCategoryTags());
     }
 
-    private JSONArray evalCategoryTags() {
-        final JSONArray response = new JSONArray();
-        response.put(IConstants.DEFAULT_CATEGORY);
+    private Set<String> evalCategoryTags() {
+        final Set<String> response = new HashSet<>();
+        response.add(IConstants.DEFAULT_CATEGORY);
 
         final String ext = this.ext();
         final Set<String> tags = IConstants.EXT_TAGS.keySet();
         for (final String tag : tags) {
             final List extensions = IConstants.EXT_TAGS.get(tag);
             if (extensions.contains(ext)) {
-                response.put(tag);
+                response.add(tag);
             }
         }
         return response;
@@ -202,7 +273,7 @@ public class ArchiveFile {
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
-    public static ArchiveFile create(final JSONObject data) {
+    public static ArchiveFile create(final Map<String, Object> data) {
         return new ArchiveFile(data); // wrap existing object
     }
 

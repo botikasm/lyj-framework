@@ -26,9 +26,9 @@ public class ApiController {
 
     private void init(final IRouter router) {
 
-        //-- connection --//
+        //-- utils --//
         router.all(PATH_API_UTILS.concat("/version")).handler(ApiUtils::version);
-
+        router.all(PATH_API_UTILS.concat("/activity_report/:reload")).handler(ApiUtils::activityReport);
 
 
     }

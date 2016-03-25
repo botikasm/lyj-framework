@@ -9,7 +9,7 @@ public class Counter {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private int _count;
+    private long _count;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -32,8 +32,12 @@ public class Counter {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public int value() {
+    public long value() {
         return _count;
+    }
+
+    public int valueAsInt() {
+        return (int)_count;
     }
 
     public void inc() {
@@ -42,7 +46,7 @@ public class Counter {
         }
     }
 
-    public void inc(final int value) {
+    public void inc(final long value) {
         synchronized (this) {
             _count += value;
         }

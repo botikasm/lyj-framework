@@ -207,6 +207,12 @@ public abstract class PathUtils
         }
     }
 
+    public static String getFilenameExtensionNotNull(final String path,
+                                                     boolean includeDot) {
+        final String response = getFilenameExtension(path, includeDot);
+        return null != response ? response : "";
+    }
+
     /**
      * Return true if path has an extension.
      *
