@@ -3,7 +3,7 @@ package org.lyj.desktopfences.app.controllers.archive;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.FixedBlockingPool;
-import org.lyj.commons.io.jdbm.JDB;
+import org.lyj.commons.io.db.jdbm.JDB;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -68,6 +68,7 @@ public class ArchiveController
         _tags = new Indexes();
         _directories = new Indexes();
         _closed = false;
+
         this.init();
     }
 

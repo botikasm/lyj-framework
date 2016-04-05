@@ -29,7 +29,7 @@ public class ApiController {
         //-- utils --//
         router.all(PATH_API_UTILS.concat("/version")).handler(ApiUtils::version);
         router.all(PATH_API_UTILS.concat("/activity_report/:reload")).handler(ApiUtils::activityReport);
-
+        router.all(PATH_API_UTILS.concat("/settings")).handler(ApiUtils::settings);
 
     }
 

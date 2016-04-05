@@ -3,12 +3,13 @@ package org.lyj.desktopfences.app.controllers;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.PathUtils;
+import org.lyj.desktopfences.app.DesktopFences;
 import org.lyj.desktopfences.app.controllers.archive.ArchiveController;
 import org.lyj.desktopfences.app.controllers.archive.ArchiveFile;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,12 +23,11 @@ public class DesktopController
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final String DESKTOP_PATH = PathUtils.getDesktopDirectory();
-
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private String _root;
     private boolean _closed;
     private boolean _working;
 
@@ -36,6 +36,7 @@ public class DesktopController
     // ------------------------------------------------------------------------
 
     private DesktopController() {
+        _root = DesktopFences.instance().settings().teleport();
         _closed = false;
         _working = false;
     }
@@ -55,12 +56,18 @@ public class DesktopController
         return _working;
     }
 
-    public void catalogueDesktop(final boolean move) {
+    public void scan(final boolean move) {
+        this.scan(_root, move);
+    }
+
+    public void scan(final String path,
+                     final boolean move) {
         if (!_closed && !_working) {
             try {
                 _working = true;
                 final List<File> files = new ArrayList<>();
-                FileUtils.list(files, new File(DESKTOP_PATH), "*.*", "", 0, true);
+                this.mkdirs(path);
+                FileUtils.list(files, new File(path), "*.*", "", 0, true);
                 this.catalogue(files, move);
             } finally {
                 _working = false;
@@ -71,6 +78,14 @@ public class DesktopController
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private void mkdirs(final String path) {
+        try {
+            FileUtils.mkdirs(path);
+        } catch (IOException e) {
+            super.error("mkdirs", e);
+        }
+    }
 
     private void catalogue(final List<File> files, final boolean move) {
         for (final File file : files) {

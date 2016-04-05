@@ -1,6 +1,7 @@
 package org.lyj.desktopfences.app.client.api;
 
 import org.json.JSONObject;
+import org.lyj.desktopfences.app.DesktopFences;
 import org.lyj.desktopfences.app.IConstants;
 import org.lyj.desktopfences.app.controllers.archive.ArchiveController;
 import org.lyj.ext.netty.server.web.controllers.routing.RoutingContext;
@@ -40,6 +41,14 @@ public class ApiUtils {
             if(reload){
                 ArchiveController.instance().reloadIndexes();
             }
+        }catch(Throwable t){
+            context.writeJsonError(t);
+        }
+    }
+
+    public static void settings (final RoutingContext context) {
+        try {
+            context.writeJson(DesktopFences.instance().settings().toJson());
         }catch(Throwable t){
             context.writeJsonError(t);
         }

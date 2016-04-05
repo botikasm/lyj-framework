@@ -5,7 +5,7 @@ import org.lyj.Lyj;
 import org.lyj.commons.event.bus.MessageBus;
 import org.lyj.commons.util.ClassLoaderUtils;
 import org.lyj.commons.util.PathUtils;
-import org.lyj.desktopgap.app.Application;
+import org.lyj.desktopgap.app.DesktopGap;
 import org.lyj.desktopgap.app.client.bin.DesktopGapDeployer;
 import org.lyj.desktopgap.deploy.assets.AssetsDeployer;
 import org.lyj.desktopgap.deploy.config.ConfigurationDeployer;
@@ -24,7 +24,7 @@ public class DesktopGapAppLauncher
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private Application _application;
+    private DesktopGap _application;
     private boolean _test_mode;
 
     // ------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public class DesktopGapAppLauncher
         MessageBus.getInstance().listeners().setInterval(300);
 
         // start application and web server
-        _application = Application.instance();
+        _application = DesktopGap.instance();
         _application.start();
 
         // deploy desktopgap framework (at least, but befor web view navigation)

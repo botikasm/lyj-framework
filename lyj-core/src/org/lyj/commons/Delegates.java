@@ -151,6 +151,18 @@ public class Delegates {
         }
     }
 
+    public static <P, R> R invoke(final FunctionArg<P, R> callback, final P arg) {
+        try {
+            if (null != callback) {
+                return callback.call(arg);
+            }
+            return null;
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
+        }
+    }
+
     public static void invoke(final ExceptionCallback callback, final String message, final Throwable err) {
         try {
             if (null != callback) {

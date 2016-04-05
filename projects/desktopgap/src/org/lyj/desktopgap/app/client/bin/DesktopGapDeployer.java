@@ -2,7 +2,10 @@ package org.lyj.desktopgap.app.client.bin;
 
 import org.lyj.Lyj;
 import org.lyj.commons.io.repository.deploy.FileDeployer;
-import org.lyj.desktopgap.app.Application;
+import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.PathUtils;
+import org.lyj.desktopgap.app.DesktopGap;
+import org.lyj.gui.application.app.utils.FontRegistry;
 
 /**
  * Deploy client framework
@@ -16,6 +19,8 @@ public class DesktopGapDeployer extends FileDeployer {
 
     public static final String PATH = "htdocs";
 
+    private static final String[] FONTS = new String[]{"ttf"};
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -25,7 +30,15 @@ public class DesktopGapDeployer extends FileDeployer {
                 silent, false, false, false);
         super.setOverwrite(true);
         super.settings().preprocessorFileExts().add(".json");
-        super.settings().preprocessorModel().put("port", Application.instance().webConfig().port()+"");
+        super.settings().preprocessorModel().put("port", DesktopGap.instance().webConfig().port() + "");
+
+        super.settings().callback((data, fileName) -> {
+            final String ext = PathUtils.getFilenameExtension(fileName, false);
+            if (CollectionUtils.contains(FONTS, ext)) {
+                FontRegistry.instance().load(data, PathUtils.getFilename(fileName, false));
+            }
+            return data;
+        });
     }
 
     // ------------------------------------------------------------------------
@@ -52,8 +65,9 @@ public class DesktopGapDeployer extends FileDeployer {
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
-    public static DesktopGapDeployer create(){
+    public static DesktopGapDeployer create() {
         return new DesktopGapDeployer(Lyj.isSilent());
     }
+
 
 }

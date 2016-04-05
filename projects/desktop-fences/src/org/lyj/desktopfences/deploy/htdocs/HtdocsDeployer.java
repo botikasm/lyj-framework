@@ -23,6 +23,10 @@ package org.lyj.desktopfences.deploy.htdocs;
 
 import org.lyj.Lyj;
 import org.lyj.commons.io.repository.deploy.FileDeployer;
+import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.PathUtils;
+import org.lyj.desktopgap.app.DesktopGap;
+import org.lyj.gui.application.app.utils.FontRegistry;
 
 public class HtdocsDeployer extends FileDeployer {
 
@@ -32,6 +36,8 @@ public class HtdocsDeployer extends FileDeployer {
     // ------------------------------------------------------------------------
 
     public static final String PATH = "htdocs";
+
+    private static final String[] FONTS = new String[]{"ttf", "woff"};
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -46,6 +52,16 @@ public class HtdocsDeployer extends FileDeployer {
                 false);
         super.setOverwrite(true); // overwrite default desktopgap index page
         super.settings().excludeFileOrExts().add("/src/*"); // TODO: implement directory exclusion
+        super.settings().preprocessorFileExts().add(".css");
+        super.settings().preprocessorModel().put("port", DesktopGap.instance().webConfig().port()+"");
+
+        super.settings().callback((data, fileName) -> {
+            final String ext = PathUtils.getFilenameExtension(fileName, false);
+            if (CollectionUtils.contains(FONTS, ext)) {
+                FontRegistry.instance().load(data, PathUtils.getFilename(fileName, false));
+            }
+            return data;
+        });
     }
 
     // ------------------------------------------------------------------------

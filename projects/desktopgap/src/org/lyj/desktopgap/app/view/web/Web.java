@@ -7,11 +7,10 @@ import javafx.concurrent.Worker;
 import javafx.fxml.FXML;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
-import javafx.stage.Stage;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.commons.util.PathUtils;
-import org.lyj.desktopgap.app.Application;
+import org.lyj.desktopgap.app.DesktopGap;
 import org.lyj.desktopgap.app.IConstants;
 import org.lyj.desktopgap.deploy.ResourceLoader;
 import org.lyj.gui.application.app.AbstractViewController;
@@ -65,7 +64,7 @@ public class Web
 
         _uri = super.getApplication().configuration().getString(IConstants.CONFIG_PATH_MAIN, "");
         if(!PathUtils.hasProtocol(_uri)){
-            _uri = Application.instance().webUri(_uri);
+            _uri = DesktopGap.instance().webUri(_uri);
         }
 
         this.initGui();

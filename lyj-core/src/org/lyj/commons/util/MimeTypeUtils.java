@@ -78,10 +78,24 @@ public class MimeTypeUtils {
     }
 
     public String getContentTypeFromExtension(final String ext) {
+        /*
         if (StringUtils.hasText(ext)) {
             final String result = _filetypemap.get(ext);
             if (!StringUtils.hasText(result)) {
                 return MIME_PLAINTEXT;
+            } else {
+                return result;
+            }
+        }   */
+        return getContentTypeFromExtension(ext, MIME_PLAINTEXT);
+    }
+
+    public String getContentTypeFromExtension(final String ext,
+                                              final String defVal) {
+        if (StringUtils.hasText(ext)) {
+            final String result = _filetypemap.get(ext);
+            if (!StringUtils.hasText(result)) {
+                return defVal;
             } else {
                 return result;
             }
@@ -268,6 +282,10 @@ public class MimeTypeUtils {
         map.put(".wdb", "application/vnd.ms-works");
         map.put(".wks", "application/vnd.ms-works");
         map.put(".wmf", "application/x-msmetafile");
+        map.put(".woff", "application/font-woff");     // FONT
+        map.put(".woff2", "application/font-woff2"); // FONT
+        map.put(".eot", "application/font-eot");    // FONT
+        map.put(".ttf", "application/font-ttf");    // FONT
         map.put(".wps", "application/vnd.ms-works");
         map.put(".wri", "application/x-mswrite");
         map.put(".wrl", "x-world/x-vrml");

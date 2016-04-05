@@ -33,13 +33,27 @@ import java.util.Set;
  */
 public class FileDeployerSettings {
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
     private static final String SUFFIX_MIN = ".mini";
+
+    // ------------------------------------------------------------------------
+    //                      f i e l d s
+    // ------------------------------------------------------------------------
 
     private final Map<String, String> _compileFiles = new HashMap<String, String>(); // pair: source ext, target ext. i.e. ".less", ".css"
     private final Set<String> _compressFiles = new HashSet<String>();
     private final Set<String> _excludeFiles = new HashSet<String>();
     private final Set<String> _preprocessorFiles = new HashSet<String>(); // Arrays.asList(PREPROCESS_FILES)
     private final Map<String, String> _preprocessorValues = new HashMap<String, String>();
+
+    private DeployerCallback _callback;
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
 
     public FileDeployerSettings() {
 
@@ -55,12 +69,22 @@ public class FileDeployerSettings {
         }
     }
 
-    public void clear() {
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+
+    public FileDeployerSettings clear() {
         _compileFiles.clear();
         _excludeFiles.clear();
         _compressFiles.clear();
         _preprocessorFiles.clear();
         _preprocessorValues.clear();
+        return this;
+    }
+
+    public FileDeployerSettings callback(final DeployerCallback callback) {
+        _callback = callback;
+        return this;
     }
 
     public Set<String> excludeFileOrExts() {
@@ -131,7 +155,36 @@ public class FileDeployerSettings {
     }
 
     // ------------------------------------------------------------------------
+    //                      p a c k a g e
+    // ------------------------------------------------------------------------
+
+    byte[] callback(final byte[] data, final String resourceName) {
+        if (null != _callback) {
+            try {
+                _callback.call(data, resourceName);
+            } catch (Throwable ignored) {
+            }
+        }
+        return data;
+    }
+
+    // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+
+    // ------------------------------------------------------------------------
+    //                      e m b e d d e d
+    // ------------------------------------------------------------------------
+
+    @FunctionalInterface
+    public static interface DeployerCallback {
+        byte[] call(byte[] bytes, String resourceName);
+    }
+
 
 }

@@ -20,6 +20,7 @@
 
 package org.lyj.commons.io.repository.deploy;
 
+import org.lyj.commons.Delegates;
 import org.lyj.commons.cryptograph.GUID;
 import org.lyj.commons.io.repository.FileRepository;
 import org.lyj.commons.io.repository.Resource;
@@ -86,7 +87,7 @@ public abstract class FileDeployer {
                         final boolean debugApp,
                         final boolean debugJs) {
         this.logInfo("Creating FileDeployer '{0}'. "
-                + "Start Folder: '{1}', Target Folder: '{2}'",
+                        + "Start Folder: '{1}', Target Folder: '{2}'",
                 this.getClass().getSimpleName(), startFolder, targetFolder);
 
         _settings = new FileDeployerSettings(_globalSettings);
@@ -104,7 +105,7 @@ public abstract class FileDeployer {
     }
 
     // ------------------------------------------------------------------------
-    //                      Public
+    //                      p u b l i c
     // ------------------------------------------------------------------------
 
     public FileDeployerSettings settings() {
@@ -171,6 +172,10 @@ public abstract class FileDeployer {
             }
         }
     }
+
+    // ------------------------------------------------------------------------
+    //                      a b s t r a c t
+    // ------------------------------------------------------------------------
 
     public abstract byte[] compress(final byte[] data, final String filename);
 
@@ -243,31 +248,37 @@ public abstract class FileDeployer {
                                 binaryData = this.preProcess(binaryData);
                             }
 
-                            //-- compile file  --//
-                            if (_settings.isCompilableExt(ext)) {
-                                // compile
-                                final byte[] compiledData = this.compile(binaryData, targetName);
-                                if (null != compiledData && compiledData.length > 0) {
-                                    // replace data with compiled data
-                                    binaryData = compiledData;
-                                    final String outExt = _settings.compileFileExts().get(ext);
-                                    if (StringUtils.hasText(outExt) && !outExt.equalsIgnoreCase(ext)) {
-                                        // change target file name
-                                        targetPath = PathUtils.changeFileExtension(targetPath, outExt);
+                            //-- interactive callback --//
+                            binaryData = _settings.callback(binaryData, targetName);
+
+                            if (null != binaryData) {
+
+                                //-- compile file  --//
+                                if (_settings.isCompilableExt(ext)) {
+                                    // compile
+                                    final byte[] compiledData = this.compile(binaryData, targetName);
+                                    if (null != compiledData && compiledData.length > 0) {
+                                        // replace data with compiled data
+                                        binaryData = compiledData;
+                                        final String outExt = _settings.compileFileExts().get(ext);
+                                        if (StringUtils.hasText(outExt) && !outExt.equalsIgnoreCase(ext)) {
+                                            // change target file name
+                                            targetPath = PathUtils.changeFileExtension(targetPath, outExt);
+                                        }
                                     }
                                 }
-                            }
 
-                            //-- deploy file --//
-                            FileUtils.copy(binaryData, new File(targetPath));
+                                //-- deploy file --//
+                                FileUtils.copy(binaryData, new File(targetPath));
 
-                            //-- compress file --//
-                            if (_settings.isCompressibleExt(ext(targetPath))) {
-                                // creates new minified file
-                                final byte[] compressedData = this.compress(binaryData, targetPath);
-                                if (null != compressedData && compressedData.length > 0) {
-                                    compressedPath = _settings.getMiniFilename(targetPath);
-                                    FileUtils.copy(compressedData, new File(compressedPath));
+                                //-- compress file --//
+                                if (_settings.isCompressibleExt(ext(targetPath))) {
+                                    // creates new minified file
+                                    final byte[] compressedData = this.compress(binaryData, targetPath);
+                                    if (null != compressedData && compressedData.length > 0) {
+                                        compressedPath = _settings.getMiniFilename(targetPath);
+                                        FileUtils.copy(compressedData, new File(compressedPath));
+                                    }
                                 }
                             }
 
@@ -354,7 +365,7 @@ public abstract class FileDeployer {
     private byte[] preProcess(final byte[] text) throws UnsupportedEncodingException {
         String result = new String(text);
         if (StringUtils.hasText(result)) {
-            if(!CollectionUtils.isEmpty(_settings.preprocessorModel())){
+            if (!CollectionUtils.isEmpty(_settings.preprocessorModel())) {
                 result = FormatUtils.formatTemplate(result, "{{", "}}", _settings.preprocessorModel());
             }
         }
@@ -368,7 +379,7 @@ public abstract class FileDeployer {
             final String folder = PathUtils.join(root, startFolder);
 
             this.logInfo("LOADING resources from Root: '{0}', "
-                    + "Folder: '{1}'",
+                            + "Folder: '{1}'",
                     root, folder);
 
             //-- get children names --//
@@ -452,7 +463,7 @@ public abstract class FileDeployer {
                     // debug logging
                     this.getLogger().log(Level.FINER,
                             FormatUtils.format("path='{0}', name='{1}', "
-                                    + "entry='{2}', resname='{3}'",
+                                            + "entry='{2}', resname='{3}'",
                                     path, name, entry, resname));
                 }
             }
@@ -522,6 +533,5 @@ public abstract class FileDeployer {
             _deployers.clear();
         }
     }
-
 
 }

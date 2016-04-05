@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.lyj.Lyj;
 import org.lyj.TestInitializer;
+import org.lyj.commons.io.db.jsondb.JsonDB;
+import org.lyj.commons.io.db.jsondb.JsonDBCollection;
 import org.lyj.commons.util.MapBuilder;
 
 import java.io.File;

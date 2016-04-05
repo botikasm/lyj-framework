@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.lyj.Lyj;
 import org.lyj.TestInitializer;
+import org.lyj.commons.io.db.jdbm.JDB;
+import org.lyj.commons.io.db.jdbm.JDBCollection;
 import org.lyj.commons.util.MapBuilder;
 
 import java.util.Collection;

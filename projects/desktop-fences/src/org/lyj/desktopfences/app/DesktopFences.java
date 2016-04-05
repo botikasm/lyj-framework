@@ -2,6 +2,7 @@ package org.lyj.desktopfences.app;
 
 import org.lyj.desktopfences.app.bus.SystemMessageListener;
 import org.lyj.desktopfences.app.client.ApiController;
+import org.lyj.desktopfences.app.controllers.archive.ArchiveController;
 import org.lyj.desktopfences.app.scheduledtasks.DesktopMonitor;
 import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
 
@@ -16,17 +17,23 @@ public class DesktopFences {
 
     private boolean _test_mode;
     private IRouter _router;
+    private final DesktopFencesSettings _settings;
 
     // ------------------------------------------------------------------------
     //                      constructor
     // ------------------------------------------------------------------------
 
     private DesktopFences() {
+        _settings = new DesktopFencesSettings();
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public DesktopFencesSettings settings() {
+        return _settings;
+    }
 
     public DesktopFences start() {
         //-- add custom client API --//
@@ -35,13 +42,16 @@ public class DesktopFences {
         //-- init system listener --//
         SystemMessageListener.init();
 
+        //-- init Archive controller --//
+        ArchiveController.instance();
+
         //-- Start Task --//
         DesktopMonitor.start();
 
         return this;
     }
 
-    public DesktopFences stop(){
+    public DesktopFences stop() {
         //-- Stop Tasks --//
         DesktopMonitor.stop();
 

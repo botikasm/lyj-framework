@@ -65,7 +65,7 @@ public class DesktopMonitor
 
     private void run() throws Exception {
         // start catalogueDesktop all desktop files, move all into archive folder in USERHOME/desktop-fences/archive
-        DesktopController.instance().catalogueDesktop(true);
+        DesktopController.instance().scan(true);
     }
 
     // ------------------------------------------------------------------------

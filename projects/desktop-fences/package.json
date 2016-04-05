@@ -2,31 +2,34 @@
   "name": "desktop-fences",
   "version": "1.0.0",
   "description": "##About I started **Desktop Fences** because I was tired of my confusing desktop. Disordered desktops affect creativity and productivity, that's true!",
-  "main": "index.js",
+  "main": "sample.js",
   "author": "Gian Angelo Geminiani",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://angelogeminiani@bitbucket.org/angelogeminiani/lyj.git"
   },
-
   "directories": {
     "test": "test"
   },
-
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify src/org/lyj/desktopfences/deploy/htdocs/src/index.js -o src/org/lyj/desktopfences/deploy/htdocs/build/app.js"
   },
-
   "browser": {
-    "react": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/react/react.min.js",
-    "react-dom": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/react/react-dom.min.js",
-    "jquery": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/jquery/dist/jquery.min.js"
+    "react": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/react/react.js",
+    "react-dom": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/react/react-dom.js",
+    "jQuery": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/jquery/dist/jquery.min.js",
+    "jquery": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/jquery/dist/jquery.min.js",
+    "materialize": "./src/org/lyj/desktopfences/deploy/htdocs/assets/css/materialize/js/materialize.min.js",
+    "ly": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/ly/ly.js",
+    "hammerjs": "./src/org/lyj/desktopfences/deploy/htdocs/assets/lib/hammerjs/hammer.min.js"
   },
-
   "devDependencies": {
+    "babel-core": "^6.7.4",
+    "babel-loader": "^6.2.4",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
     "webpack": "^1.12.14"
   }
-
 }

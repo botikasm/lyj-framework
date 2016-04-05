@@ -8,10 +8,10 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="TEST" name="junit:junit:4.12" level="application" />
     <orderEntry type="module" module-name="desktopgap" />
     <orderEntry type="module" module-name="lyj-core" />
     <orderEntry type="module" module-name="lyj-core-gui" />
     <orderEntry type="module" module-name="lyj-ext-netty" />
-    <orderEntry type="library" scope="TEST" name="junit:junit:4.12" level="application" />
   </component>
 </module>

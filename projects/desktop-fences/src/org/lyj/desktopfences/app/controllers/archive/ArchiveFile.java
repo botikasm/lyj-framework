@@ -1,10 +1,7 @@
 package org.lyj.desktopfences.app.controllers.archive;
 
 import org.lyj.commons.cryptograph.MD5;
-import org.lyj.commons.util.DateUtils;
-import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.MapBuilder;
-import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.*;
 import org.lyj.desktopfences.app.IConstants;
 
 import java.io.File;
@@ -287,10 +284,23 @@ public class ArchiveFile {
 
     public static boolean isValid(final File file) {
         if (file.exists()) {
+            //-- extension --//
             final String ext = PathUtils.getFilenameExtension(file.getName(), false);
-            if (!IConstants.EXCLUDE.contains(ext)) {
-                return true;
+            if(StringUtils.hasText(ext)){
+                if (IConstants.EXCLUDE_EXTENSIONS.contains(ext)) {
+                    return false;
+                }
             }
+
+            //-- directories --//
+            if(file.isDirectory()){
+                final String name = file.getName();
+                if (IConstants.EXCLUDE_DIRECTORIES.contains(file.getName())) {
+                    return false;
+                }
+            }
+
+            return true;
         }
         return false;
     }

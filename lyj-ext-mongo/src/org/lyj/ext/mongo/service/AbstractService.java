@@ -12,7 +12,6 @@ import com.mongodb.client.model.ReturnDocument;
 import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
-import org.bson.BSON;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.lyj.commons.Delegates;
@@ -706,6 +705,22 @@ public abstract class AbstractService
         } else {
             throw new Exception("Unable to insert or update object: Missing ID");
         }
+    }
+
+    protected com.mongodb.client.FindIterable<Document> findIterable(final String collection_name,
+                                                                     final Bson afilter,
+                                                                     final int skip, final int limit,
+                                                                     final Bson sort, final Bson projection) throws Exception {
+        final com.mongodb.client.MongoCollection<Document> collection = this.getCollection(collection_name);
+        final Bson filter = LyjMongoObjects.notNull(afilter);
+        com.mongodb.client.FindIterable<Document> iterable = collection.find().filter(filter).skip(skip).limit(limit);
+        if (null != sort) {
+            iterable = iterable.sort(sort);
+        }
+        if (null != projection) {
+            iterable = iterable.projection(projection);
+        }
+        return iterable;
     }
 
 }

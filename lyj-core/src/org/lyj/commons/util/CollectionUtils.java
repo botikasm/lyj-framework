@@ -709,16 +709,16 @@ public abstract class CollectionUtils {
     public static Map<String, Object> toMap(final String queryString) {
         final Map<String, Object> result = new HashMap<>();
         final String[] tokens = StringUtils.split(queryString, "&", true);
-        if(tokens.length>0){
-            for(final String token:tokens){
+        if (tokens.length > 0) {
+            for (final String token : tokens) {
                 final String[] key_pair = StringUtils.split(token, "=", true);
-                if(key_pair.length==2){
+                if (key_pair.length == 2) {
                     final String key = key_pair[0];
                     final String value = key_pair[1];
-                    if(result.containsKey(key)){
+                    if (result.containsKey(key)) {
                         final Object prev_val = result.get(key);
-                        if(prev_val instanceof List){
-                            final List list = (List)prev_val;
+                        if (prev_val instanceof List) {
+                            final List list = (List) prev_val;
                             list.add(value);
                         } else {
                             final List<String> list = new ArrayList<>();
@@ -786,7 +786,6 @@ public abstract class CollectionUtils {
     }
 
 
-
     public static Object[] subtract(final Object[] valuestoremove,
                                     final Object[] targetarray) {
         final List<Object> result = new LinkedList<Object>();
@@ -845,6 +844,74 @@ public abstract class CollectionUtils {
         }
         return result;
     }
+
+    //---------------------------------------------------------------------
+    // sublist
+    //
+    //---------------------------------------------------------------------
+
+    public static <T> List<T> subList(final Collection<T> list, final int fromIndex, final int toIndex) {
+        final List<T> response = new LinkedList<>();
+        try {
+            int count = 0;
+            for (T item : list) {
+                if (count > fromIndex - 1) {
+                    response.add(item);
+                }
+                count++;
+                if (count > toIndex) {
+                    break;
+                }
+            }
+        } catch (Throwable ignored) {
+            // index out of bound
+        }
+        return response;
+    }
+
+    public static <T> T[] subList(final T[] list, final int fromIndex, final int toIndex) {
+        final List response = new LinkedList<>();
+        try {
+            int count = 0;
+            for (Object item : list) {
+                if (count > fromIndex - 1) {
+                    response.add(item);
+                }
+                count++;
+                if (count > toIndex) {
+                    break;
+                }
+            }
+        } catch (Throwable ignored) {
+            // index out of bound
+        }
+        return (T[]) response.toArray(new Object[response.size()]);
+    }
+
+    public static List<Collection> subList(final Collection list, final int subListSize) {
+        final List<Collection> response = new LinkedList<>();
+        int from = 0;
+        int to = subListSize - 1;
+
+        do {
+            response.add(subList(list, from, to));
+            from = to + 1;
+            to += subListSize;
+            if (to > list.size()-1) {
+                if(from<list.size()){
+                    response.add(subList(list, from, list.size()-1));
+                }
+                break;
+            }
+        } while (true);
+
+        return response;
+    }
+
+    //---------------------------------------------------------------------
+    // contains
+    //
+    //---------------------------------------------------------------------
 
     public static boolean contains(final Collection list, final String fieldName,
                                    final Object fieldValue) {
@@ -1056,9 +1123,9 @@ public abstract class CollectionUtils {
             // total lenght and lenghts
             int len = 0;
             int[] lengths = new int[arrays.length];
-            for(int i=0;i<arrays.length;i++){
-                lengths[i]=arrays[i].length;
-                len+=lengths[i];
+            for (int i = 0; i < arrays.length; i++) {
+                lengths[i] = arrays[i].length;
+                len += lengths[i];
             }
 
             int pos = 0;
@@ -1078,9 +1145,9 @@ public abstract class CollectionUtils {
             // total lenght and lenghts
             int len = 0;
             int[] lengths = new int[arrays.length];
-            for(int i=0;i<arrays.length;i++){
-                lengths[i]=arrays[i].length;
-                len+=lengths[i];
+            for (int i = 0; i < arrays.length; i++) {
+                lengths[i] = arrays[i].length;
+                len += lengths[i];
             }
 
             int pos = 0;
