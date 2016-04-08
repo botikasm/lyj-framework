@@ -58,11 +58,12 @@ public class DesktopGapAppLauncher
         MessageBus.getInstance().listeners().setInterval(300);
 
         // start application and web server
-        _application = DesktopGap.instance();
+        _application = DesktopGap.instance().primaryStage(primaryStage);
         _application.start();
 
         // deploy desktopgap framework (at least, but befor web view navigation)
         DesktopGapDeployer.create().deploy();
+
     }
 
     @Override
@@ -92,6 +93,8 @@ public class DesktopGapAppLauncher
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
+
+    // launcher
     public static void main(String[] args) {
         launch(args);
     }

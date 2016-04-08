@@ -171,8 +171,9 @@ public abstract class AbstractModel
         }
     }
 
-    public final void setId(final Object value) {
+    public AbstractModel setId(final Object value) {
         put(F_ID, value);
+        return this;
     }
 
     public final String getCollection() {

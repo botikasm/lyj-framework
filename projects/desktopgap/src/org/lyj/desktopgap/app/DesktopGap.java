@@ -1,5 +1,6 @@
 package org.lyj.desktopgap.app;
 
+import javafx.stage.Stage;
 import org.lyj.desktopgap.app.bus.GlobalMessageListener;
 import org.lyj.desktopgap.app.scheduledtask.ScheduledConnectionMonitor;
 import org.lyj.desktopgap.app.server.WebServer;
@@ -15,6 +16,7 @@ public class DesktopGap {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private Stage _primaryStage;
     private WebServer _web_server;
     private DesktopGapSettings _settings; // contains read/write settings
 
@@ -23,6 +25,7 @@ public class DesktopGap {
     // ------------------------------------------------------------------------
 
     private DesktopGap() {
+        _primaryStage = null;
         // internal web server
         _web_server = new WebServer();
         _settings = new DesktopGapSettings();
@@ -79,6 +82,14 @@ public class DesktopGap {
         return null;
     }
 
+    public Stage primaryStage() {
+        return _primaryStage;
+    }
+
+    public DesktopGap primaryStage(final Stage stage) {
+        _primaryStage = stage;
+        return this;
+    }
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -88,6 +99,7 @@ public class DesktopGap {
     // ------------------------------------------------------------------------
 
     private static DesktopGap __instance;
+
 
     public static DesktopGap instance() {
         if (null == __instance) {
