@@ -17,6 +17,9 @@ import org.lyj.gui.application.app.AbstractViewController;
 import org.lyj.gui.application.app.utils.PlatformUtils;
 import org.lyj.gui.components.AnimatedGif;
 
+import java.net.CookieHandler;
+import java.net.CookieManager;
+
 public class Web
         extends AbstractViewController {
 
@@ -42,19 +45,23 @@ public class Web
 
     private String _uri;
     private AnimatedGif _loader_gif;
-
+    private CookieManager _cookie_manager;
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     public Web() {
-
+        _cookie_manager = new java.net.CookieManager();
+        CookieHandler.setDefault(_cookie_manager);
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public void clearCookies(){
+        _cookie_manager.getCookieStore().removeAll();
+    }
 
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d

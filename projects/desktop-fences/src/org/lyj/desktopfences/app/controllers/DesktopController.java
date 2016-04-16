@@ -1,5 +1,6 @@
 package org.lyj.desktopfences.app.controllers;
 
+import org.lyj.commons.io.FileObserver;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -31,14 +32,18 @@ public class DesktopController
     private boolean _closed;
     private boolean _working;
 
+    private FileObserver _observer;
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     private DesktopController() {
-        _root = DesktopFences.instance().settings().teleport();
+        _root = DesktopFences.instance().settings().teleport(); // directory to monitor
         _closed = false;
         _working = false;
+
+        this.init();
     }
 
     // ------------------------------------------------------------------------
@@ -49,6 +54,10 @@ public class DesktopController
         _closed = true;
         _working = false;
         ArchiveController.instance().close();
+        if (null != _observer) {
+            _observer.stopWatching();
+            _observer = null;
+        }
         super.logger().info("DesktopController closed.");
     }
 
@@ -79,6 +88,20 @@ public class DesktopController
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    private void init() {
+        try {
+            _observer = new FileObserver(_root, true, false, (ievent, path) -> {
+                if (FileObserver.EVENT_CREATE == ievent) {
+                    // created new file
+                    this.handleNewFile(path);
+                }
+            });
+            _observer.startWatching();
+        } catch (Throwable t) {
+            super.error("init", t);
+        }
+    }
+
     private void mkdirs(final String path) {
         try {
             FileUtils.mkdirs(path);
@@ -93,7 +116,7 @@ public class DesktopController
                 break;
             }
             try {
-                this.catalogue(file, move);
+                this.catalogue(file, move, true);  // existing files
             } catch (Throwable t) {
                 super.error("catalogue", FormatUtils.format("Error archiving '%s': %s", file.getPath(), t.toString()));
             }
@@ -101,10 +124,22 @@ public class DesktopController
     }
 
     private void catalogue(final File file,
-                           final boolean move) throws FileNotFoundException {
+                           final boolean move,
+                           final boolean checkCRC) throws FileNotFoundException {
         if (ArchiveFile.isValid(file)) {
-            final ArchiveFile archive = ArchiveFile.create(file);
+            final ArchiveFile archive = ArchiveFile.create(file, checkCRC);
             ArchiveController.instance().put(archive, move, null);
+        }
+    }
+
+    private void handleNewFile(final String path) {
+        try {
+            final File file = new File(path);
+            if (file.exists()) {
+                this.catalogue(file, true, true);
+            }
+        } catch (Throwable t) {
+
         }
     }
 

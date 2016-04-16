@@ -231,7 +231,7 @@ public class HttpServerRequestContext {
                 value = "";
             }
         }
-        return value.toLowerCase().equals("keep-alive");
+        return null!=value?value.toLowerCase().equals("keep-alive"):false;
     }
 
     /**

@@ -48,12 +48,13 @@ public class ArchiveFile {
         _data = MapBuilder.create(data);
     }
 
-    private ArchiveFile(final File file) {
+    private ArchiveFile(final File file,
+                        final boolean checkCRC) {
         this(new HashMap<String, Object>());
 
         _file = file;
 
-        this.load(file);
+        this.load(file, checkCRC);
     }
 
     @Override
@@ -223,11 +224,11 @@ public class ArchiveFile {
 
     }
 
-    public void addCategory(final String value){
+    public void addCategory(final String value) {
         this.category().add(value);
     }
 
-    public void addTag(final String value){
+    public void addTag(final String value) {
         this.tag().add(value);
     }
 
@@ -235,9 +236,11 @@ public class ArchiveFile {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void load(final File file) {
-        this.id(MD5.encode(file.getAbsolutePath()));
-        //this.crc(FileUtils.getCRC(file)); // require much time to read entire file
+    private void load(final File file,
+                      final boolean checkCRC) {
+        final long crc = checkCRC ? FileUtils.getCRC(file) : 0; // require much time to read entire file
+        this.id(crc > 0 ? MD5.encode(crc + "") : MD5.encode(file.getAbsolutePath()));
+        this.crc(crc);
         this.pathOrigin(file.getAbsolutePath());
         this.pathLogic(PathUtils.subtract(PathUtils.getDesktopDirectory(), this.pathOrigin()));
         this.directory(PathUtils.getParent(this.pathLogic()));
@@ -274,8 +277,9 @@ public class ArchiveFile {
         return new ArchiveFile(data); // wrap existing object
     }
 
-    public static ArchiveFile create(final File file) throws FileNotFoundException {
-        final ArchiveFile response = new ArchiveFile(file);
+    public static ArchiveFile create(final File file,
+                                     final boolean chechCRC) throws FileNotFoundException {
+        final ArchiveFile response = new ArchiveFile(file, chechCRC);
         if (!file.exists()) {
             throw new FileNotFoundException(file.getName());
         }
@@ -286,14 +290,14 @@ public class ArchiveFile {
         if (file.exists()) {
             //-- extension --//
             final String ext = PathUtils.getFilenameExtension(file.getName(), false);
-            if(StringUtils.hasText(ext)){
+            if (StringUtils.hasText(ext)) {
                 if (IConstants.EXCLUDE_EXTENSIONS.contains(ext)) {
                     return false;
                 }
             }
 
             //-- directories --//
-            if(file.isDirectory()){
+            if (file.isDirectory()) {
                 final String name = file.getName();
                 if (IConstants.EXCLUDE_DIRECTORIES.contains(file.getName())) {
                     return false;

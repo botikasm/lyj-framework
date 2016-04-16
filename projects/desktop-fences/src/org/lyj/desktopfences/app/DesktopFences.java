@@ -2,8 +2,8 @@ package org.lyj.desktopfences.app;
 
 import org.lyj.desktopfences.app.bus.SystemMessageListener;
 import org.lyj.desktopfences.app.client.ApiController;
+import org.lyj.desktopfences.app.controllers.DesktopController;
 import org.lyj.desktopfences.app.controllers.archive.ArchiveController;
-import org.lyj.desktopfences.app.scheduledtasks.DesktopMonitor;
 import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
 
 /**
@@ -45,15 +45,15 @@ public class DesktopFences {
         //-- init Archive controller --//
         ArchiveController.instance();
 
-        //-- Start Task --//
-        DesktopMonitor.start();
+        //-- Start Desktop controller with scan for existing files --//
+        DesktopController.instance().scan(true);
 
         return this;
     }
 
     public DesktopFences stop() {
-        //-- Stop Tasks --//
-        DesktopMonitor.stop();
+        //-- Stop Desktop controller --//
+        DesktopController.instance().close();
 
         return this;
     }

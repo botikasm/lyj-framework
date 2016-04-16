@@ -243,8 +243,8 @@ public class ArchiveController
                     FileUtils.mkdirs(file.pathArchive());
                     if (move) {
                         // remove original
-                        //Files.move(Paths.get(file.pathOrigin()), Paths.get(file.pathArchive()), StandardCopyOption.REPLACE_EXISTING);
-                        Files.copy(Paths.get(path_source), Paths.get(path_target), StandardCopyOption.REPLACE_EXISTING);
+                        Files.move(Paths.get(path_source), Paths.get(path_target), StandardCopyOption.REPLACE_EXISTING);
+                        //Files.copy(Paths.get(path_source), Paths.get(path_target), StandardCopyOption.REPLACE_EXISTING);
                     } else {
                         Files.copy(Paths.get(path_source), Paths.get(path_target), StandardCopyOption.REPLACE_EXISTING);
                     }
@@ -421,7 +421,7 @@ public class ArchiveController
                 for (final File item : list) {
                     if (ArchiveFile.isValid(item)) {
                         try {
-                            final ArchiveFile archive = ArchiveFile.create(item);
+                            final ArchiveFile archive = ArchiveFile.create(item, false);
                             final String target = PathUtils.concat(root, archive.pathLogic());
                             archive.pathArchive(target);
                             _resources.add(archive);
