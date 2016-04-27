@@ -5,7 +5,11 @@ import org.json.JSONObject;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.StringUtils;
 
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +36,7 @@ public class HttpServerConfig {
     private boolean _use_compression;
     private int _cache_seconds;
     private String _header_access_control_allow_origin; // for rest methods
+    private String _not_found_404;
     private final List<String> _index_files;
 
     // ------------------------------------------------------------------------
@@ -49,6 +54,7 @@ public class HttpServerConfig {
         _port_detection_try = 100; // try 100 times to get a free port
         _cache_seconds = 60;
         _host = "localhost";
+        _not_found_404 = "";
 
         _header_access_control_allow_origin = ""; // empty=none, "*"=all
 
@@ -134,6 +140,15 @@ public class HttpServerConfig {
         return this;
     }
 
+    public HttpServerConfig notFound404(final String value) {
+        _not_found_404 = value;
+        return this;
+    }
+
+    public String notFound404() {
+        return _not_found_404;
+    }
+
     public HttpServerConfig portDetectTry(final int value) {
         _port_detection_try = value;
         return this;
@@ -176,15 +191,16 @@ public class HttpServerConfig {
 
     /**
      * Set "Access-Control-Allow-Origin" header for all response
+     *
      * @param value If empty the header is not setted. "*" is for ALL
      * @return
      */
-    public HttpServerConfig headerAccessControlAllowOrigin(final String value){
+    public HttpServerConfig headerAccessControlAllowOrigin(final String value) {
         _header_access_control_allow_origin = value;
         return this;
     }
 
-    public String headerAccessControlAllowOrigin(){
+    public String headerAccessControlAllowOrigin() {
         return _header_access_control_allow_origin;
     }
 
@@ -201,6 +217,32 @@ public class HttpServerConfig {
         return PathUtils.concat(this.uri(), relativePath);
     }
 
+    public String filePath() {
+        return this.root();
+    }
+
+    public String filePath(final String relativePath) {
+        return this.filePath(relativePath, true);
+    }
+
+    public String filePath(final String relativePath, final boolean sanitize) {
+        return PathUtils.concat(this.root(), sanitize ? sanitizeUri(relativePath) : relativePath);
+    }
+
+    public File file404() {
+        try {
+            if (StringUtils.hasText(_not_found_404)) {
+                final File file = new File(this.filePath(this._not_found_404, false));
+                if (file.exists()) {
+                    return file;
+                }
+            }
+        } catch (Throwable ignored) {
+            System.out.println(ignored);
+        }
+        return null;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -215,6 +257,33 @@ public class HttpServerConfig {
         sb.append(_host).append(":").append(_port);
 
         return sb.toString();
+    }
+
+    private String sanitizeUri(String uri) {
+        // Decode the path.
+        try {
+            uri = URLDecoder.decode(uri, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new Error(e);
+        }
+
+        if (uri.isEmpty() || uri.charAt(0) != '/') {
+            return null;
+        }
+
+        // Convert file separators.
+        uri = uri.replace('/', File.separatorChar);
+
+        // Simplistic dumb security check.
+        // You will have to do something serious in the production environment.
+        if (uri.contains(File.separator + '.') ||
+                uri.contains('.' + File.separator) ||
+                uri.charAt(0) == '.' || uri.charAt(uri.length() - 1) == '.' ||
+                IHttpConstants.INSECURE_URI.matcher(uri).matches()) {
+            return null;
+        }
+
+        return uri;
     }
 
 

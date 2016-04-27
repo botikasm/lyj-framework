@@ -2,24 +2,25 @@ package org.lyj.ext.netty.server.web;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.network.http.client.HttpBuffer;
-import org.lyj.commons.util.ByteUtils;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.MimeTypeUtils;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.controllers.CacheController;
 import org.lyj.ext.netty.server.web.controllers.HttpServerRequestContext;
 import org.lyj.ext.netty.server.web.utils.CookieUtil;
 
-import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
@@ -135,14 +136,14 @@ public class HttpServerResponse
             this.setContentLength(file);
 
             try {
-                if(this.getContentTypeHeader().startsWith("text")){
+                if (this.getContentTypeHeader().startsWith("text")) {
                     final String text = FileUtils.readFileToString(file, this.config().encoding());
                     _buffer.write(text);
                 } else {
                     final byte[] bytes = Files.readAllBytes(Paths.get(file.getPath()));
                     _buffer.write(bytes);
                 }
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 this.writeErrorINTERNAL_SERVER_ERROR(t);
             }
         } else {
@@ -159,7 +160,12 @@ public class HttpServerResponse
     }
 
     public void writeErrorNOT_FOUND() {
-        this.writeError(HttpResponseStatus.NOT_FOUND);
+        final String not_found_404 = this.config().uri(this.config().notFound404());
+        if (StringUtils.hasText(not_found_404)) {
+            this.writeRedirect(not_found_404);
+        } else {
+            this.writeError(HttpResponseStatus.NOT_FOUND);
+        }
     }
 
     public void writeErrorINTERNAL_SERVER_ERROR() {
@@ -210,7 +216,7 @@ public class HttpServerResponse
         _buffer.clear();
         this.removeContentLength();
 
-        if(StringUtils.hasText(content)) {
+        if (StringUtils.hasText(content)) {
             _buffer.write(content);
         }
 

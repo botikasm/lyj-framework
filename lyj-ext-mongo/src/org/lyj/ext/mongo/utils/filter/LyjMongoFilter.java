@@ -243,4 +243,9 @@ public class LyjMongoFilter
         return filter;
     }
 
+    public static Document nin(final Document filter, final String fieldName, final Collection list){
+        filter.put(fieldName, new Document($NIN, list));
+        return filter;
+    }
+
 }

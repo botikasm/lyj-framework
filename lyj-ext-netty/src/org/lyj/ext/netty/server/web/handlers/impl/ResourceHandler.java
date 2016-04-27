@@ -8,13 +8,9 @@ import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
 import org.lyj.ext.netty.server.web.HttpServerRequest;
 import org.lyj.ext.netty.server.web.HttpServerResponse;
-import org.lyj.ext.netty.server.web.IHttpConstants;
 import org.lyj.ext.netty.server.web.handlers.AbstractRequestHandler;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.List;
 
 /**
  * Manage resource requests returning files to browsers
@@ -51,8 +47,10 @@ public class ResourceHandler
                 response.handled(true);
                 super.error("handle", err);
             } else {
-                final String path = this.sanitizeUri(request.uri());
+                final String uri = request.uri();
+                final String path = super.config().filePath(uri);
                 if (StringUtils.hasText(path)) {
+
                     final File file = this.lookupFile(path);
                     if (null == file) {
                         response.writeErrorNOT_FOUND();
@@ -92,52 +90,26 @@ public class ResourceHandler
         }
     }
 
-    private String sanitizeUri(String uri) {
-        // Decode the path.
+    private File lookupFile(final String path) {
         try {
-            uri = URLDecoder.decode(uri, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new Error(e);
+            if (PathUtils.isFile(path)) {
+                final File file = new File(path);
+                return file.exists() ? file : null;
+            } else {
+                return this.fetchIndex(path);
+            }
+        } catch (Throwable ignored) {
+            return this.fetchIndex(path);
         }
-
-        if (uri.isEmpty() || uri.charAt(0) != '/') {
-            return null;
-        }
-
-        // Convert file separators.
-        uri = uri.replace('/', File.separatorChar);
-
-        // Simplistic dumb security check.
-        // You will have to do something serious in the production environment.
-        if (uri.contains(File.separator + '.') ||
-                uri.contains('.' + File.separator) ||
-                uri.charAt(0) == '.' || uri.charAt(uri.length() - 1) == '.' ||
-                IHttpConstants.INSECURE_URI.matcher(uri).matches()) {
-            return null;
-        }
-
-        // get htdocs path
-        uri = PathUtils.concat(super.config().root(), uri);
-        try {
-            FileUtils.mkdirs(uri); // ensure directory exists
-        } catch (Throwable ignore) {
-        }
-
-        return uri;
     }
 
-    private File lookupFile(final String path) {
-        if (PathUtils.isFile(path)) {
-            final File file = new File(path);
-            return file.exists() ? file : null;
-        } else {
-            final String[] index_files = super.config().indexFiles();
-            for (final String name : index_files) {
-                final String index_path = PathUtils.concat(path, name);
-                final File file = new File(index_path);
-                if (file.exists()) {
-                    return file;
-                }
+    private File fetchIndex(final String path) {
+        final String[] index_files = super.config().indexFiles();
+        for (final String name : index_files) {
+            final String index_path = PathUtils.concat(path, name);
+            final File file = new File(index_path);
+            if (file.exists()) {
+                return file;
             }
         }
         return null;
