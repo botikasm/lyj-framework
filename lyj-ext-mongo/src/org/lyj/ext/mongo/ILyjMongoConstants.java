@@ -23,6 +23,7 @@ public interface ILyjMongoConstants {
     public static final String $GT = "$gt";
 
     public static final String $REGEX = "$regex";
+    public static final String $OPTIONS = "$options";
 
     public static final String $OR = "$or";
     public static final String $AND = "$and";

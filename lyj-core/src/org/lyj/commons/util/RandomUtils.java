@@ -37,6 +37,7 @@ public abstract class RandomUtils {
 
     public static final char[] CHARS_LOW_NUMBERS = "abcdefghilmnopqrstuvzxywjk0123456789".toCharArray();
     public static final char[] CHARS_NUMBERS = "1234567890abcdefghilmnopqrstuvzxywkjABCDEFGHILMNOPQRSTUVZXYWKJ".toCharArray();
+    public static final char[] NUMBERS = "0123456789".toCharArray();
 
     private static final Random _random = new Random();
 

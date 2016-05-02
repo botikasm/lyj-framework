@@ -190,8 +190,8 @@ public class FormatUtils {
         }
 
         final StringBuilder buf = new StringBuilder(text);
-        int count=0;
-        while(count<loopCount){
+        int count = 0;
+        while (count < loopCount) {
             count++;
 
             int startIndex = buf.indexOf(prefix);
@@ -225,7 +225,7 @@ public class FormatUtils {
                     startIndex = -1;
                 }
             }
-            if(!buf.toString().contains(prefix)){
+            if (!buf.toString().contains(prefix)) {
                 break;
             }
         }
@@ -638,6 +638,24 @@ public class FormatUtils {
             result = "Error: [" + ex.getMessage() + "]";
         }
         return result;
+    }
+
+    // -------------------------------------------------------------------------
+    //                  credit cards
+    // -------------------------------------------------------------------------
+
+    public static String formatCard(final String value,
+                                    final int token_size,
+                                    final String sep) {
+        final StringBuilder result = new StringBuilder();
+        for (int i = 0; i < value.length(); i++) {
+            if (i % token_size == 0 && i != 0) {
+                result.append(sep);
+            }
+
+            result.append(value.charAt(i));
+        }
+        return result.toString();
     }
 
     // -------------------------------------------------------------------------
