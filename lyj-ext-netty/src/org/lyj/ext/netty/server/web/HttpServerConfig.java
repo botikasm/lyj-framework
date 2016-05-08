@@ -35,7 +35,9 @@ public class HttpServerConfig {
     private boolean _use_ssl;
     private boolean _use_compression;
     private int _cache_seconds;
-    private String _header_access_control_allow_origin; // for rest methods
+    private String _cors_allow_origin; // CORS
+    private String _cors_allow_methods; // CORS
+    private String _cors_allow_headers; // CORS
     private String _not_found_404;
     private final List<String> _index_files;
 
@@ -56,7 +58,7 @@ public class HttpServerConfig {
         _host = "localhost";
         _not_found_404 = "";
 
-        _header_access_control_allow_origin = ""; // empty=none, "*"=all
+        _cors_allow_origin = ""; // empty=none, "*"=all
 
         _index_files = Arrays.asList(INDEX_FILES);
     }
@@ -195,15 +197,32 @@ public class HttpServerConfig {
      * @param value If empty the header is not setted. "*" is for ALL
      * @return
      */
-    public HttpServerConfig headerAccessControlAllowOrigin(final String value) {
-        _header_access_control_allow_origin = value;
+    public HttpServerConfig corsAllowOrigin(final String value) {
+        _cors_allow_origin = value;
         return this;
     }
 
-    public String headerAccessControlAllowOrigin() {
-        return _header_access_control_allow_origin;
+    public String corsAllowOrigin() {
+        return _cors_allow_origin;
     }
 
+    public HttpServerConfig corsAllowMethods(final String value) {
+        _cors_allow_methods = value;
+        return this;
+    }
+
+    public String corsAllowMethods() {
+        return _cors_allow_methods;
+    }
+
+    public HttpServerConfig corsAllowHeaders(final String value) {
+        _cors_allow_headers = value;
+        return this;
+    }
+
+    public String corsAllowHeaders() {
+        return _cors_allow_headers;
+    }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c

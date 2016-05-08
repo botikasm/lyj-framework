@@ -1,6 +1,7 @@
 package org.lyj.ext.netty.server.web.controllers.routing;
 
 import org.lyj.commons.logging.AbstractLogEmitter;
+import org.lyj.ext.netty.server.web.IHeaderNames;
 import org.lyj.ext.netty.server.web.IHttpConstants;
 
 import java.util.Collection;
@@ -63,24 +64,29 @@ public class Router
     public void handle(final RoutingContext context) {
         final String uri = context.uri();
         final String method = context.method();
-        final Collection<Route> routes = _routes.routes();
-        for (final Route route : routes) {
-            final RouteParsedPath match = route.match(method, uri);
-            if (null!=match && match.matchTemplate()) {
+        if(method.equals(IHttpConstants.METHOD_OPTIONS)){
+            context.write("");
+            context.handled(true);
+        } else {
+            final Collection<Route> routes = _routes.routes();
+            for (final Route route : routes) {
+                final RouteParsedPath match = route.match(method, uri);
+                if (null!=match && match.matchTemplate()) {
 
-                // add url REST parameters to contest
-                if (match.params().size()>0) {
-                    context.addParams(match.params());
-                }
+                    // add url REST parameters to contest
+                    if (match.params().size()>0) {
+                        context.addParams(match.params());
+                    }
 
-                try {
-                    route.handle(context);
-                    context.handled(true);
-                } catch (Throwable t) {
-                    super.error("handle", t);
+                    try {
+                        route.handle(context);
+                        context.handled(true);
+                    } catch (Throwable t) {
+                        super.error("handle", t);
+                    }
+                    // handled: must break chain
+                    break;
                 }
-                // handled: must break chain
-                break;
             }
         }
     }

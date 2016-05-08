@@ -139,8 +139,18 @@ public class LyjMongoFilter
         return this;
     }
 
+    public LyjMongoFilter lte(final String fieldName, final Object value) {
+        _filter.put(fieldName, new Document($LTE, value));
+        return this;
+    }
+
     public LyjMongoFilter gt(final String fieldName, final Object value) {
         _filter.put(fieldName, new Document($GT, value));
+        return this;
+    }
+
+    public LyjMongoFilter gte(final String fieldName, final Object value) {
+        _filter.put(fieldName, new Document($GTE, value));
         return this;
     }
 

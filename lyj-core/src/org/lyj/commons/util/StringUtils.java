@@ -668,6 +668,8 @@ public final class StringUtils {
             return "";
         } else if (obj instanceof Object[]) {
             return toString((Object[]) obj, ",");
+        } else if (obj instanceof Collection) {
+            return toString((Collection) obj, ",");
         } else {
             return obj.toString();
         }
@@ -729,8 +731,30 @@ public final class StringUtils {
         return toString(array, separator, null);
     }
 
+    public static String toString(final Collection array,
+                                  final String separator) {
+        return toString(array, separator, null);
+    }
+
+    public static String toString(final Collection array,
+                                  final String separator,
+                                  final String defaultValue) {
+        if (null == array) {
+            return defaultValue;
+        } else {
+            StringBuilder result = new StringBuilder();
+            for (final Object item:array) {
+                if (result.length() > 0) {
+                    result.append(separator);
+                }
+                result.append(toString(item));
+            }
+            return result.toString();
+        }
+    }
     public static String toString(final Object[] array,
-                                  final String separator, final String defaultValue) {
+                                  final String separator,
+                                  final String defaultValue) {
         if (null == array) {
             return defaultValue;
         } else {

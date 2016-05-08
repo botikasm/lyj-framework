@@ -10,5 +10,7 @@ public interface IHttpConstants {
     public static final String METHOD_DELETE = "DELETE";
     public static final String METHOD_PUT = "PUT";
 
+    public static final String METHOD_OPTIONS = "OPTIONS";
+
 
 }

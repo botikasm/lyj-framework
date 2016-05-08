@@ -5,8 +5,8 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.*;
-import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
@@ -282,13 +282,20 @@ public class HttpServerRequestContext {
         if (null != _content_buffer && _content_buffer.isReadable()) {
             final String content = _content_buffer.toString(charset());
             try {
-                final String[] tokens = StringUtils.split(content, "&", true);
-                for (final String token : tokens) {
-                    final String[] keyvalue = StringUtils.split(token, "=", true);
-                    if (keyvalue.length == 2) {
-                        final String key = URLDecoder.decode(keyvalue[0], _encoding);
-                        final String value = URLDecoder.decode(keyvalue[1], _encoding);
-                        result.put(key, value);
+                if(StringUtils.isJSONObject(content)){
+                    final Map<String, Object> map = new JsonWrapper(content).toMap();
+                    for(final Map.Entry<String, Object> entry:map.entrySet()){
+                        result.put(entry.getKey(), StringUtils.toString(entry.getValue()));
+                    }
+                } else {
+                    final String[] tokens = StringUtils.split(content, "&", true);
+                    for (final String token : tokens) {
+                        final String[] keyvalue = StringUtils.split(token, "=", true);
+                        if (keyvalue.length == 2) {
+                            final String key = URLDecoder.decode(keyvalue[0], _encoding);
+                            final String value = URLDecoder.decode(keyvalue[1], _encoding);
+                            result.put(key, value);
+                        }
                     }
                 }
             } catch (Throwable ignored) {

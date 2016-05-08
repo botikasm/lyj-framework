@@ -70,6 +70,7 @@ public class LyjMongo {
 
     public void init(final JsonWrapper config) {
         if (null != config) {
+            this.getLogger().info("MONGO: reading configuration -> " + config.toString());
             final Set<String> keys = config.keys();
             for (String key : keys) {
                 final JSONObject value = config.getJSONObject(key);
@@ -79,6 +80,8 @@ public class LyjMongo {
             }
             // log configuration completed
             this.getLogger().info("Mongo Configuration Completed");
+        } else {
+            this.getLogger().error("MONGO: Missing configuration!");
         }
     }
 
