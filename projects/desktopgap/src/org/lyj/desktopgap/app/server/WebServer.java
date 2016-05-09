@@ -25,7 +25,11 @@ public class WebServer
     // ------------------------------------------------------------------------
 
     public WebServer() {
-        super.config().port(4000).portAutodetect(true).root(Lyj.getAbsolutePath(HtdocsDeployer.PATH));
+        super.config()
+                .port(4000)
+                .portAutodetect(true)
+                .corsAllowOrigin("*")
+                .root(Lyj.getAbsolutePath(HtdocsDeployer.PATH));
 
         _router = RoutingHandler.create(super.config());
 
@@ -56,14 +60,13 @@ public class WebServer
         return this;
     }
 
-    public IRouter router(){
+    public IRouter router() {
         return _router;
     }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
-
 
 
 }
