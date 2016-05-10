@@ -18,6 +18,7 @@ public class RoutingContext
     // ------------------------------------------------------------------------
 
     private final HttpServerConfig _config;
+    private final String _encoding;
     private final HttpServerRequest _request;
     private final HttpServerResponse _response;
     private final String _uri;
@@ -31,6 +32,7 @@ public class RoutingContext
                           final HttpServerRequest request,
                           final HttpServerResponse response) {
         _config = config;
+        _encoding = config.encoding();
         _request = request;
         _response = response;
         _uri = _request.uri();
@@ -189,7 +191,7 @@ public class RoutingContext
         this.addCORSHeaders();
 
         _response.headers().put(CONTENT_TYPE,
-                StringUtils.hasText(content_type) ? content_type : MimeTypeUtils.MIME_PLAINTEXT);
+                StringUtils.hasText(content_type) ? content_type : MimeTypeUtils.getMimePlaintext(_encoding));
         _response.headers().put(CONTENT_LENGTH, content.length() + "");
         _response.write(content);
         _response.flush();
@@ -199,7 +201,7 @@ public class RoutingContext
         this.addCORSHeaders();
 
         final String json = validateJson(content);
-        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_JSON);
+        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.getMimeJson(_encoding));
         _response.headers().put(CONTENT_LENGTH, json.length() + "");
         _response.write(json);
         _response.flush();
@@ -208,7 +210,7 @@ public class RoutingContext
     public void writeHtml(final String content) {
         this.addCORSHeaders();
 
-        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_HTML);
+        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.getMimeHtml(_encoding));
         _response.headers().put(CONTENT_LENGTH, content.length() + "");
         _response.write(content);
         _response.flush();
@@ -217,7 +219,7 @@ public class RoutingContext
     public void writeXml(final String content) {
         this.addCORSHeaders();
 
-        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.MIME_XML);
+        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.getMimeXml(_encoding));
         _response.headers().put(CONTENT_LENGTH, content.length() + "");
         _response.write(content);
         _response.flush();
@@ -276,8 +278,8 @@ public class RoutingContext
                 if (StringUtils.hasText(_config.corsAllowMethods())) {
                     this.addHeader(ACCESS_CONTROL_ALLOW_METHODS, _config.corsAllowMethods());
                 } else {
-                    final String method =  _request.headerValue(ACCESS_CONTROL_REQUEST_METHOD);
-                    if(null!=method){
+                    final String method = _request.headerValue(ACCESS_CONTROL_REQUEST_METHOD);
+                    if (null != method) {
                         this.addHeader(ACCESS_CONTROL_ALLOW_METHODS, _request.headerValue(ACCESS_CONTROL_REQUEST_METHOD));
                     } else {
                         this.addHeader(ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, DELETE, PUT");
@@ -287,7 +289,7 @@ public class RoutingContext
                     this.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, _config.corsAllowHeaders());
                 } else {
                     final String headers = _request.headerValue(ACCESS_CONTROL_REQUEST_HEADERS);
-                    if(null!=headers){
+                    if (null != headers) {
                         this.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, _request.headerValue(ACCESS_CONTROL_REQUEST_HEADERS));
                     } else {
                         this.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, StringUtils.toString(_request.headerNames()));

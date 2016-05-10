@@ -36,17 +36,18 @@ import java.util.Map;
  */
 public class MimeTypeUtils {
 
-    private static final String CHARSET = ";charset=" + CharEncoding.getDefault();
+    private static final String CHARSET_PREFIX = ";charset=";
+    private static final String CHARSET_FULL = CHARSET_PREFIX + CharEncoding.getDefault();
 
-    public static final String MIME_JSON = MimeTypeUtils.getMimeType(".json") + CHARSET;
-    public static final String MIME_PLAINTEXT = MimeTypeUtils.getMimeType(".txt") + CHARSET;
+    public static final String MIME_JSON = MimeTypeUtils.getMimeType(".json") + CHARSET_FULL;
+    public static final String MIME_PLAINTEXT = MimeTypeUtils.getMimeType(".txt") + CHARSET_FULL;
     public static final String MIME_AUDIOBASIC = MimeTypeUtils.getMimeType(".wav");
     public static final String MIME_IMAGEBMP = MimeTypeUtils.getMimeType(".bmp");
     public static final String MIME_IMAGEJPG = MimeTypeUtils.getMimeType(".jpg");
     public static final String MIME_IMAGEPNG = MimeTypeUtils.getMimeType(".png");
-    public static final String MIME_HTML = MimeTypeUtils.getMimeType(".html") + CHARSET;
-    public static final String MIME_XML = MimeTypeUtils.getMimeType(".xml") + CHARSET;
-    public static final String MIME_XMLRSS = MimeTypeUtils.getMimeType(".rss") + CHARSET;
+    public static final String MIME_HTML = MimeTypeUtils.getMimeType(".html") + CHARSET_FULL;
+    public static final String MIME_XML = MimeTypeUtils.getMimeType(".xml") + CHARSET_FULL;
+    public static final String MIME_XMLRSS = MimeTypeUtils.getMimeType(".rss") + CHARSET_FULL;
     public static final String MIME_FORM = "application/x-www-form-urlencoded";
 
     private final Map<String, String> _filetypemap;
@@ -370,4 +371,30 @@ public class MimeTypeUtils {
         final String mimetype = MimeTypeUtils.getMimeType(fileName);
         return mimetype.startsWith("video");
     }
+
+    public static String getMimePlaintext(final String encoding){
+        return MimeTypeUtils.getMimeType(".txt")
+                .concat(CHARSET_PREFIX)
+                .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
+    }
+
+    public static String getMimeJson(final String encoding){
+        return MimeTypeUtils.getMimeType(".json")
+                .concat(CHARSET_PREFIX)
+                .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
+    }
+
+    public static String getMimeHtml(final String encoding){
+        return MimeTypeUtils.getMimeType(".html")
+                .concat(CHARSET_PREFIX)
+                .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
+    }
+
+    public static String getMimeXml(final String encoding){
+        return MimeTypeUtils.getMimeType(".xml")
+                .concat(CHARSET_PREFIX)
+                .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
+    }
+
+
 }

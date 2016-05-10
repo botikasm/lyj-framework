@@ -23,6 +23,7 @@ public class AbstractRoutingHandler
 
     private final Set<Delegates.Callback<RoutingContext>> _handlers;
     private final HttpServerConfig _config;
+    private final String _encoding;
     private RoutingContext _context;
 
     // ------------------------------------------------------------------------
@@ -32,6 +33,7 @@ public class AbstractRoutingHandler
     public AbstractRoutingHandler(final HttpServerConfig config) {
         super(config);
         _config = config;
+        _encoding = config.encoding();
         _handlers = new LinkedHashSet<>();
     }
 
