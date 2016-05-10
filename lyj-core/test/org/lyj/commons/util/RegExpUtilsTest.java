@@ -2,7 +2,7 @@ package org.lyj.commons.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class RegExpUtilsTest {
 
@@ -11,6 +11,16 @@ public class RegExpUtilsTest {
         String result = RegExpUtils.replaceNoAlphanumericChar("test file");
         System.out.println(result);
         assertEquals(result, "testfile");
+    }
+
+    @Test
+    public void testPhone() throws Exception {
+
+        assertTrue(RegExpUtils.isValidPhoneNumber("+39 0541 642255"));
+        assertTrue(RegExpUtils.isValidPhoneNumber("541 642255"));
+        assertFalse(RegExpUtils.isValidPhoneNumber("541-642255"));
+        assertFalse(RegExpUtils.isValidPhoneNumber("asdfghgjhjjk"));
+
     }
 
 }

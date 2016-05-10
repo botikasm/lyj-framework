@@ -8,6 +8,7 @@
   "loader":"bull.gif",
   "loader-time":3000,
 
-  "main":"index.html"
+  "main":"index.html",
+  "enable_debug":true
 
 }

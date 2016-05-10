@@ -42,6 +42,9 @@ public abstract class RegExpUtils {
     public static final String IP_ADDRESS = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";
     public static final String DOMAIN_NAME = "^[a-zA-Z]([a-zA-Z0-9-][a-zA-Z0-9])?\\.[a-zA-Z]([a-zA-Z0-9-][a-zA-Z0-9])?(\\.[a-zA-Z]([a-zA-Z0-9-][a-zA-Z0-9])?)?$";
     public static final String EMAIL_PATTERN = "^([0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*@(([0-9a-zA-Z])+([-\\w]*[0-9a-zA-Z])*\\.)+[a-zA-Z]{2,9})$";
+    public static final String PHONE_PREFIX_PATTERN = "^\\+(?:[0-9] ?){6,14}[0-9]$";
+    public static final String PHONE_PATTERN = "^(?:[0-9] ?){6,14}[0-9]$";
+
     /**
      * Matches text included in curly brakets '{' '}'.
      */
@@ -111,6 +114,14 @@ public abstract class RegExpUtils {
         final Pattern emailPattern = Pattern.compile(NOTNUMERIC);
         final Matcher emailMatcher = emailPattern.matcher(value);
         return !emailMatcher.find();
+    }
+
+    public static boolean isValidPhoneNumber(final String phone_number) {
+        if (!StringUtils.hasText(phone_number)) {
+            return false;
+        }
+
+        return phone_number.matches(PHONE_PREFIX_PATTERN) || phone_number.matches(PHONE_PATTERN);
     }
 
     public static boolean isValidEmail(String email) {
