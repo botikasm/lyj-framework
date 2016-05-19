@@ -712,6 +712,32 @@ public abstract class DateUtils {
         return calendar.get(Calendar.DAY_OF_YEAR);
     }
 
+    /**
+     * 1=sunday, 2=monday, etc...
+     * @return The day of week
+     */
+    public static int getDayOfWeek() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public static int getDayOfWeek(final Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK);
+    }
+
+    public static int getDayOfWeekInMonth() {
+        Calendar calendar = Calendar.getInstance();
+        return calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+    }
+
+    public static int getDayOfWeekInMonth(final Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH);
+    }
+
     public static int getMonth() {
         Calendar calendar = Calendar.getInstance();
         return calendar.get(Calendar.MONTH) + 1;

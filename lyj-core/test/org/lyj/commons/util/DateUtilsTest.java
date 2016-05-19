@@ -20,6 +20,20 @@ public class DateUtilsTest {
         System.out.println(date.toString());
     }
 
+    @Test
+    public void testDayOfWeek() throws Exception {
+        Date now = DateUtils.now();
+        final int response = DateUtils.getDayOfWeek(); // sunday=1, monday=2
+        System.out.println(response);
+    }
+
+    @Test
+    public void testDayOfWeekInMonth() throws Exception {
+        Date now = DateUtils.now();
+        final int response = DateUtils.getDayOfWeekInMonth(); // sunday=1, monday=2
+        System.out.println(response);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------

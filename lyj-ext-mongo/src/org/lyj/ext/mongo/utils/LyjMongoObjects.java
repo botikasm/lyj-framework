@@ -1,5 +1,6 @@
 package org.lyj.ext.mongo.utils;
 
+import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.json.JSONArray;
@@ -74,11 +75,12 @@ public class LyjMongoObjects {
     }
 
     public static boolean isEmpty(final Bson bson) {
-        if (bson instanceof Document) {
-            return ((Document) bson).size() == 0;
-        } else {
-            return true;
+        if (bson instanceof BsonDocument) {
+            return ((BsonDocument) bson).isEmpty();
+        } else if (bson instanceof Document) {
+            return ((Document) bson).isEmpty();
         }
+        return true;
     }
 
     public static Bson toBson(final JSONObject item) {
@@ -219,7 +221,7 @@ public class LyjMongoObjects {
             return (Document) document.get(key);
         } else {
             if (result instanceof String && StringUtils.isJSONObject(result)) {
-                return Document.parse((String)result);
+                return Document.parse((String) result);
             } else if (result instanceof Bson) {
                 return (Document) result;
             }
