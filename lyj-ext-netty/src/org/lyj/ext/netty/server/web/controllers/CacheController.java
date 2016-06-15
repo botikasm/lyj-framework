@@ -6,7 +6,6 @@ import io.netty.handler.codec.http.HttpResponse;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
 import org.lyj.ext.netty.server.web.IHeaderNames;
 import org.lyj.ext.netty.server.web.IHttpConstants;
-import org.lyj.ext.netty.server.web.utils.ResponseUtil;
 
 import java.io.File;
 import java.text.SimpleDateFormat;

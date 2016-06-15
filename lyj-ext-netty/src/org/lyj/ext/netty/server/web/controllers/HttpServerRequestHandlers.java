@@ -69,4 +69,15 @@ public class HttpServerRequestHandlers
         }
     }
 
+    public void close(){
+        for(final AbstractRequestHandler handler:_handlers){
+            try {
+                handler.close();
+            }catch(Throwable e){
+                super.error("close", e);
+                break;
+            }
+        }
+    }
+
 }

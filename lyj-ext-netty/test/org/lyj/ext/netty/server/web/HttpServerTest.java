@@ -4,7 +4,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lyj.Lyj;
 import org.lyj.ext.netty.TestInitializer;
-import org.lyj.ext.netty.server.web.controllers.routing.RoutingContext;
 import org.lyj.ext.netty.server.web.handlers.impl.RequestInspectorHandler;
 import org.lyj.ext.netty.server.web.handlers.impl.ResourceHandler;
 import org.lyj.ext.netty.server.web.handlers.impl.RoutingHandler;
@@ -72,7 +71,7 @@ public class HttpServerTest {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void sampleHandler(final RoutingContext context){
+    private void sampleHandler(final HttpServerContext context){
         System.out.println("HANDLED REST REQUEST: method=" + context.method() + ", " + context.uri() + " - params: " + context.params().toString());
 
         final String paramType = (String) context.params().get("type");

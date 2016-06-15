@@ -2,10 +2,9 @@ package org.lyj.ext.netty.server.web.controllers.routing;
 
 import org.lyj.commons.Delegates;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
+import org.lyj.ext.netty.server.web.HttpServerContext;
 import org.lyj.ext.netty.server.web.HttpServerRequest;
 import org.lyj.ext.netty.server.web.HttpServerResponse;
-import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
-import org.lyj.ext.netty.server.web.controllers.routing.RoutingContext;
 import org.lyj.ext.netty.server.web.handlers.AbstractRequestHandler;
 
 import java.util.LinkedHashSet;
@@ -21,10 +20,10 @@ public class AbstractRoutingHandler
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final Set<Delegates.Callback<RoutingContext>> _handlers;
+    private final Set<Delegates.Callback<HttpServerContext>> _handlers;
     private final HttpServerConfig _config;
     private final String _encoding;
-    private RoutingContext _context;
+    private HttpServerContext _context;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -38,9 +37,14 @@ public class AbstractRoutingHandler
     }
 
     @Override
+    public void close(){
+
+    }
+
+    @Override
     public final void handle(final HttpServerRequest request,
                              final HttpServerResponse response) {
-        _context = new RoutingContext(_config, request, response);
+        _context = new HttpServerContext(_config, request, response);
         this.handle();
     }
 
@@ -48,7 +52,7 @@ public class AbstractRoutingHandler
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public IRouter handler(final Delegates.Callback<RoutingContext> callback){
+    public IRouter handler(final Delegates.Callback<HttpServerContext> callback){
         _handlers.add(callback);
         return null;
     }
@@ -61,7 +65,7 @@ public class AbstractRoutingHandler
 
     private void handle(){
         if(!_context.handled()){
-            for(Delegates.Callback<RoutingContext> handler:_handlers){
+            for(Delegates.Callback<HttpServerContext> handler:_handlers){
                 handler.handle(_context);
                 if(_context.handled()){
                     return; // already handled - break chain

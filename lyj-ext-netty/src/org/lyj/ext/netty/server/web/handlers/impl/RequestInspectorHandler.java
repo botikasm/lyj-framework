@@ -36,6 +36,11 @@ public class RequestInspectorHandler
     // ------------------------------------------------------------------------
 
     @Override
+    public void close(){
+
+    }
+
+    @Override
     public void handle(final HttpServerRequest request,
                        final HttpServerResponse response) {
 

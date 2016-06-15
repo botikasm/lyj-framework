@@ -1,15 +1,14 @@
-package org.lyj.ext.netty.server.web.controllers.routing;
+package org.lyj.ext.netty.server.web;
 
 import org.json.JSONObject;
 import org.lyj.commons.util.*;
-import org.lyj.ext.netty.server.web.*;
 
 import java.util.Map;
 
 /**
  * The routing context
  */
-public class RoutingContext
+public class HttpServerContext
         implements IHttpConstants {
 
 
@@ -28,15 +27,15 @@ public class RoutingContext
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public RoutingContext(final HttpServerConfig config,
-                          final HttpServerRequest request,
-                          final HttpServerResponse response) {
+    public HttpServerContext(final HttpServerConfig config,
+                             final HttpServerRequest request,
+                             final HttpServerResponse response) {
         _config = config;
         _encoding = config.encoding();
         _request = request;
         _response = response;
         _uri = _request.uri();
-        _params = new HttpParams(_request.params());
+        _params = new HttpParams(_request);
     }
 
     // ------------------------------------------------------------------------
@@ -51,7 +50,7 @@ public class RoutingContext
         return _request.method();
     }
 
-    public RoutingContext handled(final boolean value) {
+    public HttpServerContext handled(final boolean value) {
         _response.handled(value);
         return this;
     }
@@ -76,6 +75,14 @@ public class RoutingContext
     // ------------------------------------------------------------------------
     //                      p a r a m s   h e l p e r s
     // ------------------------------------------------------------------------
+
+    public void addParams(final Map<String, String> params) {
+        if (null != params && params.size() > 0) {
+            for (final Map.Entry<String, String> entry : params.entrySet()) {
+                _params.put(entry.getKey(), entry.getValue());
+            }
+        }
+    }
 
     public String getParam(final String paramName) {
         return this.getParam(paramName, "");
@@ -182,6 +189,10 @@ public class RoutingContext
         this.writeJson(validateJsonError(error));
     }
 
+    public void writeJsonError(final Throwable error, final String methodName) {
+        this.writeJson(validateJsonError(error, methodName));
+    }
+
     public void writeErroMissingParams(final String... names) {
         this.writeJson(validateJsonError(new Exception("Bad Request, missing some parameters: " + CollectionUtils.toCommaDelimitedString(names))));
     }
@@ -225,21 +236,12 @@ public class RoutingContext
         _response.flush();
     }
 
-    public void writeRedirect(final String newUri) {
-        _response.writeRedirect(newUri);
+    public void writeRawValue(final Object value) {
+        this.write(null != value ? value.toString() : "");
     }
 
-
-    // ------------------------------------------------------------------------
-    //                      p a c k a g e
-    // ------------------------------------------------------------------------
-
-    void addParams(final Map<String, String> params) {
-        if (null != params && params.size() > 0) {
-            for (final Map.Entry<String, String> entry : params.entrySet()) {
-                _params.put(entry.getKey(), entry.getValue());
-            }
-        }
+    public void writeRedirect(final String newUri) {
+        _response.writeRedirect(newUri);
     }
 
     // ------------------------------------------------------------------------
@@ -257,7 +259,17 @@ public class RoutingContext
     }
 
     private static String validateJsonError(final Throwable t) {
-        return validateJsonError(t.toString());
+        final String error = t.toString();
+        return validateJsonError(error);
+    }
+
+    private static String validateJsonError(final Throwable t, final String methodName) {
+        if (StringUtils.hasText(methodName)) {
+            final String error = FormatUtils.format("[%s] ERROR: '%s'", methodName, t.getMessage());
+            return validateJsonError(error);
+        } else {
+            return validateJsonError(t);
+        }
     }
 
     private static String validateJsonError(final String text) {
@@ -301,5 +313,7 @@ public class RoutingContext
             }
         }
     }
+
+
 
 }

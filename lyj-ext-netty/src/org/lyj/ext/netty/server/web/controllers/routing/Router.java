@@ -1,7 +1,7 @@
 package org.lyj.ext.netty.server.web.controllers.routing;
 
 import org.lyj.commons.logging.AbstractLogEmitter;
-import org.lyj.ext.netty.server.web.IHeaderNames;
+import org.lyj.ext.netty.server.web.HttpServerContext;
 import org.lyj.ext.netty.server.web.IHttpConstants;
 
 import java.util.Collection;
@@ -61,7 +61,7 @@ public class Router
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void handle(final RoutingContext context) {
+    public void handle(final HttpServerContext context) {
         final String uri = context.uri();
         final String method = context.method();
         if(method.equals(IHttpConstants.METHOD_OPTIONS)){

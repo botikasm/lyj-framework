@@ -2,7 +2,6 @@ package org.lyj.ext.netty.server.web.handlers.impl;
 
 
 import org.lyj.commons.Delegates;
-import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
@@ -37,6 +36,15 @@ public class ResourceHandler
     private ResourceHandler(final HttpServerConfig config) {
         super(config);
         _root = config.root();
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+
+    @Override
+    public void close(){
+
     }
 
     @Override

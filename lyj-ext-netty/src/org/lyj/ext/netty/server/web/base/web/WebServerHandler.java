@@ -15,23 +15,18 @@
  */
 package org.lyj.ext.netty.server.web.base.web;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.HttpObject;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
-import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.ext.netty.server.web.HttpServer;
 import org.lyj.ext.netty.server.web.controllers.HttpServerRequestContext;
 import org.lyj.ext.netty.server.web.controllers.HttpServerRequestHandlers;
-import org.lyj.ext.netty.server.web.utils.CookieUtil;
 import org.lyj.ext.netty.server.web.utils.ResponseUtil;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 public class WebServerHandler
         extends SimpleChannelInboundHandler<HttpObject> {
@@ -72,6 +67,11 @@ public class WebServerHandler
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
+
+    @Override
+    public void channelUnregistered(final ChannelHandlerContext ctx) throws Exception {
+        _handlers.close();
+    }
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx,

@@ -21,6 +21,9 @@ public class HttpServerConfig {
 
     private static final String[] INDEX_FILES = new String[]{"index.html", "index.htm"};
 
+    private static final String UPLOAD_ROUTE = "/upload/*";
+    private static final String UPLOAD_DIR = "./upload";
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
@@ -35,10 +38,16 @@ public class HttpServerConfig {
     private boolean _use_ssl;
     private boolean _use_compression;
     private int _cache_seconds;
+    // cross origin requests
     private String _cors_allow_origin; // CORS
     private String _cors_allow_methods; // CORS
     private String _cors_allow_headers; // CORS
+    // upload request routing path
+    private String _upload_routing; // "/upload"
+    private String _upload_dir;
+    // 404
     private String _not_found_404;
+    // index pages
     private final List<String> _index_files;
 
     // ------------------------------------------------------------------------
@@ -57,6 +66,9 @@ public class HttpServerConfig {
         _cache_seconds = 60;
         _host = "localhost";
         _not_found_404 = "";
+
+        _upload_routing = UPLOAD_ROUTE;
+        _upload_dir = UPLOAD_DIR;
 
         _cors_allow_origin = ""; // empty=none, "*"=all
 
@@ -222,6 +234,28 @@ public class HttpServerConfig {
 
     public String corsAllowHeaders() {
         return _cors_allow_headers;
+    }
+
+    public String uploadRoute() {
+        return _upload_routing;
+    }
+
+    public HttpServerConfig uploadRoute(final String value) {
+        if(StringUtils.hasText(value)){
+            _upload_routing = value;
+        }
+        return this;
+    }
+
+    public String uploadDir() {
+        return _upload_dir;
+    }
+
+    public HttpServerConfig uploadDir(final String value) {
+        if(StringUtils.hasText(value)){
+            _upload_dir = value;
+        }
+        return this;
     }
 
     // ------------------------------------------------------------------------

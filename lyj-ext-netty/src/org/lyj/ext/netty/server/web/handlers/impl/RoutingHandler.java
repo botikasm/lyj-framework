@@ -7,7 +7,7 @@ import org.lyj.ext.netty.server.web.HttpServerResponse;
 import org.lyj.ext.netty.server.web.controllers.routing.IRoute;
 import org.lyj.ext.netty.server.web.controllers.routing.IRouter;
 import org.lyj.ext.netty.server.web.controllers.routing.Router;
-import org.lyj.ext.netty.server.web.controllers.routing.RoutingContext;
+import org.lyj.ext.netty.server.web.HttpServerContext;
 import org.lyj.ext.netty.server.web.handlers.AbstractRequestHandler;
 
 /**
@@ -33,11 +33,15 @@ public class RoutingHandler
         _router = new Router(config.encoding());
     }
 
+    @Override
+    public void close(){
+
+    }
 
     @Override
     public void handle(final HttpServerRequest request,
                        final HttpServerResponse response) {
-        _router.handle(new RoutingContext(super.config(), request, response));
+        _router.handle(new HttpServerContext(super.config(), request, response));
     }
 
     // ------------------------------------------------------------------------

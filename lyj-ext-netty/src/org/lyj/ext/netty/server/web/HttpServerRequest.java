@@ -1,7 +1,9 @@
 package org.lyj.ext.netty.server.web;
 
-import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.http.multipart.HttpDataFactory;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.controllers.CacheController;
 import org.lyj.ext.netty.server.web.controllers.HttpServerRequestContext;
 
@@ -39,6 +41,36 @@ public class HttpServerRequest {
 
     public HttpServerConfig config() {
         return _config;
+    }
+
+    public HttpRequest nativeHttpRequest() {
+        return _context.nativeHttpRequest();
+    }
+
+    public boolean isHttpRequest() {
+        return _context.hasHttpRequest();
+    }
+
+    public boolean isHttpContent() {
+        return _context.hasHttpContent();
+    }
+
+    public HttpContent nativeHttpContent() {
+        return _context.nativeHttpContent();
+    }
+
+    public HttpPostRequestDecoder createDecoder(final HttpDataFactory factory) {
+        if (this.isHttpRequest()) {
+            return new HttpPostRequestDecoder(factory, _context.nativeHttpRequest());
+        }
+        return null;
+    }
+
+    public boolean isTransferEncodingChunked() {
+        if (this.isHttpRequest()) {
+            return HttpUtil.isTransferEncodingChunked(_context.nativeHttpRequest());
+        }
+        return false;
     }
 
     public String uuid() {
@@ -168,8 +200,10 @@ public class HttpServerRequest {
     //                      f i l e
     // ------------------------------------------------------------------------
 
-    public boolean isModifiedSince(final File file){
+    public boolean isModifiedSince(final File file) {
         return _cache.isModifiedSince(_context.nativeHttpRequest(), file);
     }
+
+
 
 }

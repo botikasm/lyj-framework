@@ -1,7 +1,5 @@
 package org.lyj.ext.netty.server.web.controllers.routing;
 
-import org.lyj.commons.Delegates;
-
 /**
  * Router interface
  */

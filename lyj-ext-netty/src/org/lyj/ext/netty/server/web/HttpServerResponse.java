@@ -10,7 +10,6 @@ import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.network.http.client.HttpBuffer;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.MimeTypeUtils;
-import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.controllers.CacheController;
 import org.lyj.ext.netty.server.web.controllers.HttpServerRequestContext;
@@ -260,6 +259,7 @@ public class HttpServerResponse
             _context.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
     }
+
 
 
 }

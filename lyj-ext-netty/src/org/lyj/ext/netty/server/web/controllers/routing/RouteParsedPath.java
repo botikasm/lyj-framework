@@ -5,7 +5,6 @@ import org.lyj.commons.util.StringUtils;
 
 import java.net.URLDecoder;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -139,7 +138,7 @@ public class RouteParsedPath {
             if (this.path().equals(_template.path())) {
                 return true;
             } else if (_template.jolly()) {
-                return this.path().startsWith(_template.path().concat("/"));
+                return this.path().startsWith(_template.path().concat("/")) || this.path().startsWith(_template.path().concat("?"));
             } else if(_template._param_names.length>0) {
                 return this.path().startsWith(_template.path().concat("/"))
                         && _tokens.length==_template._tokens.length + _template._param_names.length;

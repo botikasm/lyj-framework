@@ -3,9 +3,9 @@ package org.lyj.ext.netty.server.web.controllers.routing;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.netty.server.web.HttpServerContext;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -21,7 +21,7 @@ public class Route
     private final String _id;
     private final String _path;
 
-    private Delegates.Callback<RoutingContext> _handler;
+    private Delegates.Callback<HttpServerContext> _handler;
 
     private final Set<String> _methods;
     private final RouteUrl _url;
@@ -54,7 +54,7 @@ public class Route
         return _path;
     }
 
-    public Route handler(final Delegates.Callback<RoutingContext> handler) {
+    public Route handler(final Delegates.Callback<HttpServerContext> handler) {
         _handler = handler;
         return this;
     }
@@ -74,7 +74,7 @@ public class Route
         return null;
     }
 
-    void handle(final RoutingContext context) throws Throwable {
+    void handle(final HttpServerContext context) throws Throwable {
         if(null!=_handler){
             try{
                 _handler.handle(context);

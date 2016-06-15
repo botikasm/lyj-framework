@@ -32,6 +32,8 @@ public abstract class AbstractRequestHandler
 
     public abstract void handle(final HttpServerRequest request, final HttpServerResponse response);
 
+    public abstract void close();
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
