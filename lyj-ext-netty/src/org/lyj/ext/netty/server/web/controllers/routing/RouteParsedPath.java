@@ -30,7 +30,7 @@ public class RouteParsedPath {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    private RouteParsedPath(){
+    private RouteParsedPath() {
         _param_names = new String[0];
         _tokens = new String[0];
         _template = null;
@@ -95,7 +95,7 @@ public class RouteParsedPath {
                 // /api/name/:param1/:param2
                 final int idx = path.indexOf("/:");
                 _path = path.substring(0, idx);
-                _param_names = StringUtils.split(path.substring(idx), "/", (value)->{
+                _param_names = StringUtils.split(path.substring(idx), "/", (value) -> {
                     return StringUtils.replace(value.trim(), ":", "");
                 });
             } else if (path.contains("/*")) {
@@ -114,22 +114,30 @@ public class RouteParsedPath {
             }
         } else {
             // URL
-            _path = path;
+            final String[] query_tokens = this.splitQueryParams(path);
+            _path = query_tokens.length > 0 ? query_tokens[0] : path;
             _tokens = StringUtils.split(_path, "/", true);
             _match_template = this.match();
-            if(_match_template){
+            if (_match_template) {
                 // params
-                if(_template._param_names.length>0){
+                if (_template._param_names.length > 0) {
                     final String[] param_names = _template._param_names;
                     final String[] param_values = paramValues(_tokens, param_names, _encoding);
-                    if(param_values.length==param_names.length){
-                        for(int i=0;i<param_names.length;i++){
+                    if (param_values.length == param_names.length) {
+                        for (int i = 0; i < param_names.length; i++) {
                             _params.put(param_names[i], param_values[i]);
                         }
                     }
                 }
             }
         }
+    }
+
+    private String[] splitQueryParams(final String url) {
+        if (url.contains("/?") || url.contains("?")) {
+            return StringUtils.split(StringUtils.replace(url, "/?", "?"), "?");
+        }
+        return new String[]{url};
     }
 
     private boolean match() {
@@ -139,9 +147,9 @@ public class RouteParsedPath {
                 return true;
             } else if (_template.jolly()) {
                 return this.path().startsWith(_template.path().concat("/")) || this.path().startsWith(_template.path().concat("?"));
-            } else if(_template._param_names.length>0) {
+            } else if (_template._param_names.length > 0) {
                 return this.path().startsWith(_template.path().concat("/"))
-                        && _tokens.length==_template._tokens.length + _template._param_names.length;
+                        && _tokens.length == _template._tokens.length + _template._param_names.length;
             }
         }
         return false;

@@ -137,6 +137,16 @@ public class HttpServerRequest {
         }
     }
 
+    public boolean isANDROID(){
+        final String user_agent = this.headerValue(IHeaderNames.USER_AGENT).toLowerCase();
+        return user_agent.contains("android");
+    }
+
+    public boolean isIOS(){
+        final String user_agent = this.headerValue(IHeaderNames.USER_AGENT).toLowerCase();
+        return user_agent.contains("ipad") || user_agent.contains("iphone") || user_agent.contains("ipod");
+    }
+
     public Set<String> paramNames() {
         final HashSet<String> result = new HashSet<>();
         result.addAll(_context.queryParams().keySet());

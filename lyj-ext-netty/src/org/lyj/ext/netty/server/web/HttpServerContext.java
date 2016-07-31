@@ -13,6 +13,12 @@ public class HttpServerContext
 
 
     // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    private static final String ERR_PREFIX = "err_"; // coded errors
+
+    // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
@@ -70,6 +76,14 @@ public class HttpServerContext
     public String getLang() {
         final String langCode = this.headers().get(ACCEPT_LANGUAGE);
         return null != langCode ? LocaleUtils.getLanguage(langCode) : LocaleUtils.getCurrent().getLanguage();
+    }
+
+    public HttpServerResponse response() {
+        return _response;
+    }
+
+    public HttpServerRequest request() {
+        return _request;
     }
 
     // ------------------------------------------------------------------------
@@ -212,8 +226,9 @@ public class HttpServerContext
         this.addCORSHeaders();
 
         final String json = validateJson(content);
+        final int len = json.length();
         _response.headers().put(CONTENT_TYPE, MimeTypeUtils.getMimeJson(_encoding));
-        _response.headers().put(CONTENT_LENGTH, json.length() + "");
+        _response.headers().put(CONTENT_LENGTH, len + "");
         _response.write(json);
         _response.flush();
     }
@@ -248,14 +263,23 @@ public class HttpServerContext
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private static String validateJson(final Object text) {
-        if (StringUtils.isJSON(text)) {
-            return text.toString();
+    private static String validateJson(final Object obj) {
+        String response = "";
+        if (obj instanceof Map) {
+            final JSONObject json = new JSONObject((Map) obj);
+            response = json.toString();
+        } else if (StringUtils.isJSON(obj)) {
+            response = obj.toString();
         } else {
             final JSONObject json = new JSONObject();
-            json.putOpt("response", null != text ? text.toString() : "");
-            return json.toString();
+            json.putOpt("response", null != obj ? obj.toString() : "");
+            response = json.toString();
         }
+        // check eur symbol that can cause problems (2 more bytes are needed)
+        if (response.contains("€")) {
+            response = response + "  ";
+        }
+        return response;
     }
 
     private static String validateJsonError(final Throwable t) {
@@ -263,12 +287,19 @@ public class HttpServerContext
         return validateJsonError(error);
     }
 
-    private static String validateJsonError(final Throwable t, final String methodName) {
-        if (StringUtils.hasText(methodName)) {
-            final String error = FormatUtils.format("[%s] ERROR: '%s'", methodName, t.getMessage());
-            return validateJsonError(error);
+    private static String validateJsonError(final Throwable t,
+                                            final String methodName) {
+        final String message = ExceptionUtils.getRealMessage(t);
+        // check if error is a coded error
+        if (message.startsWith(ERR_PREFIX)) {
+            return validateJsonError(message);
         } else {
-            return validateJsonError(t);
+            if (StringUtils.hasText(methodName)) {
+                final String error = FormatUtils.format("[%s] ERROR: '%s'", methodName, message);
+                return validateJsonError(error);
+            } else {
+                return validateJsonError(t);
+            }
         }
     }
 
@@ -313,7 +344,6 @@ public class HttpServerContext
             }
         }
     }
-
 
 
 }

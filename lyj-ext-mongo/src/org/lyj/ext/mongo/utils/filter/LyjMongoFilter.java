@@ -340,4 +340,93 @@ public class LyjMongoFilter
         return filter;
     }
 
+    public static Document buildRegEx(final String fieldName,
+                                final String regex,
+                                final boolean caseInsensitive,
+                                final boolean allowDotInText) {
+
+        final StringBuilder options = new StringBuilder();
+        if (allowDotInText) {
+            options.append("s");
+        }
+        if (caseInsensitive) {
+            options.append("i");
+        }
+
+        return buildRegEx(fieldName, regex, options.toString());
+    }
+
+    public static Document buildRegEx(final String fieldName,
+                                      final String regex,
+                                      final String options) {
+        final Document expression = new Document($REGEX, regex);
+        if (StringUtils.hasText(options)) {
+            expression.put($OPTIONS, options);
+        }
+
+        return new Document(fieldName, expression);
+    }
+
+    //-- INCLUSIONS - EXCLUSIONS --//
+
+    public static Document buildContains(final String fieldName,
+                                   final String value) {
+        return buildContains(fieldName, value, true, false);
+    }
+
+    public static Document buildContains(final String fieldName,
+                                  final String value,
+                                  final boolean caseInsensitive,
+                                  final boolean allowDotInText) {
+        final String regexp = ".*" + value + ".*";
+
+        return buildRegEx(fieldName, regexp, caseInsensitive, allowDotInText);
+    }
+
+    public static Document buildStartWith(final String fieldName,
+                                    final String value) {
+        return buildStartWith(fieldName, value, true, false);
+    }
+
+    public static Document buildStartWith(final String fieldName,
+                                    final String value,
+                                    final boolean caseInsensitive,
+                                    final boolean allowDotInText) {
+        final String regexp = "^" + value + ".*";
+
+        return buildRegEx(fieldName, regexp, caseInsensitive, allowDotInText);
+    }
+
+    public static Document buildEndWith(final String fieldName,
+                                  final String value) {
+        return buildEndWith(fieldName, value, true, false);
+    }
+
+    public static Document buildEndWith(final String fieldName,
+                                  final String value,
+                                  final boolean caseInsensitive,
+                                  final boolean allowDotInText) {
+        final String regexp = ".*" + value + "$";
+
+        return buildRegEx(fieldName, regexp, caseInsensitive, allowDotInText);
+    }
+
+    //-- LOGIC OPERATORS --//
+
+    public static Document buildOr(final Collection<Bson> conditions) {
+        return new Document($OR, conditions);
+    }
+
+    public static Document buildOr(final Bson... conditions) {
+        return new Document($OR, Arrays.asList(conditions));
+    }
+
+    public static Document buildAnd(final Collection<Bson> conditions) {
+        return new Document($AND, conditions);
+    }
+
+    public static Document buildAnd(final Bson... conditions) {
+        return new Document($AND, Arrays.asList(conditions));
+    }
+
 }

@@ -3,10 +3,7 @@ package org.lyj.ext.netty.server.web.handlers.impl;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.multipart.*;
-import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.RandomUtils;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
 import org.lyj.ext.netty.server.web.*;
 import org.lyj.ext.netty.server.web.controllers.routing.RouteUrl;
 import org.lyj.ext.netty.server.web.handlers.AbstractRequestHandler;
@@ -182,8 +179,8 @@ public class UploadHandler
                 FileUpload fileUpload = (FileUpload) data;
                 if (fileUpload.isCompleted()) {
 
-                    final String file_name = this.write(context.params(), fileUpload);
-                    context.writeJson(file_name);
+                    final Map<String, String> file_data = this.write(context.params(), fileUpload);
+                    context.writeJson(file_data);
 
                 } else {
                     //responseContent.append("\tFile to be continued but should not!\r\n");
@@ -192,8 +189,8 @@ public class UploadHandler
         }
     }
 
-    private String write(final HttpParams http_params,
-                         final FileUpload fileUpload) throws Exception {
+    private Map<String, String> write(final HttpParams http_params,
+                                      final FileUpload fileUpload) throws Exception {
         try {
 
             // fileUpload.isInMemory();// tells if the file is in Memory or on File
@@ -205,12 +202,22 @@ public class UploadHandler
             final String content_type = fileUpload.getContentType();
             final long lenght = fileUpload.length();
 
-            final String destination = PathUtils.combine(_root, directory);
-            final String destination_file = PathUtils.combine(destination, file_name);
-            FileUtils.mkdirs(destination);
-            fileUpload.renameTo(new File(destination_file));
+            final String local_relative = PathUtils.concat(directory, file_name);
+            final String local_full = PathUtils.concat(_root, local_relative);
+            final String download_url = PathUtils.concat(config().downloadRoot(), local_relative);
 
-            return destination_file;
+            // move file to destination
+            FileUtils.mkdirs(local_full);
+            fileUpload.renameTo(new File(local_full));
+
+            return MapBuilder.create(String.class, String.class)
+                    // paths on server
+                    .put("local_root", _root)
+                    .put("local_relative", local_relative)
+                    .put("local_full", local_full)
+                    // paths from web
+                    .put("download_url", download_url)
+                    .toMap();
 
         } catch (Exception err) {
             throw err;
@@ -229,8 +236,8 @@ public class UploadHandler
         } catch (Throwable t) {
         }
         // file name is required
-        if(!StringUtils.hasText(response.get(PARAM_FILE_NAME))){
-           response.put(PARAM_FILE_NAME, RandomUtils.randomUUID()+".jpg");
+        if (!StringUtils.hasText(response.get(PARAM_FILE_NAME))) {
+            response.put(PARAM_FILE_NAME, RandomUtils.randomUUID() + ".jpg");
         }
 
         return response;

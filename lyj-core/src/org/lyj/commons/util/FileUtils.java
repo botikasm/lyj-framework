@@ -192,7 +192,7 @@ public abstract class FileUtils {
     }
 
     public static long getSize(final File file) {
-        long result= 0;
+        long result = 0;
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(file, "r");
@@ -223,6 +223,24 @@ public abstract class FileUtils {
         } catch (Throwable ignored) {
         }
         return size;
+    }
+
+    //---------------------------------------------------------------------
+    // Append methods for java.io.File
+    //---------------------------------------------------------------------
+
+    public static void append(final String filename, final byte[] data) throws IOException {
+        final File file = new File(filename);
+        append(file, data);
+    }
+
+    public static void append(final File file, final byte[] data) throws IOException {
+        final FileOutputStream output = new FileOutputStream(file, true);
+        try {
+            output.write(data);
+        } finally {
+            output.close();
+        }
     }
 
     //---------------------------------------------------------------------

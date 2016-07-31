@@ -93,19 +93,7 @@ public class LyjMongoConnection {
         _credentials = new LinkedList<>();
         if (_enabled) {
             JSONObject[] data = JsonWrapper.toArrayOfJSONObject(configuration.getJSONArray(CREDENTIALS));
-            for (JSONObject item : data) {
-                JsonWrapper wrap = new JsonWrapper(item);
-                String auth = wrap.getString(AUTH);
-                String username = wrap.getString(USER);
-                String password = wrap.getString(PSW);
-                String database = wrap.getString(DATABASE);
-                if (StringUtils.hasText(username) && StringUtils.hasText(password) && StringUtils.hasText(database)) {
-                    final MongoCredential credential = this.getCredential(auth, database, username, password);
-                    if (null != credential) {
-                        _credentials.add(credential);
-                    }
-                }
-            }
+            this.fillCredentials(data, _credentials);
         }
 
         this.getLogger().info("Mongo Connection Initialized: " + this.toString());
@@ -279,6 +267,24 @@ public class LyjMongoConnection {
 
     private Logger getLogger() {
         return LoggingUtils.getLogger(this);
+    }
+
+    private void fillCredentials(final JSONObject[] configCredentials, final List<MongoCredential> out){
+        for (JSONObject item : configCredentials) {
+            JsonWrapper wrap = new JsonWrapper(item);
+            String auth = wrap.getString(AUTH);
+            String username = wrap.getString(USER);
+            String password = wrap.getString(PSW);
+            String database = wrap.getString(DATABASE);
+            if (StringUtils.hasText(username)
+                    && StringUtils.hasText(password)
+                    && StringUtils.hasText(database)) {
+                final MongoCredential credential = this.getCredential(auth, database, username, password);
+                if (null != credential) {
+                    out.add(credential);
+                }
+            }
+        }
     }
 
     private MongoCredential getCredential(final String auth, final String database, final String username,

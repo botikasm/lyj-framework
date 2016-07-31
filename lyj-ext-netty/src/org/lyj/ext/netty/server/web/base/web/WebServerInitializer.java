@@ -37,7 +37,7 @@ public class WebServerInitializer
     public void initChannel(SocketChannel ch) {
         final ChannelPipeline p = ch.pipeline();
 
-        // SSL
+        // SSL ( must be the first )
         if (_server.ssl() != null) {
             p.addLast(_server.ssl().newHandler(ch.alloc()));
         }

@@ -14,12 +14,19 @@ import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.lyj.commons.logging.AbstractLogEmitter;
-import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
 import org.lyj.ext.netty.server.web.base.web.WebServerInitializer;
 import org.lyj.ext.netty.server.web.controllers.HttpServerRequestHandlers;
 import org.lyj.ext.netty.server.web.handlers.AbstractRequestHandler;
 
+import javax.net.ssl.KeyManagerFactory;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +51,8 @@ public class HttpServer extends AbstractLogEmitter {
 
     private final HttpServerRequestHandlers _request_handlers;
 
+    private boolean _initialized;
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -57,7 +66,7 @@ public class HttpServer extends AbstractLogEmitter {
 
         _request_handlers = new HttpServerRequestHandlers();
 
-        this.init();
+        _initialized = false;
     }
 
     // ------------------------------------------------------------------------
@@ -65,6 +74,7 @@ public class HttpServer extends AbstractLogEmitter {
     // ------------------------------------------------------------------------
 
     public HttpServer start() {
+        this.init();
         this.run();
         return this;
     }
@@ -95,15 +105,15 @@ public class HttpServer extends AbstractLogEmitter {
         return _request_handlers;
     }
 
-    public String path(final String relative_path){
-        if(StringUtils.hasText(relative_path)){
+    public String path(final String relative_path) {
+        if (StringUtils.hasText(relative_path)) {
             return PathUtils.concat(this.config().root(), relative_path);
         }
         return this.config().root();
     }
 
-    public String uri (final String relative_path){
-        if(StringUtils.hasText(relative_path)){
+    public String uri(final String relative_path) {
+        if (StringUtils.hasText(relative_path)) {
             return PathUtils.concat(this.config().uri(), relative_path);
         }
         return this.config().uri();
@@ -114,14 +124,21 @@ public class HttpServer extends AbstractLogEmitter {
     // ------------------------------------------------------------------------
 
     private void init() {
+        if (_initialized) {
+            return;
+        }
+        _initialized = true;
+
         try {
             // Configure SSL.
             if (_config.useSsl()) {
-                SelfSignedCertificate ssc = new SelfSignedCertificate();
-                _sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
-                        .sslProvider(SslProvider.JDK).build();
+                _sslCtx = createSSL();
             } else {
                 _sslCtx = null;
+            }
+
+            if (null == _sslCtx) {
+                _config.useSsl(false);
             }
 
             _bossGroup = new NioEventLoopGroup(1);
@@ -135,6 +152,46 @@ public class HttpServer extends AbstractLogEmitter {
         } catch (Throwable t) {
             super.error("init", t);
         }
+    }
+
+    private SslContext createSSL() throws CertificateException, IOException,
+            NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException {
+        try {
+            if (null != _config.sslKeyFile()
+                    && (null != _config.sslPEMFile() || null != _config.sslP12File())) {
+                try {
+                    // .p12 (X.509)
+                    if(null!=_config.sslP12File()){
+                        final char[] psw = _config.sslPassKey().toCharArray();
+                        final byte[] cert = ByteUtils.getBytes(_config.sslP12File());
+
+                        final KeyStore ks = KeyStore.getInstance("PKCS12");
+                        ks.load(new ByteArrayInputStream(cert), psw);
+
+                        final KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+                        kmf.init(ks, psw);
+
+                        return SslContextBuilder.forServer(kmf).build();
+                    }  else {
+                        // .pem
+                        return SslContextBuilder.forServer(_config.sslPEMFile(), _config.sslKeyFile()).build(); //.sslProvider(SslProvider.JDK).build();
+                    }
+                } catch (Throwable t) {
+                    super.warning("createSSL",
+                            FormatUtils.format("Due to error a self signed certificate will be loaded. Error: %s", ExceptionUtils.getMessage(t)));
+                    SelfSignedCertificate ssc = new SelfSignedCertificate();
+                    return SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
+                            .sslProvider(SslProvider.JDK).build();
+                }
+            } else {
+                SelfSignedCertificate ssc = new SelfSignedCertificate();
+                return SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
+                        .sslProvider(SslProvider.JDK).build();
+            }
+        } catch (Throwable t) {
+            super.error("createSSL", t);
+        }
+        return null;
     }
 
     private void run() {
@@ -151,7 +208,7 @@ public class HttpServer extends AbstractLogEmitter {
             }
 
             // request handlers
-            if(_request_handlers.isEmpty()){
+            if (_request_handlers.isEmpty()) {
                 throw new Exception("Missing request handlers: al least one handler is required!");
             }
 
@@ -191,7 +248,7 @@ public class HttpServer extends AbstractLogEmitter {
 
     private ChannelFuture sync() throws InterruptedException {
         try {
-            if(_channels.size()>0){
+            if (_channels.size() > 0) {
                 return _channels.get(0).closeFuture().sync();
             } else {
                 return null;

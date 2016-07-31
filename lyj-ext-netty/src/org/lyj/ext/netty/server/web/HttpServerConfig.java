@@ -21,8 +21,14 @@ public class HttpServerConfig {
 
     private static final String[] INDEX_FILES = new String[]{"index.html", "index.htm"};
 
-    private static final String UPLOAD_ROUTE = "/upload/*";
-    private static final String UPLOAD_DIR = "./upload";
+    private static final String UPLOAD_ROUTE = "/upload/*"; // POST path to upload a file
+    private static final String UPLOAD_DIR = "./upload";    // path on server to store files (relative or absolute)
+    private static final String DOWNLOAD_ROOT = "http://localhost:8080"; // http path for (optional) static file download
+
+    private static final String SSL_PATH = "./ssl"; // keystore path (put here keystore file generated)
+    private static final String KEY_FILE = "server.key"; // keystore file name (only name, not path)
+    private static final String PEM_FILE = "server.pem"; // certificate file name (only name, not path)
+    private static final String P12_FILE = "server.p12";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -35,9 +41,15 @@ public class HttpServerConfig {
     private boolean _port_autodect;
     private int _port_detection_try;
     private String _root;
-    private boolean _use_ssl;
     private boolean _use_compression;
     private int _cache_seconds;
+    // ssl
+    private boolean _use_ssl;
+    private String _ssl_path;
+    private String _ssl_key_file;
+    private String _ssl_pass_key;
+    private String _ssl_pem_file;
+    private String _ssl_p12_file;  // X.509
     // cross origin requests
     private String _cors_allow_origin; // CORS
     private String _cors_allow_methods; // CORS
@@ -45,6 +57,7 @@ public class HttpServerConfig {
     // upload request routing path
     private String _upload_routing; // "/upload"
     private String _upload_dir;
+    private String _download_root;
     // 404
     private String _not_found_404;
     // index pages
@@ -59,7 +72,6 @@ public class HttpServerConfig {
         _max_chunk_size = 1048576; //65536;
         _port = 4000;
         _root = SystemPropertyUtil.get("user.dir");
-        _use_ssl = false;
         _use_compression = true;
         _port_autodect = false;
         _port_detection_try = 100; // try 100 times to get a free port
@@ -67,8 +79,16 @@ public class HttpServerConfig {
         _host = "localhost";
         _not_found_404 = "";
 
+        _use_ssl = false;
+        _ssl_path = SSL_PATH;
+        _ssl_key_file = KEY_FILE;
+        _ssl_pem_file = PEM_FILE;
+        _ssl_p12_file = P12_FILE;
+        _ssl_pass_key = "";
+
         _upload_routing = UPLOAD_ROUTE;
         _upload_dir = UPLOAD_DIR;
+        _download_root = DOWNLOAD_ROOT;
 
         _cors_allow_origin = ""; // empty=none, "*"=all
 
@@ -82,6 +102,10 @@ public class HttpServerConfig {
         result.put("host", _host);
         result.put("port", _port);
         result.put("ssl", _use_ssl);
+        result.put("ssl_path", _ssl_path);
+        result.put("ssl_key_file", _ssl_key_file);
+        result.put("ssl_cert_file", _ssl_pem_file);
+        result.put("ssl_p12_file", _ssl_p12_file);
         result.put("compression", _use_compression);
         result.put("uri", this.uri());
 
@@ -185,6 +209,90 @@ public class HttpServerConfig {
         return _use_ssl;
     }
 
+    public HttpServerConfig sslPath(final String value) {
+        _ssl_path = value;
+        return this;
+    }
+
+    public String sslPath() {
+        return _ssl_path;
+    }
+
+    public HttpServerConfig sslPassKey(final String value) {
+        _ssl_pass_key = value;
+        return this;
+    }
+
+    public String sslPassKey() {
+        return _ssl_pass_key;
+    }
+
+    public HttpServerConfig sslKeyFileName(final String value) {
+        _ssl_key_file = value;
+        return this;
+    }
+
+    public String sslKeyFileName() {
+        return _ssl_key_file;
+    }
+
+    public String sslKeyFilePath() {
+        return PathUtils.concat(PathUtils.getAbsolutePath(_ssl_path), _ssl_key_file);
+    }
+
+    public File sslKeyFile() {
+        final String path = this.sslKeyFilePath();
+        final File response = new File(path);
+        if (response.exists()) {
+            return response;
+        }
+        return null;
+    }
+
+    public HttpServerConfig sslCertFileName(final String value) {
+        _ssl_pem_file = value;
+        return this;
+    }
+
+    public String sslCertFileName() {
+        return _ssl_pem_file;
+    }
+
+    public String sslCertFilePath() {
+        return PathUtils.concat(PathUtils.getAbsolutePath(_ssl_path), _ssl_pem_file);
+    }
+
+    public File sslPEMFile() {
+        final String path = this.sslCertFilePath();
+        final File response = new File(path);
+        if (response.exists()) {
+            return response;
+        }
+        return null;
+    }
+
+    public HttpServerConfig sslP12FileName(final String value) {
+        _ssl_p12_file = value;
+        return this;
+    }
+
+    public String sslP12FileName() {
+        return _ssl_p12_file;
+    }
+
+    public String sslP12FilePath() {
+        return PathUtils.concat(PathUtils.getAbsolutePath(_ssl_path), _ssl_p12_file);
+    }
+
+    public File sslP12File() {
+        final String path = this.sslP12FilePath();
+        final File response = new File(path);
+        if (response.exists()) {
+            return response;
+        }
+        return null;
+    }
+
     public HttpServerConfig useCompression(final boolean value) {
         _use_compression = value;
         return this;
@@ -241,7 +349,7 @@ public class HttpServerConfig {
     }
 
     public HttpServerConfig uploadRoute(final String value) {
-        if(StringUtils.hasText(value)){
+        if (StringUtils.hasText(value)) {
             _upload_routing = value;
         }
         return this;
@@ -252,8 +360,19 @@ public class HttpServerConfig {
     }
 
     public HttpServerConfig uploadDir(final String value) {
-        if(StringUtils.hasText(value)){
+        if (StringUtils.hasText(value)) {
             _upload_dir = value;
+        }
+        return this;
+    }
+
+    public String downloadRoot() {
+        return _download_root;
+    }
+
+    public HttpServerConfig downloadRoot(final String value) {
+        if (StringUtils.hasText(value)) {
+            _download_root = value;
         }
         return this;
     }

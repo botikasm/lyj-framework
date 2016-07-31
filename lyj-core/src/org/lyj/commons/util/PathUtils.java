@@ -81,6 +81,10 @@ public abstract class PathUtils
         return temp;
     }
 
+    public static String getTemporaryFile(final String filename) {
+        return concat(getTemporaryDirectory(), filename);
+    }
+
     public static String getDesktopDirectory() {
         final String desktop;
         if (SystemUtils.isLinux()) {

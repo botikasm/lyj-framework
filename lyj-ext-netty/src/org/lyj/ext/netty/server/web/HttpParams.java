@@ -51,6 +51,15 @@ public class HttpParams
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public HttpParams initialize(){
+        this.init();
+        return this;
+    }
+
+    public boolean initialized(){
+        return _initialized;
+    }
+
     public String getString(final String name) {
         this.init();
         return StringUtils.toString(this.get(name));

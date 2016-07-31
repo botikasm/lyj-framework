@@ -55,6 +55,7 @@ public class LyjGeoNearOptions {
     private static final boolean DEF_UNIQUE_DOCS = true;
     private static final String DEF_DISTANCE_FIELD = "dist";
     private static final String DEF_INCLUDE_LOCS = "loc";
+    private static final double DEF_DISTANCE_MULTIPLIER = 3963.2; // hearth radius. Distance is in Km
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -73,7 +74,8 @@ public class LyjGeoNearOptions {
                 .setUniqueDocs(DEF_UNIQUE_DOCS)
                 .setLimit(DEF_LIMIT)
                 .setDistanceField(DEF_DISTANCE_FIELD)
-                .setIncludeLocs(DEF_INCLUDE_LOCS);
+                .setIncludeLocs(DEF_INCLUDE_LOCS)
+                .setDistanceMultiplier(DEF_DISTANCE_MULTIPLIER);
     }
 
     @Override
@@ -151,7 +153,7 @@ public class LyjGeoNearOptions {
      * @return this
      */
     public LyjGeoNearOptions setQuery(final Document value) {
-        _data.put(MAX_DISTANCE, value);
+        _data.put(QUERY, value);
         return this;
     }
 

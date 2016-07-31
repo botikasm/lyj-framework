@@ -21,7 +21,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.*;
+import static io.netty.handler.codec.http.HttpHeaderNames.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
 import static io.netty.handler.codec.http.HttpResponseStatus.NOT_MODIFIED;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -167,6 +167,10 @@ public class HttpServerResponse
         }
     }
 
+    public void writeOK() {
+        this.writeStatus(HttpResponseStatus.OK);
+    }
+
     public void writeErrorINTERNAL_SERVER_ERROR() {
         this.writeError(HttpResponseStatus.INTERNAL_SERVER_ERROR);
     }
@@ -210,7 +214,7 @@ public class HttpServerResponse
         final FullHttpResponse response = new DefaultFullHttpResponse(
                 HTTP_1_1, status, Unpooled.copiedBuffer("Failure: " + status + "\r\n", _context.charset()));
 
-        _headers.put(CONTENT_TYPE, "text/plain; charset=UTF-8");
+        _headers.put(CONTENT_TYPE.toString(), "text/plain; charset=UTF-8");
 
         _buffer.clear();
         this.removeContentLength();
@@ -223,6 +227,30 @@ public class HttpServerResponse
         _context.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 
+    private void writeStatus(final HttpResponseStatus status) {
+        this.writeStatus(status, null);
+    }
+
+    private void writeStatus(final HttpResponseStatus status,
+                             final String content) {
+        // reset buffer
+        _buffer.clear();
+        this.removeContentLength();
+
+        final FullHttpResponse response;
+        if(StringUtils.hasText(content)){
+            response = new DefaultFullHttpResponse( HTTP_1_1, status, Unpooled.copiedBuffer(content.getBytes()) );
+            _headers.put(CONTENT_TYPE.toString(), "text/plain; charset=UTF-8");
+            _buffer.write(content);
+        } else {
+            response = new DefaultFullHttpResponse( HTTP_1_1, status );
+        }
+
+        // Close the connection as soon as the error message is sent.
+        _context.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+    }
+
+
     private void writeAndFlushBuffer() {
 
         final boolean keep_alive = _context.keepAlive();
@@ -234,11 +262,11 @@ public class HttpServerResponse
         if (keep_alive) {
             // Add 'Content-Length' header only for a keep-alive connection.
             if (!this.isContentLengthSet()) {
-                _headers.put(CONTENT_LENGTH, response.content().readableBytes() + "");
+                _headers.put(CONTENT_LENGTH.toString(), response.content().readableBytes() + "");
             }
             // Add keep alive header as per:
             // - http://www.w3.org/Protocols/HTTP/1.1/draft-ietf-http-v11-spec-01.html#Connection
-            _headers.put(CONNECTION, HttpHeaderValues.KEEP_ALIVE.toString());
+            _headers.put(CONNECTION.toString(), HttpHeaderValues.KEEP_ALIVE.toString());
         }
 
         // add headers
