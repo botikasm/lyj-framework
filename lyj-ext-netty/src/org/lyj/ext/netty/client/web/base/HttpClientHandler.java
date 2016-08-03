@@ -49,7 +49,7 @@ public class HttpClientHandler extends SimpleChannelInboundHandler<HttpObject> {
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
-        cause.printStackTrace();
+
         ctx.close();
 
         this.onError(cause);

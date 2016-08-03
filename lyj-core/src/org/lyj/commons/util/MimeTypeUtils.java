@@ -384,6 +384,10 @@ public class MimeTypeUtils {
                 .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
     }
 
+    public static String getMimeJson(){
+        return MimeTypeUtils.getMimeType(".json");
+    }
+
     public static String getMimeHtml(final String encoding){
         return MimeTypeUtils.getMimeType(".html")
                 .concat(CHARSET_PREFIX)

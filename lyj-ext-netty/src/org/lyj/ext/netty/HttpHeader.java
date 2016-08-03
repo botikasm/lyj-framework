@@ -7,6 +7,7 @@ import org.lyj.commons.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Header wrapper .
@@ -37,6 +38,18 @@ public class HttpHeader {
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
+
+    public Set<String> keys() {
+        return _headers.keySet();
+    }
+
+    public boolean isEmpty() {
+        return _headers.isEmpty();
+    }
+
+    public int size() {
+        return _headers.size();
+    }
 
     public HttpHeader add(final String name, final String value) {
         _headers.put(name.toLowerCase(), value);

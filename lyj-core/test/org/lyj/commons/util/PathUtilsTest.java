@@ -1,7 +1,9 @@
 package org.lyj.commons.util;
 
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +19,18 @@ public class PathUtilsTest {
 
         assertTrue(PathUtils.isAbsolute(absolute));
         System.out.println(absolute);
+
+    }
+
+    @Test
+    public void testGetName() throws Exception {
+
+        File file = new File("/dir/file1.txt");
+        String fname = file.getName();
+        String name = PathUtils.getFilename(fname);
+
+        Assert.assertEquals(fname, name);
+        System.out.println(name);
 
     }
 

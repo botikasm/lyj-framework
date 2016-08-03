@@ -33,9 +33,23 @@ import java.util.LinkedList;
 public class JsonList
         extends LinkedList<JSONObject> {
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
     public JsonList() {
 
     }
+
+    @Override
+    public String toString() {
+        final JSONArray array = new JSONArray(this);
+        return array.toString();
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
 
     public JsonList(final Collection<JSONObject> items) {
         super(items);
@@ -56,13 +70,8 @@ public class JsonList
         }
     }
 
-    @Override
-    public String toString() {
-        final JSONArray array = new JSONArray(this);
-        return array.toString();
-    }
-
     public JSONArray toJSONArray() {
         return new JSONArray(this);
     }
+
 }

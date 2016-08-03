@@ -38,7 +38,7 @@ public class CharEncoding {
      * </p>
      *
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/package-summary.html#charenc">JRE character
-     *      encoding names</a>
+     * encoding names</a>
      */
     public static final String ISO_8859_1 = "ISO-8859-1";
 
@@ -51,7 +51,7 @@ public class CharEncoding {
      * </p>
      *
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/package-summary.html#charenc">JRE character
-     *      encoding names</a>
+     * encoding names</a>
      */
     public static final String US_ASCII = "US-ASCII";
 
@@ -65,7 +65,7 @@ public class CharEncoding {
      * </p>
      *
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/package-summary.html#charenc">JRE character
-     *      encoding names</a>
+     * encoding names</a>
      */
     public static final String UTF_16 = "UTF-16";
 
@@ -78,7 +78,7 @@ public class CharEncoding {
      * </p>
      *
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/package-summary.html#charenc">JRE character
-     *      encoding names</a>
+     * encoding names</a>
      */
     public static final String UTF_16BE = "UTF-16BE";
 
@@ -91,7 +91,7 @@ public class CharEncoding {
      * </p>
      *
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/package-summary.html#charenc">JRE character
-     *      encoding names</a>
+     * encoding names</a>
      */
     public static final String UTF_16LE = "UTF-16LE";
 
@@ -104,7 +104,7 @@ public class CharEncoding {
      * </p>
      *
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/package-summary.html#charenc">JRE character
-     *      encoding names</a>
+     * encoding names</a>
      */
     public static final String UTF_8 = "UTF-8";
 
@@ -123,9 +123,9 @@ public class CharEncoding {
      *
      * @param name the name of the requested charset; may be either a canonical name or an alias
      * @return <code>true</code> if, and only if, support for the named charset is available in the current Java
-     *         virtual machine
+     * virtual machine
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/package-summary.html#charenc">JRE character
-     *      encoding names</a>
+     * encoding names</a>
      */
     public static boolean isSupported(final String name) {
         if (name == null || name.length() == 0) {
@@ -167,15 +167,15 @@ public class CharEncoding {
         return __DEFAULT;
     }
 
-    public static Charset getDefaultCharset(){
-        try{
-           final Charset result = Charset.forName(getDefault());
-            if(null==result){
-                throw  new UnsupportedCharsetException(getDefault());
+    public static Charset getDefaultCharset() {
+        try {
+            final Charset result = Charset.forName(getDefault());
+            if (null == result) {
+                throw new UnsupportedCharsetException(getDefault());
             } else {
                 return result;
             }
-        } catch(Throwable ignored){
+        } catch (Throwable ignored) {
             final Charset result = Charset.defaultCharset();
             setDefault(result.name());
             return result;
@@ -188,4 +188,16 @@ public class CharEncoding {
             System.setProperty(IConstants.SYSPROP_CHARSET, charset);
         }
     }
+
+    public static Charset forName(final String charset) {
+        return forName(charset, false);
+    }
+
+    public static Charset forName(final String charset, final boolean nullable) {
+        if (isSupported(charset)) {
+            return Charset.forName(charset);
+        }
+        return nullable ? null: getDefaultCharset();
+    }
+
 }

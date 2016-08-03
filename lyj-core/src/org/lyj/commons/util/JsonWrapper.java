@@ -66,7 +66,7 @@ public final class JsonWrapper implements Cloneable {
             } else if (data instanceof JSONObject) {
                 _object = (JSONObject) data;
             } else if (data instanceof Map) {
-                _object = new JSONObject((Map)data);
+                _object = new JSONObject((Map) data);
             } else {
                 this.parse(data.toString());
             }
@@ -779,6 +779,85 @@ public final class JsonWrapper implements Cloneable {
     }
 
     // ------------------------------------------------------------------------
+    //               S T A T I C  -  P A R S E R
+    // ------------------------------------------------------------------------
+
+    public static JSONObject parse(final Map<String, ?> map) {
+        final JSONObject result = new JSONObject();
+        try {
+            final Set<String> keys = map.keySet();
+            for (final String key : keys) {
+                final Object value = map.get(key);
+                if (value instanceof Collection) {
+                    // list
+                    result.put(key, parse((Collection) value));
+                } else if (value instanceof Map) {
+                    // map
+                    result.put(key, parse((Map) value));
+                } else if (BeanUtils.isPrimitiveClass(value)) {
+                    // primitive
+                    result.put(key, value);
+                } else if (value instanceof JSONObject || value instanceof JSONArray) {
+                    // json
+                    result.put(key, value);
+                } else if (value instanceof String && StringUtils.isJSON(value)) {
+                    // json string
+                    try {
+                        if (StringUtils.isJSONObject(value)) {
+                            result.put(key, new JSONObject((String)value));
+                        } else if (StringUtils.isJSONArray(value)) {
+                            result.put(key, new JSONArray((String)value));
+                        }
+                    } catch (Throwable ignored) {
+                        // parsing error, not a good json
+                        result.put(key, value);
+                    }
+                } else {
+                    // everything else
+                    result.put(key, value.toString());
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        return result;
+    }
+
+    public static JSONArray parse(final Collection list) {
+        final JSONArray result = new JSONArray();
+        for (final Object item : list) {
+            if (item instanceof Collection) {
+                // list
+                result.put(parse((Collection) item));
+            } else if (item instanceof Map) {
+                // map
+                result.put(parse((Map) item));
+            } else if (BeanUtils.isPrimitiveClass(item)) {
+                // primitive
+                result.put(item);
+            } else if (item instanceof JSONObject || item instanceof JSONArray) {
+                // json
+                result.put(item);
+            } else if (item instanceof String && StringUtils.isJSON(item)) {
+                // json string
+                try {
+                    if (StringUtils.isJSONObject(item)) {
+                        result.put(new JSONObject((String)item));
+                    } else if (StringUtils.isJSONArray(item)) {
+                        result.put(new JSONArray((String)item));
+                    }
+                } catch (Throwable ignored) {
+                    // parsing error, not a good json
+                    result.put(item);
+                }
+            } else {
+                // everything else
+                result.put(item.toString());
+            }
+        }
+        return result;
+    }
+
+    // ------------------------------------------------------------------------
     //               S T A T I C  -  C O N V E R S I O N
     // ------------------------------------------------------------------------
 
@@ -790,7 +869,7 @@ public final class JsonWrapper implements Cloneable {
     public static JSONObject toJSONObject(final Object object) throws JSONException {
         if (null != object) {
             if (object instanceof Map) {
-                return new JSONObject((Map) object);
+                return parse((Map) object);
             } else if (object instanceof JSONObject) {
                 return (JSONObject) object;
             } else {

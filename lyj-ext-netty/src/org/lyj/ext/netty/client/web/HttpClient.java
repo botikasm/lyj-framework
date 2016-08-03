@@ -2,18 +2,19 @@ package org.lyj.ext.netty.client.web;
 
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+import org.json.JSONObject;
 import org.lyj.commons.Delegates;
+import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.FormatUtils;
+import org.lyj.ext.netty.HttpHeader;
 import org.lyj.ext.netty.client.web.base.HttpClientHandler;
 import org.lyj.ext.netty.client.web.base.HttpClientInitializer;
 import org.lyj.ext.netty.server.web.IHttpConstants;
@@ -22,6 +23,7 @@ import javax.net.ssl.SSLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
 
 public class HttpClient extends AbstractLogEmitter {
 
@@ -45,7 +47,7 @@ public class HttpClient extends AbstractLogEmitter {
 
     public HttpClient() {
         _initialized = false;
-        _request = new HttpClientRequest();
+        _request = new HttpClientRequest(CharEncoding.UTF_8);
     }
 
     public HttpClient(final HttpClientRequest request) {
@@ -59,6 +61,10 @@ public class HttpClient extends AbstractLogEmitter {
 
     public HttpClientRequest request() {
         return _request;
+    }
+
+    public HttpHeader headers() {
+        return _request.headers();
     }
 
     public HttpClient get() {
@@ -120,6 +126,25 @@ public class HttpClient extends AbstractLogEmitter {
         return this;
     }
 
+    public HttpClient body(final JSONObject body) throws URISyntaxException {
+        _request.body(body);
+        return this;
+    }
+
+    public HttpClient body(final Map<String, String> body) throws URISyntaxException {
+        _request.body(body);
+        return this;
+    }
+
+    public String encoding() {
+        return _request.encoding();
+    }
+
+    public HttpClient encoding(final String value) {
+        _request.encoding(value);
+        return this;
+    }
+
     /**
      * Handle exception
      *
@@ -131,7 +156,7 @@ public class HttpClient extends AbstractLogEmitter {
         return this;
     }
 
-    public HttpClient send(final Delegates.Callback<HttpClientResponse> callback) {
+    public void send(final Delegates.Callback<HttpClientResponse> callback) {
         _callback_success = callback;
         try {
             this.init();
@@ -143,7 +168,6 @@ public class HttpClient extends AbstractLogEmitter {
         } catch (Throwable t) {
             this.onError("send", t);
         }
-        return this;
     }
 
     // ------------------------------------------------------------------------
@@ -184,11 +208,11 @@ public class HttpClient extends AbstractLogEmitter {
             }
 
             //--HANDLER--//
-            _handler = new HttpClientHandler( this::onResponse, this::onErrorHandle, _request.contentFile());
+            _handler = new HttpClientHandler(this::onResponse, this::onErrorHandle, _request.contentFile());
         }
     }
 
-    private void send() throws InterruptedException {
+    private void send() throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
@@ -196,17 +220,8 @@ public class HttpClient extends AbstractLogEmitter {
                     .channel(NioSocketChannel.class)
                     .handler(new HttpClientInitializer(_sslCtx, _handler));
 
-            // Make the connection attempt.
-            Channel ch = b.connect(_request.host(), _request.port()).sync().channel();
+            _request.send(b);
 
-            // Prepare the HTTP request.
-            HttpRequest request = _request.nativeHttpRequest();
-
-            // Send the HTTP request.
-            ch.writeAndFlush(request);
-
-            // Wait for the server to close the connection.
-            ch.closeFuture().sync();
         } finally {
             // Shut down executor threads to exit.
             group.shutdownGracefully();

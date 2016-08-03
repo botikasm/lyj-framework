@@ -38,6 +38,7 @@ public abstract class CollectionUtils {
         void handle(final T item, final int index, final Object key);
     }
 
+
     //---------------------------------------------------------------------
     // forEach utilities
     // Use to filter, map reduce or simply loop on items
@@ -68,6 +69,17 @@ public abstract class CollectionUtils {
             final int len = items.length();
             for (int i = 0; i < len; i++) {
                 callback.handle(items.get(i), i, null);
+            }
+        }
+    }
+
+    public static void forEach(final JSONObject obj, final IterationCallback<Object> callback) {
+        if (null != callback && null != obj && obj.length() > 0) {
+            final Set<String> keys = obj.keySet();
+            int count = 0;
+            for (final String key : keys) {
+                callback.handle(obj.get(key), count, key);
+                count++;
             }
         }
     }
@@ -897,9 +909,9 @@ public abstract class CollectionUtils {
             response.add(subList(list, from, to));
             from = to + 1;
             to += subListSize;
-            if (to > list.size()-1) {
-                if(from<list.size()){
-                    response.add(subList(list, from, list.size()-1));
+            if (to > list.size() - 1) {
+                if (from < list.size()) {
+                    response.add(subList(list, from, list.size() - 1));
                 }
                 break;
             }

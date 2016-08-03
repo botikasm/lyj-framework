@@ -7,6 +7,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContentDecompressor;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.stream.ChunkedWriteHandler;
 
 public class HttpClientInitializer extends ChannelInitializer<SocketChannel> {
 
@@ -43,6 +44,9 @@ public class HttpClientInitializer extends ChannelInitializer<SocketChannel> {
 
         // Remove the following line if you don't want automatic content decompression.
         p.addLast(new HttpContentDecompressor());
+
+        // to be used since huge file transfer
+        p.addLast("chunkedWriter", new ChunkedWriteHandler());
 
         // Uncomment the following line if you don't want to handle HttpContents.
         //p.addLast(new HttpObjectAggregator(1048576));
