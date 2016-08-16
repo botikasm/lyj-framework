@@ -14,7 +14,8 @@ import java.io.File;
 /**
  * The response.
  */
-public class HttpClientResponse extends AbstractLogEmitter {
+public class HttpClientResponse
+        extends AbstractLogEmitter {
 
 
     // ------------------------------------------------------------------------

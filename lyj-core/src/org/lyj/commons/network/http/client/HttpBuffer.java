@@ -8,6 +8,7 @@ import org.lyj.commons.util.StringUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 /**
  * Buffer
@@ -82,7 +83,7 @@ public class HttpBuffer {
     }
 
     public String read() {
-        return new String(_buffer_bytes);
+        return new String(_buffer_bytes, Charset.forName(_encoding));
     }
 
     public byte[] readBytes() {

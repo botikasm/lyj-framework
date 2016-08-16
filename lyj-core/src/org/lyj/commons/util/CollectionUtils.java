@@ -1510,6 +1510,12 @@ public abstract class CollectionUtils {
                 : 0;
     }
 
+    public static int size(final JSONArray array) {
+        return null != array
+                ? array.length()
+                : 0;
+    }
+
     /**
      * Return token at index, or null if index is greater than tokens.
      *

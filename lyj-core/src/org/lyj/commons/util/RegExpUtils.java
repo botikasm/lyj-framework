@@ -257,7 +257,8 @@ public abstract class RegExpUtils {
      * @param matchedList   List to fill with matches. i.e. ["{hello}", "{world}"]
      */
     public static void tokenize(final String text, final String regex,
-                                final List<String> tokensList, final List<String> unmatchedList,
+                                final List<String> tokensList,
+                                final List<String> unmatchedList,
                                 final List<String> matchedList) {
         if (null == text) {
             return;

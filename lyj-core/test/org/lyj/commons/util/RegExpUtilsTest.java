@@ -23,4 +23,14 @@ public class RegExpUtilsTest {
 
     }
 
+    @Test
+    public void tokenize() throws Exception {
+
+        String[] tokens = RegExpUtils.tokenize("this is {token1 double} text with {token2} tokens {token3}!}", "\\{(?:[^\\}]+)?\\}");
+        assertEquals(tokens.length, 7);
+
+        tokens = RegExpUtils.tokenize("this is 'token1 double' text with 'token2' tokens 'token3'!'", "\\'(?:[^\\']+)?\\'");
+        assertEquals(tokens.length, 7);
+    }
+
 }

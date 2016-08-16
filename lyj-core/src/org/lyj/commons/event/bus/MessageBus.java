@@ -8,14 +8,14 @@ import org.lyj.commons.util.RandomUtils;
 /**
  * Event container.
  * <p>
- * To add an event to event bus call EventBus.emit().
+ * To add an event to event bus call MessageBus.emit().
  * <p>
- * To listen events from EventBus, create a listener calling EventBus.createListener();
+ * To listen events from MessageBus, create a listener calling MessageBus.createListener();
  * <p>
- * The EventBus allow to implement the event pattern with no danger for crossed references and memory leak.
+ * The MessageBus allow to implement the event pattern with no danger for crossed references and memory leak.
  * Event emitters and event listeners are decoupled and never referenced each other.
  * <p>
- * EventBus can be used as a singleton object or creating new instances.
+ * MessageBus can be used as a singleton object or creating new instances.
  * Each event bus has an internal thread that works as a garbage collector.
  */
 public class MessageBus {

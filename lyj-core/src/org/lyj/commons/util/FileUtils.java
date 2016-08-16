@@ -30,6 +30,7 @@ import org.lyj.commons.logging.util.LoggingUtils;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
@@ -667,6 +668,21 @@ public abstract class FileUtils {
                 deepLevel, // max deep level
                 false
         );
+    }
+
+    public static File[] list(final String path) {
+        return list(new File(path));
+    }
+
+    public static File[] list(final File startDir) {
+        final List<File> result = new LinkedList<>();
+        final File[] files = startDir.listFiles();
+        for (final File file : files) {
+            if (file.isDirectory()) {
+                result.add(file);
+            }
+        }
+        return result.toArray(new File[result.size()]);
     }
 
     public static void list(final List<File> fileList,

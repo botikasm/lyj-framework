@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Listen events from EventBus.
+ * Listen events from MessageBus.
  * <p>
  * To create an EventListener use EventBus.createListener() method.
  */

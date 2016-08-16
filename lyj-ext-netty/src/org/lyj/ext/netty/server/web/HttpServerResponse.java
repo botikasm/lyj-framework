@@ -80,6 +80,11 @@ public class HttpServerResponse
         return this;
     }
 
+    public HttpServerResponse write(final byte[] data) {
+        _buffer.write(data);
+        return this;
+    }
+
     /**
      * Write and flush everything from buffer to response.
      * Close connection if not 'keep-alive'.
