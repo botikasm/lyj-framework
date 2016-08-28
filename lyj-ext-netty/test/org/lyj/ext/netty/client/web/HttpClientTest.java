@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.util.*;
 import org.lyj.ext.netty.TestInitializer;
+import org.lyj.ext.netty.client.web.temp.HttpTempClient;
+import org.lyj.ext.netty.client.web.temp.HttpTempClientResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,14 +53,14 @@ public class HttpClientTest {
     @Test
     public void getLocal() throws Exception {
         // get to localhost
-        HttpClientResponse response = this.get(HTTP_GET, "");
+        HttpTempClientResponse response = this.get(HTTP_GET, "");
         System.out.println(new String(response.content()));
     }
 
     @Test
     public void postLocal() throws Exception {
         // post to localhost
-        HttpClientResponse response = this.post(HTTP_POST, MapBuilder.createSS().put("param1", "val1").toJSON());
+        HttpTempClientResponse response = this.post(HTTP_POST, MapBuilder.createSS().put("param1", "val1").toJSON());
         System.out.println(new String(response.content()));
     }
 
@@ -66,10 +68,10 @@ public class HttpClientTest {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private HttpClientResponse get(final String url, final String outname) throws Exception {
-        HttpClient client = new HttpClient();
+    private HttpTempClientResponse get(final String url, final String outname) throws Exception {
+        HttpTempClient client = new HttpTempClient();
         System.out.println("GET: " + url);
-        Task<HttpClientResponse> task = new Task<>((t) -> {
+        Task<HttpTempClientResponse> task = new Task<>((t) -> {
             client.get().url(url).fail(t::fail).send((response) -> {
                 try {
                     t.success(response);
@@ -79,7 +81,7 @@ public class HttpClientTest {
             });
         });
         task.run();
-        final HttpClientResponse response = task.get();
+        final HttpTempClientResponse response = task.get();
         Assert.assertNotNull(response);
         System.out.println(response);
 
@@ -88,7 +90,7 @@ public class HttpClientTest {
         return response;
     }
 
-    private void handleResponse(final HttpClientResponse response, final String outname) throws IOException {
+    private void handleResponse(final HttpTempClientResponse response, final String outname) throws IOException {
         if(StringUtils.hasText(outname)){
             byte[] content = response.content();
             Assert.assertFalse(content.length == 0);
@@ -103,12 +105,12 @@ public class HttpClientTest {
         }
     }
 
-    private HttpClientResponse post(final String url,
-                                    final JSONObject body) throws Exception {
-        HttpClient client = new HttpClient();
+    private HttpTempClientResponse post(final String url,
+                                        final JSONObject body) throws Exception {
+        HttpTempClient client = new HttpTempClient();
         client.headers().add("x-custom", "hello header");
 
-        Task<HttpClientResponse> task = new Task<>((t) -> {
+        Task<HttpTempClientResponse> task = new Task<>((t) -> {
             client.post().body(body).url(url).fail(t::fail).send((response) -> {
                 try {
                     t.success(response);
@@ -118,7 +120,7 @@ public class HttpClientTest {
             });
         });
         task.run();
-        final HttpClientResponse response = task.get();
+        final HttpTempClientResponse response = task.get();
         Assert.assertNotNull(response);
         System.out.println(response);
 

@@ -90,6 +90,14 @@ public abstract class AbstractLauncher {
             x.printStackTrace();
             System.exit(2);
         }
+
+        // SHUTDOWN HOOK
+        // final Thread mainThread = Thread.currentThread();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+
+            }
+        });
     }
 
     // ------------------------------------------------------------------------
@@ -137,6 +145,7 @@ public abstract class AbstractLauncher {
     // ------------------------------------------------------------------------
 
     public abstract void ready();
+    public abstract void shutdown();
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e

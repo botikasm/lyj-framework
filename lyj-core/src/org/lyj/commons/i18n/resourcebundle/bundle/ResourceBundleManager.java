@@ -49,10 +49,37 @@ public abstract class ResourceBundleManager {
     }
 
     // -----------------------------------------------------------------------
+    //                  filesystem access
+    // -----------------------------------------------------------------------
+
+    public static String getString(final String baseName,
+                                   final String resourceKey,
+                                   final Locale locale) {
+        return getResourceString(
+                baseName,
+                resourceKey,
+                locale,
+                null);
+    }
+
+    public static String getString(final String baseName,
+                                   final String resourceKey,
+                                   final Locale locale,
+                                   final String defaultValue) {
+        return getResourceString(
+                baseName,
+                resourceKey,
+                locale,
+                defaultValue);
+    }
+
+    // -----------------------------------------------------------------------
     //                  works with path + baseName
     // -----------------------------------------------------------------------
+
     public static String getString(final Class callerClass,
-                                   final String baseName, final String resourceKey,
+                                   final String baseName,
+                                   final String resourceKey,
                                    final ClassLoader classloader) {
         return getString(callerClass,
                 baseName,
@@ -62,8 +89,10 @@ public abstract class ResourceBundleManager {
     }
 
     public static String getString(final Class callerClass,
-                                   final String baseName, final String resourceKey,
-                                   final Locale locale, final ClassLoader classloader) {
+                                   final String baseName,
+                                   final String resourceKey,
+                                   final Locale locale,
+                                   final ClassLoader classloader) {
         return getString(callerClass,
                 baseName,
                 resourceKey,
@@ -99,8 +128,10 @@ public abstract class ResourceBundleManager {
     // -----------------------------------------------------------------------
     //                  works with full path (full class name)
     // -----------------------------------------------------------------------
+
     public static String getString(final Class callerCalss,
-                                   final String resourceKey, final ClassLoader classloader) {
+                                   final String resourceKey,
+                                   final ClassLoader classloader) {
         return getString(callerCalss,
                 resourceKey,
                 Locale.getDefault(),
@@ -127,7 +158,8 @@ public abstract class ResourceBundleManager {
     }
 
     public static String getString(final String path,
-                                   final String resourceKey, final ClassLoader classloader) {
+                                   final String resourceKey,
+                                   final ClassLoader classloader) {
         return getString(path, resourceKey, Locale.getDefault(), classloader);
     }
 
@@ -138,16 +170,19 @@ public abstract class ResourceBundleManager {
     }
 
     public static String getString(final String path,
-                                   final String resourceKey, final Locale locale,
-                                   final String defaultValue, final ClassLoader classloader) {
+                                   final String resourceKey,
+                                   final Locale locale,
+                                   final String defaultValue,
+                                   final ClassLoader classloader) {
         final String base = PathUtils.getClassPath(path);
         return getResourceString(base, resourceKey, locale,
                 defaultValue, classloader);
     }
 
     // ------------------------------------------------------------------------
-    //                  m i s c.
+    //                  P R O P E R T I E S
     // ------------------------------------------------------------------------
+
     public static Properties getProperties(final String path,
                                            final String langCode, final ClassLoader classloader) throws Exception {
         final Locale locale = StringUtils.hasText(langCode)
@@ -157,8 +192,22 @@ public abstract class ResourceBundleManager {
     }
 
     public static Properties getProperties(final String path,
-                                           final Locale locale, final ClassLoader classloader) throws Exception {
+                                           final Locale locale,
+                                           final ClassLoader classloader) throws Exception {
         return getAllProperties(path, locale, classloader);
+    }
+
+    public static Properties getProperties(final String path,
+                                           final String langCode) throws Exception {
+        final Locale locale = StringUtils.hasText(langCode)
+                ? LocaleUtils.getLocaleFromString(langCode)
+                : null;
+        return getProperties(path, locale);
+    }
+
+    public static Properties getProperties(final String path,
+                                           final Locale locale) throws Exception {
+        return getAllProperties(path, locale);
     }
 
     /**
@@ -212,7 +261,7 @@ public abstract class ResourceBundleManager {
                                             final ClassLoader classloader) {
         try {
             // retrieve a resource bundle
-            IResourceBundle rb = I18nUtils.getOrCreateBundle(baseName,
+            final IResourceBundle rb = I18nUtils.getOrCreateBundle(baseName,
                     locale,
                     classloader,
                     _encoding);
@@ -223,6 +272,27 @@ public abstract class ResourceBundleManager {
             getLogger().log(Level.FINE,
                     String.format("Resource not found. BaseName='%s'; "
                             + "Key='%s'; Locale='%s'",
+                            baseName, resourceKey, locale.toString()), ex);
+        }
+        return "";
+    }
+
+    private static String getResourceString(final String baseName,
+                                            final String resourceKey,
+                                            final Locale locale,
+                                            final String defaultValue) {
+        try {
+            // retrieve a resource bundle
+            final IResourceBundle rb = I18nUtils.getOrCreateBundle(baseName,
+                    locale,
+                    _encoding);
+
+            final String result = rb.getString(resourceKey);
+            return result != null ? result : defaultValue;
+        } catch (Exception ex) {
+            getLogger().log(Level.FINE,
+                    String.format("Resource not found. BaseName='%s'; "
+                                    + "Key='%s'; Locale='%s'",
                             baseName, resourceKey, locale.toString()), ex);
         }
         return "";
@@ -241,4 +311,17 @@ public abstract class ResourceBundleManager {
                 ? rb.getProperties()
                 : null;
     }
+
+    private static Properties getAllProperties(final String baseName,
+                                               final Locale locale) throws Exception {
+        // retrieve a resource bundle
+        final IResourceBundle rb = I18nUtils.getOrCreateBundle(baseName,
+                locale,
+                _encoding);
+
+        return rb != null
+                ? rb.getProperties()
+                : null;
+    }
+
 }

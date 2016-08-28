@@ -63,6 +63,28 @@ public abstract class I18nUtils {
         return result;
     }
 
+    public static IResourceBundle getOrCreateBundle(final String baseName,
+                                                    final Locale locale,
+                                                    final String encoding) throws Exception {
+
+        final String key = I18nUtils.buildResourceBundleKey(baseName, locale);
+
+        // search rb in repository
+        IResourceBundle result = ResourceBundleCache.get(key);
+        // create rb and add to repository
+        if (null == result) {
+            result = new FileResourceBundle(baseName, locale, encoding);
+            if (result.isActive())
+                ResourceBundleCache.add(key, result);
+        }
+
+        // rethrow bundle exception
+        if (null != result.getError()) {
+            throw new Exception(result.getError());
+        }
+        return result;
+    }
+
     public static String buildResourceBundleKey(final String baseName,
                                                 final Locale locale) {
         return null != locale

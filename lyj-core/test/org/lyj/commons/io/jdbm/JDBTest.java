@@ -49,6 +49,9 @@ public class JDBTest {
 
         System.out.println("Size after insert error: " + collection.count());
 
+        final boolean exist_mario = collection.exists(item.get("_id"));
+        assertTrue(exist_mario);
+
         // search mario
         Map<String, Object> mario = collection.findOne(MapBuilder.create(String.class, Object.class).put("name", "mario").toMap());
         assertNotNull(mario);
@@ -102,8 +105,91 @@ public class JDBTest {
             assertTrue(count_remain > 0); // should remain wario
         }
 
+
         collection.clear();
         assertTrue(collection.count() == 0);
 
     }
+
+    @Test
+    public void indexes() throws Exception {
+        JDB db = JDB.create(Lyj.getAbsolutePath("test-jdb")).open("testdb");
+        JDBCollection collection = db.collection("sample_indexes");
+
+        collection.indexAddUnique(new String[]{"name", "surname"});
+
+        assertTrue(collection.indexCount() == 1);
+        assertTrue(collection.indexIsUnique(new String[]{"name", "surname"}));
+
+        // remove existing to avoid errors with unique keys
+        collection.clear();
+
+        // add items
+        Map<String, Object> item1 = collection.insert(
+                MapBuilder.create(String.class, Object.class)
+                        .put("name", "mario")
+                        .put("surname", "rossi").toMap()
+        );
+        Map<String, Object> item2 = collection.insert(
+                MapBuilder.create(String.class, Object.class)
+                        .put("name", "mario")
+                        .put("surname", "verdi").toMap()
+        );
+
+
+        // try add existing
+        Exception err = null;
+        try {
+            collection.insert(MapBuilder.create(String.class, Object.class)
+                    .put("name", "mario")
+                    .put("surname", "verdi").toMap()
+            );
+        } catch (Exception t) {
+            err = t;
+        }
+        assertNotNull(err);
+
+        // remove mario verdi and add new mario verdi
+        collection.remove(MapBuilder.create(String.class, Object.class)
+                .put("name", "mario")
+                .put("surname", "verdi").toMap());
+        collection.insert(MapBuilder.create(String.class, Object.class)
+                .put("name", "mario")
+                .put("surname", "verdi").toMap()
+        );
+
+        // find
+        Map<String, Object> query = MapBuilder.createSO()
+                .put("name", "mario")
+                .put("surname", "rossi")
+                .toMap();
+        Collection<Map<String, Object>> items = collection.find(query);
+        assertTrue(items.size()==1);
+        query = MapBuilder.createSO()
+                .put("name", "mario")
+                .put("surname", "verdi")
+                .toMap();
+        items = collection.find(query);
+        assertTrue(items.size()==1);
+
+        // update mario verdi to mario bianchi
+        Map<String, Object> update_item = collection.findOne(MapBuilder.createSO()
+                .put("name", "mario")
+                .put("surname", "verdi")
+                .toMap());
+        update_item.put("surname", "bianchi");
+        collection.upsert(update_item);
+
+        // add new mario verdi
+        collection.insert(MapBuilder.create(String.class, Object.class)
+                .put("name", "mario")
+                .put("surname", "verdi").toMap()
+        );
+
+        collection.clear();
+        assertTrue(collection.count() == 0);
+
+
+    }
+
 }

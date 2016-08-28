@@ -3,6 +3,7 @@ package org.lyj.commons.logging;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.commons.util.FormatUtils;
+import org.lyj.commons.util.StringUtils;
 
 /**
  * Utility abstract class for Log Emitters (all classes needing a logger)
@@ -43,9 +44,17 @@ public class AbstractLogEmitter
 
     public void log(final Level level, final String methodName, final String message, final Throwable t) {
         final Logger logger = this.logger();
-        final String name = logger.getShortName().concat(".").concat(methodName);
-        final String pattern = null == t ? "[%s] %s" : "[%s] %s: %s";
-        final Object[] params = null == t ? new Object[]{name, message} : new Object[]{name, message, t};
+
+        final String pattern;
+        final Object[] params;
+        if(StringUtils.hasText(methodName)){
+            final String name = logger.getShortName().concat(".").concat(methodName);
+            pattern = null == t ? "[%s] %s" : "[%s] %s: %s";
+            params = null == t ? new Object[]{name, message} : new Object[]{name, message, t};
+        } else {
+            pattern = null == t ? "%s" : "%s: %s";
+            params = null == t ? new Object[]{message} : new Object[]{message, t};
+        }
 
         logger.log(level, pattern, params);
     }

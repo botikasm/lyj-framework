@@ -254,6 +254,16 @@ public class LocaleUtils {
         }
     }
 
+    public static String getCountry(final String slocale) {
+        final String[] tokens = StringUtils.split(slocale, new String[]{"_", "-"});
+        if (tokens.length > 0) {
+            return tokens[1];
+        } else {
+            final Locale locale = LocaleUtils.getLocaleFromString(slocale);
+            return locale.getCountry();
+        }
+    }
+
     /**
      * Return Country from locale even if passed locale has not a country declared.
      *

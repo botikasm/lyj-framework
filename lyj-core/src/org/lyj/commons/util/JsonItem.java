@@ -1,6 +1,5 @@
 package org.lyj.commons.util;
 
-import com.sun.xml.internal.xsom.impl.scd.Iterators;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +43,7 @@ public class JsonItem
         _data = null != item ? item._data : new JsonWrapper(new JSONObject());
     }
 
-    public JsonItem(final Map<String, ?> item){
+    public JsonItem(final Map<String, ?> item) {
         _data = null != item ? new JsonWrapper(new JSONObject(item)) : new JsonWrapper(new JSONObject());
     }
 
@@ -105,6 +104,20 @@ public class JsonItem
      */
     public JsonItem putValue(final String key, final Object value) {
         _data.put(key, value);
+        return this;
+    }
+
+    public JsonItem putNotEmpty(final String key, final Object value) {
+        if (null != value && StringUtils.hasText(value.toString())) {
+            this.put(key, value);
+        }
+        return this;
+    }
+
+    public JsonItem putValueNotEmpty(final String key, final Object value) {
+        if (null != value && StringUtils.hasText(value.toString())) {
+            this.putValue(key, value);
+        }
         return this;
     }
 

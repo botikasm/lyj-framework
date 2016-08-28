@@ -13,14 +13,42 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/netty-4.1.0CR3" />
+          <root url="file://$MODULE_DIR$/vendor/netty-4.1.4" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/netty-4.1.0CR3" />
+          <root url="file://$MODULE_DIR$/vendor/netty-4.1.4" />
         </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.0CR3" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.0CR3" recursive="false" type="SOURCES" />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.4" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.4" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/vendor/async-http-client" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/async-http-client" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/vendor/slf4j-1.7.21/slf4j-api-1.7.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/vendor/slf4j-1.7.21/slf4j-nop-1.7.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
       </library>
     </orderEntry>
   </component>

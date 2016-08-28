@@ -47,6 +47,10 @@ public class LyjBaseLauncher
         // nothing to doat the moment
     }
 
+    @Override
+    public void shutdown(){
+
+    }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e

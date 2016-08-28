@@ -4,17 +4,19 @@ import net.kotek.jdbm.DB;
 import net.kotek.jdbm.DBMaker;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.StringUtils;
 
 import java.io.File;
 import java.util.Set;
 
 /**
  * Database Wrapper.
- *
+ * <p>
  * Remember to close connection before close app, or data will be corrupted.
- *
  */
 public class JDB {
+
+    private final static String PRIMARY_KEY = "_id";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -27,6 +29,7 @@ public class JDB {
     private boolean _enable_transactions;
     private DB _db;
     private Set<String> _collectionNames;
+    private String _primary_key;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -36,6 +39,7 @@ public class JDB {
         _root = root;
         _secret = "password";
         _enable_transactions = false;
+        _primary_key = PRIMARY_KEY;
     }
 
     // ------------------------------------------------------------------------
@@ -62,6 +66,17 @@ public class JDB {
 
     public boolean enableTransaction() {
         return _enable_transactions;
+    }
+
+    public String primaryKey() {
+        return _primary_key;
+    }
+
+    public JDB primaryKey(final String value) {
+        if (StringUtils.hasText(value)) {
+            _primary_key = value;
+        }
+        return this;
     }
 
     // ------------------------------------------------------------------------
@@ -101,7 +116,7 @@ public class JDB {
     public JDBCollection collection(final String name) {
         if (null != _db && _open) {
             this.addName(name);
-            return new JDBCollection(_db, _enable_transactions, name);
+            return new JDBCollection(_db, _enable_transactions, name, _primary_key);
         }
         return null;
     }
@@ -129,8 +144,10 @@ public class JDB {
     }
 
     private void addName(final String collectionName) {
-        _collectionNames.add(collectionName);
-        _db.commit();
+        synchronized (this) {
+            _collectionNames.add(collectionName);
+            _db.commit();
+        }
     }
 
     // ------------------------------------------------------------------------

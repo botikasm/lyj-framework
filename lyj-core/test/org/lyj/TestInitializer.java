@@ -33,6 +33,11 @@ public class TestInitializer {
 
         }
 
+        @Override
+        public void shutdown() {
+
+        }
+
         public static void main(final String[] args) {
             final Launcher main = new Launcher(args);
             main.run();
