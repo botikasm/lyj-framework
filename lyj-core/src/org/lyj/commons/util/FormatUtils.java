@@ -28,6 +28,7 @@ import java.util.*;
 
 public class FormatUtils {
 
+    @FunctionalInterface
     public static interface FormatHandler {
         Object handle(final String placeholder);
     }

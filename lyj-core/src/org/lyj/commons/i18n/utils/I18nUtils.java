@@ -29,6 +29,7 @@ import org.lyj.commons.i18n.resourcebundle.bundle.impl.ClassResourceBundle;
 import org.lyj.commons.i18n.resourcebundle.bundle.impl.FileResourceBundle;
 import org.lyj.commons.i18n.resourcebundle.cache.ResourceBundleCache;
 
+import java.io.File;
 import java.util.Locale;
 
 /**

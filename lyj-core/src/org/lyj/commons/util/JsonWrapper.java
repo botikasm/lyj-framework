@@ -804,9 +804,9 @@ public final class JsonWrapper implements Cloneable {
                     // json string
                     try {
                         if (StringUtils.isJSONObject(value)) {
-                            result.put(key, new JSONObject((String)value));
+                            result.put(key, new JSONObject((String) value));
                         } else if (StringUtils.isJSONArray(value)) {
-                            result.put(key, new JSONArray((String)value));
+                            result.put(key, new JSONArray((String) value));
                         }
                     } catch (Throwable ignored) {
                         // parsing error, not a good json
@@ -841,9 +841,9 @@ public final class JsonWrapper implements Cloneable {
                 // json string
                 try {
                     if (StringUtils.isJSONObject(item)) {
-                        result.put(new JSONObject((String)item));
+                        result.put(new JSONObject((String) item));
                     } else if (StringUtils.isJSONArray(item)) {
-                        result.put(new JSONArray((String)item));
+                        result.put(new JSONArray((String) item));
                     }
                 } catch (Throwable ignored) {
                     // parsing error, not a good json
@@ -931,7 +931,11 @@ public final class JsonWrapper implements Cloneable {
             final String name = keys.next().toString();
             if (null != name) {
                 final Object value = item.opt(name);
-                result.put(name, null != value ? value : "");
+                if (value instanceof JSONObject) {
+                    result.put(name, toMap((JSONObject) value));
+                } else {
+                    result.put(name, null != value ? value : "");
+                }
             }
         }
         return result;

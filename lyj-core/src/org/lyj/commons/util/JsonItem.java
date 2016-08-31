@@ -61,12 +61,12 @@ public class JsonItem
         return new JsonItem(this.toString());
     }
 
-    public JSONObject json() {
-        return _data.getJSONObject();
+    public Set<String> keys() {
+        return _data.keys();
     }
 
-    public Map<String, Object> map() {
-        return _data.toMap();
+    public JSONObject json() {
+        return _data.getJSONObject();
     }
 
     public boolean has(final String key) {

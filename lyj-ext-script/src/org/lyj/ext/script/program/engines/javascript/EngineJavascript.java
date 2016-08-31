@@ -21,6 +21,11 @@ import java.util.Map;
 public class EngineJavascript
         extends AbstractEngine {
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    private static final String EXTENSION_FILE = "extend.js";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -79,7 +84,7 @@ public class EngineJavascript
             _initialized = true;
             try {
                 // eval extended scripts
-                final String extension = super.loadResource("extend.js");
+                final String extension = super.loadResource(EXTENSION_FILE);
                 if (StringUtils.hasText(extension)) {
                     _engine.eval(extension);
                 }
