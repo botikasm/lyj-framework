@@ -66,7 +66,7 @@ public final class StringUtils {
     }
 
     public static String[] chunk(final String str, final int chunkSize) {
-        return str.split("(?<=\\G.{"+chunkSize+"})");
+        return str.split("(?<=\\G.{" + chunkSize + "})");
     }
 
     /**
@@ -340,9 +340,9 @@ public final class StringUtils {
                                  final String delimiter,
                                  final Delegates.FunctionArg<String, String> callback) {
         final String[] tokens = split(str, delimiter);
-        if(null!=callback){
-            try{
-                for(int i=0;i<tokens.length;i++){
+        if (null != callback) {
+            try {
+                for (int i = 0; i < tokens.length; i++) {
                     tokens[i] = callback.call(tokens[i]);
                 }
             } catch (Throwable ignored) {
@@ -743,7 +743,7 @@ public final class StringUtils {
             return defaultValue;
         } else {
             StringBuilder result = new StringBuilder();
-            for (final Object item:array) {
+            for (final Object item : array) {
                 if (result.length() > 0) {
                     result.append(separator);
                 }
@@ -752,6 +752,7 @@ public final class StringUtils {
             return result.toString();
         }
     }
+
     public static String toString(final Object[] array,
                                   final String separator,
                                   final String defaultValue) {
@@ -819,8 +820,8 @@ public final class StringUtils {
                 final String value = StringUtils.notNull(params.get(key), "");
                 if (StringUtils.hasText(value)) {
                     StringUtils.append(urlEncode(key, charSet, false)
-                            .concat("=")
-                            .concat(urlEncode(value, charSet, encodeSpaces)),
+                                    .concat("=")
+                                    .concat(urlEncode(value, charSet, encodeSpaces)),
                             result, sep);
                 }
             }
@@ -843,7 +844,7 @@ public final class StringUtils {
 
     public static String urlEncode(final String s, final String charSet, final boolean encodeSpaces) {
         try {
-            return URLEncoder.encode(encodeSpaces?urlEncodeSpaces(s):s, charSet);
+            return URLEncoder.encode(encodeSpaces ? urlEncodeSpaces(s) : s, charSet);
         } catch (Exception ignored) {
         }
         return s;
@@ -1564,7 +1565,7 @@ public final class StringUtils {
      * @return the capitalized String,
      * <code>null</code> if null
      */
-    public static String capitalize(String str) {
+    public static String capitalize(final String str) {
         return changeFirstCharacterCase(str, true);
     }
 
@@ -1578,8 +1579,20 @@ public final class StringUtils {
      * @return the uncapitalized String,
      * <code>null</code> if null
      */
-    public static String uncapitalize(String str) {
+    public static String uncapitalize(final String str) {
         return changeFirstCharacterCase(str, false);
+    }
+
+    /**
+     * Change a string like "this_is_underscore_separated" into "thisIsUnderscoreSeparated"
+     *
+     * @param str underscore String to change
+     * @return Camel case string
+     */
+    public static String toCamelCase(final String str) {
+        final String[] tokens = split(str, "_");
+        final String[] camel = changeFirstCharacterCase(tokens, new Boolean[]{false}); // first il lowercase
+        return concatArgsEx("", camel);
     }
 
     public static String toLowerCase(final char c) {
@@ -1617,6 +1630,17 @@ public final class StringUtils {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private static String[] changeFirstCharacterCase(final String[] str,
+                                                     final Boolean[] capitalize) {
+        final String[] response = new String[str.length];
+        for (int i = 0; i < str.length; i++) {
+            final boolean cap = CollectionUtils.get(capitalize, i, true);
+            response[i] = changeFirstCharacterCase(str[i], cap);
+        }
+        return response;
+    }
+
     private static String changeFirstCharacterCase(final String str,
                                                    final boolean capitalize) {
         if (str == null || str.length() == 0) {
@@ -1626,7 +1650,7 @@ public final class StringUtils {
         if (capitalize) {
             buf.append(Character.toUpperCase(str.charAt(0)));
         } else {
-            buf.append(str.charAt(0));
+            buf.append(Character.toLowerCase(str.charAt(0)));
         }
         buf.append(str.substring(1));
         return buf.toString();

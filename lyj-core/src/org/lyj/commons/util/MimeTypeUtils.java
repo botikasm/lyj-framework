@@ -372,6 +372,11 @@ public class MimeTypeUtils {
         return mimetype.startsWith("video");
     }
 
+    public static boolean isAudioType(final String fileName) {
+        final String mimetype = MimeTypeUtils.getMimeType(fileName);
+        return mimetype.startsWith("audio");
+    }
+
     public static String getMimePlaintext(final String encoding){
         return MimeTypeUtils.getMimeType(".txt")
                 .concat(CHARSET_PREFIX)

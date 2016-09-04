@@ -198,7 +198,6 @@ public abstract class BeanUtils {
      * @return
      * @throws IllegalAccessException
      * @throws InvocationTargetException
-     *
      */
     public static Object getValue(final Object instance,
                                   final String path)
@@ -448,8 +447,8 @@ public abstract class BeanUtils {
         return to.isAssignableFrom(from.getClass());
     }
 
-    public static boolean equals(final Class cls1, final Class cls2){
-        if(null!=cls1 && null!=cls2) {
+    public static boolean equals(final Class cls1, final Class cls2) {
+        if (null != cls1 && null != cls2) {
             final Class clso1 = PrimitiveClasses.getObjectClass(cls1);
             final Class clso2 = PrimitiveClasses.getObjectClass(cls2);
             return clso1.equals(clso2);
@@ -457,8 +456,8 @@ public abstract class BeanUtils {
         return false;
     }
 
-    public static boolean similar(final Class cls1, final Class cls2){
-        if(null!=cls1 && null!=cls2) {
+    public static boolean similar(final Class cls1, final Class cls2) {
+        if (null != cls1 && null != cls2) {
             final Class clso1 = PrimitiveClasses.getObjectClass(cls1);
             final Class clso2 = PrimitiveClasses.getObjectClass(cls2);
             boolean equals = clso1.equals(clso2);
@@ -623,6 +622,9 @@ public abstract class BeanUtils {
         final String name = upperCaseFirstInitial(fieldName);
         Method result = getMethodIfAny(instance, "get".concat(name), new Class[0]);
         if (result == null) {
+            result = getMethodIfAny(instance, StringUtils.toCamelCase(name), new Class[0]);
+        }
+        if (result == null) {
             result = getMethodIfAny(instance, "is".concat(name), new Class[0]);
         }
         return result;
@@ -634,6 +636,10 @@ public abstract class BeanUtils {
         final String name = upperCaseFirstInitial(fieldName);
         Method result = getMethodIfAnyAtLeastOne(
                 instance.getClass(), "set".concat(name), params);
+        if (result == null) {
+            result = getMethodIfAnyAtLeastOne(
+                    instance.getClass(), StringUtils.toCamelCase(name), params);
+        }
         if (result == null) {
             result = getMethodIfAnyAtLeastOne(
                     instance.getClass(), "is".concat(name), params);
@@ -808,7 +814,8 @@ public abstract class BeanUtils {
 
     @SuppressWarnings("unchecked")
     private static boolean setSimplePropertyValue(final Object instance,
-                                                  final String fieldName, final Object value)
+                                                  final String fieldName,
+                                                  final Object value)
             throws IllegalAccessException, InvocationTargetException {
         boolean result = false;
         if (null != instance) {
@@ -875,7 +882,7 @@ public abstract class BeanUtils {
      * @param object Instance to convert.
      * @param type   Destination type (e.g. Boolean.class).
      * @return Converted instance/datatype/collection or null if input object is
-     *         null.
+     * null.
      * @since 2.11.0
      */
     @SuppressWarnings("unchecked")
