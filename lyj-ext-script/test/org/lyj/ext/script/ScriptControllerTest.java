@@ -2,6 +2,7 @@ package org.lyj.ext.script;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lyj.commons.util.MapBuilder;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.ext.script.program.Program;
 
@@ -34,6 +35,18 @@ public class ScriptControllerTest {
 
         prg.engine().eval("print('foo = ' + foo)");
 
+    }
+
+    @Test
+    public void specialFormula() throws Exception {
+
+        String formula = "(L/1000 * H/1000)";
+
+        Program prg = ScriptController.instance().create();
+        double result = (double) prg.engine().eval(formula, MapBuilder.createSO()
+                .put("L", 123).put("H", 676)
+                .toMap());
+        System.out.println("FORMULA=" + result);
     }
 
     @Test
@@ -72,6 +85,7 @@ public class ScriptControllerTest {
 
         Program prg = ScriptController.instance().create();
         prg.root(PathUtils.getAbsolutePath(""));
+        prg.context().put("SIMPLE", new SimpleObject());
         prg.engine().eval();
 
     }

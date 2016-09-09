@@ -220,6 +220,13 @@ public class JsonItem
         }
     }
 
+    public Object remove(final String key){
+        if(this.has(key)){
+            return _data.remove(key);
+        }
+        return null;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------

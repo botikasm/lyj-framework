@@ -6,6 +6,21 @@ package org.lyj.commons.async.future;
 public class Loop {
 
 
+    /**
+     * The minimum priority that a thread can have.
+     */
+    public final static int MIN_PRIORITY = Thread.MIN_PRIORITY;
+
+    /**
+     * The default priority that is assigned to a thread.
+     */
+    public final static int NORM_PRIORITY = Thread.NORM_PRIORITY;
+
+    /**
+     * The maximum priority that a thread can have.
+     */
+    public final static int MAX_PRIORITY = Thread.MAX_PRIORITY;
+
     // --------------------------------------------------------------------
     //               f i e l d s
     // --------------------------------------------------------------------
@@ -13,6 +28,7 @@ public class Loop {
     private int _initial_delay;
     private int _run_interval;
     private int _timeout;
+    private int _priority;
 
     private long _time_start;
     private long _time_end;
@@ -42,6 +58,7 @@ public class Loop {
         _initial_delay = initialDelay;
         _run_interval = runInterval;
         _timeout = timeout;
+        _priority = NORM_PRIORITY;
 
         _interruptor = new LoopInterruptor();
     }
@@ -49,6 +66,49 @@ public class Loop {
     // --------------------------------------------------------------------
     //               p u b l i c
     // --------------------------------------------------------------------
+
+    public int priority() {
+        return _priority;
+    }
+
+    public Loop priority(final int priority) {
+        if (priority == MAX_PRIORITY || priority == MIN_PRIORITY || priority == NORM_PRIORITY) {
+            _priority = priority;
+        }
+        return this;
+    }
+
+    public int timeout() {
+        return _timeout;
+    }
+
+    public Loop timeout(final int value) {
+        _timeout = value;
+        return this;
+    }
+
+    public int initialDelay() {
+        return _initial_delay;
+    }
+
+    public Loop initialDelay(final int value) {
+        _initial_delay = value;
+        return this;
+    }
+
+    public int runInterval() {
+        return _run_interval;
+    }
+
+    public Loop runInterval(final int value) {
+        _run_interval = value;
+        return this;
+    }
+
+    public Loop start(final int priority, final LoopHandler callback) {
+        this.priority(priority);
+        return this.start(callback);
+    }
 
     public Loop start(final LoopHandler callback) {
         if (null != callback) {
@@ -64,7 +124,7 @@ public class Loop {
         this.stop();
     }
 
-    public void join(){
+    public void join() {
         this.join(0);
     }
 
@@ -86,7 +146,7 @@ public class Loop {
         return null != _thread && _thread.isAlive() && !_thread.isInterrupted();
     }
 
-    public long duration(){
+    public long duration() {
         return _time_end - _time_start;
     }
 
@@ -109,7 +169,7 @@ public class Loop {
                     _interruptor.inc();
 
                     if (null != _callback) {
-                        if(!_interruptor.isPaused()){
+                        if (!_interruptor.isPaused()) {
                             _callback.handle(_interruptor);
                         }
                     } else {
@@ -132,6 +192,7 @@ public class Loop {
                 _time_end = System.currentTimeMillis();
             }
         });
+        _thread.setPriority(_priority);
         _thread.start();
     }
 
@@ -152,10 +213,11 @@ public class Loop {
         private boolean _paused;
         private long _count;
 
-        public void reset(){
+        public void reset() {
             _count = 0;
             _stopped = false;
         }
+
         public void stop() {
             _stopped = true;
         }
@@ -176,11 +238,11 @@ public class Loop {
             return _paused;
         }
 
-        public long count(){
+        public long count() {
             return _count;
         }
 
-        void inc(){
+        void inc() {
             _count++;
         }
     }
