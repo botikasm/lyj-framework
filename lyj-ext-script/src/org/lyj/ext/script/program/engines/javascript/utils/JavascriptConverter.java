@@ -15,19 +15,41 @@ public class JavascriptConverter {
     public static Object toJSON(final ScriptObjectMirror item) {
         if (null != item) {
             if (item.isArray()) {
-                return toJSONArray(item);
+                return toArray(item);
             } else {
-                return toJSONObject(item);
+                return toObject(item);
             }
         }
         return null;
+    }
+
+    public static JSONArray forceJSONArray(final ScriptObjectMirror item) {
+        if (null != item) {
+            if (item.isArray()) {
+                return toArray(item);
+            } else {
+                final JSONArray array = new JSONArray();
+                array.put(toObject(item));
+                return array;
+            }
+        }
+        return new JSONArray();
+    }
+
+    public static JSONObject forceJSONObject(final ScriptObjectMirror item) {
+        if (null != item) {
+            if (!item.isArray()) {
+                return toObject(item);
+            }
+        }
+        return new JSONObject();
     }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private static JSONObject toJSONObject(final ScriptObjectMirror item) {
+    private static JSONObject toObject(final ScriptObjectMirror item) {
         final JSONObject result = new JSONObject();
         final Set<String> keys = item.keySet();
         for (final String key : keys) {
@@ -35,9 +57,9 @@ public class JavascriptConverter {
             if (value instanceof ScriptObjectMirror) {
                 final ScriptObjectMirror svalue = (ScriptObjectMirror) value;
                 if (svalue.isArray()) {
-                    result.put(key, toJSONArray(svalue));
+                    result.put(key, toArray(svalue));
                 } else {
-                    result.put(key, toJSONObject(svalue));
+                    result.put(key, toObject(svalue));
                 }
             } else {
                 // primitive value
@@ -47,7 +69,7 @@ public class JavascriptConverter {
         return result;
     }
 
-    private static JSONArray toJSONArray(final ScriptObjectMirror item) {
+    private static JSONArray toArray(final ScriptObjectMirror item) {
         final JSONArray result = new JSONArray();
         final Set<String> keys = item.keySet();
         for (final String key : keys) {
@@ -55,9 +77,9 @@ public class JavascriptConverter {
             if (value instanceof ScriptObjectMirror) {
                 final ScriptObjectMirror svalue = (ScriptObjectMirror) value;
                 if (svalue.isArray()) {
-                    result.put(toJSONArray(svalue));
+                    result.put(toArray(svalue));
                 } else {
-                    result.put(toJSONObject(svalue));
+                    result.put(toObject(svalue));
                 }
             } else {
                 // primitive value
