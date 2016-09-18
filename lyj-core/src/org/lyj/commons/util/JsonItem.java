@@ -5,10 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.lyj.commons.logging.AbstractLogEmitter;
 
-import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * JSON wrapped object
@@ -45,6 +42,24 @@ public class JsonItem
 
     public JsonItem(final Map<String, ?> item) {
         _data = null != item ? new JsonWrapper(new JSONObject(item)) : new JsonWrapper(new JSONObject());
+    }
+
+    public JsonItem(final Properties item) {
+        _data = null != item ? new JsonWrapper(new JSONObject(item)) : new JsonWrapper(new JSONObject());
+    }
+
+    public JsonItem(final Object item) {
+        if (item instanceof String) {
+            _data = StringUtils.isJSONObject((String) item) ? new JsonWrapper((String) item) : new JsonWrapper(new JSONObject());
+        } else if (item instanceof JSONObject) {
+            _data = new JsonWrapper((JSONObject) item);
+        } else if (item instanceof JsonItem) {
+            _data = ((JsonItem) item)._data;
+        } else if (item instanceof Properties ){
+            _data = new JsonWrapper(new JSONObject((Properties)item));
+        } else {
+            _data = new JsonWrapper(new JSONObject());
+        }
     }
 
     @Override
@@ -220,8 +235,8 @@ public class JsonItem
         }
     }
 
-    public Object remove(final String key){
-        if(this.has(key)){
+    public Object remove(final String key) {
+        if (this.has(key)) {
             return _data.remove(key);
         }
         return null;

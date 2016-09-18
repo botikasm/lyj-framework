@@ -60,7 +60,7 @@ public class Program
                    final Map<String, Object> context,
                    final ProgramLogger logger) {
         _context = null != context ? context : new HashMap<>();
-        _logger = null!=logger?logger:new ToolConsole(null);
+        _logger = null != logger ? logger : new ToolConsole(null);
         _encoding = encoding;
         _engine_name = ENGINE_JAVASCRIPT;
     }
@@ -68,6 +68,14 @@ public class Program
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public void close() {
+        _context.clear();
+        try {
+            _logger.close();
+        } catch (Throwable ignored) {
+        }
+    }
 
     public Map<String, Object> context() {
         return _context;

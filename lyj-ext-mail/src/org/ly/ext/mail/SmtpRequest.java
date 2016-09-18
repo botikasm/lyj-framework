@@ -2,7 +2,6 @@ package org.ly.ext.mail;
 
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.logging.AbstractLogEmitter;
-import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.MimeTypeUtils;
 import org.lyj.commons.util.StringUtils;
@@ -27,7 +26,6 @@ public class SmtpRequest
 
     private static final String MIME_TEXT = MimeTypeUtils.getMimeType(".txt");
     private static final String MIME_HTML = MimeTypeUtils.MIME_HTML;
-
 
 
     /**
@@ -59,7 +57,7 @@ public class SmtpRequest
 
 
     /**
-     *This document defines a "parallel" subtype of the multipart Content-Type. This type is syntactically identical
+     * This document defines a "parallel" subtype of the multipart Content-Type. This type is syntactically identical
      * to multipart/mixed, but the semantics are different. In particular, in a parallel entity, all of the parts
      * are intended to be presented in parallel, i.e., simultaneously, on hardware and software that are capable of
      * doing so. Composing agents should be aware that many mail readers will lack this capability and will show
@@ -81,11 +79,13 @@ public class SmtpRequest
 
     private String _from;
     private String _to;
+    private String _reply_to;
     private String _subject;
     private String _message_txt;
     private String _message_html;
 
-    private final List<String> _addresses;
+    private final Set<String> _addresses;
+    private final Set<String> _reply_addresses;
     private final List<File> _fileAttachments;
     private final Map<String, InputStream> _streamAttachments;
 
@@ -96,7 +96,8 @@ public class SmtpRequest
     // ------------------------------------------------------------------------
 
     public SmtpRequest() {
-        _addresses = new ArrayList<String>();
+        _addresses = new HashSet<>();
+        _reply_addresses = new HashSet<String>();
         _fileAttachments = new ArrayList<File>();
         _streamAttachments = new HashMap<String, InputStream>();
     }
@@ -105,6 +106,7 @@ public class SmtpRequest
     protected void finalize() throws Throwable {
         try {
             _addresses.clear();
+            _reply_addresses.clear();
             _fileAttachments.clear();
             _streamAttachments.clear();
         } catch (Exception e) {
@@ -186,6 +188,15 @@ public class SmtpRequest
         return this;
     }
 
+    public String replyTo() {
+        return _to;
+    }
+
+    public SmtpRequest replyTo(String value) {
+        _reply_to = this.checkAddress(value);
+        return this;
+    }
+
     public String subject() {
         return _subject;
     }
@@ -254,6 +265,29 @@ public class SmtpRequest
         return this;
     }
 
+    public SmtpRequest replyAddress(final String address) {
+        this.replyAddresses(StringUtils.split(address, new String[]{";", ","}));
+        return this;
+    }
+
+    public SmtpRequest replyAddresses(final String[] addresses) {
+        for (final String address : addresses) {
+            if (null != address && address.length() > 0) {
+                _reply_addresses.add(checkAddress(address));
+            }
+        }
+        return this;
+    }
+
+    public String[] replyAddresses() {
+        return _reply_addresses.toArray(new String[_reply_addresses.size()]);
+    }
+
+    public SmtpRequest clearReplyAddresses() {
+        _reply_addresses.clear();
+        return this;
+    }
+
     public SmtpRequest attachment(final String path) {
         _fileAttachments.add(new File(path));
         return this;
@@ -291,6 +325,15 @@ public class SmtpRequest
                 this.addresses(addresses);
             }
 
+            // create reply address
+            if (null != _reply_to && _reply_to.length() > 0) {
+                this.replyAddress(_reply_to);
+            }
+            // ensure a reply address
+            if (_reply_addresses.isEmpty()) {
+                _reply_addresses.add(_from);
+            }
+
             // Create a mail session
             final Properties props = this.getProperties();
             final Authenticator auth = new SMTPAuthenticator(_user, _password);
@@ -301,8 +344,8 @@ public class SmtpRequest
             try {
                 transport.connect();
                 int count = _addresses.size();
-                for (int i = 0; i < count; i++) {
-                    final String mailAddress = _addresses.get(i);
+                // send all messages
+                for (final String mailAddress:_addresses) {
                     final InternetAddress[] addressTo = new InternetAddress[1];
                     addressTo[0] = new InternetAddress(mailAddress);
                     final InternetAddress addressFrom = new InternetAddress(_from);
@@ -312,7 +355,7 @@ public class SmtpRequest
                     message.setSentDate(new Date());
                     message.setDescription("this is a lyj message");
                     message.setFrom(addressFrom);
-                    message.setReplyTo(new InternetAddress[]{addressFrom});
+                    message.setReplyTo(toAddresses(_reply_addresses));
                     message.setRecipients(Message.RecipientType.TO, addressTo);
 
                     message.setSubject(_subject);
@@ -345,6 +388,19 @@ public class SmtpRequest
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private InternetAddress[] toAddresses(final Set<String> list) {
+        final InternetAddress[] result = new InternetAddress[list.size()];
+        int i = 0;
+        for (final String address : list) {
+            try {
+                result[i] = new InternetAddress(address);
+                i++;
+            } catch (Throwable ignored) {
+            }
+        }
+        return result;
+    }
 
     private Properties getProperties() {
         final Properties props = new Properties();

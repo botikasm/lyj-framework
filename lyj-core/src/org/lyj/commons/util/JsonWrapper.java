@@ -220,14 +220,15 @@ public final class JsonWrapper implements Cloneable {
 
     public void clear() {
         if (null != _array) {
-            while (_array.length() > 0) {
-                _array.remove(0);
+            final int len = _array.length();
+            for (int i = len - 1; i > -1; i--) {
+                _array.remove(i);
             }
         }
         if (null != _object) {
-            final Iterator i = _object.keys();
-            while (i.hasNext()) {
-                _object.remove((String) i.next());
+            final Set<String> keys = _object.keySet();
+            for (final String key:keys) {
+                _object.remove(key);
             }
         }
     }

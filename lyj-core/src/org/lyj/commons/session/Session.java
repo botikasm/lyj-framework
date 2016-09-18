@@ -5,10 +5,7 @@ import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Session item.
@@ -25,7 +22,7 @@ public class Session {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final ISessionMonitor _monitor;
+    private final Set<ISessionMonitor> _monitors;
     private final Loop _loop;
     private final TreeMap<String, Object> _data;
 
@@ -44,7 +41,7 @@ public class Session {
     Session() {
         _data = new TreeMap<>();
         _loop = null;
-        _monitor = null;
+        _monitors = null;
 
         _expiration_time = System.currentTimeMillis();
         _closed = false;
@@ -55,11 +52,13 @@ public class Session {
                    final ISessionMonitor monitor) {
         _data = new TreeMap<>();
         _data.put(ID, id);
-        _monitor = monitor;
+        _monitors = new HashSet<>();
         _idle_timeout = idle_timeout;
         _expiration_time = System.currentTimeMillis() + _idle_timeout;
         _loop = new Loop(idle_timeout);
         _closed = false;
+
+        _monitors.add(monitor);
 
         // open session
         this.init();
@@ -109,9 +108,19 @@ public class Session {
         return _expiration_time <= System.currentTimeMillis();
     }
 
+    public boolean closed() {
+        return _closed;
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public void addMonitor(final ISessionMonitor monitor) {
+        if (null!=_monitors && null != monitor) {
+            _monitors.add(monitor);
+        }
+    }
 
     public void close() {
         _closed = true;
@@ -182,6 +191,10 @@ public class Session {
         }
     }
 
+    public void wakeUp() {
+        _expiration_time = System.currentTimeMillis() + _idle_timeout;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -190,23 +203,30 @@ public class Session {
         if (null != _loop) {
             _loop.priority(Loop.MIN_PRIORITY);
             _loop.start((interruptor) -> {
-                if (_closed) {
-                    interruptor.stop();
-                    return;
-                }
-                if (expired() && null != _monitor) {
+                try {
+                    if (_closed) {
+                        interruptor.stop();
+                        return;
+                    }
+                    if (expired() && null != _monitors) {
+                        _closed = true;
+
+                        final String id = id();
+                        if (StringUtils.hasText(id)) {
+                            // notify session if expired
+                            for (final ISessionMonitor monitor : _monitors) {
+                                monitor.notifySessionExpired(id);
+                            }
+                        }
+
+                        // stop thread
+                        interruptor.stop();
+                    }
+                } catch (Throwable ignored) {
                     _closed = true;
-                    // stop thread
-                    interruptor.stop();
-                    // notify session if expired
-                    _monitor.notifySessionExpired(id());
                 }
             });
         }
-    }
-
-    private void wakeUp() {
-        _expiration_time = System.currentTimeMillis() + _idle_timeout;
     }
 
 

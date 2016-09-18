@@ -1,5 +1,6 @@
 package org.lyj.commons.session;
 
+import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
 
@@ -10,6 +11,7 @@ import java.util.TreeMap;
  * Manage and store session like Treehasmap
  */
 public final class SessionManager
+        extends AbstractLogEmitter
         implements ISessionMonitor {
 
 
@@ -70,14 +72,23 @@ public final class SessionManager
     }
 
     public Session get(final String opt_key) {
-        if (StringUtils.hasText(opt_key)) {
-            if (_sessions.containsKey(opt_key)) {
-                return _sessions.get(opt_key);
+        synchronized (_sessions) {
+            if (StringUtils.hasText(opt_key)) {
+                if (_sessions.containsKey(opt_key)) {
+                    final Session session = _sessions.get(opt_key);
+                    if(null!=session){
+                       if(!session.closed()){
+                           session.wakeUp();
+                           return session;
+                       }
+                    }
+                    return this.create(opt_key);
+                } else {
+                    return this.create(opt_key);
+                }
             } else {
-                return this.create(opt_key);
+                return this.create(null);
             }
-        } else {
-            return this.create(null);
         }
     }
 
@@ -109,7 +120,11 @@ public final class SessionManager
     @Override
     public void notifySessionExpired(final String session_id) {
         // this session has notified is expired
-        this.remove(session_id);
+        if (StringUtils.hasText(session_id)) {
+            this.remove(session_id);
+        } else {
+            super.error("notifySessionExpired", "Session has empty id");
+        }
     }
 
     // ------------------------------------------------------------------------
