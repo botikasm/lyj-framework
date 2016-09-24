@@ -14,6 +14,13 @@ public class RegExpUtilsTest {
     }
 
     @Test
+    public void testReplaceNotChars() throws Exception {
+        String result = RegExpUtils.replaceNotChars("123test file, çòè èè");
+        System.out.println(result);
+        assertEquals(result, "123testfileçòèèè");
+    }
+
+    @Test
     public void testPhone() throws Exception {
 
         assertTrue(RegExpUtils.isValidPhoneNumber("+39 0541 642255"));

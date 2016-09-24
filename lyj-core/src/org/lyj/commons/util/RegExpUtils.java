@@ -37,6 +37,7 @@ public abstract class RegExpUtils {
 
     public static final String ALPHANUMERIC = "([0-9a-zA-Z])";
     public static final String ALPHANUMERIC_EXT = "([0-9a-zA-Z ,'\"()])";
+    public static final String ONLY_CHARS = "[\\p{L}\\p{Nd}]+";
     public static final String NOTNUMERIC = "[^0-9]+";
     public static final String VELOCITY_VARIABLES = "(\\$|\\$\\{)(?:[a-zA-Z\\.\\('\\)\\{\\}]+)?(?=(\\s|))";
     public static final String IP_ADDRESS = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";
@@ -85,6 +86,13 @@ public abstract class RegExpUtils {
 
     public static String replaceNoAlphanumericChar(final String string) {
         final String[] matches = getMatches(string, ALPHANUMERIC);
+        return null != matches && matches.length > 0
+                ? StringUtils.toString(matches, "")
+                : "";
+    }
+
+    public static String replaceNotChars(final String string) {
+        final String[] matches = getMatches(string, ONLY_CHARS);
         return null != matches && matches.length > 0
                 ? StringUtils.toString(matches, "")
                 : "";
