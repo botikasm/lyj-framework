@@ -140,6 +140,10 @@ public class JsonItem
         return this.putAll(values.json());
     }
 
+    public JsonItem putAll(final Map<String, ? extends Object> values) {
+        return this.putAll(new JSONObject(values));
+    }
+
     public JsonItem putAll(final JSONObject values) {
         final Set<String> keys = values.keySet();
         for (final String key : keys) {

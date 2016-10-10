@@ -3,7 +3,6 @@ package org.lyj.commons.io.db.jdbm.util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.BeanUtils;
-import org.lyj.commons.util.ClassLoaderUtils;
 
 import java.util.*;
 
@@ -41,9 +40,11 @@ public class JDBConverter {
                 result.add(toMap((JSONObject) value));
             } else if (value instanceof JSONArray) {
                 result.add(toList((JSONArray) value));
+            } else if (value instanceof String) {
+                result.add(value);
             } else {
                 // is primitive?
-                if(BeanUtils.isPrimitiveClass(value)) {
+                if (BeanUtils.isPrimitiveClass(value)) {
                     result.add(value);
                 } else {
                     // this value is not serializable

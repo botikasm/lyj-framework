@@ -1,8 +1,8 @@
 package org.lyj.ext.script.program;
 
+import org.lyj.commons.logging.ILogEmitter;
 import org.lyj.commons.logging.Level;
-import org.lyj.commons.logging.util.LoggingUtils;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.FormatUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -12,7 +12,8 @@ import java.io.Writer;
  *
  */
 public abstract class ProgramLogger
-        extends Writer {
+        extends Writer
+        implements ILogEmitter {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -81,12 +82,41 @@ public abstract class ProgramLogger
         this.handle(Level.WARNING, values);
     }
 
+    @Override
+    public void log(final Level level, final String methodName, final String message) {
+        this.handle(level, methodName, message);
+    }
+
+    @Override
+    public void log(final Level level, final String methodName, final String message, final Throwable t) {
+        this.handle(level, methodName, message, t);
+    }
+
+    @Override
+    public void debug(final String methodName, final String message) {
+        this.handle(Level.FINE, methodName, message);
+    }
+
+    @Override
+    public void info(final String methodName, final String message) {
+        this.handle(Level.INFO, methodName, message);
+    }
+
+    @Override
+    public void error(final String methodName, final String message) {
+        this.handle(Level.SEVERE, methodName, message);
+    }
+
+    @Override
+    public void error(final String methodName, final String template, final Object... args) {
+        this.handle(Level.SEVERE, methodName, FormatUtils.format(template, args));
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
     protected abstract void handle(final Level level, final Object... values);
-
 
 
 }

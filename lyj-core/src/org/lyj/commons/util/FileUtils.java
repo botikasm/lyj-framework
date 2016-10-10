@@ -139,6 +139,41 @@ public abstract class FileUtils {
         return (new File(fileName)).exists();
     }
 
+    public static boolean isDir(final String fileName) {
+        return (new File(fileName)).isDirectory();
+    }
+
+    public static boolean isEmptyDir(final String fileName,
+                                     final boolean excludeHidden) {
+        return isEmptyDir(new File(fileName), excludeHidden);
+    }
+
+    public static boolean isEmptyDir(final File dir,
+                                     final boolean excludeHidden) {
+        if (dir.isDirectory()) {
+            final File[] files = dir.listFiles();
+            if (null != files && files.length > 0) {
+                if (!excludeHidden) {
+                    return true;
+                }
+                for (final File file : files) {
+                    if (!file.isHidden()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isFile(final String fileName) {
+        return (new File(fileName)).isFile();
+    }
+
+    public static boolean isHidden(final String fileName) {
+        return (new File(fileName)).isHidden();
+    }
+
     public static long getCRC(final String fileName) {
         long result = 0;
         try {

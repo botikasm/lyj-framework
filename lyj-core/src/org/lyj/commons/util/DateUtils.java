@@ -33,6 +33,10 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class DateUtils {
 
+    public static final long ONE_MINUTE_MS = 60 * 1000;
+    public static final long ONE_HOUR_MS = 60 * ONE_MINUTE_MS;
+    public static final long ONE_DAY_MS = 24 * ONE_HOUR_MS;
+
     // measure unit
     /**
      * Milliseconds=14 *

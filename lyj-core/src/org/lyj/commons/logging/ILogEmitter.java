@@ -5,7 +5,7 @@ package org.lyj.commons.logging;
  */
 public interface ILogEmitter {
 
-    Logger logger();
+    //Logger logger();
 
     void log(final Level level, final String methodName, final String message);
 

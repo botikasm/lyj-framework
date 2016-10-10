@@ -18,14 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.io.temprepository;
+package org.lyj.commons.io.filecache.registry;
 
 import org.json.JSONObject;
 import org.lyj.Lyj;
-import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.JsonWrapper;
-import org.lyj.commons.util.PathUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +36,6 @@ public class Registry {
 
     private static final long DEFAULT_LIFE = 60 * 1000; // 1 minute
 
-    private static final String LIFE_MS = "life_ms";
     private static final String CHECK_MS = "check_ms";
     private static final String ITEMS = "items";
 
@@ -48,6 +45,10 @@ public class Registry {
     private final JsonWrapper _settings;
     private Thread _registryThread;
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
     public Registry(final String path_settings,
                     final String path_data) {
         _path_settings = path_settings;
@@ -56,6 +57,10 @@ public class Registry {
         _data = new JsonWrapper(this.loadData(_path_data));
         _settings = new JsonWrapper(this.loadSettings(_path_settings));
     }
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
 
     public void start() {
         this.startRegistryThread();
@@ -88,25 +93,8 @@ public class Registry {
         _settings.parse(this.loadSettings(_path_settings));
     }
 
-    public long getLife() {
-        final long result = _settings.optLong(LIFE_MS);
-        return result > 0 ? result : DEFAULT_LIFE;
-    }
-
-    public void setLife(final long value) {
-        _settings.putSilent(LIFE_MS, value);
-        if (_settings.optLong(CHECK_MS) < value) {
-            _settings.putSilent(CHECK_MS, value);
-        }
-        try {
-            this.saveSettings();
-        } catch (Throwable ignored) {
-        }
-    }
-
     public long getCheck() {
-        final long result = _settings.optLong(CHECK_MS);
-        return result > getLife() ? result : getLife();
+        return _settings.optLong(CHECK_MS);
     }
 
     public void setCheck(final long value) {
@@ -121,12 +109,45 @@ public class Registry {
         this.saveData();
     }
 
-    public boolean addItem(final String path) {
+    public boolean trySave() {
+        try {
+            this.saveData();
+            return true;
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    public boolean has(final String key) {
         synchronized (_data) {
-            final String key = getId(path);
             final JSONObject items = _data.optJSONObject(ITEMS);
-            if (!items.has(key)) {
-                JsonWrapper.put(items, key, (new RegistryItem(path)).getData());
+            return null != items && items.has(key);
+        }
+    }
+
+    public RegistryItem get(final String key) {
+        synchronized (_data) {
+            final JSONObject items = _data.optJSONObject(ITEMS);
+            return null != items && items.has(key)
+                    ? new RegistryItem(items.getJSONObject(key))
+                    : null;
+        }
+    }
+
+    public boolean addItem(final String path,
+                           final long duration) {
+        final String key = RegistryItem.getId(path);
+        return this.addItem(key, path, duration);
+    }
+
+    public boolean addItem(final String key,
+                           final String path,
+                           final long duration) {
+        synchronized (_data) {
+            final JSONObject items = _data.optJSONObject(ITEMS);
+            if (null != items && !items.has(key)) {
+                JsonWrapper.put(items, key,
+                        (new RegistryItem()).uid(key).path(path).duration(duration).json());
                 _data.putOpt(ITEMS, items);
                 return true;
             }
@@ -136,7 +157,7 @@ public class Registry {
 
     public boolean removeItem(final String path) {
         synchronized (_data) {
-            final String key = getId(path);
+            final String key = RegistryItem.getId(path);
             return this.removeItemByKey(key);
         }
     }
@@ -144,15 +165,14 @@ public class Registry {
     public int removeExpired() {
         synchronized (_data) {
             int count = 0;
-            final long life = this.getLife();
             final JsonWrapper items = new JsonWrapper(_data.optJSONObject(ITEMS));
             final Set<String> keys = items.keys();
             for (final String key : keys) {
                 final RegistryItem item = new RegistryItem(items.optJSONObject(key));
-                if (item.expired(life)) {
+                if (item.expired() && item.isFileOrEmptyDir()) {
                     items.remove(key);
                     // remove file
-                    this.removeFile(item.getPath());
+                    this.removeFile(item.path());
                     count++;
                 }
             }
@@ -176,9 +196,7 @@ public class Registry {
         try {
             return FileUtils.readFileToString(new File(fileName));
         } catch (Throwable t) {
-            return "{'" + LIFE_MS + "':" + DEFAULT_LIFE + ", '" +
-                    CHECK_MS + "':" + DEFAULT_LIFE +
-                    "}";
+            return "{'" + CHECK_MS + "':" + DEFAULT_LIFE + "}";
         }
     }
 
@@ -201,7 +219,7 @@ public class Registry {
         }
     }
 
-    public boolean removeItemByKey(final String key) {
+    private boolean removeItemByKey(final String key) {
         final JSONObject items = _data.optJSONObject(ITEMS);
         return null != JsonWrapper.remove(items, key);
     }
@@ -235,12 +253,5 @@ public class Registry {
         _registryThread.start();
     }
 
-    // --------------------------------------------------------------------
-    //               S T A T I C
-    // --------------------------------------------------------------------
-
-    public static String getId(final String path) {
-        return MD5.encode(PathUtils.toUnixPath(path));
-    }
 
 }

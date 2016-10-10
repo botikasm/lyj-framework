@@ -38,6 +38,9 @@ public abstract class CollectionUtils {
         void handle(final T item, final int index, final Object key);
     }
 
+    public static interface IterationItemCallback<T> {
+        void handle(final T item);
+    }
 
     //---------------------------------------------------------------------
     // forEach utilities
@@ -69,6 +72,15 @@ public abstract class CollectionUtils {
             final int len = items.length();
             for (int i = 0; i < len; i++) {
                 callback.handle(items.get(i), i, null);
+            }
+        }
+    }
+
+    public static void forEach(final JSONArray items, final IterationItemCallback<Object> callback) {
+        if (null != callback && null != items && items.length() > 0) {
+            final int len = items.length();
+            for (int i = 0; i < len; i++) {
+                callback.handle(items.get(i));
             }
         }
     }
