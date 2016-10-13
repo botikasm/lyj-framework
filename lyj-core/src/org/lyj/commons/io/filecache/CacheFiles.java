@@ -76,6 +76,8 @@ public class CacheFiles
                     final long duration) {
         try {
             final String target = this.path(key.concat(".txt"));
+
+            FileUtils.tryMkdirs(target);
             FileUtils.writeStringToFile(new File(target), content, _encoding);
 
             super.registry().addItem(key, target, duration);
