@@ -52,6 +52,19 @@ public abstract class RandomUtils {
         return (Math.floor(Math.random() * (max - min + 1)) + min);
     }
 
+    public static double rnd(final double min, final double max, final double exclude) {
+        double response = exclude;
+        int count = 0;
+        while (response == exclude) {
+            count++;
+            if (count > 20) {
+                response = min;
+            }
+            response = (Math.floor(Math.random() * (max - min + 1)) + min);
+        }
+        return response;
+    }
+
     /**
      * This returns a random {@link Number} within the
      * specified range.  The returned value will be
@@ -64,8 +77,8 @@ public abstract class RandomUtils {
      * @param num1 the first number
      * @param num2 the second number
      * @return a pseudo-random {@link Number} greater than
-     *         or equal to the first number and less than
-     *         the second
+     * or equal to the first number and less than
+     * the second
      * @see Math#random()
      */
     public static Number rnd(final Object num1, final Object num2) {
@@ -157,9 +170,9 @@ public abstract class RandomUtils {
         return value;
     }
 
-    public static Long getTimeBasedRandomLong(final boolean secure, final boolean ordinal){
+    public static Long getTimeBasedRandomLong(final boolean secure, final boolean ordinal) {
         return RandomUtils.getTimeBasedRandomLong(ordinal) +
-                (secure ? ConversionUtils.toLong(RandomUtils.randomNumeric(6)) :0L);
+                (secure ? ConversionUtils.toLong(RandomUtils.randomNumeric(6)) : 0L);
     }
 
     /**
@@ -406,11 +419,11 @@ public abstract class RandomUtils {
         return random(count, 0, chars.length, false, false, chars, _random);
     }
 
-    public static String randomUUID(){
+    public static String randomUUID() {
         return UUID.randomUUID().toString();
     }
 
-    public static String randomUUID(final boolean removeSeparator){
+    public static String randomUUID(final boolean removeSeparator) {
         final String uuid = UUID.randomUUID().toString();
         return removeSeparator ? StringUtils.replace(uuid, "-", "") : uuid;
     }
