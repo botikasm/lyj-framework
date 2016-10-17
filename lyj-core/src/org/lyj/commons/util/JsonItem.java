@@ -37,7 +37,7 @@ public class JsonItem
     }
 
     public JsonItem(final JsonItem item) {
-        _data = null != item ? item._data : new JsonWrapper(new JSONObject());
+        _data = (null != item) ? item._data : new JsonWrapper(new JSONObject());
     }
 
     public JsonItem(final Map<String, ?> item) {
