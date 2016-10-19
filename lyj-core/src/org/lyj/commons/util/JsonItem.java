@@ -84,6 +84,10 @@ public class JsonItem
         return _data.getJSONObject();
     }
 
+    public Map<String, Object> map() {
+        return _data.toMap();
+    }
+
     public boolean has(final String key) {
         return _data.has(key);
     }

@@ -4,7 +4,7 @@ import org.json.JSONObject;
 import org.lyj.desktopfences.app.DesktopFences;
 import org.lyj.desktopfences.app.IConstants;
 import org.lyj.desktopfences.app.controllers.archive.ArchiveController;
-import org.lyj.ext.netty.server.web.controllers.routing.RoutingContext;
+import org.lyj.ext.netty.server.web.HttpServerContext;
 
 /**
  * Utility client API
@@ -19,11 +19,11 @@ public class ApiUtils {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public static void version (final RoutingContext context) {
+    public static void version(final HttpServerContext context) {
         context.writeJson(IConstants.VERSION);
     }
 
-    public static void activityReport (final RoutingContext context) {
+    public static void activityReport(final HttpServerContext context) {
         try {
             final boolean reload = context.params().getBoolean("reload");
 
@@ -38,18 +38,18 @@ public class ApiUtils {
             response.put("directories", ArchiveController.instance().directories().json(false));
             context.writeJson(response);
 
-            if(reload){
+            if (reload) {
                 ArchiveController.instance().reloadIndexes();
             }
-        }catch(Throwable t){
+        } catch (Throwable t) {
             context.writeJsonError(t);
         }
     }
 
-    public static void settings (final RoutingContext context) {
+    public static void settings(final HttpServerContext context) {
         try {
             context.writeJson(DesktopFences.instance().settings().toJson());
-        }catch(Throwable t){
+        } catch (Throwable t) {
             context.writeJsonError(t);
         }
     }
