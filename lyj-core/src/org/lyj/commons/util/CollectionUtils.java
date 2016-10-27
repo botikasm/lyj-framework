@@ -565,6 +565,10 @@ public abstract class CollectionUtils {
         return sb.toString();
     }
 
+    public static <T> T[] toArray(final Collection<T> collection) {
+        return isEmpty(collection) ? (T[]) new Object[0] : collection.toArray((T[]) new Object[collection.size()]);
+    }
+
     public static int[] toIntArray(final List<Integer> list) {
         int[] array = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -1678,6 +1682,54 @@ public abstract class CollectionUtils {
             return array.get(array.length() - 1);
         }
         return null;
+    }
+
+    public static <T> Collection<T> getFrom(final Collection<T> collection, final int start_index) {
+        return !isEmpty(collection) ? getFrom(collection, start_index, collection.size()) : new ArrayList<>();
+    }
+
+    public static <T> Collection<T> getFrom(final Collection<T> collection, final int start_index, final int end_index) {
+        final Collection<T> response = new LinkedList<T>();
+        if (!isEmpty(collection) && start_index < collection.size()) {
+            forEach(collection, (item, index, key) -> {
+                if (index >= start_index && index <= end_index) {
+                    response.add(item);
+                }
+            });
+        }
+        return response;
+    }
+
+    public static <T> Collection<T> getFrom(final T[] collection, final int start_index) {
+        return !isEmpty(collection) ? getFrom(collection, start_index, collection.length) : new ArrayList<>();
+    }
+
+    public static <T> Collection<T> getFrom(final T[] collection, final int start_index, final int end_index) {
+        final Collection<T> response = new LinkedList<T>();
+        if (!isEmpty(collection) && start_index < collection.length) {
+            forEach(collection, (item, index, key) -> {
+                if (index >= start_index && index <= end_index) {
+                    response.add(item);
+                }
+            });
+        }
+        return response;
+    }
+
+    public static JSONArray getFrom(final JSONArray collection, final int start_index) {
+        return !isEmpty(collection) ? getFrom(collection, start_index, collection.length()) : new JSONArray();
+    }
+
+    public static JSONArray getFrom(final JSONArray collection, final int start_index, final int end_index) {
+        final JSONArray response = new JSONArray();
+        if (!isEmpty(collection) && start_index < collection.length()) {
+            forEach(collection, (item, index, key) -> {
+                if (index >= start_index && index <= end_index) {
+                    response.put(item);
+                }
+            });
+        }
+        return response;
     }
 
     /**
