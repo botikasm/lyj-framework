@@ -705,16 +705,18 @@ public abstract class FileUtils {
         );
     }
 
-    public static File[] list(final String path) {
-        return list(new File(path));
+    public static File[] listDirs(final String path) {
+        return listDirs(new File(path));
     }
 
-    public static File[] list(final File startDir) {
+    public static File[] listDirs(final File startDir) {
         final List<File> result = new LinkedList<>();
         final File[] files = startDir.listFiles();
-        for (final File file : files) {
-            if (file.isDirectory()) {
-                result.add(file);
+        if(null!=files){
+            for (final File file : files) {
+                if (file.isDirectory()) {
+                    result.add(file);
+                }
             }
         }
         return result.toArray(new File[result.size()]);
