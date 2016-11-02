@@ -71,6 +71,10 @@ public class FileObserver {
 
     private boolean _paused;
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
     public FileObserver(final String path,
                         final IFileObserverListener listener) {
         this(path, false, false, ALL_EVENTS, listener);
@@ -139,6 +143,10 @@ public class FileObserver {
         return result.toString();
     }
 
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+
     public final boolean isDirectory() {
         return _isDirectory;
     }
@@ -175,6 +183,10 @@ public class FileObserver {
         _paused = false;
     }
 
+    public final boolean isObservedPath(final String path) {
+        final String p1 = PathUtils.toUnixPath(path);
+        return p1.startsWith(_path);
+    }
 
     public final String startWatching() throws IOException {
         return getObserverThread().startWatching(this);
@@ -273,7 +285,6 @@ public class FileObserver {
         private final Map<String, WeakReference<FileObserver>> _observers;
 
         public ObserverThread() throws IOException {
-            super("FileObserver");
             super.setPriority(Thread.NORM_PRIORITY);
             super.setDaemon(true);
             _observers = Collections.synchronizedMap(new HashMap<String, WeakReference<FileObserver>>());
@@ -333,16 +344,15 @@ public class FileObserver {
             try {
                 while (!super.isInterrupted()) {
                     Thread.sleep(200);
-                    final Collection<WeakReference<FileObserver>> references = _observers.values();
-                    for (final WeakReference reference : references) {
-                        final FileObserver observer = (FileObserver) reference.get();
-                        if (null != observer) {
-                            this.watch(observer);
-                        }
-                    }
+                    this.watch(); // wait until next key is ready
                 }
             } catch (Throwable ignored) {
+            }
+        }
 
+        private WeakReference[] references() {
+            synchronized (_observers) {
+                return _observers.values().toArray(new WeakReference[_observers.values().size()]);
             }
         }
 
@@ -367,66 +377,27 @@ public class FileObserver {
             return path.toString();
         }
 
-        private void watch(final FileObserver observer) {
+        private void watch() {
             // wait for key to be signalled
             WatchKey key;
             try {
-                key = _watcher.take();
-            } catch (InterruptedException x) {
+                key = _watcher.take(); // wait until key is ready
+                // key = _watcher.poll();
+            } catch (Exception x) {
+                return;
+            }
+
+            if (null == key) {
                 return;
             }
 
             final Path dir = _keys.get(key);
             if (dir == null) {
-                this.log(observer, "WatchKey not recognized!!");
                 return;
             }
 
             for (final WatchEvent<?> event : key.pollEvents()) {
-                final WatchEvent.Kind kind = event.kind();
-
-                // OVERFLOW event does nothing
-                if (kind == OVERFLOW) {
-                    continue;
-                }
-
-                // Context for directory entry event is the file name of entry
-                final WatchEvent<Path> ev = cast(event);
-                final Path name = ev.context();
-                final Path child = dir.resolve(name);
-
-                // print out event
-                this.log(observer, FormatUtils.format("{0}: {1}", event.kind().name(), child));
-
-                // if directory is created, and watching recursively, then
-                // register it and its sub-directories
-                if (observer.isRecursive() && (kind == ENTRY_CREATE)) {
-                    try {
-                        if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
-                            final Set<WatchKey> keys = this.registerAll(child, observer.isVerbose(), observer.getMask());
-                            if (!keys.isEmpty()) {
-                                observer.addKeys(keys);
-                            }
-                        }
-                    } catch (IOException x) {
-                        // ignore to keep sample readbale
-                    }
-                }
-
-                //-- call onEvent --//
-                if (!observer.isPaused()) {
-                    try {
-                        final String childPath = PathUtils.toUnixPath(child.toString());
-                        if (observer.isDirectory()) {
-                            observer.onEvent(this.convert(event), childPath);
-                        } else if (observer.getPath().equalsIgnoreCase(childPath)) {
-                            observer.onEvent(this.convert(event), childPath);
-                        }
-                    } catch (Throwable throwable) {
-                        this.error(observer, "Unhandled throwable " + throwable.toString() +
-                                " (returned by observer " + observer + ")", throwable);
-                    }
-                }
+                this.watchEvent(dir, event);
             }
 
             // reset key and remove from set if directory no longer accessible
@@ -437,6 +408,68 @@ public class FileObserver {
                 // all directories are inaccessible
                 if (_keys.isEmpty()) {
                     return;
+                }
+            }
+        }
+
+        private void watchEvent(final Path dir, final WatchEvent<?> event) {
+            final WatchEvent.Kind kind = event.kind();
+
+            // OVERFLOW event does nothing
+            if (kind == OVERFLOW) {
+                return;
+            }
+
+            final WeakReference[] references = references();
+            for (final WeakReference reference : references) {
+                final FileObserver observer = (FileObserver) reference.get();
+                if (null != observer) {
+                    this.watchEvent(dir, event, observer);
+                }
+            }
+
+        }
+
+        private void watchEvent(final Path dir, final WatchEvent<?> event, final FileObserver observer) {
+
+            final WatchEvent.Kind kind = event.kind();
+
+            // Context for directory entry event is the file name of entry
+            final WatchEvent<Path> ev = cast(event);
+            final Path name = ev.context();
+            final Path child = dir.resolve(name);
+
+            // print out event
+            this.log(observer, FormatUtils.format("{0}: {1}", event.kind().name(), child));
+
+            // if directory is created, and watching recursively, then
+            // register it and its sub-directories
+            if (observer.isRecursive() && (kind == ENTRY_CREATE)) {
+                try {
+                    if (Files.isDirectory(child, NOFOLLOW_LINKS)) {
+                        final Set<WatchKey> keys = this.registerAll(child, observer.isVerbose(), observer.getMask());
+                        if (!keys.isEmpty()) {
+                            observer.addKeys(keys);
+                        }
+                    }
+                } catch (IOException x) {
+                    // ignore to keep sample readbale
+                }
+            }
+
+            //-- call onEvent --//
+            if (!observer.isPaused()) {
+                //System.out.println(observer);
+                try {
+                    final String childPath = PathUtils.toUnixPath(child.toString());
+                    if (observer.isDirectory() && observer.isObservedPath(PathUtils.getParent(childPath))) {
+                        observer.onEvent(this.convert(event), childPath);
+                    } else if (observer.getPath().equalsIgnoreCase(childPath)) {
+                        observer.onEvent(this.convert(event), childPath);
+                    }
+                } catch (Throwable throwable) {
+                    this.error(observer, "Unhandled throwable " + throwable.toString() +
+                            " (returned by observer " + observer + ")", throwable);
                 }
             }
         }
@@ -506,11 +539,11 @@ public class FileObserver {
         private int convert(final WatchEvent.Kind kind) {
             if (null != kind) {
                 if (kind.equals(ENTRY_CREATE)) {
-                    return EVENT_CREATE;
+                    return EVENT_CREATE;            // 256
                 } else if (kind.equals(ENTRY_DELETE)) {
-                    return EVENT_DELETE;
+                    return EVENT_DELETE;            // 512
                 } else if (kind.equals(ENTRY_MODIFY)) {
-                    return EVENT_MODIFY;
+                    return EVENT_MODIFY;            // 2
                 }
             }
             return 0;
