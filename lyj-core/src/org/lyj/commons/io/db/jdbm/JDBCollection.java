@@ -219,10 +219,11 @@ public class JDBCollection {
                 // error, item exists
                 throw new ItemAlreadyExistsException(item.get(ID), _name);
             } else {
-                collection.put(item.get(ID), item);
-                _indexes.insert(item.get(ID), item);
+                this.insertItem(collection, item);
             }
+
             this.autoCommit();
+
             return item;
         }
 
@@ -235,8 +236,7 @@ public class JDBCollection {
             if (this.active()) {
                 final Collection<Map<String, Object>> items = this.find(filter);
                 for (final Map<String, Object> item : items) {
-                    merge(item, data);
-                    _indexes.update(item.get(ID), item);
+                    this.updateItem(item, data);
                 }
                 this.autoCommit();
                 return items;
@@ -253,12 +253,11 @@ public class JDBCollection {
                                          final Map<String, Object> data) {
         try {
             if (this.active()) {
-                final Map<String, Object> item = this.findOne(filter);
-                if (null != item) {
-                    merge(item, data);
-                    _indexes.update(item.get(ID), item);
-                }
+                final Map<String, Object> item = this.updateItem(this.findOne(filter), data);
+
+                // commit if transactions are not enabled
                 this.autoCommit();
+
                 return item;
             }
         } catch (Throwable t) {
@@ -281,15 +280,17 @@ public class JDBCollection {
         final LinkedList<Map<String, Object>> response = new LinkedList<>();
         if (this.active()) {
             if (hasID(filter)) {
-                response.add(this.collection().remove(filter.get(ID)));
+                final Map<String, Object> item = this.removeItem(filter.get(ID));
+                if (null != item) {
+                    response.add(item);
+                }
             } else {
                 final Object[] ids = _indexes.find(filter);
                 if (null != ids) {
                     for (final Object id : ids) {
-                        final Map<String, Object> item = this.collection().remove(id);
+                        final Map<String, Object> item = this.removeItem(id);
                         if (null != item) {
                             response.add(item);
-                            _indexes.remove(id, item);
                         }
                     }
                 } else {
@@ -297,8 +298,7 @@ public class JDBCollection {
                     collection.forEach((key, item) -> {
                         if (FilterUtils.match(item, filter)) {
                             response.add(item);
-                            collection.remove(item.get(ID));
-                            _indexes.remove(item.get(ID), item);
+                            this.removeItem(item.get(ID));
                         }
                     });
                 }
@@ -308,20 +308,23 @@ public class JDBCollection {
         return response;
     }
 
+
     public Map<String, Object> removeOne(final Map<String, Object> filter) {
         final List<Map<String, Object>> response = new ArrayList<>();
         if (this.active()) {
             if (hasID(filter)) {
-                response.add(this.collection().remove(filter.get(ID)));
+                final Map<String, Object> item = this.removeItem(filter.get(ID));
+                if (null != item) {
+                    response.add(item);
+                }
             } else {
                 try {
                     final Object[] ids = _indexes.find(filter);
                     if (null != ids) {
                         for (final Object id : ids) {
-                            final Map<String, Object> item = this.collection().remove(id);
+                            final Map<String, Object> item = this.removeItem(id);
                             if (null != item) {
                                 response.add(item);
-                                _indexes.remove(id, item);
                                 throw new RuntimeException("found item");
                             }
                         }
@@ -330,8 +333,7 @@ public class JDBCollection {
                         collection.forEach((key, item) -> {
                             if (FilterUtils.match(item, filter)) {
                                 response.add(item);
-                                collection.remove(item.get(ID));
-                                _indexes.remove(item.get(ID), item);
+                                this.removeItem(item.get(ID));
                                 throw new RuntimeException("found item");
                             }
                         });
@@ -403,6 +405,41 @@ public class JDBCollection {
     private boolean hasID(final Map<String, Object> item) {
         return null != item && item.containsKey(ID);
     }
+
+    private Map<String, Object> insertItem(final Map<String, Object> item) throws ItemAlreadyExistsException {
+        return this.insertItem(this.collection(), item);
+    }
+
+    private Map<String, Object> insertItem(final ConcurrentSortedMap<Object, Map<String, Object>> collection,
+                                           final Map<String, Object> item) throws ItemAlreadyExistsException {
+        _indexes.insert(item.get(ID), item);
+        collection.put(item.get(ID), item);
+
+        return item;
+    }
+
+    private Map<String, Object> removeItem(final Object id) {
+        final ConcurrentSortedMap<Object, Map<String, Object>> collection = this.collection();
+        final Map<String, Object> item = collection.remove(id);
+        if (null != item) {
+            _indexes.remove(id, item);
+        }
+        return item;
+    }
+
+    private Map<String, Object> updateItem(final Map<String, Object> target,
+                                           final Map<String, Object> source) throws ItemAlreadyExistsException {
+        if (null != target && null != source) {
+            merge(target, source);
+            _indexes.update(target.get(ID), target);
+
+            // remove and insert due a bug in update
+            this.removeItem(target.get(ID));
+            this.insertItem(target);
+        }
+        return target;
+    }
+
 
     // ------------------------------------------------------------------------
     //                      S T A T I C
