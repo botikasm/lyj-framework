@@ -43,6 +43,7 @@
         try {
             return JSON.parse(text);
         } catch (err) {
+            console.error(err);
             return false;
         }
     };
@@ -137,9 +138,37 @@
                 }
             } catch (err) {
                 // conversion error
+                console.error(err);
             }
         }
         return false;
+    };
+
+    ly.keys = function (obj) {
+        var result = [];
+        obj = ly.object(obj);
+        if (!!obj) {
+            for (var prop in obj) {
+                if (!obj.hasOwnProperty(prop)) continue;
+                result.push(prop);
+            }
+        }
+        return result;
+    };
+
+    ly.values = function (obj) {
+        if (ly.isArray(obj)) {
+            return obj;
+        }
+        var result = [];
+        obj = ly.object(obj);
+        if (!!obj) {
+            for (var prop in obj) {
+                if (!obj.hasOwnProperty(prop)) continue;
+                result.push(obj[prop]);
+            }
+        }
+        return result;
     };
 
     // ------------------------------------
