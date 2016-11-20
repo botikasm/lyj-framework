@@ -124,8 +124,25 @@ public class Delegates {
     // --------------------------------------------------------------------
 
     @FunctionalInterface
-    public static interface IterationBoolCallback<T> {
+    public static interface IterationCallbackBool<T> {
         boolean handle(final T item, final int index, final Object key);
+    }
+
+    @FunctionalInterface
+    public static interface IterationCallbackFunc<C, T, K> {
+        boolean handle(final C array, final T item, final K key);
+    }
+
+    /**
+     * Use in collection/array iterations
+     *
+     * @param <C> Collection
+     * @param <T> Item
+     * @param <K> Index or Key
+     */
+    @FunctionalInterface
+    public static interface IterationCallback<C, T, K> {
+        void handle(final C array, final T item, final K index);
     }
 
     // --------------------------------------------------------------------
@@ -234,7 +251,8 @@ public class Delegates {
         }
     }
 
-    public static <T> boolean invoke(final IterationBoolCallback<T> callback, final T item, final int index, final Object key) {
+    public static <T> boolean invoke(final IterationCallbackBool<T> callback,
+                                     final T item, final int index, final Object key) {
         try {
             if (null != callback) {
                 return callback.handle(item, index, key);

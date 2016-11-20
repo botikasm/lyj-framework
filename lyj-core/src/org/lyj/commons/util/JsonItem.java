@@ -55,8 +55,8 @@ public class JsonItem
             _data = new JsonWrapper((JSONObject) item);
         } else if (item instanceof JsonItem) {
             _data = ((JsonItem) item)._data;
-        } else if (item instanceof Properties ){
-            _data = new JsonWrapper(new JSONObject((Properties)item));
+        } else if (item instanceof Properties) {
+            _data = new JsonWrapper(new JSONObject((Properties) item));
         } else {
             _data = new JsonWrapper(new JSONObject());
         }
@@ -78,6 +78,11 @@ public class JsonItem
 
     public Set<String> keys() {
         return _data.keys();
+    }
+
+    public Object[] values() {
+        final Collection<Object> values = _data.values();
+        return values.toArray(new Object[values.size()]);
     }
 
     public JSONObject json() {
@@ -156,6 +161,16 @@ public class JsonItem
         return this;
     }
 
+    public JsonItem putAll(final JSONObject values, final boolean only_existing_fields) {
+        final Set<String> keys = values.keySet();
+        for (final String key : keys) {
+            if (!only_existing_fields || this.has(key)) {
+                this.putValue(key, values.get(key));
+            }
+        }
+        return this;
+    }
+
     public Object get(final String key) throws JSONException {
         if (this.isPath(key)) {
             return _data.deep(key);
@@ -182,6 +197,14 @@ public class JsonItem
             return _data.deepBoolean(key);
         } else {
             return _data.optBoolean(key);
+        }
+    }
+
+    public boolean getBoolean(final String key, final boolean defVal) throws JSONException {
+        if (this.isPath(key)) {
+            return _data.deepBoolean(key, defVal);
+        } else {
+            return _data.optBoolean(key, defVal);
         }
     }
 

@@ -29,15 +29,17 @@ import java.util.Map.Entry;
 
 public abstract class CollectionUtils {
 
-
+    @FunctionalInterface
     public static interface IterationResponseCallback<T> {
         T handle(final T item, final int index, final Object key);
     }
 
+    @FunctionalInterface
     public static interface IterationCallback<T> {
         void handle(final T item, final int index, final Object key);
     }
 
+    @FunctionalInterface
     public static interface IterationItemCallback<T> {
         void handle(final T item);
     }

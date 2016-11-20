@@ -29,7 +29,6 @@ import org.lyj.commons.i18n.resourcebundle.bundle.impl.ClassResourceBundle;
 import org.lyj.commons.i18n.resourcebundle.bundle.impl.FileResourceBundle;
 import org.lyj.commons.i18n.resourcebundle.cache.ResourceBundleCache;
 
-import java.io.File;
 import java.util.Locale;
 
 /**
@@ -47,11 +46,11 @@ public abstract class I18nUtils {
         IResourceBundle result = ResourceBundleCache.get(key);
         // create rb and add to repository
         if (null == result) {
-            result = new ClassResourceBundle(baseName, locale, classloader, encoding);
+            result = new ClassResourceBundle(key, baseName, locale, classloader, encoding);
             if (result.isActive()) {
                 ResourceBundleCache.add(key, result);
             } else {
-                result = new FileResourceBundle(baseName, locale, encoding);
+                result = new FileResourceBundle(key, baseName, locale, encoding);
                 if (result.isActive())
                     ResourceBundleCache.add(key, result);
             }
@@ -74,7 +73,7 @@ public abstract class I18nUtils {
         IResourceBundle result = ResourceBundleCache.get(key);
         // create rb and add to repository
         if (null == result) {
-            result = new FileResourceBundle(baseName, locale, encoding);
+            result = new FileResourceBundle(key, baseName, locale, encoding);
             if (result.isActive())
                 ResourceBundleCache.add(key, result);
         }
@@ -86,12 +85,16 @@ public abstract class I18nUtils {
         return result;
     }
 
+    public static IResourceBundle removeBundle(final String baseName,
+                                               final Locale locale) {
+        final String key = I18nUtils.buildResourceBundleKey(baseName, locale);
+        return ResourceBundleCache.remove(key);
+    }
+
     public static String buildResourceBundleKey(final String baseName,
                                                 final Locale locale) {
         return null != locale
-                ? baseName.concat(":").
-                concat(locale.getDisplayCountry()).concat(":").
-                concat(locale.getDisplayLanguage())
+                ? baseName.concat(":").concat(locale.getDisplayCountry()).concat(":").concat(locale.getDisplayLanguage())
                 : baseName;
     }
 

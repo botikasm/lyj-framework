@@ -138,7 +138,7 @@ public class MessageBusEvents {
         return !item.isListened(listenerId) && item.match(tag, name);
     }
 
-    private void reject(final Delegates.IterationBoolCallback<MessageBusEventWrapper> callback) {
+    private void reject(final Delegates.IterationCallbackBool<MessageBusEventWrapper> callback) {
         synchronized (_events) {
             if (null != callback) {
                 int count = _events.size();

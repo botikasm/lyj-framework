@@ -189,7 +189,7 @@ public class SmtpRequest
     }
 
     public String replyTo() {
-        return _to;
+        return _reply_to;
     }
 
     public SmtpRequest replyTo(String value) {

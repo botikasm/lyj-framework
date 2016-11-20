@@ -41,6 +41,7 @@ import java.util.ResourceBundle;
 public final class ClassResourceBundle
         implements IResourceBundle {
 
+    private final String _key;
     private String _baseName;
     private Locale _locale;
     private Boolean _active;
@@ -50,10 +51,12 @@ public final class ClassResourceBundle
     /**
      * Creates a new instance of ClassResourceBundle
      */
-    public ClassResourceBundle(final String baseName,
+    public ClassResourceBundle(final String key,
+                               final String baseName,
                                final Locale locale,
                                final ClassLoader classloader,
                                final String encoding) {
+        _key = key;
         _active = false;
         _baseName = baseName;
         _locale = locale;
@@ -61,7 +64,7 @@ public final class ClassResourceBundle
                 ? classloader
                 : ClassLoader.getSystemClassLoader();
         try {
-            if(encoding.equals(CharEncoding.UTF_8)){
+            if (encoding.equals(CharEncoding.UTF_8)) {
                 _rb = null != locale
                         ? ResourceBundle.getBundle(baseName, locale, cl, new UTF8Control())
                         : ResourceBundle.getBundle(baseName, Locale.getDefault(), cl, new UTF8Control());
@@ -113,6 +116,10 @@ public final class ClassResourceBundle
     @Override
     public Throwable getError() {
         return _error;
+    }
+
+    public String key() {
+        return _key;
     }
 
     @Override

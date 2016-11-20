@@ -42,10 +42,15 @@ public abstract class ResourceBundleManager {
 
     private static String _encoding = CharEncoding.getDefault();
 
-    public static void setEncoding(final String value){
-        if(CharEncoding.isSupported(value)){
+    public static void setEncoding(final String value) {
+        if (CharEncoding.isSupported(value)) {
             _encoding = value;
         }
+    }
+
+    public static void refreshBundle(final String baseName,
+                                      final Locale locale) {
+        I18nUtils.removeBundle(baseName, locale);
     }
 
     // -----------------------------------------------------------------------
@@ -254,6 +259,8 @@ public abstract class ResourceBundleManager {
         return LoggingUtils.getLogger(ResourceBundleManager.class);
     }
 
+
+
     private static String getResourceString(final String baseName,
                                             final String resourceKey,
                                             final Locale locale,
@@ -271,7 +278,7 @@ public abstract class ResourceBundleManager {
         } catch (Exception ex) {
             getLogger().log(Level.FINE,
                     String.format("Resource not found. BaseName='%s'; "
-                            + "Key='%s'; Locale='%s'",
+                                    + "Key='%s'; Locale='%s'",
                             baseName, resourceKey, locale.toString()), ex);
         }
         return "";

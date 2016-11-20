@@ -34,6 +34,8 @@ import java.util.Properties;
  */
 public interface IResourceBundle {
 
+    String key();
+
     public abstract boolean isActive();
 
     public abstract String getString(String key);

@@ -227,7 +227,7 @@ public final class JsonWrapper implements Cloneable {
         }
         if (null != _object) {
             final Set<String> keys = _object.keySet();
-            for (final String key:keys) {
+            for (final String key : keys) {
                 _object.remove(key);
             }
         }
@@ -468,6 +468,13 @@ public final class JsonWrapper implements Cloneable {
     public boolean optBoolean(final String key) {
         if (this.isJSONObject()) {
             return _object.optBoolean(key);
+        }
+        return false;
+    }
+
+    public boolean optBoolean(final String key, final boolean defVal) {
+        if (this.isJSONObject()) {
+            return _object.optBoolean(key, defVal);
         }
         return false;
     }

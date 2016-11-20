@@ -83,6 +83,18 @@ public abstract class FileI18nBundle {
     //               p u b l i c
     // --------------------------------------------------------------------
 
+    public void refreshBundle(){
+        ResourceBundleManager.refreshBundle(_base_name, null);
+    }
+
+    public void refreshBundle(final String lang) {
+        this.refreshBundle(LocaleUtils.getLocaleByLang(lang));
+    }
+
+    public void refreshBundle(final Locale locale) {
+        ResourceBundleManager.refreshBundle(_base_name, locale);
+    }
+
     public String getMessage(final String key,
                              final String lang) {
         return getMessage(key, LocaleUtils.getLocaleByLang(lang));

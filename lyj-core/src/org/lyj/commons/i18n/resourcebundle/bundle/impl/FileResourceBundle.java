@@ -44,6 +44,7 @@ public final class FileResourceBundle
     private static final String EXTENSION_SEPARATOR = ".";
     private static final String EXTENSION = ".properties";
 
+    private final String _key;
     private final String _encoding;
     private Boolean _active = false;
     private Properties _properties;
@@ -58,9 +59,11 @@ public final class FileResourceBundle
      *               Locale's details, like Language_Country_Variant, are added automatically.
      * @param locale desired Locale.
      */
-    public FileResourceBundle(final String path,
+    public FileResourceBundle(final String key,
+                              final String path,
                               final Locale locale,
                               final String encoding) {
+        _key = key;
         _encoding = encoding;
         _properties = new Properties();
         if (StringUtils.hasText(path)) {
@@ -80,8 +83,10 @@ public final class FileResourceBundle
     /**
      * Creates a new instance of FileResourceBundle
      */
-    public FileResourceBundle(final File file,
+    public FileResourceBundle(final String key,
+                              final File file,
                               final String encoding) {
+        _key = key;
         _encoding = encoding;
         _properties = new Properties();
         this.loadProperties(_properties, file);
@@ -100,6 +105,10 @@ public final class FileResourceBundle
     @Override
     public Throwable getError() {
         return _error;
+    }
+
+    public String key() {
+        return _key;
     }
 
     @Override

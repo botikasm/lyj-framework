@@ -39,7 +39,15 @@ import java.util.Map;
  */
 public class ResourceBundleCache {
 
+    // ------------------------------------------------------------------------
+    //                      f i e l d s
+    // ------------------------------------------------------------------------
+
     private final Map<String, IResourceBundle> _resourceBundleCache;
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
 
     /**
      * Creates a new instance of ResourceBundleCache
@@ -59,6 +67,10 @@ public class ResourceBundleCache {
         super.finalize();
     }
 
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+
     public String getResourceFromCache(final String cacheKey, final String resourceKey) {
         synchronized (_resourceBundleCache) {
             IResourceBundle rb = _resourceBundleCache.get(cacheKey);
@@ -72,6 +84,12 @@ public class ResourceBundleCache {
     public void addResourceBundleToCache(String key, IResourceBundle rb) {
         synchronized (_resourceBundleCache) {
             _resourceBundleCache.put(key, rb);
+        }
+    }
+
+    public IResourceBundle removeResourceBundle(final String key) {
+        synchronized (_resourceBundleCache) {
+            return _resourceBundleCache.remove(key);
         }
     }
 
@@ -107,6 +125,11 @@ public class ResourceBundleCache {
     public static void add(String key, IResourceBundle rb) {
         ResourceBundleCache instance = getInstance();
         instance.addResourceBundleToCache(key, rb);
+    }
+
+    public static IResourceBundle remove(String key) {
+        ResourceBundleCache instance = getInstance();
+        return instance.removeResourceBundle(key);
     }
 
     public static IResourceBundle get(String key) {
