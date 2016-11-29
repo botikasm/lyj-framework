@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "autocreate":true,
+  "hosts": [
+    {
+      "path": "",
+      "host": "localhost",
+      "port": 27017
+    }
+  ],
+  "credentials": [
+    {
+      "type": "MONGODB-CR",
+      "database": "bot_platform",
+      "username": "root",
+      "password": "1234"
+    }
+  ]
+}

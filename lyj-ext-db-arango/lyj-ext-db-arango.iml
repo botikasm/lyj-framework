@@ -9,15 +9,19 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="junit:junit:4.12" level="application" />
+    <orderEntry type="module" module-name="lyj-core" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/vendor/javax-mail/javax.mail.jar!/" />
+          <root url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.1.2" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.1.2" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.1.2" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.1.2" recursive="false" type="SOURCES" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="lyj-core" />
   </component>
 </module>

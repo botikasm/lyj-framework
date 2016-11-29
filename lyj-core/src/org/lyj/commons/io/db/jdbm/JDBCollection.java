@@ -9,6 +9,7 @@ import org.lyj.commons.io.db.jdbm.util.FilterUtils;
 import org.lyj.commons.lang.Counter;
 import org.lyj.commons.util.MapBuilder;
 import org.lyj.commons.util.RandomUtils;
+import org.lyj.ext.db.IDatabaseCollection;
 
 import java.io.IOError;
 import java.util.*;
@@ -16,7 +17,7 @@ import java.util.*;
 /**
  * Collection Implementation
  */
-public class JDBCollection {
+public class JDBCollection{
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -46,6 +47,19 @@ public class JDBCollection {
         ID = primaryKey;
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("name=").append(_name);
+        sb.append(", ");
+        sb.append("size=").append(this.collection().size());
+        sb.append(", ");
+        sb.append("indexes=").append(_indexes.toString());
+        sb.append("}");
+
+        return sb.toString();
+    }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -200,10 +214,10 @@ public class JDBCollection {
                     return this.insert(item);
                 }
             }
+        } catch (IOError t) {
+            throw new RuntimeException(t.getMessage());
         } catch (Throwable t) {
-            if (t instanceof IOError) {
-                throw new RuntimeException(t.getMessage());
-            }
+            throw new RuntimeException(t.getMessage());
         }
         return null;
     }

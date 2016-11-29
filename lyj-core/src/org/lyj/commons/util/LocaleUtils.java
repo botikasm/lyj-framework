@@ -256,7 +256,7 @@ public class LocaleUtils {
 
     public static String getCountry(final String slocale) {
         final String[] tokens = StringUtils.split(slocale, new String[]{"_", "-"});
-        if (tokens.length > 0) {
+        if (tokens.length > 1) {
             return tokens[1];
         } else {
             final Locale locale = LocaleUtils.getLocaleFromString(slocale);

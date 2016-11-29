@@ -4,6 +4,11 @@ import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.db.IDatabase;
+import org.lyj.ext.db.IDatabaseCollection;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
@@ -64,6 +69,10 @@ public class LocalStorage
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public String root() {
+        return _root;
+    }
+
     public LocalStorage primaryKey(final String value) {
         if (StringUtils.hasText(value)) {
             _db.primaryKey(value);
@@ -71,28 +80,40 @@ public class LocalStorage
         return this;
     }
 
-    public LocalStorage open() {
+    public String name() {
+        return _db_name;
+    }
+
+    public boolean open() {
         if (!_open) {
             _open = true;
 
             // open database
             _db.open(_db_name);
         }
-        return this;
+        return _open;
     }
 
-    public LocalStorage close() {
+    public boolean close() {
         if (_open) {
             _open = false;
             if (!_db.closed()) {
                 _db.close();
             }
         }
-        return this;
+        return _open;
     }
 
-    public String root() {
-        return _root;
+    public boolean isOpen() {
+        return _open;
+    }
+
+    public String[] collectionNames() {
+        if (null != _db) {
+            final Set<String> names = _db.collections();
+            return names.toArray(new String[names.size()]);
+        }
+        return new String[0];
     }
 
     public JDBCollection collection(final String name) {
@@ -101,6 +122,9 @@ public class LocalStorage
         }
         return null;
     }
+
+
+
 
 
 }

@@ -37,6 +37,19 @@ public class JDBCollectionIndexes {
         _store_values = _coll_name.concat("_").concat("index_values");
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("collection=").append(_coll_name);
+        sb.append(",");
+        sb.append("store_names=").append(this.collection(_store_names).size());
+        sb.append(",");
+        sb.append("store_values=").append(this.collection(_store_names).size());
+        sb.append("}");
+        return sb.toString();
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
