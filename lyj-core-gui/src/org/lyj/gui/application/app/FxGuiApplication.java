@@ -153,7 +153,7 @@ public abstract class FxGuiApplication
             this.initStage();
             this.ready(_primary_stage);
         } catch (Throwable t) {
-
+            _logger.error("ready", t);
         }
     }
 

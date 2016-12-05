@@ -7,6 +7,7 @@ import com.arangodb.entity.DocumentCreateEntity;
 import com.arangodb.entity.DocumentDeleteEntity;
 import com.arangodb.entity.DocumentUpdateEntity;
 import org.lyj.commons.Delegates;
+import org.lyj.commons.lang.Counter;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.db.AbstractDatabaseCollection;
@@ -259,10 +260,16 @@ public class ArnCollection<T>
         final StringBuilder sb = new StringBuilder();
         sb.append(FormatUtils.format(QUERY_FOR, super.name()));
         sb.append(" ").append(QUERY_FILTER).append(" ");
+        final Counter count = new Counter(0);
         names.forEach((name) -> {
+            if(count.value()>0){
+                sb.append(" && ");
+            }
             sb.append(FormatUtils.format(QUERY_FILTER_EQUAL, name, name));
+            count.inc();
         });
-        sb.append(" ").append(QUERY_RETURN);
+        sb.append(" ");
+        sb.append(QUERY_RETURN);
         return sb.toString();
     }
 

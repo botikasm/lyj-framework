@@ -16,6 +16,9 @@ public class HttpServerContext
     //                      c o n s t
     // ------------------------------------------------------------------------
 
+    public static final String FLD_RESPONSE = "response";
+    public static final String FLD_ERROR = "error";
+
     private static final String ERR_PREFIX = "err_"; // coded errors
 
     // ------------------------------------------------------------------------
@@ -272,7 +275,7 @@ public class HttpServerContext
             response = obj.toString();
         } else {
             final JSONObject json = new JSONObject();
-            json.putOpt("response", null != obj ? obj.toString() : "");
+            json.putOpt(FLD_RESPONSE, null != obj ? obj.toString() : "");
             response = json.toString();
         }
         // check eur symbol that can cause problems (2 more bytes are needed)
@@ -308,7 +311,7 @@ public class HttpServerContext
             return text;
         } else {
             final JSONObject json = new JSONObject();
-            json.putOpt("error", text);
+            json.putOpt(FLD_ERROR, text);
             return json.toString();
         }
     }

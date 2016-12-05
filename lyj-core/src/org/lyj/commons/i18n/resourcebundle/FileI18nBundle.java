@@ -83,7 +83,11 @@ public abstract class FileI18nBundle {
     //               p u b l i c
     // --------------------------------------------------------------------
 
-    public void refreshBundle(){
+    public void clearBundle() {
+        ResourceBundleManager.clearBundle();
+    }
+
+    public void refreshBundle() {
         ResourceBundleManager.refreshBundle(_base_name, null);
     }
 

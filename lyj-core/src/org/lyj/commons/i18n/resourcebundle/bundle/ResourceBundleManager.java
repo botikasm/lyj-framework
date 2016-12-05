@@ -49,8 +49,12 @@ public abstract class ResourceBundleManager {
     }
 
     public static void refreshBundle(final String baseName,
-                                      final Locale locale) {
+                                     final Locale locale) {
         I18nUtils.removeBundle(baseName, locale);
+    }
+
+    public static void clearBundle() {
+        I18nUtils.clearBundle();
     }
 
     // -----------------------------------------------------------------------
@@ -258,7 +262,6 @@ public abstract class ResourceBundleManager {
     private static Logger getLogger() {
         return LoggingUtils.getLogger(ResourceBundleManager.class);
     }
-
 
 
     private static String getResourceString(final String baseName,

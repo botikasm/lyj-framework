@@ -75,7 +75,7 @@ public class PlatformUtils {
         final String id = (String)BeanUtils.getValueIfAny(control, "id", "");
         if (StringUtils.hasText(id)) {
             final String text = StringUtils.hasText(prop)
-                    ? i18n(dictionary, lang, id + "," + prop, args)
+                    ? i18n(dictionary, lang, id + "." + prop, args)
                     : i18n(dictionary, lang, id, args);
             if (StringUtils.hasText(text)) {
                 if (control instanceof Label) {

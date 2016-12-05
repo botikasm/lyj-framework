@@ -91,6 +91,10 @@ public abstract class I18nUtils {
         return ResourceBundleCache.remove(key);
     }
 
+    public static void clearBundle() {
+        ResourceBundleCache.clear();
+    }
+
     public static String buildResourceBundleKey(final String baseName,
                                                 final Locale locale) {
         return null != locale

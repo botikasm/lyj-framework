@@ -1,10 +1,12 @@
 package org.lyj.gui.application.app.components;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.ClassLoaderUtils;
 import org.lyj.commons.util.CollectionUtils;
@@ -128,6 +130,9 @@ public class ComponentFactory
                 ((TitledPane) container).setContent(child);
             } else if (container instanceof ScrollPane) {
                 ((ScrollPane) container).setContent(child);
+            } else if (container instanceof StackPane) {
+                StackPane.setAlignment(child, Pos.CENTER);
+                ((StackPane) container).getChildren().add(child);
             }
         }
     }
