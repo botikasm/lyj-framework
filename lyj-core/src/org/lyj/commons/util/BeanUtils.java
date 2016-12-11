@@ -467,6 +467,24 @@ public abstract class BeanUtils {
         return false;
     }
 
+    public static <T> T getDefault(final T obj) {
+        final Object response;
+        if (isAssignable(obj, Integer.class)) {
+            response = 0;
+        } else if (isAssignable(obj, Double.class)) {
+            response = 0.0d;
+        } else if (isAssignable(obj, Float.class)) {
+            response = 0.0f;
+        } else if (isAssignable(obj, Number.class)) {
+            response = 0;
+        } else if (isAssignable(obj, String.class)) {
+            response = "";
+        } else {
+            response = null;
+        }
+        return (T) response;
+    }
+
     // -----------------------------------------------------------------------
     //                  p r i v a t e
     // -----------------------------------------------------------------------

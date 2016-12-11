@@ -38,4 +38,19 @@ public class BeanUtilsTest {
         assertEquals("hello", result);
 
     }
+
+    @Test
+    public void testGetDefault(){
+
+        String s_def = BeanUtils.getDefault("hello");
+        assertEquals("", s_def);
+
+        Float f_def = BeanUtils.getDefault(123.5f);
+        assertTrue(f_def.equals(0.0f));
+
+        Integer i_def = BeanUtils.getDefault(1234);
+        assertTrue(i_def.equals(0));
+
+    }
+
 }
