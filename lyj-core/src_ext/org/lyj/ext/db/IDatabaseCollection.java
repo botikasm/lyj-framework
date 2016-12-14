@@ -20,6 +20,8 @@ public interface IDatabaseCollection<T> {
 
     T insert(final T entity);
 
+    int insert(final Collection<T> entities);
+
     T update(final T entity);
 
     T upsert(final T entity);

@@ -6,6 +6,7 @@ import com.arangodb.ArangoDatabase;
 import com.arangodb.entity.DocumentCreateEntity;
 import com.arangodb.entity.DocumentDeleteEntity;
 import com.arangodb.entity.DocumentUpdateEntity;
+import com.arangodb.entity.MultiDocumentEntity;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.lang.Counter;
 import org.lyj.commons.util.FormatUtils;
@@ -91,6 +92,14 @@ public class ArnCollection<T>
             return StringUtils.hasText(new_key) ? this.get(new_key) : null;
         }
         return null;
+    }
+
+    public int insert(final Collection<T> entities) {
+        if (null != entities && !entities.isEmpty()) {
+            final MultiDocumentEntity<DocumentCreateEntity<T>> new_entities = this.collection().insertDocuments(entities);
+            return new_entities.getDocuments().size();
+        }
+        return 0;
     }
 
     public T update(final T entity) {

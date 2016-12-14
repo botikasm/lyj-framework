@@ -41,6 +41,10 @@ import java.util.*;
 public abstract class PathUtils
         implements IConstants {
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
     /**
      * Array of file system types. i.e. ["web://", "ftp://", ...] *
      */
@@ -51,6 +55,11 @@ public abstract class PathUtils
     private static final String PATH_DESKTOP_WIN = "Desktop";
     private static final String PATH_DESKTOP_MAC = "Desktop";
     private static final String PATH_DESKTOP_LINUX = "Desktop";
+
+
+    // ------------------------------------------------------------------------
+    //                      p a t h s
+    // ------------------------------------------------------------------------
 
     /**
      * Returns temp folder.
