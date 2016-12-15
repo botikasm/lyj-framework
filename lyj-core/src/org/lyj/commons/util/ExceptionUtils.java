@@ -108,7 +108,8 @@ public abstract class ExceptionUtils {
      */
     public static String getRealMessage(final Throwable ex) {
         final Throwable t = getRealCause(ex);
-        return null != t ? getMessage(t) : getMessage(ex);
+        final String message = null != t ? getMessage(t) : getMessage(ex);
+        return StringUtils.hasText(message) ? message : ex.toString();
     }
 
     /**
