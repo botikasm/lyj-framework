@@ -218,6 +218,17 @@ public class Delegates {
         }
     }
 
+    public static <K, V> void invoke(final CallbackEntry<K, V> callback, final K key, final V value) {
+        try {
+            if (null != callback) {
+                callback.handle(key, value);
+            }
+        } catch (Throwable t) {
+            logger().error("invoke", t);
+            throw new RuntimeException(t);
+        }
+    }
+
     public static <T> void invoke(final SingleResultCallback<T> callback, final Throwable err, final T data) {
         try {
             if (null != callback) {

@@ -115,6 +115,15 @@ public abstract class FileI18nBundle {
         return this.validate(resource_value);
     }
 
+    public Properties getBundleProperties(final Locale locale) {
+        try {
+            return ResourceBundleManager.getBundleProperties(
+                    _base_name, locale);
+        } catch (Exception ex) {
+            return new Properties();
+        }
+    }
+
     public Properties getProperties(final Locale locale) {
         try {
             return ResourceBundleManager.getProperties(

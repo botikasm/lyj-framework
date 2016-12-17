@@ -1,6 +1,7 @@
 package org.lyj.ext.db.arango;
 
 
+import org.json.JSONObject;
 import org.junit.Test;
 import org.lyj.commons.util.JsonItem;
 import org.lyj.commons.util.MapBuilder;
@@ -11,8 +12,11 @@ import org.lyj.ext.db.IDatabaseConnection;
 import org.lyj.ext.db.configuration.DatabaseConfiguration;
 import org.lyj.ext.db.configuration.DatabaseConfigurationCredential;
 import org.lyj.ext.db.configuration.DatabaseConfigurationHost;
+import org.lyj.ext.db.exceptions.DatabaseDoesNotExists;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -101,4 +105,80 @@ public class ArangoConnectorTest {
         System.out.println("Count after remove of 2: " + collection.count());
     }
 
+    @Test
+    public void nonASCII() throws Exception {
+
+        IDatabaseCollection<String> collection = this.collection("sample");
+
+        final Set<String> keys = new HashSet<>();
+        for (int i = 0; i < 100; i++) {
+            keys.add("key_" + i);
+        }
+        final String value = "[CTO]\n Ha supervisionato e gestito il reparto di R&D per il ééé €€€€€ °°° ####  settore software, formulando una visione di lungo periodo con la Direzione dell'Azienda.";
+
+        for(final String key:keys){
+            collection.remove(key);
+        }
+
+        for(final String key:keys){
+            JsonItem item = new JsonItem();
+            item.put("_key", key);
+            item.put("value01", value);
+            item.put("value02", value);
+            item.put("value03", value);
+            item.put("value04", value);
+            item.put("value05", value);
+            item.put("value06", value);
+            item.put("value07", value);
+            item.put("value08", value);
+            item.put("value09", value);
+            item.put("value10", value);
+            item.put("value11", value);
+            item.put("value12", value);
+            item.put("value13", value);
+            item.put("value14", value);
+            item.put("value15", value);
+            item.put("value16", value);
+            item.put("sub_item", new JSONObject(item.toString()));
+
+            collection.insert(item.toString());
+        }
+
+        System.out.println("inserted: " + keys.size());
+
+        for(final String key:keys){
+            collection.remove(key);
+        }
+
+        System.out.println("removed: " + keys.size());
+    }
+
+    @Test
+    public void testNonASCII2() throws DatabaseDoesNotExists {
+        final String no_working_item = "{\"name\":\"job_04_detail_1\",\"seven__\":\"123456789\",\"_key\":\"191d936d-1eb9-4094-9c1c-9e0ba1d01867\",\"lang\":\"it\",\"value\":\"[CTO]\\n Ha supervisionato e gestito il reparto di R&D per il software, 1234567 formulando una visione di lungo periodo con la Direzione dell'Azienda.\"}";
+        final String working_item = "{\"name1\":\"job_04_detail_1\",\"seven__\":\"123456789\",\"_key\":\"191d936d-1eb9-4094-9c1c-9e0ba1d01867\",\"lang\":\"it\",\"value\":\"[CTO]\\n Ha supervisionato e gestito il reparto di R&D per il software, 1234567 formulando una visione di lungo periodo con la Direzione dell'Azienda.\"}";
+
+        IDatabaseCollection<String> collection = this.collection("sample");
+
+        final String new_item = collection.insert(working_item);
+
+        assertTrue(collection.remove(new_item));
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private IDatabaseCollection<String> collection(final String coll_name) throws DatabaseDoesNotExists {
+        DatabaseConfiguration configuration = new DatabaseConfiguration();
+        configuration.add(new DatabaseConfigurationHost().host("localhost").port(8529),
+                new DatabaseConfigurationCredential().username("root").password("!qaz2WSX098"));
+
+        ArnConnector.instance().add("sample", configuration);
+        IDatabaseConnection connection = ArnConnector.instance().connection("sample");
+
+        IDatabase db = connection.database("test");
+
+        return db.collection(coll_name, String.class);
+    }
 }

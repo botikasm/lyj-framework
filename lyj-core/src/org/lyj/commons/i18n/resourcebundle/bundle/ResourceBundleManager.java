@@ -57,6 +57,13 @@ public abstract class ResourceBundleManager {
         I18nUtils.clearBundle();
     }
 
+    public static Properties getBundleProperties(final String baseName, final Locale locale) throws Exception {
+        final IResourceBundle rb = I18nUtils.getOrCreateBundle(baseName,
+                locale,
+                _encoding);
+        return null != rb ? rb.getProperties() : null;
+    }
+
     // -----------------------------------------------------------------------
     //                  filesystem access
     // -----------------------------------------------------------------------
