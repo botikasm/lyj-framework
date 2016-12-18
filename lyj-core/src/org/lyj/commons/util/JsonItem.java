@@ -50,7 +50,7 @@ public class JsonItem
 
     public JsonItem(final Object item) {
         if (item instanceof String) {
-            _data = StringUtils.isJSONObject((String) item) ? new JsonWrapper((String) item) : new JsonWrapper(new JSONObject());
+            _data = StringUtils.isJSONObject(item) ? new JsonWrapper((String) item) : new JsonWrapper(new JSONObject());
         } else if (item instanceof JSONObject) {
             _data = new JsonWrapper((JSONObject) item);
         } else if (item instanceof JsonItem) {
@@ -58,7 +58,11 @@ public class JsonItem
         } else if (item instanceof Properties) {
             _data = new JsonWrapper(new JSONObject((Properties) item));
         } else {
-            _data = new JsonWrapper(new JSONObject());
+            if (StringUtils.isJSONObject(item)) {
+                _data = new JsonWrapper(new JSONObject(item.toString()));
+            } else {
+                _data = new JsonWrapper(new JSONObject());
+            }
         }
     }
 
