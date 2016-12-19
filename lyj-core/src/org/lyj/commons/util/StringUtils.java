@@ -670,6 +670,19 @@ public final class StringUtils {
             return toString((Object[]) obj, ",");
         } else if (obj instanceof Collection) {
             return toString((Collection) obj, ",");
+        } else if (obj instanceof Map) {
+            final StringBuilder sb = new StringBuilder();
+            ((Map) obj).forEach((key, value) -> {
+                final String skey = StringUtils.toString(key);
+                final String svalue = StringUtils.toString(value);
+                if (StringUtils.hasText(skey) && null != svalue) {
+                    if (sb.length() > 0) {
+                        sb.append("\n");
+                    }
+                    sb.append(key).append("=").append(StringUtils.replace(StringUtils.toString(value), "\n", "\\n"));
+                }
+            });
+            return sb.toString();
         } else {
             return obj.toString();
         }

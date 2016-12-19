@@ -32,6 +32,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 
@@ -618,6 +619,13 @@ public abstract class FileUtils {
                                          final String encoding) throws IOException {
         final byte[] bytes = data.getBytes(encoding);
         copy(bytes, output);
+    }
+
+    public static void writeStringToFile(final File output,
+                                         final Map map_data,
+                                         final String encoding) throws IOException {
+        final String data = StringUtils.toString(map_data);
+        writeStringToFile(output, data, encoding);
     }
 
     /**
