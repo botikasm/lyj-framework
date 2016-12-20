@@ -42,6 +42,16 @@ public class ZipUtils {
     private ZipUtils() {
     }
 
+    public static void zipDir(final String filename, final File dir) throws IOException {
+        zipDir(filename, dir, false);
+    }
+
+    public static void zipDir(final String filename, final File dir, final boolean include_paths) throws IOException {
+        final List<File> fileList = new LinkedList<>();
+        FileUtils.listFiles(fileList, dir);
+        zip(filename, fileList, include_paths, PathUtils.getParent(filename));
+    }
+
     public static void zip(final String filename, final List<File> fileList) throws IOException {
         zip(filename, fileList, true);
     }
@@ -238,6 +248,7 @@ public class ZipUtils {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
     private static Logger getLogger() {
         return LoggingUtils.getLogger(ZipUtils.class);
     }

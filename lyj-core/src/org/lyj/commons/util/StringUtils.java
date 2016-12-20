@@ -666,6 +666,9 @@ public final class StringUtils {
     public static String toString(final Object obj) {
         if (null == obj) {
             return "";
+        } else if (obj instanceof Throwable) {
+            final String err_msg = ExceptionUtils.getMessage((Throwable) obj);
+            return StringUtils.hasText(err_msg) ? err_msg : obj.toString();
         } else if (obj instanceof Object[]) {
             return toString((Object[]) obj, ",");
         } else if (obj instanceof Collection) {

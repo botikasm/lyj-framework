@@ -286,8 +286,8 @@ public class HttpServerContext
     }
 
     private static String validateJsonError(final Throwable t) {
-        final String error = t.toString();
-        return validateJsonError(error);
+        final String error = ExceptionUtils.getRealMessage(t);
+        return validateJsonError(StringUtils.hasText(error) ? error : t.toString());
     }
 
     private static String validateJsonError(final Throwable t,
