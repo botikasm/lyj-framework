@@ -10,6 +10,18 @@ import java.util.Map;
  */
 public interface IDatabaseCollection<T> {
 
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    static String SORT_ASC = "asc";
+    static String SORT_DESC = "desc";
+
+    // ------------------------------------------------------------------------
+    //                      m e t h o d s
+    // ------------------------------------------------------------------------
+
     IDatabaseCollectionSchema schema();
 
     String name();
@@ -50,6 +62,7 @@ public interface IDatabaseCollection<T> {
 
     Collection<T> findEqual(final Map<String, Object> bindArgs);
 
+    Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort);
 
 
 }

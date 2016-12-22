@@ -14,10 +14,7 @@ import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.db.AbstractDatabaseCollection;
 import org.lyj.ext.db.IDatabase;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -37,6 +34,8 @@ public class ArnCollection<T>
     private static final String QUERY_FILTER_EQUAL = "t.%s == @%s";
     private static final String QUERY_RETURN = "RETURN t";
     private static final String QUERY_REMOVE = "REMOVE t IN %s LET removed = OLD RETURN removed";
+    private static final String QUERY_SORT_SINGLE = "SORT {{comma_sep_fields_1}} {{mode_1}}";
+    private static final String QUERY_SORT_MULTI = "SORT {{comma_sep_fields_1}} {{mode_1}}, {{comma_sep_fields_2}} {{mode_2}}";
 
     private static final String QUERY_NO_PARAMS = QUERY_FOR.concat(" ").concat(QUERY_RETURN);
 
@@ -182,12 +181,12 @@ public class ArnCollection<T>
     }
 
     public T removeOneEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs.keySet());
+        final String query = this.queryEqual(bindArgs.keySet(), null);
         return this.removeOne(query, bindArgs);
     }
 
     public Collection<T> removeEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs.keySet());
+        final String query = this.queryEqual(bindArgs.keySet(), null);
         return this.remove(query, bindArgs);
     }
 
@@ -237,12 +236,17 @@ public class ArnCollection<T>
     }
 
     public T findOneEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs.keySet());
+        final String query = this.queryEqual(bindArgs.keySet(), null);
         return this.findOne(query, bindArgs);
     }
 
     public Collection<T> findEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs.keySet());
+        final String query = this.queryEqual(bindArgs.keySet(), null);
+        return this.find(query, bindArgs);
+    }
+
+    public Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort) {
+        final String query = this.queryEqual(bindArgs.keySet(), this.sortMap(SORT_ASC, sort));
         return this.find(query, bindArgs);
     }
 
@@ -261,24 +265,69 @@ public class ArnCollection<T>
         return (String) super.getFieldValue(entity, FLD_KEY);
     }
 
+    private Map<String, String[]> sortMap(final String mode, final String[] fields) {
+        final Map<String, String[]> sort = new HashMap<>();
+        sort.put(mode, fields);
+        return sort;
+    }
+
+    private String sort(final Map<String, String[]> sort_params) {
+        if (null != sort_params && sort_params.size() > 0) {
+            final String tpl = sort_params.size() > 1 ? QUERY_SORT_MULTI : QUERY_SORT_SINGLE;
+            final Counter counter = new Counter(1);
+            final Map<String, String> tpl_map = new HashMap<>();
+            sort_params.forEach((mode, fields) -> {
+                tpl_map.put("comma_sep_fields_" + counter.valueAsInt(), this.toString(fields));
+                tpl_map.put("mode_" + counter.valueAsInt(), mode.toUpperCase());
+                counter.inc();
+            });
+            return FormatUtils.formatTemplate(tpl, "{{", "}}", tpl_map);
+        }
+        return "";
+    }
+
+    private String toString(final String[] field_names) {
+        final StringBuilder sb = new StringBuilder();
+        for (final String field_name : field_names) {
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            if (field_name.startsWith("t.")) {
+                sb.append(field_name);
+            } else {
+                sb.append("t.").append(field_name);
+            }
+        }
+        return sb.toString();
+    }
+
     private String queryNoParams() {
         return FormatUtils.format(QUERY_NO_PARAMS, super.name());
     }
 
-    private String queryEqual(final Set<String> names) {
+    private String queryEqual(final Set<String> names, final Map<String, String[]> sort_fields) {
         final StringBuilder sb = new StringBuilder();
         sb.append(FormatUtils.format(QUERY_FOR, super.name()));
+
+        // filter
         sb.append(" ").append(QUERY_FILTER).append(" ");
         final Counter count = new Counter(0);
         names.forEach((name) -> {
-            if(count.value()>0){
+            if (count.value() > 0) {
                 sb.append(" && ");
             }
             sb.append(FormatUtils.format(QUERY_FILTER_EQUAL, name, name));
             count.inc();
         });
-        sb.append(" ");
-        sb.append(QUERY_RETURN);
+
+        // sort
+        final String sort = this.sort(sort_fields);
+        if (StringUtils.hasText(sort)) {
+            sb.append(" ").append(sort);
+        }
+
+        // return
+        sb.append(" ").append(QUERY_RETURN);
         return sb.toString();
     }
 
