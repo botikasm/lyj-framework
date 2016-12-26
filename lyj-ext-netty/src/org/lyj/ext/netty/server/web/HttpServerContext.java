@@ -3,6 +3,7 @@ package org.lyj.ext.netty.server.web;
 import org.json.JSONObject;
 import org.lyj.commons.util.*;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -273,6 +274,8 @@ public class HttpServerContext
             response = json.toString();
         } else if (StringUtils.isJSON(obj)) {
             response = obj.toString();
+        } else if (obj instanceof Collection){
+            response = JsonWrapper.toJSONArray(obj).toString();
         } else {
             final JSONObject json = new JSONObject();
             json.putOpt(FLD_RESPONSE, null != obj ? obj.toString() : "");
