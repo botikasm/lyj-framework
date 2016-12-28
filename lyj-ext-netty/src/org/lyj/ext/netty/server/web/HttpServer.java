@@ -16,7 +16,7 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.*;
 import org.lyj.ext.netty.server.web.base.web.WebServerInitializer;
-import org.lyj.ext.netty.server.web.controllers.HttpServerRequestHandlers;
+import org.lyj.ext.netty.server.web.controllers.HttpServerRequestDelegates;
 import org.lyj.ext.netty.server.web.handlers.AbstractRequestHandler;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -49,7 +49,7 @@ public class HttpServer extends AbstractLogEmitter {
     private SslContext _sslCtx;
     private ServerBootstrap _bootstrap;
 
-    private final HttpServerRequestHandlers _request_handlers;
+    private final HttpServerRequestDelegates _request_delegates;
 
     private boolean _initialized;
 
@@ -64,7 +64,7 @@ public class HttpServer extends AbstractLogEmitter {
         _channel_handlers = new ArrayList<>();
         _channel_handlers.add(new WebServerInitializer(this)); // default handler
 
-        _request_handlers = new HttpServerRequestHandlers();
+        _request_delegates = new HttpServerRequestDelegates(_config);
 
         _initialized = false;
     }
@@ -97,12 +97,17 @@ public class HttpServer extends AbstractLogEmitter {
     }
 
     public HttpServer handler(final AbstractRequestHandler handler) {
-        _request_handlers.add(handler);
+        _request_delegates.add(handler);
         return this;
     }
 
-    public HttpServerRequestHandlers handlers() {
-        return _request_handlers;
+    public HttpServer handler(final Class<? extends AbstractRequestHandler> handler) {
+        _request_delegates.add(handler);
+        return this;
+    }
+
+    public HttpServerRequestDelegates handlers() {
+        return _request_delegates;
     }
 
     public String path(final String relative_path) {
@@ -117,6 +122,14 @@ public class HttpServer extends AbstractLogEmitter {
             return PathUtils.concat(this.config().uri(), relative_path);
         }
         return this.config().uri();
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r o t e c t e d
+    // ------------------------------------------------------------------------
+
+    protected List<ChannelHandler> channels() {
+        return _channel_handlers;
     }
 
     // ------------------------------------------------------------------------
@@ -161,7 +174,7 @@ public class HttpServer extends AbstractLogEmitter {
                     && (null != _config.sslPEMFile() || null != _config.sslP12File())) {
                 try {
                     // .p12 (X.509)
-                    if(null!=_config.sslP12File()){
+                    if (null != _config.sslP12File()) {
                         final char[] psw = _config.sslPassKey().toCharArray();
                         final byte[] cert = ByteUtils.getBytes(_config.sslP12File());
 
@@ -172,7 +185,7 @@ public class HttpServer extends AbstractLogEmitter {
                         kmf.init(ks, psw);
 
                         return SslContextBuilder.forServer(kmf).build();
-                    }  else {
+                    } else {
                         // .pem
                         return SslContextBuilder.forServer(_config.sslPEMFile(), _config.sslKeyFile()).build(); //.sslProvider(SslProvider.JDK).build();
                     }
@@ -208,9 +221,11 @@ public class HttpServer extends AbstractLogEmitter {
             }
 
             // request handlers
-            if (_request_handlers.isEmpty()) {
+            /*
+            if (_request_delegates.isEmpty()) {
                 throw new Exception("Missing request handlers: al least one handler is required!");
             }
+            */
 
             // start listening on port
             if (_config.portAutodetect()) {

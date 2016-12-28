@@ -3,6 +3,7 @@ package org.lyj.ext.netty.server.web;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lyj.Lyj;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.TestInitializer;
 import org.lyj.ext.netty.server.web.handlers.impl.RequestInspectorHandler;
 import org.lyj.ext.netty.server.web.handlers.impl.ResourceHandler;
@@ -48,7 +49,6 @@ public class HttpServerTest {
     public void testJoin() throws Exception {
 
 
-
         final HttpServer server = new HttpServer();
         server.config().port(4000).portAutodetect(true).root(Lyj.getAbsolutePath("./htdocs"));
 
@@ -71,17 +71,18 @@ public class HttpServerTest {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void sampleHandler(final HttpServerContext context){
+    private void sampleHandler(final HttpServerContext context) {
         System.out.println("HANDLED REST REQUEST: method=" + context.method() + ", " + context.uri() + " - params: " + context.params().toString());
+        final HttpParams params = context.params();
 
-        final String paramType = (String) context.params().get("type");
+        final String paramType = (String) params.get("type");  // test with POST
 
         // write response
-        if("json".equals(paramType)){
+        if ("json".equals(paramType)) {
             context.writeJson("THIS IS JSON");
-        } else if ("html".equals(paramType)){
+        } else if ("html".equals(paramType)) {
             context.writeHtml("<div>THIS IS HTML</div>");
-        } else if ("xml".equals(paramType)){
+        } else if ("xml".equals(paramType)) {
             context.writeXml("<tag prop='attribute'>THIS IS XML</tag>");
         } else {
             context.write("THIS IS PLAIN TEXT");

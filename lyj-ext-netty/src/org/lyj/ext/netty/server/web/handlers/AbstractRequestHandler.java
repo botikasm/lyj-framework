@@ -5,6 +5,9 @@ import org.lyj.ext.netty.server.web.HttpServerConfig;
 import org.lyj.ext.netty.server.web.HttpServerRequest;
 import org.lyj.ext.netty.server.web.HttpServerResponse;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
 
 /**
  *
@@ -45,5 +48,22 @@ public abstract class AbstractRequestHandler
     protected HttpServerConfig config() {
         return _config;
     }
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static AbstractRequestHandler create(final Class<? extends AbstractRequestHandler> aclass,
+                                                final HttpServerConfig config)
+            throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        if (null != aclass) {
+            final Constructor<? extends AbstractRequestHandler> ctr = aclass.getConstructor(HttpServerConfig.class);
+            if (null != ctr) {
+                return ctr.newInstance(config);
+            }
+        }
+        return null;
+    }
+
 
 }

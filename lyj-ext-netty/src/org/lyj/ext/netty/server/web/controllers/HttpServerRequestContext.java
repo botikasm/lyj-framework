@@ -1,6 +1,7 @@
 package org.lyj.ext.netty.server.web.controllers;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -30,7 +31,8 @@ public class HttpServerRequestContext {
     private final HttpServerConfig _config;
     private final String _encoding;
 
-    private ChannelHandlerContext _context;
+    private ChannelHandlerContext _native_context;
+    private Object _native_message;
     private HttpRequest _request;
     private HttpContent _content;
     private ByteBuf _content_buffer;
@@ -51,7 +53,8 @@ public class HttpServerRequestContext {
 
     public HttpServerRequestContext handle(final ChannelHandlerContext ctx,
                                            final HttpObject data) {
-        _context = ctx;
+        _native_message = data;
+        _native_context = ctx;
         if (data instanceof HttpRequest) {
             _request = (HttpRequest) data;
             if (HttpUtil.is100ContinueExpected(_request)) {
@@ -100,6 +103,10 @@ public class HttpServerRequestContext {
 
     public LastHttpContent nativeLastHttpContent() {
         return this.hasLastHttpContent() ? (LastHttpContent) _content : null;
+    }
+
+    public Channel nativeChannel() {
+        return null != _native_context ? _native_context.channel() : null;
     }
 
     public String method() {
@@ -231,7 +238,7 @@ public class HttpServerRequestContext {
                 value = "";
             }
         }
-        return null!=value?value.toLowerCase().equals("keep-alive"):false;
+        return null != value ? value.toLowerCase().equals("keep-alive") : false;
     }
 
     /**
@@ -282,9 +289,9 @@ public class HttpServerRequestContext {
         if (null != _content_buffer && _content_buffer.isReadable()) {
             final String content = _content_buffer.toString(charset());
             try {
-                if(StringUtils.isJSONObject(content)){
+                if (StringUtils.isJSONObject(content)) {
                     final Map<String, Object> map = new JsonWrapper(content).toMap();
-                    for(final Map.Entry<String, Object> entry:map.entrySet()){
+                    for (final Map.Entry<String, Object> entry : map.entrySet()) {
                         result.put(entry.getKey(), StringUtils.toString(entry.getValue()));
                     }
                 } else {
@@ -310,19 +317,39 @@ public class HttpServerRequestContext {
     // ------------------------------------------------------------------------
 
     public ChannelFuture write(final Object msg) {
-        return _context.write(msg);
+        return _native_context.write(msg);
     }
 
     public ChannelFuture write(final Object msg, final ChannelPromise promise) {
-        return _context.write(msg, promise);
+        return _native_context.write(msg, promise);
     }
 
     public ChannelFuture writeAndFlush(final Object msg) {
-        return _context.writeAndFlush(msg);
+        return _native_context.writeAndFlush(msg);
     }
 
     public ChannelFuture writeAndFlush(final Object msg, final ChannelPromise promise) {
-        return _context.writeAndFlush(msg, promise);
+        return _native_context.writeAndFlush(msg, promise);
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r o t e c t e d
+    // ------------------------------------------------------------------------
+
+    public ChannelHandlerContext context() {
+        return _native_context;
+    }
+
+    protected void context(final ChannelHandlerContext value) {
+        _native_context = value;
+    }
+
+    public Object message() {
+        return _native_message;
+    }
+
+    protected void message(final Object value) {
+        _native_message = value;
     }
 
     // ------------------------------------------------------------------------

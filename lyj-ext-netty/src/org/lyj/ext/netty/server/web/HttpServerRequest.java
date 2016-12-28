@@ -3,7 +3,6 @@ package org.lyj.ext.netty.server.web;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.HttpDataFactory;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
-import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.controllers.CacheController;
 import org.lyj.ext.netty.server.web.controllers.HttpServerRequestContext;
 
@@ -41,6 +40,10 @@ public class HttpServerRequest {
 
     public HttpServerConfig config() {
         return _config;
+    }
+
+    public HttpServerRequestContext context() {
+        return _context;
     }
 
     public HttpRequest nativeHttpRequest() {
@@ -137,12 +140,12 @@ public class HttpServerRequest {
         }
     }
 
-    public boolean isANDROID(){
+    public boolean isANDROID() {
         final String user_agent = this.headerValue(IHeaderNames.USER_AGENT).toLowerCase();
         return user_agent.contains("android");
     }
 
-    public boolean isIOS(){
+    public boolean isIOS() {
         final String user_agent = this.headerValue(IHeaderNames.USER_AGENT).toLowerCase();
         return user_agent.contains("ipad") || user_agent.contains("iphone") || user_agent.contains("ipod");
     }
@@ -213,7 +216,6 @@ public class HttpServerRequest {
     public boolean isModifiedSince(final File file) {
         return _cache.isModifiedSince(_context.nativeHttpRequest(), file);
     }
-
 
 
 }

@@ -24,6 +24,7 @@ public class HttpServerConfig {
     private static final String UPLOAD_ROUTE = "/upload/*"; // POST path to upload a file
     private static final String UPLOAD_DIR = "./upload";    // path on server to store files (relative or absolute)
     private static final String DOWNLOAD_ROOT = "http://localhost:8080"; // http path for (optional) static file download
+    private static final String WEBSOCKET_PATH = "/websocket";
 
     private static final String SSL_PATH = "./ssl"; // keystore path (put here keystore file generated)
     private static final String KEY_FILE = "server.key"; // keystore file name (only name, not path)
@@ -58,6 +59,7 @@ public class HttpServerConfig {
     private String _upload_routing; // "/upload"
     private String _upload_dir;
     private String _download_root;
+    private String _websocket_path;
     // 404
     private String _not_found_404;
     // index pages
@@ -89,6 +91,7 @@ public class HttpServerConfig {
         _upload_routing = UPLOAD_ROUTE;
         _upload_dir = UPLOAD_DIR;
         _download_root = DOWNLOAD_ROOT;
+        _websocket_path = WEBSOCKET_PATH;
 
         _cors_allow_origin = ""; // empty=none, "*"=all
 
@@ -373,6 +376,17 @@ public class HttpServerConfig {
     public HttpServerConfig downloadRoot(final String value) {
         if (StringUtils.hasText(value)) {
             _download_root = value;
+        }
+        return this;
+    }
+
+    public String websocketPath() {
+        return _websocket_path;
+    }
+
+    public HttpServerConfig websocketPath(final String value) {
+        if (StringUtils.hasText(value)) {
+            _websocket_path = value;
         }
         return this;
     }
