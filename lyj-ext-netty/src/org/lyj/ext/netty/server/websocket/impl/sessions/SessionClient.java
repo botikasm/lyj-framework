@@ -40,7 +40,7 @@ public class SessionClient {
 
     private final String _uid;
     private final HttpServerConfig _config;
-    private final List<Delegates.Callback<String>> _listeners;
+    private final List<Delegates.CallbackEntry<String, Object>> _listeners;
     private final ChannelGroup _channel_group;
 
     private WebSocketServerHandshaker _handshaker;
@@ -53,7 +53,7 @@ public class SessionClient {
 
     public SessionClient(final String uid,
                          final HttpServerConfig config,
-                         final List<Delegates.Callback<String>> listeners) {
+                         final List<Delegates.CallbackEntry<String, Object>> listeners) {
         _uid = uid;
         _config = config;
         _listeners = listeners;
@@ -76,6 +76,11 @@ public class SessionClient {
 
     public void remove(final Channel channel) {
         _channel_group.remove(channel);
+    }
+
+    public void close() {
+        _channel_group.close();
+        _channel_group.clear();
     }
 
     public String address() {
@@ -154,21 +159,48 @@ public class SessionClient {
             ctx.channel().write(new PongWebSocketFrame(frame.content().retain()));
             return;
         }
-        if (!(frame instanceof TextWebSocketFrame)) {
-            throw new UnsupportedOperationException(String.format("%s frame types not supported", frame.getClass().getName()));
+
+        // handle supported frames
+        if ((frame instanceof TextWebSocketFrame) || (frame instanceof BinaryWebSocketFrame)) {
+            if (!_initialized) {
+                this.sendBackError(ctx);
+            } else {
+
+                this.notifyListeners(frame);
+
+                broadcast(ctx, frame);
+            }
         }
 
-        broadcast(ctx, frame);
+        throw new UnsupportedOperationException(String.format("%s frame types not supported", frame.getClass().getName()));
+    }
+
+    private void notifyListeners(final WebSocketFrame frame) {
+        if (null != _listeners && !_listeners.isEmpty()) {
+            _listeners.forEach((callback) -> {
+                try {
+                    callback.handle(_uid, content(frame));
+                } catch (Throwable ignored) {
+                }
+            });
+        }
+    }
+
+    private static Object content(final WebSocketFrame frame) {
+        if (frame instanceof TextWebSocketFrame) {
+            return ((TextWebSocketFrame) frame).text();
+        } else {
+            return frame.content().array();
+        }
+    }
+
+    private void sendBackError(final ChannelHandlerContext ctx) {
+        Response response = new Response(1001, "ERROR: CHANNEL NOT INITIALIZED");
+        String msg = new JSONObject(response).toString();
+        ctx.channel().write(new TextWebSocketFrame(msg));
     }
 
     private void broadcast(final ChannelHandlerContext ctx, final WebSocketFrame frame) {
-
-        if (!_initialized) {
-            Response response = new Response(1001, "ERROR: CHANNEL NOT INITIALIZED");
-            String msg = new JSONObject(response).toString();
-            ctx.channel().write(new TextWebSocketFrame(msg));
-            return;
-        }
 
         String request = ((TextWebSocketFrame) frame).text();
         System.out.println(" CHANNEL " + ctx.channel() + request);

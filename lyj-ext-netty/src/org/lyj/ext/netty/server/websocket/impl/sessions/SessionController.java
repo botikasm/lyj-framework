@@ -1,13 +1,15 @@
 package org.lyj.ext.netty.server.websocket.impl.sessions;
 
 import io.netty.channel.Channel;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.lyj.commons.Delegates;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
 
 import java.util.*;
 
 /**
- * Singleton Session Controller
+ * Singleton Session Controller.
+ * Use this class to access all client sessions
  */
 public class SessionController {
 
@@ -17,7 +19,7 @@ public class SessionController {
     // --------------------------------------------------------------------
 
     private final Map<String, SessionClient> _clients;
-    private final List<Delegates.Callback<String>> _listeners;
+    private final List<Delegates.CallbackEntry<String, Object>> _listeners;
 
     private HttpServerConfig _config;
 
@@ -39,7 +41,7 @@ public class SessionController {
         _config = config;
     }
 
-    public void listener(final Delegates.Callback<String> callback) {
+    public void listener(final Delegates.CallbackEntry<String, Object> callback) {
         if (!_listeners.contains(callback)) {
             _listeners.add(callback);
         }
@@ -58,18 +60,57 @@ public class SessionController {
     }
 
     public SessionClient open(final String uid) {
-        if (!_clients.containsKey(uid)) {
-            _clients.put(uid, new SessionClient(uid, _config, _listeners));
+        synchronized (_clients) {
+            if (!_clients.containsKey(uid)) {
+                _clients.put(uid, new SessionClient(uid, _config, _listeners));
+            }
+            return _clients.get(uid);
         }
-        return _clients.get(uid);
     }
 
-    public SessionClient close(final String uid, final Channel channel) {
-        final SessionClient client = _clients.remove(uid);
-        if (null != client) {
-            client.remove(channel);
+    public void close() {
+        synchronized (_clients) {
+
+            // remove listeners
+            _listeners.clear();
+
+            // close all channels
+            _clients.forEach((uid, client) -> {
+                try {
+                    client.close();
+                } catch (Throwable ignored) {
+                }
+            });
+            _clients.clear();
+
         }
-        return client;
+    }
+
+    public SessionClient close(final String uid) {
+        synchronized (_clients) {
+            final SessionClient client = _clients.remove(uid);
+            if (null != client) {
+                try {
+                    client.close();
+                } catch (Throwable ignored) {
+                }
+            }
+            return client;
+        }
+    }
+
+    public SessionClient close(final String uid,
+                               final Channel channel) {
+        synchronized (_clients) {
+            final SessionClient client = _clients.remove(uid);
+            if (null != client) {
+                try {
+                    client.remove(channel);
+                } catch (Throwable ignored) {
+                }
+            }
+            return client;
+        }
     }
 
 
@@ -90,4 +131,6 @@ public class SessionController {
         }
         return __instance;
     }
+
+
 }
