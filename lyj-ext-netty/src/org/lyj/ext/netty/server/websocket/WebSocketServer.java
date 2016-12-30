@@ -2,7 +2,7 @@ package org.lyj.ext.netty.server.websocket;
 
 import org.lyj.commons.Delegates;
 import org.lyj.ext.netty.server.web.HttpServer;
-import org.lyj.ext.netty.server.websocket.impl.sessions.SessionController;
+import org.lyj.ext.netty.server.websocket.impl.sessions.SessionClientController;
 
 /**
  * Websocket server
@@ -26,7 +26,7 @@ public class WebSocketServer
         super.channels().add(new WebSocketServerInitializer(this));
 
         // set configuration to Session manager
-        SessionController.instance().config(super.config());
+        SessionClientController.instance().config(super.config());
     }
 
     // ------------------------------------------------------------------------
@@ -42,14 +42,14 @@ public class WebSocketServer
     @Override
     public HttpServer stop() {
         try {
-            SessionController.instance().close();
+            SessionClientController.instance().close();
         } catch (Throwable ignored) {
         }
         return super.stop();
     }
 
     public void listener(final Delegates.CallbackEntry<String, Object> callback) {
-        SessionController.instance().listener(callback);
+        SessionClientController.instance().listener(callback);
     }
 
     // ------------------------------------------------------------------------

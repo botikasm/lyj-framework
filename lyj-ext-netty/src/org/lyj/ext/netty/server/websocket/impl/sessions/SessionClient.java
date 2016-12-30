@@ -12,13 +12,12 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import org.json.JSONObject;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.JsonConverter;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
-import org.lyj.ext.netty.server.websocket.Response;
-import org.lyj.ext.netty.server.websocket.impl.service.MessageService;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -96,6 +95,17 @@ public class SessionClient {
         }
     }
 
+    public void write(final Object data) {
+        if (StringUtils.hasText(_uid) && !_channel_group.isEmpty()) {
+
+            final SessionMessage message = SessionMessage.create(_uid);
+            message.data(data);
+
+            final WebSocketFrame frame = new TextWebSocketFrame(message.toString());
+            _channel_group.writeAndFlush(frame);
+        }
+    }
+
     // --------------------------------------------------------------------
     //               p r i v a t e
     // --------------------------------------------------------------------
@@ -168,18 +178,18 @@ public class SessionClient {
 
                 this.notifyListeners(frame);
 
-                broadcast(ctx, frame);
             }
+        } else {
+            throw new UnsupportedOperationException(String.format("%s frame types not supported", frame.getClass().getName()));
         }
-
-        throw new UnsupportedOperationException(String.format("%s frame types not supported", frame.getClass().getName()));
     }
 
     private void notifyListeners(final WebSocketFrame frame) {
         if (null != _listeners && !_listeners.isEmpty()) {
             _listeners.forEach((callback) -> {
                 try {
-                    callback.handle(_uid, content(frame));
+                    final Object content = JsonConverter.toJsonCompatible(content(frame));
+                    callback.handle(_uid, content);
                 } catch (Throwable ignored) {
                 }
             });
@@ -195,18 +205,15 @@ public class SessionClient {
     }
 
     private void sendBackError(final ChannelHandlerContext ctx) {
-        Response response = new Response(1001, "ERROR: CHANNEL NOT INITIALIZED");
-        String msg = new JSONObject(response).toString();
+        final String msg = SessionMessage.create(_uid).error(1001, "CHANNEL NOT INITIALIZED").toString();
         ctx.channel().write(new TextWebSocketFrame(msg));
     }
 
     private void broadcast(final ChannelHandlerContext ctx, final WebSocketFrame frame) {
 
-        String request = ((TextWebSocketFrame) frame).text();
-        System.out.println(" CHANNEL " + ctx.channel() + request);
+        final String request = ((TextWebSocketFrame) frame).text();
 
-        Response response = MessageService.sendMessage(_uid, request);
-        String msg = new JSONObject(response).toString();
+        final String msg = SessionMessage.create(_uid).data(request).toString();
 
         _channel_group.writeAndFlush(new TextWebSocketFrame(msg));
     }

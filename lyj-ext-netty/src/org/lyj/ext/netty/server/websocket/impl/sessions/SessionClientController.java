@@ -1,7 +1,6 @@
 package org.lyj.ext.netty.server.websocket.impl.sessions;
 
 import io.netty.channel.Channel;
-import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import org.lyj.commons.Delegates;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
 
@@ -11,7 +10,7 @@ import java.util.*;
  * Singleton Session Controller.
  * Use this class to access all client sessions
  */
-public class SessionController {
+public class SessionClientController {
 
 
     // --------------------------------------------------------------------
@@ -28,7 +27,7 @@ public class SessionController {
     //               c o n s t r u c t o r
     // --------------------------------------------------------------------
 
-    private SessionController() {
+    private SessionClientController() {
         _clients = new HashMap<>();
         _listeners = new ArrayList<>();
     }
@@ -57,6 +56,21 @@ public class SessionController {
 
     public Set<String> keys() {
         return _clients.keySet();
+    }
+
+    public boolean exists(final String uid) {
+        synchronized (_clients) {
+            return _clients.containsKey(uid);
+        }
+    }
+
+    public String addressOf(final String uid) {
+        synchronized (_clients) {
+            if (_clients.containsKey(uid)) {
+                return _clients.get(uid).address();
+            }
+            return "";
+        }
     }
 
     public SessionClient open(final String uid) {
@@ -123,11 +137,11 @@ public class SessionController {
     //               S T A T I C
     // --------------------------------------------------------------------
 
-    private static SessionController __instance;
+    private static SessionClientController __instance;
 
-    public static SessionController instance() {
+    public static SessionClientController instance() {
         if (null == __instance) {
-            __instance = new SessionController();
+            __instance = new SessionClientController();
         }
         return __instance;
     }
