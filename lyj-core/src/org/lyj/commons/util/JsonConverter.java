@@ -38,23 +38,26 @@ public abstract class JsonConverter {
      * @return JSON compatible value
      */
     public static Object toJsonCompatible(final Object value) {
-        if (value instanceof JSONArray || value instanceof JSONObject) {
-            return value;
-        } else if (value instanceof JsonItem) {
-            return ((JsonItem) value).json();
-        } else if (value.getClass().isArray()) {
-            return fromArray(value);
-        } else if (value instanceof Collection) {
-            return toArray((Collection) value);
-        } else if (value instanceof Map) {
-            return toObject((Map) value);
-        } else if (StringUtils.isJSONArray(value)) {
-            return new JSONArray(value.toString());
-        } else if (StringUtils.isJSONObject(value)) {
-            return new JSONObject(value.toString());
-        } else if (BeanUtils.PrimitiveClasses.isPrimitive(value.getClass()) || value instanceof String) {
-            return value;
+        if(null!=value){
+            if (value instanceof JSONArray || value instanceof JSONObject) {
+                return value;
+            } else if (value instanceof JsonItem) {
+                return ((JsonItem) value).json();
+            } else if (value.getClass().isArray()) {
+                return fromArray(value);
+            } else if (value instanceof Collection) {
+                return toArray((Collection) value);
+            } else if (value instanceof Map) {
+                return toObject((Map) value);
+            } else if (StringUtils.isJSONArray(value)) {
+                return new JSONArray(value.toString());
+            } else if (StringUtils.isJSONObject(value)) {
+                return new JSONObject(value.toString());
+            } else if (BeanUtils.PrimitiveClasses.isPrimitive(value.getClass()) || value instanceof String) {
+                return value;
+            }
         }
+
         return null; // not compatible
     }
 
