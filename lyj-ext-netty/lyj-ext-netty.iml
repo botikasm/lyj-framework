@@ -13,24 +13,21 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/netty-4.1.4" />
+          <root url="file://$MODULE_DIR$/vendor/netty-4.1.7" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/netty-4.1.4" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.4" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.4" recursive="false" type="SOURCES" />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.7" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/async-http-client" />
+          <root url="file://$MODULE_DIR$/vendor/async-http-client-2.1.0a" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/vendor/async-http-client" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/async-http-client-2.1.0a" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="module-library">
