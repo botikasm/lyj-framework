@@ -8,6 +8,7 @@ import com.arangodb.entity.DocumentDeleteEntity;
 import com.arangodb.entity.DocumentUpdateEntity;
 import com.arangodb.entity.MultiDocumentEntity;
 import org.lyj.commons.Delegates;
+import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.lang.Counter;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.StringUtils;
@@ -29,9 +30,12 @@ public class ArnCollection<T>
 
     private static final String FLD_KEY = "_key";
 
+    private static final String ARRAY_EXPANSION_OPERATOR = "[*]"; // https://docs.arangodb.com/3.1/AQL/Advanced/ArrayOperators.html#array-expansion
+
     private static final String QUERY_FOR = "FOR t IN %s";
     private static final String QUERY_FILTER = "FILTER";
     private static final String QUERY_FILTER_EQUAL = "t.%s == @%s";
+    private static final String QUERY_FILTER_IN = "@%s IN t.%s";
     private static final String QUERY_RETURN = "RETURN t";
     private static final String QUERY_REMOVE = "REMOVE t IN %s LET removed = OLD RETURN removed";
     private static final String QUERY_SORT_SINGLE = "SORT {{comma_sep_fields_1}} {{mode_1}}";
@@ -181,12 +185,12 @@ public class ArnCollection<T>
     }
 
     public T removeOneEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs.keySet(), null);
+        final String query = this.queryEqual(bindArgs, null);
         return this.removeOne(query, bindArgs);
     }
 
     public Collection<T> removeEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs.keySet(), null);
+        final String query = this.queryEqual(bindArgs, null);
         return this.remove(query, bindArgs);
     }
 
@@ -236,17 +240,17 @@ public class ArnCollection<T>
     }
 
     public T findOneEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs.keySet(), null);
+        final String query = this.queryEqual(bindArgs, null);
         return this.findOne(query, bindArgs);
     }
 
     public Collection<T> findEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs.keySet(), null);
+        final String query = this.queryEqual(bindArgs, null);
         return this.find(query, bindArgs);
     }
 
     public Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort) {
-        final String query = this.queryEqual(bindArgs.keySet(), this.sortMap(SORT_ASC, sort));
+        final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort));
         return this.find(query, bindArgs);
     }
 
@@ -264,6 +268,7 @@ public class ArnCollection<T>
     private String key(final Object entity) {
         return (String) super.getFieldValue(entity, FLD_KEY);
     }
+
 
     private Map<String, String[]> sortMap(final String mode, final String[] fields) {
         final Map<String, String[]> sort = new HashMap<>();
@@ -305,7 +310,42 @@ public class ArnCollection<T>
         return FormatUtils.format(QUERY_NO_PARAMS, super.name());
     }
 
-    private String queryEqual(final Set<String> names, final Map<String, String[]> sort_fields) {
+    private String queryEqual(final Map<String, Object> params, final Map<String, String[]> sort_fields) {
+        final Set<String> names = params.keySet();
+        final StringBuilder sb = new StringBuilder();
+        sb.append(FormatUtils.format(QUERY_FOR, super.name()));
+
+        // filter
+        sb.append(" ").append(QUERY_FILTER).append(" ");
+        final Counter count = new Counter(0);
+        for (final String name : names) {
+            if (count.value() > 0) {
+                sb.append(" && ");
+            }
+            if (name.contains(ARRAY_EXPANSION_OPERATOR)) {
+                final String fld_val = MD5.encode(name);
+                params.put(fld_val, params.get(name)); // add value to parameters
+                params.remove(name);
+                sb.append(FormatUtils.format(QUERY_FILTER_IN, fld_val, name));
+            } else {
+                sb.append(FormatUtils.format(QUERY_FILTER_EQUAL, name, name));
+            }
+
+            count.inc();
+        }
+
+        // sort
+        final String sort = this.sort(sort_fields);
+        if (StringUtils.hasText(sort)) {
+            sb.append(" ").append(sort);
+        }
+
+        // return
+        sb.append(" ").append(QUERY_RETURN);
+        return sb.toString();
+    }
+
+    private String old_queryEqual(final Set<String> names, final Map<String, String[]> sort_fields) {
         final StringBuilder sb = new StringBuilder();
         sb.append(FormatUtils.format(QUERY_FOR, super.name()));
 
@@ -316,7 +356,12 @@ public class ArnCollection<T>
             if (count.value() > 0) {
                 sb.append(" && ");
             }
-            sb.append(FormatUtils.format(QUERY_FILTER_EQUAL, name, name));
+            if (name.contains(ARRAY_EXPANSION_OPERATOR)) {
+                sb.append(FormatUtils.format(QUERY_FILTER_IN, name, name));
+            } else {
+                sb.append(FormatUtils.format(QUERY_FILTER_EQUAL, name, name));
+            }
+
             count.inc();
         });
 
