@@ -992,8 +992,8 @@ public final class JsonWrapper implements Cloneable {
         if (null != jsonarray) {
             final int len = jsonarray.length();
             for (int i = 0; i < len; i++) {
-                final String key = "param" + i;
                 final Object value = jsonarray.opt(i);
+                final String key = "param" + i;
                 if (null != value) {
                     result.put(key, StringUtils.toString(value));
                 }
@@ -1001,6 +1001,26 @@ public final class JsonWrapper implements Cloneable {
         }
         return result;
     }
+
+    public static Map<String, String> toMapOfString(final JSONArray jsonarray,
+                                                    final String key_name, final String value_name) {
+        final Map<String, String> result = new LinkedHashMap<String, String>();
+        if (null != jsonarray) {
+            final int len = jsonarray.length();
+            for (int i = 0; i < len; i++) {
+                final JSONObject item = jsonarray.optJSONObject(i);
+                if (null != item && item.has(key_name)) {
+                    final String key = item.optString(key_name);
+                    if (StringUtils.hasText(key)) {
+                        final String value = item.optString(value_name);
+                        result.put(key, value);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
 
     public static List<Object> toList(final Object object) {
         final List<Object> result = new LinkedList<Object>();
