@@ -326,12 +326,13 @@ public class MimeTypeUtils {
     }
 
     /**
-     * @param text
+     * @param path
      * @return
      */
-    public static String getMimeType(final String text) {
+    public static String getMimeType(final String path) {
         final String result;
-        if (StringUtils.hasText(text)) {
+        if (StringUtils.hasText(path)) {
+            final String text = path.toLowerCase();
             if (text.startsWith(".")) {
                 result = getInstance().getContentTypeFromExtension(text);
             } else {
@@ -377,32 +378,32 @@ public class MimeTypeUtils {
         return mimetype.startsWith("audio");
     }
 
-    public static String getMimePlaintext(final String encoding){
+    public static String getMimePlaintext(final String encoding) {
         return MimeTypeUtils.getMimeType(".txt")
                 .concat(CHARSET_PREFIX)
-                .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
+                .concat(StringUtils.hasText(encoding) ? encoding : CharEncoding.getDefault());
     }
 
-    public static String getMimeJson(final String encoding){
+    public static String getMimeJson(final String encoding) {
         return MimeTypeUtils.getMimeType(".json")
                 .concat(CHARSET_PREFIX)
-                .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
+                .concat(StringUtils.hasText(encoding) ? encoding : CharEncoding.getDefault());
     }
 
-    public static String getMimeJson(){
+    public static String getMimeJson() {
         return MimeTypeUtils.getMimeType(".json");
     }
 
-    public static String getMimeHtml(final String encoding){
+    public static String getMimeHtml(final String encoding) {
         return MimeTypeUtils.getMimeType(".html")
                 .concat(CHARSET_PREFIX)
-                .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
+                .concat(StringUtils.hasText(encoding) ? encoding : CharEncoding.getDefault());
     }
 
-    public static String getMimeXml(final String encoding){
+    public static String getMimeXml(final String encoding) {
         return MimeTypeUtils.getMimeType(".xml")
                 .concat(CHARSET_PREFIX)
-                .concat(StringUtils.hasText(encoding)?encoding:CharEncoding.getDefault());
+                .concat(StringUtils.hasText(encoding) ? encoding : CharEncoding.getDefault());
     }
 
 

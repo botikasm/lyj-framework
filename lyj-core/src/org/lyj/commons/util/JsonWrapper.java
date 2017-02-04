@@ -497,6 +497,13 @@ public final class JsonWrapper implements Cloneable {
         return 0;
     }
 
+    public int optInt(final String key, final int defVal) {
+        if (this.isJSONObject()) {
+            return _object.optInt(key, defVal);
+        }
+        return 0;
+    }
+
     public long optLong(final String key) {
         if (this.isJSONObject()) {
             return _object.optLong(key);
@@ -677,6 +684,14 @@ public final class JsonWrapper implements Cloneable {
         }
         return 0;
     }
+
+    public int optInt(final int index, final int defVal) {
+        if (this.isJSONArray()) {
+            return _array.optInt(index, defVal);
+        }
+        return 0;
+    }
+
 
     public long optLong(final int index) {
         if (this.isJSONArray()) {
@@ -1044,6 +1059,17 @@ public final class JsonWrapper implements Cloneable {
         } catch (Throwable ignored) {
         }
         return result;
+    }
+
+    public static List<Map<String, Object>> toListOfMaps(final JSONArray array) {
+        final List<Map<String, Object>> response = new LinkedList<>();
+        for (int i = 0; i < array.length(); i++) {
+            final Object obj = array.get(i);
+            if (obj instanceof JSONObject) {
+                response.add(toMap((JSONObject) obj));
+            }
+        }
+        return response;
     }
 
     public static Object[] toArray(final JSONArray array) {

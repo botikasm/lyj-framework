@@ -1054,6 +1054,19 @@ public abstract class CollectionUtils {
         return -1;
     }
 
+    public static int indexOf(final JSONArray object_array, final String key, final Object value) {
+        if (null == object_array || object_array.length() == 0 || !StringUtils.hasText(key)) {
+            return -1;
+        }
+        for (int i = 0; i < object_array.length(); i++) {
+            final JSONObject item = object_array.optJSONObject(i);
+            if (null != item && item.has(key) && item.opt(key).equals(value)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public static int indexOf(final Object[] list, final String fieldName,
                               final Object fieldValue) {
         if (!isEmpty(list)) {

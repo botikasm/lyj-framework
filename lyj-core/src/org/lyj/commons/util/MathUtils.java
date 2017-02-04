@@ -38,7 +38,7 @@ public abstract class MathUtils {
     /**
      * @param nums the numbers to be added
      * @return the sum of the numbers or
-     *         <code>null</code> if they're invalid
+     * <code>null</code> if they're invalid
      */
     public static Number add(Object... nums) {
         double value = 0;
@@ -56,7 +56,7 @@ public abstract class MathUtils {
     /**
      * @param nums the numbers to be subtracted
      * @return the difference of the numbers (subtracted in order) or
-     *         <code>null</code> if they're invalid
+     * <code>null</code> if they're invalid
      */
     public static Number sub(final Object... nums) {
         double value = 0;
@@ -80,7 +80,7 @@ public abstract class MathUtils {
     /**
      * @param nums the numbers to be multiplied
      * @return the product of the numbers or
-     *         <code>null</code> if they're invalid
+     * <code>null</code> if they're invalid
      */
     public static Number mul(Object... nums) {
         double value = 1;
@@ -98,8 +98,8 @@ public abstract class MathUtils {
     /**
      * @param nums the numbers to be divided
      * @return the quotient of the numbers or
-     *         <code>null</code> if they're invalid
-     *         or if any denominator equals zero
+     * <code>null</code> if they're invalid
+     * or if any denominator equals zero
      */
     public static Number div(Object... nums) {
         double value = 0;
@@ -126,7 +126,7 @@ public abstract class MathUtils {
      * @param num1 the first number
      * @param num2 the second number
      * @return the first number raised to the power of the
-     *         second or <code>null</code> if they're invalid
+     * second or <code>null</code> if they're invalid
      */
     public static Number pow(Object num1, Object num2) {
         Number n1 = ConversionUtils.toNumber(num1);
@@ -147,7 +147,7 @@ public abstract class MathUtils {
      * @param num1 the first number
      * @param num2 the second number
      * @return the result of performing integer division
-     *         on the operands.
+     * on the operands.
      */
     public static Integer idiv(Object num1, Object num2) {
         Number n1 = ConversionUtils.toNumber(num1);
@@ -168,7 +168,7 @@ public abstract class MathUtils {
      * @param num1 the first number
      * @param num2 the second number
      * @return the result of performing integer modulus
-     *         on the operands.
+     * on the operands.
      */
     public static Integer mod(Object num1, Object num2) {
         Number n1 = ConversionUtils.toNumber(num1);
@@ -195,7 +195,7 @@ public abstract class MathUtils {
     /**
      * @param nums the numbers to be searched
      * @return the largest of the numbers or
-     *         <code>null</code> if they're invalid
+     * <code>null</code> if they're invalid
      */
     public static Number max(final Object... nums) {
         double value = Double.MIN_VALUE;
@@ -213,7 +213,7 @@ public abstract class MathUtils {
     /**
      * @param nums the numbers to be searched
      * @return the smallest of the numbers or
-     *         <code>null</code> if they're invalid
+     * <code>null</code> if they're invalid
      */
     public static Number min(Object... nums) {
         double value = Double.MAX_VALUE;
@@ -244,7 +244,7 @@ public abstract class MathUtils {
     /**
      * @param num the number
      * @return the absolute value of the number or
-     *         <code>null</code> if it's invalid
+     * <code>null</code> if it's invalid
      */
     public static Number abs(Object num) {
         Number n = ConversionUtils.toNumber(num);
@@ -468,7 +468,7 @@ public abstract class MathUtils {
     /**
      * @param num the number
      * @return the smallest integer that is not
-     *         less than the given number
+     * less than the given number
      */
     public static Integer ceil(Object num) {
         Number n = ConversionUtils.toNumber(num);
@@ -510,7 +510,7 @@ public abstract class MathUtils {
      *
      * @param num the number to round
      * @return the number rounded to the nearest whole Integer
-     *         or <code>null</code> if it's invalid
+     * or <code>null</code> if it's invalid
      * @see Math#rint(double)
      */
     public static Integer round(final Object num) {
@@ -532,22 +532,25 @@ public abstract class MathUtils {
      * @param num      the number to round
      * @param decimals the number of decimal places
      * @return the value rounded to the specified number of
-     *         decimal places or <code>null</code> if it's invalid
+     * decimal places or <code>null</code> if it's invalid
      */
     public static Double roundTo(final Object num, final Object decimals) {
-        final Number i = ConversionUtils.toNumber(decimals);
-        final Number d = ConversionUtils.toNumber(num);
-        if (i == null || d == null) {
-            return null;
+        if (null != num && null != decimals) {
+            final Number i = ConversionUtils.toNumber(decimals);
+            final Number d = ConversionUtils.toNumber(num);
+            if (i == null || d == null) {
+                return null;
+            }
+            //ok, go ahead and do the rounding
+            int places = i.intValue();
+            double value = d.doubleValue();
+            int delta = 10;
+            for (int j = 1; j < places; j++) {
+                delta *= 10;
+            }
+            return new Double((double) Math.round(value * delta) / delta);
         }
-        //ok, go ahead and do the rounding
-        int places = i.intValue();
-        double value = d.doubleValue();
-        int delta = 10;
-        for (int j = 1; j < places; j++) {
-            delta *= 10;
-        }
-        return new Double((double) Math.round(value * delta) / delta);
+        return null;
     }
 
     /**

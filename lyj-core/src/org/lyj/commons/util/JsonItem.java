@@ -57,6 +57,8 @@ public class JsonItem
             _data = ((JsonItem) item)._data;
         } else if (item instanceof Properties) {
             _data = new JsonWrapper(new JSONObject((Properties) item));
+        } else if (item instanceof Map){
+            _data = new JsonWrapper(JsonWrapper.toJSONObject(item));
         } else {
             if (StringUtils.isJSONObject(item)) {
                 _data = new JsonWrapper(new JSONObject(item.toString()));
@@ -220,11 +222,27 @@ public class JsonItem
         }
     }
 
+    public double getDouble(final String key, final double defVal) throws JSONException {
+        if (this.isPath(key)) {
+            return _data.deepDouble(key, defVal);
+        } else {
+            return _data.optDouble(key, defVal);
+        }
+    }
+
     public int getInt(final String key) throws JSONException {
         if (this.isPath(key)) {
             return _data.deepInteger(key);
         } else {
             return _data.optInt(key);
+        }
+    }
+
+    public int getInt(final String key, final int defVal) throws JSONException {
+        if (this.isPath(key)) {
+            return _data.deepInteger(key, defVal);
+        } else {
+            return _data.optInt(key, defVal);
         }
     }
 
