@@ -37,7 +37,7 @@ public class Counter {
     }
 
     public int valueAsInt() {
-        return (int)_count;
+        return (int) _count;
     }
 
     public void inc() {
@@ -50,6 +50,10 @@ public class Counter {
         synchronized (this) {
             _count += value;
         }
+    }
+
+    public void reset() {
+        _count = 0;
     }
 
 }

@@ -71,6 +71,34 @@ public abstract class Async {
         }
     }
 
+    public static Thread loop(final Delegates.Function<Boolean> handler) {
+        return loop(handler, 100);
+    }
+
+    public static Thread loop(final Delegates.Function<Boolean> handler, final int delay) {
+        if (null != handler) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean interrupted = false;
+                    try {
+                        while (!interrupted) {
+                            Thread.sleep(delay);
+                            interrupted = handler.handle();
+                        }
+                    } catch (Throwable ignored) {
+                    }
+                }
+            });
+            t.setDaemon(true);
+            t.setPriority(Thread.NORM_PRIORITY);
+            t.start();
+            return t;
+        } else {
+            return null;
+        }
+    }
+
     public static void maxConcurrent(final Thread[] threads,
                                      final int maxConcurrentThreads) {
         maxConcurrent(threads, maxConcurrentThreads, null);
@@ -128,7 +156,7 @@ public abstract class Async {
         return result;
     }
 
-    public static void startAll(final Thread...threads) {
+    public static void startAll(final Thread... threads) {
         for (final Thread thread : threads) {
             try {
                 if (!thread.isAlive() && !thread.isInterrupted()) {
@@ -139,7 +167,7 @@ public abstract class Async {
         }
     }
 
-    public static void joinAll(final Thread...threads) {
+    public static void joinAll(final Thread... threads) {
         final int length = threads.length;
         final Set<Long> terminated = new HashSet<Long>();
         while (length > terminated.size()) {
@@ -188,7 +216,6 @@ public abstract class Async {
             }
         }
     }
-
 
 
 }

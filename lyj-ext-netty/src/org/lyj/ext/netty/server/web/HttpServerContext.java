@@ -282,7 +282,8 @@ public class HttpServerContext
             response = json.toString();
         }
         // check eur symbol that can cause problems (2 more bytes are needed)
-        if (response.contains("€")) {
+        // TODO: REMOVE THIS UGLY CODE
+        if (StringUtils.isJSON(response) && response.contains("€")) {
             response = response + "  ";
         }
         return response;
