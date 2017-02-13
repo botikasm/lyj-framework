@@ -35,7 +35,9 @@ import java.util.regex.Pattern;
 public abstract class RegExpUtils {
     //public static final String EMAIL_PATTERN = ".+@.+.[a-z]+\\.+.[a-z]";
 
+    public static final String NOT_ALPHANUMERIC = (".*\\W+.*");
     public static final String ALPHANUMERIC = "([0-9a-zA-Z])";
+    public static final String ALPHANUMERIC_SPC = "([0-9a-zA-Z ])";
     public static final String ALPHANUMERIC_EXT = "([0-9a-zA-Z ,'\"()])";
     public static final String ONLY_CHARS = "[\\p{L}\\p{Nd}]+";
     public static final String NOTNUMERIC = "[^0-9]+";
@@ -98,8 +100,8 @@ public abstract class RegExpUtils {
                 : "";
     }
 
-    public static String preserve(final String regexp,
-                                  final String string) {
+    public static String replace(final String regexp,
+                                 final String string) {
         final String[] matches = getMatches(string, regexp);
         return null != matches && matches.length > 0
                 ? StringUtils.toString(matches, "")
