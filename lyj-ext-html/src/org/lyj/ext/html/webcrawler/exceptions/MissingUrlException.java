@@ -1,4 +1,4 @@
-package org.lyj.ext.html.crawler.exceptions;
+package org.lyj.ext.html.webcrawler.exceptions;
 
 /**
  *

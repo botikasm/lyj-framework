@@ -1,4 +1,4 @@
-package org.lyj.ext.html.crawler;
+package org.lyj.ext.html.webcrawler;
 
 /**
  *

@@ -1,22 +1,21 @@
-package org.lyj.ext.html.crawler;
+package org.lyj.ext.html.webcrawler;
 
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.FixedBlockingPool;
 import org.lyj.commons.async.future.Task;
-import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.lang.Counter;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.ext.html.crawler.documents.WebCrawlerDocument;
-import org.lyj.ext.html.crawler.exceptions.MissingUrlException;
+import org.lyj.ext.html.webcrawler.elements.WebCrawlerDocument;
+import org.lyj.ext.html.webcrawler.elements.WebCrawlerPathList;
+import org.lyj.ext.html.webcrawler.elements.WebCrawlerSettings;
+import org.lyj.ext.html.webcrawler.exceptions.MissingUrlException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,7 +28,6 @@ public class WebCrawler {
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final int MAX_LOOP = 3000;
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -39,6 +37,8 @@ public class WebCrawler {
     private final FixedBlockingPool _pool;
     private final WebCrawlerPathList _visited_paths;
     private final Set<String> _visited_documents;
+    private final WebCrawlerSettings _settings;
+
     private Delegates.Callback<WebCrawlerDocument> _callback;
     private Delegates.CallbackEntry<URL, Throwable> _callback_error;
 
@@ -47,18 +47,12 @@ public class WebCrawler {
     private int _active_task_count;
 
     // ------------------------------------------------------------------------
-    //                      p r o p e r t i e s
-    // ------------------------------------------------------------------------
-
-    private boolean _navigate_external;
-    private int _link_limits;
-    private int _loop_detection_threashold;
-
-    // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     public WebCrawler() {
+        _settings = new WebCrawlerSettings();
+
         _visited_paths = new WebCrawlerPathList();
         _visited_documents = new HashSet<>();
 
@@ -71,9 +65,6 @@ public class WebCrawler {
         _started = false;
         _loop_count = new Counter(0);
 
-        _navigate_external = false; // no external links allowed
-        _link_limits = -1; // not limited the number of navigated links
-        _loop_detection_threashold = MAX_LOOP; // loop max
 
         this.monitor();
     }
@@ -82,54 +73,10 @@ public class WebCrawler {
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
 
-    /**
-     * Allow/Disallow external link navigation
-     */
-    public boolean navigateExternal() {
-        return _navigate_external;
+    public WebCrawlerSettings settings() {
+        return _settings;
     }
 
-    /**
-     * Allow/Disallow external link navigation
-     */
-    public WebCrawler navigateExternal(final boolean value) {
-        _navigate_external = value;
-        return this;
-    }
-
-    /**
-     * Max number of loops on same page.
-     * Once reached this limit the crawler stop working.
-     */
-    public int loopDetectionThreashold() {
-        return _loop_detection_threashold;
-    }
-
-    /**
-     * Set Max number of loops on same page.
-     * Once reached this limit the crawler stop working.
-     */
-    public WebCrawler loopDetectionThreashold(final int value) {
-        _loop_detection_threashold = value;
-        return this;
-    }
-
-    /**
-     * Max number of links to navigate
-     * (DEFAULT no limits = -1)
-     */
-    public int linkLimits() {
-        return _link_limits;
-    }
-
-    /**
-     * Set Max number of links to navigate
-     * (DEFAULT no limits = -1)
-     */
-    public WebCrawler linkLimits(final int value) {
-        _link_limits = value;
-        return this;
-    }
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -139,8 +86,8 @@ public class WebCrawler {
     }
 
     public boolean reachedLimit() {
-        if (_link_limits > -1) {
-            return _visited_paths.size() < _link_limits;
+        if (this.settings().linkLimit() > -1) {
+            return _visited_paths.size() < this.settings().linkLimit();
         }
         return false;
     }
@@ -242,7 +189,7 @@ public class WebCrawler {
         synchronized (_visited_documents) {
             if (null != _callback) {
                 final String key = document.id();
-                if(!_visited_documents.contains(key)){
+                if (!_visited_documents.contains(key)) {
                     _visited_documents.add(key);
                     _callback.handle(document);
                 } else {
@@ -269,7 +216,7 @@ public class WebCrawler {
 
             try {
                 // start crawler
-                final WebCrawlerDocument document = new WebCrawlerDocument(url);
+                final WebCrawlerDocument document = new WebCrawlerDocument(_settings.document(), url);
 
                 // callback
                 this.invoke(document);
@@ -284,7 +231,7 @@ public class WebCrawler {
                     }
                 });
 
-                if (_navigate_external) {
+                if (this.settings().allowExternalLinks()) {
                     document.urlLinksExternal().forEach((link) -> {
                         try {
                             if (this.canParse(link) && !_visited_paths.contains(new URL(link))) {
@@ -326,7 +273,7 @@ public class WebCrawler {
                 // path already exists.
                 // may be its a recursive loop
                 _loop_count.inc();
-                if (_loop_count.value() > _loop_detection_threashold) {
+                if (_loop_count.value() > this.settings().loopDetectionThreashold()) {
                     _finished = true;
                 }
             }
@@ -334,7 +281,7 @@ public class WebCrawler {
         }
     }
 
-    private void close(){
+    private void close() {
         _finished = true;
         _started = false;
         _visited_documents.clear();

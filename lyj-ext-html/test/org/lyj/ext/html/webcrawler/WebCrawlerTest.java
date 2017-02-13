@@ -1,4 +1,4 @@
-package org.lyj.ext.html.crawler;
+package org.lyj.ext.html.webcrawler;
 
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ import java.util.Set;
 public class WebCrawlerTest {
 
     private static final String URL_1 = "http://www.gianangelogeminiani.me/";
-    private static final String URL_2 = "http://gianangelogeminiani.me/web-30-quattro-chiacchiere-con-ralf#content";
+    private static final String URL_2 = "http://gianangelogeminiani.me/ecco-cosa-devi-sapere-prima-di-lanciarti-in-una-startup/";
 
     @Test
     public void start() throws Exception {
@@ -22,11 +22,12 @@ public class WebCrawlerTest {
         });
         crawler.onResult((document) -> {
             final Set<String> links = document.urlLinks();
-            if(!document.containsPath("web-30-quattro-chiacchiere-con-ralf/")){
+            if(!document.containsPath("ecco-cosa-devi-sapere-prima-di-lanciarti-in-una-startup/")){
                 System.out.println("PAGE: " + document.path() + " CONTENT: " + document.content().length() + " LINKS: " + links.size() + " TITLES: " + document.h1().size());
             } else {
                 System.out.println("FOUND ROOT");
                 System.out.println("PAGE: " + document.path() + " CONTENT: " + document.content().length() + " LINKS: " + links.size() + " TITLES: " + document.h1().size());
+                System.out.println(document.keywords(document.shareDescription()));
             }
         })
                 .start(root);
