@@ -28,6 +28,10 @@ public interface IDatabaseCollection<T> {
 
     long count();
 
+    long count(final String query, final Map<String, Object> bindArgs);
+
+    long countEqual(final Map<String, Object> bindArgs);
+
     boolean exists(final Object key);
 
     T insert(final T entity);
@@ -42,9 +46,11 @@ public interface IDatabaseCollection<T> {
 
     T get(final Object key);
 
-    void forEach(final Delegates.Callback<T> callback);
+    void forEach(final Delegates.FunctionArg<T, Boolean> callback);
 
-    void forEach(final String query, final Map<String, Object> bindArgs, final Delegates.Callback<T> callback);
+    void forEach(final String query, final Map<String, Object> bindArgs, final Delegates.FunctionArg<T, Boolean> callback);
+
+    void forEachEqual(final Map<String, Object> bindArgs, final Delegates.FunctionArg<T, Boolean> callback);
 
     T removeOne(final String query, final Map<String, Object> bindArgs);
 
@@ -64,5 +70,6 @@ public interface IDatabaseCollection<T> {
 
     Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort);
 
+    Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort, final int limit);
 
 }

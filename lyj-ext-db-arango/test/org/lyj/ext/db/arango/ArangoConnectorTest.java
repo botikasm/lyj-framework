@@ -52,6 +52,7 @@ public class ArangoConnectorTest {
         System.out.println("Items in collection: " + collection.count());
         collection.forEach((item) -> {
             System.out.println(item);
+            return null;
         });
 
         //-- upsert --//
@@ -80,6 +81,7 @@ public class ArangoConnectorTest {
 
         collection.forEach((item2) -> {
             System.out.println(item2);
+            return null;
         });
 
         assertFalse(collection.remove("fake_key"));

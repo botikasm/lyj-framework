@@ -12,6 +12,13 @@ import static org.junit.Assert.assertTrue;
  */
 public class StringUtilsTest {
 
+
+    @Test
+    public void testToString() throws Exception {
+         String str = StringUtils.toString(new String[]{"val1", "val2"});
+         assertTrue(str.equalsIgnoreCase("val1,val2"));
+    }
+
     @Test
     public void testSplit() throws Exception {
 

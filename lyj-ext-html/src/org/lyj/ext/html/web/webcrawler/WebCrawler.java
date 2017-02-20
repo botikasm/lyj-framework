@@ -1,4 +1,4 @@
-package org.lyj.ext.html.webcrawler;
+package org.lyj.ext.html.web.webcrawler;
 
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
@@ -6,16 +6,18 @@ import org.lyj.commons.async.FixedBlockingPool;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.lang.Counter;
 import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.ext.html.webcrawler.elements.WebCrawlerDocument;
-import org.lyj.ext.html.webcrawler.elements.WebCrawlerPathList;
-import org.lyj.ext.html.webcrawler.elements.WebCrawlerSettings;
-import org.lyj.ext.html.webcrawler.exceptions.MissingUrlException;
+import org.lyj.ext.html.web.webcrawler.elements.WebCrawlerDocument;
+import org.lyj.ext.html.web.webcrawler.elements.WebCrawlerPathList;
+import org.lyj.ext.html.web.webcrawler.elements.WebCrawlerSettings;
+import org.lyj.ext.html.web.webcrawler.exceptions.MissingUrlException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,6 +43,7 @@ public class WebCrawler {
 
     private Delegates.Callback<WebCrawlerDocument> _callback;
     private Delegates.CallbackEntry<URL, Throwable> _callback_error;
+    private Delegates.Callback<WebCrawlerPathList> _callback_finish;
 
     private boolean _started;
     private boolean _finished;
@@ -86,8 +89,9 @@ public class WebCrawler {
     }
 
     public boolean reachedLimit() {
-        if (this.settings().linkLimit() > -1) {
-            return _visited_paths.size() < this.settings().linkLimit();
+        final int link_limit = this.settings().linkLimit();
+        if (link_limit > -1) {
+            return _visited_paths.size() > link_limit;
         }
         return false;
     }
@@ -171,6 +175,11 @@ public class WebCrawler {
         return this;
     }
 
+    public WebCrawler onFinish(final Delegates.Callback<WebCrawlerPathList> callback) {
+        _callback_finish = callback;
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
@@ -209,6 +218,11 @@ public class WebCrawler {
         }
     }
 
+    private boolean isExcludedPath(final String url) {
+        final List<String> param_exclude = JsonWrapper.toListOfString(_settings.pageExclude());
+        return PathUtils.pathMatchOne(url, param_exclude);
+    }
+
     private void run(final URL url) {
         _pool.start(() -> {
 
@@ -224,7 +238,9 @@ public class WebCrawler {
                 // get document links and
                 document.urlLinks().forEach((link) -> {
                     try {
-                        if (this.canParse(link) && !_visited_paths.contains(new URL(link))) {
+                        if (!this.isExcludedPath(link) &&
+                                this.canParse(link) &&
+                                !_visited_paths.contains(new URL(link))) {
                             this.start(link);
                         }
                     } catch (Throwable ignored) {
@@ -285,6 +301,10 @@ public class WebCrawler {
         _finished = true;
         _started = false;
         _visited_documents.clear();
+        if (null != _callback_finish) {
+            _callback_finish.handle(_visited_paths);
+            _callback_finish = null;
+        }
     }
 
 }

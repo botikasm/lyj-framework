@@ -1,5 +1,6 @@
-package org.lyj.ext.html.webcrawler.elements;
+package org.lyj.ext.html.web.webcrawler.elements;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.JsonItem;
 
@@ -23,6 +24,7 @@ public class WebCrawlerSettings extends JsonItem {
     private static final String FLD_LINK_LIMIT = "link_limit";
     private static final String FLD_LOOP_DETECTION_THREASHOLD = "loop_detection_threashold";
     private static final String FLD_DOCUMENT = "document"; // document settings
+    private static final String FLD_PAGE_EXCLUDE = "page_exclude";
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -80,8 +82,20 @@ public class WebCrawlerSettings extends JsonItem {
         return super.getInt(FLD_LINK_LIMIT, -1);
     }
 
-    public WebCrawlerSettings linkLimit(final boolean value) {
+    public WebCrawlerSettings linkLimit(final int value) {
         super.put(FLD_LINK_LIMIT, value);
+        return this;
+    }
+
+    public JSONArray pageExclude() {
+        if(!super.has(FLD_PAGE_EXCLUDE)){
+           super.put(FLD_PAGE_EXCLUDE, new JSONArray());
+        }
+        return super.getJSONArray(FLD_PAGE_EXCLUDE);
+    }
+
+    public WebCrawlerSettings pageExclude(final JSONArray value) {
+        super.put(FLD_PAGE_EXCLUDE, value);
         return this;
     }
 
@@ -122,7 +136,7 @@ public class WebCrawlerSettings extends JsonItem {
         }
 
         public WebCrawlerDocumentSettings autodetectContentThreashold(final int value) {
-            super.put(FLD_AUTODETECT_CONTENT_THREASHOLD, value);
+            super.put(FLD_AUTODETECT_CONTENT_THREASHOLD, value > 0 ? value : AUTODETECT_CONTENT_THREASHOLD);
             return this;
         }
 
@@ -131,7 +145,7 @@ public class WebCrawlerSettings extends JsonItem {
         }
 
         public WebCrawlerDocumentSettings minKeywordSize(final int value) {
-            super.put(FLD_MIN_KEYWORD_SIZE, value);
+            super.put(FLD_MIN_KEYWORD_SIZE, value > 0 ? value : MIN_KEYWORD_SIZE);
             return this;
         }
 

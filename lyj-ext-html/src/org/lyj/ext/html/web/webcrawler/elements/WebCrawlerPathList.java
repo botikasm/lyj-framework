@@ -1,4 +1,4 @@
-package org.lyj.ext.html.webcrawler.elements;
+package org.lyj.ext.html.web.webcrawler.elements;
 
 import java.net.URL;
 import java.util.HashSet;
@@ -21,6 +21,11 @@ public class WebCrawlerPathList {
 
     public WebCrawlerPathList() {
         _visited_paths = new HashSet<>();
+    }
+
+    @Override
+    public String toString() {
+        return _visited_paths.toString();
     }
 
     // ------------------------------------------------------------------------

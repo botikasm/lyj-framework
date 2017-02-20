@@ -1,6 +1,7 @@
 package org.lyj.ext.html.webcrawler;
 
 import org.junit.Test;
+import org.lyj.ext.html.web.webcrawler.WebCrawler;
 
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class WebCrawlerTest {
             } else {
                 System.out.println("FOUND ROOT");
                 System.out.println("PAGE: " + document.path() + " CONTENT: " + document.content().length() + " LINKS: " + links.size() + " TITLES: " + document.h1().size());
-                System.out.println(document.keywords(document.shareDescription()));
+                System.out.println(document.keywords().detect(document.shareDescription()));
             }
         })
                 .start(root);

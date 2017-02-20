@@ -100,7 +100,7 @@ public abstract class RegExpUtils {
                 : "";
     }
 
-    public static String replace(final String regexp,
+    public static String matches(final String regexp,
                                  final String string) {
         final String[] matches = getMatches(string, regexp);
         return null != matches && matches.length > 0

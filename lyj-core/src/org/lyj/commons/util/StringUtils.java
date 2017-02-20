@@ -669,7 +669,7 @@ public final class StringUtils {
         } else if (obj instanceof Throwable) {
             final String err_msg = ExceptionUtils.getMessage((Throwable) obj);
             return StringUtils.hasText(err_msg) ? err_msg : obj.toString();
-        } else if (obj instanceof Object[]) {
+        } else if (obj.getClass().isArray()) {
             return toString((Object[]) obj, ",");
         } else if (obj instanceof Collection) {
             return toString((Collection) obj, ",");

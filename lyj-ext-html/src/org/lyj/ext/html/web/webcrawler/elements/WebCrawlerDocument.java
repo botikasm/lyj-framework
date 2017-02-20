@@ -1,12 +1,14 @@
-package org.lyj.ext.html.webcrawler.elements;
+package org.lyj.ext.html.web.webcrawler.elements;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.lyj.commons.cryptograph.MD5;
-import org.lyj.commons.util.*;
-import org.lyj.ext.html.webcrawler.IWebCrawlerConstants;
+import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.html.web.WebKeywordDetector;
+import org.lyj.ext.html.web.webcrawler.IWebCrawlerConstants;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,7 +37,7 @@ public class WebCrawlerDocument {
     private final Set<String> _import_set;
     private final Set<String> _image_set;
     private final Map<String, String> _microdata;
-    private final Map<String, Set<String>> _titles;
+    private final Map<String, Set<String>> _titles_map;
 
     private String _html;  // raw html
     private String _page_title; // page title
@@ -61,7 +63,7 @@ public class WebCrawlerDocument {
         _media_set = new HashSet<>();
         _import_set = new HashSet<>();
         _image_set = new HashSet<>();
-        _titles = new HashMap<>();
+        _titles_map = new HashMap<>();
         _microdata = new HashMap<>();
 
         _domain = this.getDomain(url);
@@ -103,6 +105,15 @@ public class WebCrawlerDocument {
         return _domain;
     }
 
+    public boolean containsPath(final Collection<String> paths) {
+        for (final String path : paths) {
+            if (this.containsPath(path)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean containsPath(final String path) {
         final String[] tokens = StringUtils.split(path, "/", true, true);
         for (final String token : tokens) {
@@ -129,6 +140,10 @@ public class WebCrawlerDocument {
         return null != _content ? _content : "";
     }
 
+    public boolean hasMicrodata() {
+        return StringUtils.hasText(this.shareTitle());
+    }
+
     public String shareTitle() {
         return _share_title;
     }
@@ -145,23 +160,36 @@ public class WebCrawlerDocument {
         return _share_site;
     }
 
+    public Set<String> titles() {
+        if (!_titles_map.isEmpty()) {
+            if (_titles_map.containsKey("h1")) {
+                return _titles_map.get("h1");
+            } else if (_titles_map.containsKey("h2")) {
+                return _titles_map.get("h2");
+            } else if (_titles_map.containsKey("h3")) {
+                return _titles_map.get("h3");
+            }
+        }
+        return new HashSet<>();
+    }
+
     public Set<String> h1() {
-        if (_titles.containsKey("h1")) {
-            return _titles.get("h1");
+        if (_titles_map.containsKey("h1")) {
+            return _titles_map.get("h1");
         }
         return new HashSet<>();
     }
 
     public Set<String> h2() {
-        if (_titles.containsKey("h2")) {
-            return _titles.get("h2");
+        if (_titles_map.containsKey("h2")) {
+            return _titles_map.get("h2");
         }
         return new HashSet<>();
     }
 
     public Set<String> h3() {
-        if (_titles.containsKey("h3")) {
-            return _titles.get("h3");
+        if (_titles_map.containsKey("h3")) {
+            return _titles_map.get("h3");
         }
         return new HashSet<>();
     }
@@ -170,8 +198,8 @@ public class WebCrawlerDocument {
         return _microdata;
     }
 
-    public Map<String, Set<String>> titles() {
-        return _titles;
+    public Map<String, Set<String>> titlesMap() {
+        return _titles_map;
     }
 
     public Set<String> urlLinks() {
@@ -194,6 +222,42 @@ public class WebCrawlerDocument {
         return _image_set;
     }
 
+    public String bestTitle() {
+        if (StringUtils.hasText(this.shareTitle())) {
+            // microdata
+            return this.shareTitle();
+        } else if (!this.titles().isEmpty()) {
+            // tag titles
+            return this.titles().iterator().next();
+        } else if (StringUtils.hasText(this.pageTitle())) {
+            // page title
+            return this.pageTitle();
+        }
+        return "";
+    }
+
+    public String bestDescription() {
+        if (StringUtils.hasText(this.shareDescription())) {
+            // microdata
+            return this.shareDescription();
+        } else if (StringUtils.hasText(this.content())) {
+            // body content
+            return this.content();
+        }
+        return "";
+    }
+
+    public String bestImage() {
+        if (StringUtils.hasText(this.shareImage())) {
+            // microdata
+            return this.shareImage();
+        } else if (this.urlImages().isEmpty()) {
+            // body content
+            return this.urlImages().iterator().next();
+        }
+        return "";
+    }
+
     public boolean matchDomain(final String url) {
         try {
             return this.matchDomain(new URL(url));
@@ -206,16 +270,12 @@ public class WebCrawlerDocument {
         return this.getDomain(url).equalsIgnoreCase(_domain);
     }
 
-    public List<Map.Entry<String, Integer>> keywords(final String content) {
-        final Map<String, Integer> keywords = this.detectKeywords(content);
-        final List<Map.Entry<String, Integer>> result = SortUtils.sortByKeyLenght(keywords, true);
-        return result;
-    }
+    // ------------------------------------------------------------------------
+    //                      k e y w o r d s
+    // ------------------------------------------------------------------------
 
-    public List<Map.Entry<String, Integer>> keywords(final Set<String> content) {
-        final Map<String, Integer> keywords = this.detectKeywords(content);
-        final List<Map.Entry<String, Integer>> result = SortUtils.sortByKeyLenght(keywords, true);
-        return result;
+    public WebKeywordDetector keywords() {
+        return new WebKeywordDetector(_settings.minKeywordSize());
     }
 
 
@@ -333,15 +393,15 @@ public class WebCrawlerDocument {
                            final Elements elements) {
         if (!elements.isEmpty()) {
             // initialize title set
-            if (!_titles.containsKey(tag)) {
-                _titles.put(tag, new HashSet<>());
+            if (!_titles_map.containsKey(tag)) {
+                _titles_map.put(tag, new HashSet<>());
             }
 
             // loop on elements
             for (final Element element : elements) {
                 final String text = element.text();
                 if (StringUtils.hasText(text)) {
-                    _titles.get(tag).add(text);
+                    _titles_map.get(tag).add(text);
                 }
             }
         }
@@ -368,44 +428,5 @@ public class WebCrawlerDocument {
         }
     }
 
-    private Map<String, Integer> detectKeywords(final Set<String> contents) {
-        final Map<String, Integer> response = new HashMap<>();
-        for (final String content : contents) {
-            this.detectKeywords(content, response);
-        }
-        return response;
-    }
 
-    private Map<String, Integer> detectKeywords(final String content) {
-        final Map<String, Integer> response = new HashMap<>();
-        this.detectKeywords(content, response);
-        return response;
-    }
-
-    private void detectKeywords(final String content, final Map<String, Integer> response) {
-        if (StringUtils.hasText(content)) {
-            final String[] tokens = this.tokenize(content);
-            for (final String token : tokens) {
-                if (this.isKeyword(token)) {
-                    if (!response.containsKey(token)) {
-                        response.put(token, 0);
-                    }
-                    response.put(token, response.get(token) + 1);
-                }
-            }
-        }
-    }
-
-    private boolean isKeyword(final String text) {
-        return StringUtils.hasText(text) && text.length() >= _settings.minKeywordSize();
-    }
-
-    private String[] tokenize(final String content) {
-        String clear_text = RegExpUtils.replace(RegExpUtils.ALPHANUMERIC_SPC, content).toLowerCase();
-
-        final String[] tokens = StringUtils.split(clear_text, " ", true, true);
-        return tokens;
-    }
-
-    
 }

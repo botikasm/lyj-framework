@@ -29,6 +29,7 @@ import org.lyj.Lyj;
 import org.lyj.commons.lang.CharEncoding;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -565,8 +566,8 @@ public abstract class PathUtils
      * @param wildChars Array of wild-chars to check. e.g. ["*.txt", "file*.gif", "another.*"]
      * @return true if at least one wild-char is matched with path.
      */
-    public static boolean fileMatch(String path, String[] wildChars) {
-        for (String wildChar : wildChars) {
+    public static boolean fileMatch(final String path, final String[] wildChars) {
+        for (final String wildChar : wildChars) {
             if (fileMatch(path, wildChar)) {
                 return true;
             }
@@ -628,6 +629,103 @@ public abstract class PathUtils
             }
         }
         return result;
+    }
+
+    public static boolean pathMatchAll(final Collection<String> paths, final String pattern) {
+        return pathMatchAll(paths.toArray(new String[paths.size()]), pattern);
+    }
+
+    public static boolean pathMatchOne(final Collection<String> paths, final String pattern) {
+        return pathMatchOne(paths.toArray(new String[paths.size()]), pattern);
+    }
+
+    public static boolean pathMatchAll(final String path, final Collection<String> patterns) {
+        return pathMatchAll(path, patterns.toArray(new String[patterns.size()]));
+    }
+
+    public static boolean pathMatchOne(final String path, final Collection<String> patterns) {
+        return pathMatchOne(path, patterns.toArray(new String[patterns.size()]));
+    }
+
+    public static boolean pathMatchAll(final Collection<String> paths, final Collection<String> patterns) {
+        return pathMatchAll(paths.toArray(new String[paths.size()]),
+                patterns.toArray(new String[patterns.size()]));
+    }
+
+    public static boolean pathMatchOne(final Collection<String> paths, final Collection<String> patterns) {
+        return pathMatchOne(paths.toArray(new String[paths.size()]),
+                patterns.toArray(new String[patterns.size()]));
+    }
+
+    public static boolean pathMatchAll(final String[] paths, final String pattern) {
+        return pathMatchAll(paths, new String[]{pattern});
+    }
+
+    public static boolean pathMatchOne(final String[] paths, final String pattern) {
+        return pathMatchOne(paths, new String[]{pattern});
+    }
+
+    public static boolean pathMatchAll(final String path, final String[] patterns) {
+        return pathMatchAll(new String[]{path}, patterns);
+    }
+
+    public static boolean pathMatchOne(final String path, final String[] patterns) {
+        return pathMatchOne(new String[]{path}, patterns);
+    }
+
+    public static boolean pathMatchAll(final String[] paths, final String[] patterns) {
+        for (final String path : paths) {
+            for (final String pattern : patterns) {
+                if (!pathMatch(path, pattern)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean pathMatchOne(final String[] paths, final String[] patterns) {
+        for (final String path : paths) {
+            for (final String pattern : patterns) {
+                if (pathMatch(path, pattern)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param path    "root/dir1/dir2/file.txt"
+     * @param pattern "/root/dir1/*"
+     * @return
+     */
+    public static boolean pathMatch(final String path, final String pattern) {
+        try {
+            final URI uri_path = new URI(path);
+            final URI uri_pattern = new URI(pattern);
+            if ((null != uri_path.getHost() && null != uri_pattern.getHost())
+                    || (null == uri_path.getHost() && null == uri_pattern.getHost())) {
+                final boolean has_wildchar = pattern.endsWith("*");
+                final String check_pattern = has_wildchar
+                        ? uri_pattern.getPath().replace("*", "")
+                        : uri_pattern.getPath();
+                final String check_path = uri_path.getPath();
+                if (null != uri_path.getHost()) {
+                    if (uri_path.getHost().equalsIgnoreCase(uri_pattern.getHost())) {
+                        return has_wildchar
+                                ? check_path.startsWith(check_pattern)
+                                : check_path.equalsIgnoreCase(check_pattern);
+                    }
+                } else {
+                    return has_wildchar
+                            ? check_path.startsWith(check_pattern)
+                            : check_path.equalsIgnoreCase(check_pattern);
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        return false;
     }
 
     /**

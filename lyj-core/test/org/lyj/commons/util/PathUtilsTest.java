@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class PathUtilsTest {
 
@@ -20,6 +20,16 @@ public class PathUtilsTest {
         assertTrue(PathUtils.isAbsolute(absolute));
         System.out.println(absolute);
 
+    }
+
+    @Test
+    public void testPathMatch() throws Exception {
+
+        assertTrue(PathUtils.pathMatch("/root/dir1/dir2", "/root/dir1/*"));
+        assertTrue(PathUtils.pathMatch("http://root/dir1/dir2", "http://root/dir1/*"));
+        assertTrue(PathUtils.pathMatch("/root/dir1/dir2", "/root/dir1/dir2"));
+        assertFalse(PathUtils.pathMatch("/root/dir1/dir2/", "/root/dir1/dir2"));
+        assertFalse(PathUtils.pathMatch("http://root/dir1/dir2", "http://root2/dir1/*"));
     }
 
     @Test
