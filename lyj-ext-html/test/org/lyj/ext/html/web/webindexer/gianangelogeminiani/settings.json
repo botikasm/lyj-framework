@@ -1,0 +1,29 @@
+[
+  {
+    "type": "html",
+    "channel_tags": ["generic"],
+    "update_existing":false,
+    "url": "http://gianangelogeminiani.me",
+    "default_image": "http://www.amberpanther.com/wp-content/images/web_development_570.jpg",
+    "intro_block": "conv_search_intro",
+    "key_size": 5,
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://gianangelogeminiani.me",
+      "http://gianangelogeminiani.me/2019/*",
+      "http://gianangelogeminiani.me/2018/*",
+      "http://gianangelogeminiani.me/2017/*",
+      "http://gianangelogeminiani.me/2016/*",
+      "http://gianangelogeminiani.me/2015/*",
+      "http://gianangelogeminiani.me/2014/*",
+      "http://gianangelogeminiani.me/2013/*",
+      "http://gianangelogeminiani.me/2012/*",
+      "http://gianangelogeminiani.me/blog/*",
+      "http://gianangelogeminiani.me/tag/*",
+      "http://gianangelogeminiani.me/category/*",
+      "http://gianangelogeminiani.me/*?replytocom=*"
+    ]
+  }
+]

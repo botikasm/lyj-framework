@@ -32,7 +32,7 @@ public class FixedBlockingPool {
     public FixedBlockingPool() {
         _capacity = 100; // starts with 100 threads in queue
 
-        _core_pool_size = 1;
+        _core_pool_size = 5;
         _maximum_pool_size = 10;
         _keep_alive_time = 30;
         _keep_alive_time_unit = TimeUnit.MINUTES;
@@ -108,6 +108,20 @@ public class FixedBlockingPool {
         return this;
     }
 
+    public <T> Future<T> submit(final Callable<T> callable) {
+        if (null != callable) {
+            return this.run(callable);
+        }
+        return null;
+    }
+
+    public Future<?> submit(final Runnable runnable) {
+        if (null != runnable) {
+            return this.run(runnable);
+        }
+        return null;
+    }
+
     public FixedBlockingPool stop() {
         return this.stop(true);
     }
@@ -118,6 +132,9 @@ public class FixedBlockingPool {
                 __executor.shutdownNow();
             } else {
                 __executor.shutdown();
+            }
+            if (__executor instanceof ThreadPoolExecutor) {
+                ((ThreadPoolExecutor) __executor).purge();
             }
         }
         if (null != _executor_monitor) {
@@ -163,37 +180,41 @@ public class FixedBlockingPool {
     private ExecutorService executor() {
         if (null == __executor) {
             final BlockingQueue<Runnable> linkedBlockingDeque = new LinkedBlockingDeque<>(_capacity);
+            ThreadFactory threadFactory = Executors.defaultThreadFactory();
             __executor = new ThreadPoolExecutor(_core_pool_size, _maximum_pool_size,
                     _keep_alive_time, _keep_alive_time_unit,
                     linkedBlockingDeque,
+                    threadFactory,
                     new ThreadPoolExecutor.CallerRunsPolicy());
         }
         return __executor;
     }
 
-    private void run(final Delegates.Handler callback) {
-        Thread th = new Thread(() -> {
-            try {
-                Delegates.invoke(callback);
-            } catch (Throwable t) {
-                // unhandled exception in thread
-            }
-        });
-        th.setPriority(_thread_priority);
-        this.executor().execute(th);
-        /*
-        this.executor().execute(() -> {
-            try {
-                Delegates.invoke(callback);
-            } catch (Throwable t) {
-                // unhandled exception in thread
-            }
-        });
-        */
+    private Future<?> run(final Delegates.Handler callback) {
+        final Future<?> future = this.executor().submit(new WorkerThread(_thread_priority, callback));
         if (null != _monitor_callback) {
             _executor_monitor = new ExecutorMonitor(this.executor(), _monitor_callback);
             _executor_monitor.run();
         }
+        return future;
+    }
+
+    private <T> Future<T> run(final Callable<T> task) {
+        final Future<T> future = this.executor().submit(task);
+        if (null != _monitor_callback) {
+            _executor_monitor = new ExecutorMonitor(this.executor(), _monitor_callback);
+            _executor_monitor.run();
+        }
+        return future;
+    }
+
+    private Future<?> run(final Runnable task) {
+        final Future<?> future = this.executor().submit(task);
+        if (null != _monitor_callback) {
+            _executor_monitor = new ExecutorMonitor(this.executor(), _monitor_callback);
+            _executor_monitor.run();
+        }
+        return future;
     }
 
     // --------------------------------------------------------------------
@@ -205,7 +226,42 @@ public class FixedBlockingPool {
     }
 
     // --------------------------------------------------------------------
-    //               e m b e d d e d
+    //               E M B E D D E D
+    // --------------------------------------------------------------------
+
+    // --------------------------------------------------------------------
+    //               ExecutorMonitor
+    // --------------------------------------------------------------------
+
+    public static class WorkerThread extends Thread {
+
+        private final Delegates.Handler _callback;
+
+        public WorkerThread(final int priority,
+                            final Delegates.Handler callback) {
+            super.setPriority(priority);
+            super.setName("fixed-" + super.getName());
+            _callback = callback;
+        }
+
+        @Override
+        public void run() {
+            this.processCommand();
+            //System.out.println(Thread.currentThread().getName());
+        }
+
+        private void processCommand() {
+            try {
+                Delegates.invoke(_callback);
+            } catch (Throwable t) {
+
+            }
+        }
+
+    }
+
+    // --------------------------------------------------------------------
+    //               ExecutorMonitor
     // --------------------------------------------------------------------
 
     public static class ExecutorMonitor {

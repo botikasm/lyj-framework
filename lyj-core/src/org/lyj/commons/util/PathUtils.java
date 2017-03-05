@@ -704,23 +704,68 @@ public abstract class PathUtils
         try {
             final URI uri_path = new URI(path);
             final URI uri_pattern = new URI(pattern);
-            if ((null != uri_path.getHost() && null != uri_pattern.getHost())
-                    || (null == uri_path.getHost() && null == uri_pattern.getHost())) {
-                final boolean has_wildchar = pattern.endsWith("*");
-                final String check_pattern = has_wildchar
-                        ? uri_pattern.getPath().replace("*", "")
-                        : uri_pattern.getPath();
-                final String check_path = uri_path.getPath();
-                if (null != uri_path.getHost()) {
-                    if (uri_path.getHost().equalsIgnoreCase(uri_pattern.getHost())) {
-                        return has_wildchar
-                                ? check_path.startsWith(check_pattern)
-                                : check_path.equalsIgnoreCase(check_pattern);
+            final String uri_path_host = uri_path.getHost();
+            final String uri_pattern_host = uri_pattern.getHost();
+            if ((null != uri_path_host && null != uri_pattern_host)
+                    || (null == uri_path_host && null == uri_pattern_host)) {
+                // Host equals
+                final boolean has_wildchar = pattern.contains("*");
+                if (has_wildchar) {
+                    final boolean end_wildchar = pattern.endsWith("*");
+                    final int count_wildchar = StringUtils.countOccurrencesOf(pattern, "*");
+                    if (end_wildchar && count_wildchar == 1) {
+                        final String check_pattern = uri_pattern.getPath().replace("*", "");
+                        final String check_path = uri_path.getPath();
+                        if (null != uri_path_host) {
+                            if (uri_path_host.equalsIgnoreCase(uri_pattern_host)) {
+                                return check_path.startsWith(check_pattern);
+                            }
+                        } else {
+                            return check_path.startsWith(check_pattern);
+                        }
+                    } else {
+                        // advanced parsing
+                        // assertTrue(PathUtils.pathMatch("http://root/dir1/dir2?query=1234", "http://root2/*?query=1234"));
+                        final URLWrapper w_path = new URLWrapper(path);
+                        final URLWrapper w_pattern = new URLWrapper(pattern);
+                        // check if paths match
+                        if (PathUtils.pathMatch(w_path.path(), w_pattern.path())) {
+                            // check if query params match
+                            if (!w_path.hasParams() && !w_pattern.hasParams()) {
+                                return true;
+                            } else {
+                                final String path_params = w_path.query();
+                                final String pattern_params = w_pattern.query();
+                                if (StringUtils.hasText(path_params) && StringUtils.hasText(pattern_params)) {
+                                    // check params
+                                    if (path_params.equalsIgnoreCase(pattern_params)) {
+                                        return true;
+                                    } else {
+                                        // check wildchars in params
+                                        final Set<String> keys = w_path.params().keySet();
+                                        for (final String key : keys) {
+                                            final Object path_val = w_path.params().get(key);
+                                            final Object pattern_val = w_pattern.params().get(key);
+                                            if (!path_val.equals(pattern_val) && !pattern_val.equals("*")) {
+                                                return false;
+                                            }
+                                        }
+                                        return true;
+                                    }
+                                }
+                            }
+                        }
                     }
                 } else {
-                    return has_wildchar
-                            ? check_path.startsWith(check_pattern)
-                            : check_path.equalsIgnoreCase(check_pattern);
+                    final String check_pattern = uri_pattern.getPath();
+                    final String check_path = uri_path.getPath();
+                    if (null != uri_path_host) {
+                        if (uri_path_host.equalsIgnoreCase(uri_pattern_host)) {
+                            return check_path.equalsIgnoreCase(check_pattern);
+                        }
+                    } else {
+                        return check_path.equalsIgnoreCase(check_pattern);
+                    }
                 }
             }
         } catch (Throwable ignored) {

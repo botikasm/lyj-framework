@@ -1,0 +1,26 @@
+[
+  {
+    "url": "http://www.oknoplast.it",
+    "default_image": "http://37.187.32.48/media/bots/h24hotel/room.png",
+    "intro_block": "web_search_intro",
+    "key_size": 5,
+    "key_exclude": [
+       "instagram", "youtube", "facebook", "pinterest", "titanka"
+    ],
+    "key_replace": {
+      "siamo": "siete"
+    },
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://www.oknoplast.it",
+      "http://www.oknoplast.it/blog/*",
+      "http://www.oknoplast.it/tag/*",
+      "http://www.oknoplast.it/category/*",
+      "http://www.oknoplast.it/4-it-50370-casa.php",
+      "http://www.oknoplast.it/4-it-52662-archinfoit-maggio-2014.php",
+      "http://www.oknoplast.it/4-it-45007-oknoplast-e-inter-insieme-per-una-partita-di-beneficenza.php"
+    ]
+  }
+]

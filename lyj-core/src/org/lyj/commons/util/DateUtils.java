@@ -868,4 +868,56 @@ public abstract class DateUtils {
         return datew.toString(pattern);
     }
 
+    /**
+     *
+     * @param time Time string with pattern: 10:25, 10.25, 10,25
+     * @param now Time to check
+     * @return  true if passed time string is expired
+     */
+    public static boolean isExpiredTime(final String time, final Date now) {
+        try {
+            if (StringUtils.hasText(time)) {
+                final String[] tokens = StringUtils.split(time, new String[]{":", ",", "."}); // 10:25
+                final int hour = ConversionUtils.toInteger(tokens[0], -1);
+                final int minutes = ConversionUtils.toInteger(tokens[1], -1);
+                if (hour > -1 && hour <= DateUtils.getHourOfDay(now)) {
+                    if (minutes > -1) {
+                        return minutes <= DateUtils.getMinutes(now);
+                    }
+                    return true;
+                }
+                return false;
+            }
+        } catch (Throwable ignored) {
+        }
+        return true;
+    }
+
+    /**
+     *
+     * @param date  String date in format yyyyMMdd
+     * @param now Date to check
+     * @return true if passed date string is expired
+     */
+    public static boolean isExpiredDate(final String date, final Date now) {
+        try {
+            if (StringUtils.hasText(date)) {
+                final DateWrapper dw = new DateWrapper(date, DateWrapper.DATEFORMAT_DEFAULT); // yyyyMMdd
+                final int year = dw.getYear();
+                final int month = dw.getMonth();
+                final int day = dw.getDay();
+                if (year <= DateUtils.getYear(now)) {
+                    if (month <= DateUtils.getMonth(now)) {
+                        if (day <= DateUtils.getDayOfMonth(now)) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+        } catch (Throwable ignored) {
+        }
+        return true;
+    }
+
 }

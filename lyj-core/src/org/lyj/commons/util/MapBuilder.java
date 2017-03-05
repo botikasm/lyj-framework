@@ -138,4 +138,8 @@ public class MapBuilder<K, V> {
         return new MapBuilder<String, String>();
     }
 
+    public static MapBuilder<Integer, String> createIS() {
+        return new MapBuilder<Integer, String>();
+    }
+
 }

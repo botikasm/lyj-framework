@@ -1,0 +1,123 @@
+[
+  {
+    "type": "html",
+    "channel_tags": ["generic"],
+    "update_existing":false,
+    "url": "http://gianangelogeminiani.me",
+    "default_image": "http://www.amberpanther.com/wp-content/images/web_development_570.jpg",
+    "intro_block": "conv_search_intro",
+    "key_size": 5,
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://gianangelogeminiani.me",
+      "http://gianangelogeminiani.me/2019/*",
+      "http://gianangelogeminiani.me/2018/*",
+      "http://gianangelogeminiani.me/2017/*",
+      "http://gianangelogeminiani.me/2016/*",
+      "http://gianangelogeminiani.me/2015/*",
+      "http://gianangelogeminiani.me/2014/*",
+      "http://gianangelogeminiani.me/2013/*",
+      "http://gianangelogeminiani.me/2012/*",
+      "http://gianangelogeminiani.me/blog/*",
+      "http://gianangelogeminiani.me/tag/*",
+      "http://gianangelogeminiani.me/category/*",
+      "http://gianangelogeminiani.me/*?replytocom=*"
+    ]
+  },
+  {
+    "type": "rss_2",
+    "channel_tag": "generic",
+    "url": "http://blog.oknoplast.it/feed",
+    "default_image": "http://37.187.32.48/media/bots/h24hotel/room.png",
+    "intro_block": "web_search_intro",
+    "key_size": 5,
+    "key_exclude": [
+    ],
+    "key_replace": {
+      "siamo": "siete"
+    },
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://blog.oknoplast.it",
+      "http://blog.oknoplast.it/blog/*",
+      "http://blog.oknoplast.it/tag/*",
+      "http://blog.oknoplast.it/category/*",
+      "http://blog.oknoplast.it/2016/*"
+    ]
+  },
+  {
+    "type": "html",
+    "channel_tag": "generic",
+    "url": "http://www.yourboost.it",
+    "default_image": "http://www.yourboost.it/wp-content/uploads/2016/10/yourboost-mobile.png",
+    "intro_block": "web_search_intro",
+    "key_size": 5,
+    "key_exclude": [
+    ],
+    "key_replace": {
+      "siamo": "siete"
+    },
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://www.yourboost.it",
+      "http://www.yourboost.it/blog/*",
+      "http://www.yourboost.it/tag/*",
+      "http://www.yourboost.it/category/*",
+      "http://www.yourboost.it/2016/*",
+      "http://www.yourboost.it/copertina-villini-2/",
+      "http://www.yourboost.it/contatti/",
+      "http://www.yourboost.it/author/*",
+      "http://www.yourboost.it/policy-privacy/",
+      "http://www.yourboost.it/home",
+      "http://www.yourboost.it/rassegna-stampa/photogallery/",
+      "http://www.yourboost.it/portfolio/",
+      "http://www.yourboost.it/portfolio_page/*",
+      "http://www.yourboost.it/copertina_stealth-2/" ,
+      "http://www.yourboost.it/cristina-ravara-montebelli/*",
+      "http://www.yourboost.it/halieutica-pescatori-nel-mondo-antico-2/"
+    ]
+  },
+  {
+    "type":"html",
+    "channel_name":"",
+    "url": "http://www.hotelaurea.it",
+    "default_image": "http://37.187.32.48/media/bots/h24hotel/room.png",
+    "intro_block": "web_search_intro",
+    "key_size": 5,
+    "key_exclude": [
+      "hotel", "nellhotel", "lhotel"
+    ],
+    "key_replace": {
+      "siamo": "siete"
+    },
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://www.hotelaurea.it",
+      "http://www.hotelaurea.it/fr/*",
+      "http://www.hotelaurea.it/de/*",
+      "http://www.hotelaurea.it/en/*",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-speciali-1",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-aprile",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-maggio-2",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-giugno-2",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-luglio-1",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-agosto-1",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-settembre-1",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-benessere-2",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-fiere-1",
+      "http://www.hotelaurea.it/offerte-lastminute/ponti-festivita-2",
+      "http://www.hotelaurea.it/ultime-notizie/news-informazioni",
+      "http://www.hotelaurea.it/blog/*",
+      "http://www.hotelaurea.it/tag/*",
+      "http://www.hotelaurea.it/category/*"
+    ]
+  }
+]

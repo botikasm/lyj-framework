@@ -970,6 +970,10 @@ public final class StringUtils {
         return string.startsWith("[") && string.endsWith("]");
     }
 
+    public static boolean isXml(final Object value) {
+        final String string = null != value ? RegExpUtils.replaceLineTerminators(value.toString()) : "";
+        return string.startsWith("<?xml") && string.endsWith(">");
+    }
 
     /**
      * Return true if passed value is empty string or null string or a string
@@ -1245,6 +1249,17 @@ public final class StringUtils {
             final int i = text.indexOf(matcher);
             if (i >= 0) {
                 return text.substring(i + matcher.length());
+            }
+        }
+        return text;
+    }
+
+    public static String substringBefore(final String text,
+                                         final String matcher) {
+        if (StringUtils.hasText(text) && StringUtils.hasText(matcher)) {
+            final int i = text.indexOf(matcher);
+            if (i >= 0) {
+                return text.substring(0, i);
             }
         }
         return text;

@@ -225,17 +225,29 @@ public class ArnCollection<T>
     public void forEach(final Delegates.FunctionArg<T, Boolean> callback) {
         if (null != callback) {
             final String query = this.queryNoParams();
-            final ArangoCursor<T> cursor = _db.query(query, null, null, super.entityClass());
-            while (cursor.hasNext()) {
-                final Boolean response = callback.call(cursor.next());
-                if (null != response && response) {
-                    break;
-                }
-            }
+            this.forEach(query, callback);
         }
     }
 
-    public void forEach(final String query, final Map<String, Object> bindArgs, final Delegates.FunctionArg<T, Boolean> callback) {
+    @Override
+    public void forEachAsc(final String[] sort, final Delegates.FunctionArg<T, Boolean> callback) {
+        if (null != callback) {
+            final String query = this.queryNoParams(this.sortMap(SORT_ASC, sort));
+            this.forEach(query, callback);
+        }
+    }
+
+    @Override
+    public void forEachDesc(final String[] sort, final Delegates.FunctionArg<T, Boolean> callback) {
+        if (null != callback) {
+            final String query = this.queryNoParams(this.sortMap(SORT_DESC, sort));
+            this.forEach(query, callback);
+        }
+    }
+
+    @Override
+    public void forEach(final String query, final Map<String, Object> bindArgs,
+                        final Delegates.FunctionArg<T, Boolean> callback) {
         if (null != callback) {
             final ArangoCursor<T> cursor = _db.query(query, bindArgs, null, super.entityClass());
             while (cursor.hasNext()) {
@@ -247,9 +259,26 @@ public class ArnCollection<T>
         }
     }
 
+    @Override
     public void forEachEqual(final Map<String, Object> bindArgs, final Delegates.FunctionArg<T, Boolean> callback) {
         if (null != callback) {
             final String query = this.queryEqual(bindArgs, null, 0);
+            this.forEach(query, bindArgs, callback);
+        }
+    }
+
+    public void forEachEqualAsc(final Map<String, Object> bindArgs, final String[] sort,
+                                final Delegates.FunctionArg<T, Boolean> callback) {
+        if (null != callback) {
+            final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), 0);
+            this.forEach(query, bindArgs, callback);
+        }
+    }
+
+    public void forEachEqualDesc(final Map<String, Object> bindArgs, final String[] sort,
+                                 final Delegates.FunctionArg<T, Boolean> callback) {
+        if (null != callback) {
+            final String query = this.queryEqual(bindArgs, this.sortMap(SORT_DESC, sort), 0);
             this.forEach(query, bindArgs, callback);
         }
     }
@@ -352,6 +381,21 @@ public class ArnCollection<T>
         return FormatUtils.format(QUERY_NO_PARAMS, super.name());
     }
 
+    private String queryNoParams(final Map<String, String[]> sort_fields) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(FormatUtils.format(QUERY_FOR, super.name()));
+
+        // sort
+        final String sort = this.sort(sort_fields);
+        if (StringUtils.hasText(sort)) {
+            sb.append(" ").append(sort);
+        }
+
+        // return
+        sb.append(" ").append(QUERY_RETURN);
+        return sb.toString();
+    }
+
     private String queryEqual(final Map<String, Object> params,
                               final Map<String, String[]> sort_fields,
                               final int limit) {
@@ -399,40 +443,22 @@ public class ArnCollection<T>
         return sb.toString();
     }
 
-    private String old_queryEqual(final Set<String> names, final Map<String, String[]> sort_fields) {
-        final StringBuilder sb = new StringBuilder();
-        sb.append(FormatUtils.format(QUERY_FOR, super.name()));
-
-        // filter
-        sb.append(" ").append(QUERY_FILTER).append(" ");
-        final Counter count = new Counter(0);
-        names.forEach((name) -> {
-            if (count.value() > 0) {
-                sb.append(" && ");
-            }
-            if (name.contains(ARRAY_EXPANSION_OPERATOR)) {
-                sb.append(FormatUtils.format(QUERY_FILTER_IN, name, name));
-            } else {
-                sb.append(FormatUtils.format(QUERY_FILTER_EQUAL, name, name));
-            }
-
-            count.inc();
-        });
-
-        // sort
-        final String sort = this.sort(sort_fields);
-        if (StringUtils.hasText(sort)) {
-            sb.append(" ").append(sort);
-        }
-
-        // return
-        sb.append(" ").append(QUERY_RETURN);
-        return sb.toString();
-    }
-
     private String queryRemove(final String query_select) {
         return query_select.replaceFirst(QUERY_RETURN, FormatUtils.format(QUERY_REMOVE, super.name()));
         //return query_select.concat(" ").concat(FormatUtils.format(QUERY_REMOVE, super.name()));
     }
+
+    private void forEach(final String query,
+                         final Delegates.FunctionArg<T, Boolean> callback) {
+        final ArangoCursor<T> cursor = _db.query(query, null, null, super.entityClass());
+        while (cursor.hasNext()) {
+            final Boolean response = callback.call(cursor.next());
+            if (null != response && response) {
+                break;
+            }
+        }
+    }
+
+
 }
 

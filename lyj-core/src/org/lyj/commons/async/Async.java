@@ -42,6 +42,7 @@ public abstract class Async {
                     handler.handle(args);
                 }
             });
+            t.setName("invoke-" + t.getName());
             t.setDaemon(true);
             t.setPriority(Thread.NORM_PRIORITY);
             t.start();
@@ -62,6 +63,7 @@ public abstract class Async {
                     }
                 }
             });
+            t.setName("delay-" + t.getName());
             t.setDaemon(true);
             t.setPriority(Thread.NORM_PRIORITY);
             t.start();
@@ -90,6 +92,7 @@ public abstract class Async {
                     }
                 }
             });
+            t.setName("loop-" + t.getName());
             t.setDaemon(true);
             t.setPriority(Thread.NORM_PRIORITY);
             t.start();

@@ -21,11 +21,36 @@
 package org.lyj.commons.async;
 
 import org.lyj.commons.Delegates;
+import org.lyj.commons.util.MapBuilder;
+
+import java.lang.management.ManagementFactory;
+import java.util.Map;
 
 /**
  *
  */
 public class AsyncUtils {
+
+    /**
+     * The minimum priority that a thread can have.
+     */
+    private final static int MIN_PRIORITY = Thread.MIN_PRIORITY;
+
+    /**
+     * The default priority that is assigned to a thread.
+     */
+    private final static int NORM_PRIORITY = Thread.NORM_PRIORITY;
+
+    /**
+     * The maximum priority that a thread can have.
+     */
+    private final static int MAX_PRIORITY = Thread.MAX_PRIORITY;
+
+    public final static Map<Integer, String> PRIORITIES = MapBuilder.createIS()
+            .put(MIN_PRIORITY, "minimum")
+            .put(NORM_PRIORITY, "default")
+            .put(MAX_PRIORITY, "maximum")
+            .toMap();
 
     // --------------------------------------------------------------------
     //               p u b l i c
@@ -48,6 +73,41 @@ public class AsyncUtils {
         return result;
     }
 
+    public static int countThreads() {
+        return ManagementFactory.getThreadMXBean().getThreadCount();
+    }
+
+    public static int countThreadsInGroup() {
+        return Thread.activeCount();
+    }
+
+    public static Thread[] enumerateActiveThreads() {
+        final Thread[] array = new Thread[Thread.activeCount()];
+        Thread.enumerate(array);
+        return array;
+    }
+
+    public static String reportActiveThreads() {
+        final StringBuilder sb = new StringBuilder();
+        final Thread[] threads = enumerateActiveThreads();
+        sb.append("------------------------------------------------").append("\n");
+        sb.append("ACTIVE THREADS: ").append(threads.length).append("\n");
+        sb.append("TOTAL THREADS: ").append(countThreads()).append("\n");
+        sb.append("------------------------------------------------");
+        for (final Thread t : threads) {
+            sb.append("\n");
+            sb.append("[").append(t.getId()).append("]").append(" ");
+            sb.append(t.getName()).append(": ");
+            sb.append("(");
+            sb.append("priority=").append(PRIORITIES.get(t.getPriority())).append(", ");
+            sb.append("state=").append(t.getState()).append(", ");
+            sb.append("group=").append(t.getThreadGroup().getName());
+            sb.append(")");
+        }
+        sb.append("\n");
+        sb.append("------------------------------------------------");
+        return sb.toString();
+    }
     // --------------------------------------------------------------------
     //               p r i v a t e
     // --------------------------------------------------------------------

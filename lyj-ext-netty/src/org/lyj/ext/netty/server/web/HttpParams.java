@@ -3,8 +3,10 @@ package org.lyj.ext.netty.server.web;
 import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Params helper class
@@ -58,6 +60,27 @@ public class HttpParams
 
     public boolean initialized(){
         return _initialized;
+    }
+
+    public String toQueryString() {
+        final StringBuilder result = new StringBuilder();
+        final Set<String> keys = this.keySet();
+        for (final String key : keys) {
+            if (result.length() > 0) {
+                result.append("&");
+            }
+            result.append(key).append("=").append(this.getString(key));
+        }
+        return result.toString();
+    }
+
+    public Map<String, Object> toMap(){
+        final Map<String, Object> result = new HashMap<>();
+        final Set<String> keys = this.keySet();
+        for (final String key : keys) {
+            result.put(key, this.getString(key));
+        }
+        return result;
     }
 
     public String getString(final String name) {

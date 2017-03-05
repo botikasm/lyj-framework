@@ -16,14 +16,19 @@ public final class WebKeywordDetector {
     // ------------------------------------------------------------------------
 
     private int _min_keyword_size;
+    private final Set<String> _key_exclude;
+    private final Map<String, String> _key_replace;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
     public WebKeywordDetector() {
+        _key_exclude = new HashSet<>();
+        _key_replace = new HashMap<>();
     }
 
     public WebKeywordDetector(final int min_keyword_size) {
+        this();
         this.minKeywordSize(min_keyword_size);
     }
 
@@ -38,6 +43,14 @@ public final class WebKeywordDetector {
     public WebKeywordDetector minKeywordSize(final int value) {
         _min_keyword_size = value;
         return this;
+    }
+
+    public Set<String> keyExclude() {
+        return _key_exclude;
+    }
+
+    public Map<String, String> keyReplace() {
+        return _key_replace;
     }
 
     // ------------------------------------------------------------------------
@@ -81,7 +94,7 @@ public final class WebKeywordDetector {
             for (final Map.Entry<String, Integer> entry : level) {
                 final String key = entry.getKey();
                 final int entry_value = entry.getValue();
-                final double value = ((double)entry_value/level_size) *curr_level_weight; // multiply for level position
+                final double value = ((double) entry_value / level_size) * curr_level_weight; // multiply for level position
                 final double new_val = response.containsKey(key)
                         ? response.get(key) + value
                         : value;
@@ -129,18 +142,30 @@ public final class WebKeywordDetector {
         if (StringUtils.hasText(content)) {
             final String[] tokens = this.tokenize(content);
             for (final String token : tokens) {
-                if (this.isKeyword(token)) {
-                    if (!response.containsKey(token)) {
-                        response.put(token, 0);
+                final String keyword = this.validateKeyword(token);
+                if (StringUtils.hasText(keyword)) {
+                    if (!response.containsKey(keyword)) {
+                        response.put(keyword, 0);
                     }
-                    response.put(token, response.get(token) + 1);
+                    response.put(token, response.get(keyword) + 1);
                 }
             }
         }
     }
 
+    private String validateKeyword(final String text) {
+        if (this.isKeyword(text)) {
+            if (!_key_replace.containsKey(text)) {
+                return text;
+            }
+            return _key_replace.get(text);
+        }
+        return "";
+    }
+
     private boolean isKeyword(final String text) {
-        return StringUtils.hasText(text) && text.length() >= _min_keyword_size;
+        return StringUtils.hasText(text) && text.length() >= _min_keyword_size
+                && !_key_exclude.contains(text);
     }
 
     private String[] tokenize(final String content) {

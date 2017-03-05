@@ -5,15 +5,12 @@ import org.json.JSONObject;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.util.*;
 import org.lyj.ext.html.web.WebKeywordDetector;
-import org.lyj.ext.html.web.webcrawler.WebCrawler;
-import org.lyj.ext.html.web.webcrawler.elements.WebCrawlerDocument;
-import org.lyj.ext.html.web.webcrawler.elements.WebCrawlerPathList;
-import org.lyj.ext.html.web.webcrawler.exceptions.MissingUrlException;
+import org.lyj.ext.html.web.grabber.AbstractGrabber;
+import org.lyj.ext.html.web.grabber.DocItem;
+import org.lyj.ext.html.web.grabber.GrabberFactory;
 
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Inheritable class to create a web indexer
@@ -26,8 +23,11 @@ public abstract class WebIndexer {
     // ------------------------------------------------------------------------
 
     private final List<WebIndexerSettings> _sites;
+    private final Map<String, AbstractGrabber> _crawlers;
 
     private int _count_indexed_pages;
+
+    private boolean _finished;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -35,10 +35,12 @@ public abstract class WebIndexer {
 
     /**
      * Creates new indexer instance
+     *
      * @param settings Array of JSON objects (WebIndexerSettings)
      */
     public WebIndexer(final JSONArray settings) {
         _sites = new ArrayList<>();
+        _crawlers = new HashMap<>();
         _count_indexed_pages = 0;
 
         this.init(settings);
@@ -67,6 +69,10 @@ public abstract class WebIndexer {
         return _count_indexed_pages;
     }
 
+    public boolean isFinished() {
+        return _finished;
+    }
+
     // ------------------------------------------------------------------------
     //                      a b s t r a c t
     // ------------------------------------------------------------------------
@@ -77,9 +83,9 @@ public abstract class WebIndexer {
 
     protected abstract void onTaskStarted(final String task_id, final WebIndexerSettings site);
 
-    protected abstract void onTaskFinished(final String task_id, final WebCrawlerPathList paths);
+    protected abstract void onTaskFinished(final String task_id, final Set<URL> paths);
 
-    protected abstract void onTaskIndex(final String task_id, final WebIndexerSettings site,
+    protected abstract void onTaskIndex(final String task_id, final WebIndexerSettings config,
                                         final Map<String, Double> keywords, final String title,
                                         final String description, final String image, final String url);
 
@@ -97,59 +103,74 @@ public abstract class WebIndexer {
     }
 
     private void index(final WebIndexerSettings setting)
-            throws InterruptedException, MissingUrlException, MalformedURLException {
+            throws Exception {
 
         final String task_id = RandomUtils.randomUUID();
         final String param_url = setting.url();
+        final String param_type = setting.type();
+
         if (StringUtils.hasText(param_url)) {
 
-            this.onTaskStarted(task_id, setting);
-
             // creates new crawler for each site to index
-            final WebCrawler crawler = new WebCrawler();
+            final AbstractGrabber<DocItem> crawler = GrabberFactory.create(param_type);
+            if (null != crawler) {
 
-            crawler.settings().document().minKeywordSize(setting.keySize());
-            crawler.settings().document().autodetectContentThreashold(setting.contentSize());
+                this.onTaskStarted(task_id, setting);
 
-            crawler.onError((url, err) -> {
-                onTaskError(task_id, url.toString(), err);
-            });
-            crawler.onResult((document) -> {
-                index(task_id, crawler, document, setting);
-            });
+                _crawlers.put(crawler.uuid(), crawler);
 
-            crawler.onFinish((url_list) -> {
-                this.onTaskFinished(task_id, url_list);
-            });
+                crawler.settings().pageExclude(setting.pageExclude()); // exclude from crawler
+                crawler.settings().document().type(param_type);
+                crawler.settings().document().minKeywordSize(setting.keySize());
+                crawler.settings().document().autodetectContentThreashold(setting.contentSize());
+                crawler.settings().document().keyExclude(setting.keyExclude());
+                crawler.settings().document().keyReplace(setting.keyReplace());
 
-            crawler.start(param_url);
+                crawler.onError((url, err) -> {
+                    onTaskError(task_id, url.toString(), err);
+                });
+                crawler.onResult((document) -> {
+                    index(task_id, crawler, document, setting);
+                });
+
+                crawler.onFinish((instance) -> {
+                    this.finish(task_id, crawler, crawler.urls());
+                });
+
+                crawler.startAsync(param_url);
+            } else {
+                this.finish(task_id, null, new HashSet<>());
+                throw new Exception("Crawler not fount for type: " + param_type);
+            }
         }
     }
 
     private void index(final String task_id,
-                       final WebCrawler crawler,
-                       final WebCrawlerDocument document,
+                       final AbstractGrabber crawler,
+                       final DocItem document,
                        final WebIndexerSettings setting) {
         final List<String> param_exclude = JsonWrapper.toListOfString(setting.exclude());
 
-        if (!PathUtils.pathMatchOne(document.url(), param_exclude)) {
+        if (!PathUtils.pathMatchOne(document.urlNoHash(), param_exclude)) {
 
             final int page_limit = setting.pageLimit();
 
-            if (page_limit==-1 || (page_limit > 0 && _count_indexed_pages < page_limit)) {
+            if (page_limit == -1 || (page_limit > 0 && _count_indexed_pages < page_limit)) {
                 _count_indexed_pages++;
 
-                final String title = document.bestTitle();
-                final String description = document.bestDescription();
-                final String image = document.bestImage();
+                final String title = document.title();
+                final String description = document.description();
+                final String image = document.image();
 
-                final WebKeywordDetector keyword_detector = document.keywords();
-                final Map<String, Double> keywords = keyword_detector.level(keyword_detector.detect(title),
+                final WebKeywordDetector keyword_detector = this.keywordTool(setting);
+                final Map<String, Double> keywords = keyword_detector.level(
+                        keyword_detector.detect(document.keywords()),
+                        keyword_detector.detect(title),
                         keyword_detector.detect(description));
 
                 if (!keywords.isEmpty()) {
                     this.onTaskIndex(task_id, setting, keywords,
-                            title, description, image, document.url());
+                            title, description, image, document.urlNoHash());
                 }
             } else {
                 // STOP INDEXING
@@ -158,4 +179,23 @@ public abstract class WebIndexer {
         }
     }
 
+    private WebKeywordDetector keywordTool(final WebIndexerSettings settings) {
+        final WebKeywordDetector detector = new WebKeywordDetector(settings.keySize());
+        detector.keyReplace().putAll(settings.keyReplaceMap());
+        detector.keyExclude().addAll(settings.keyExcludeSet());
+        return detector;
+    }
+
+    private void finish(final String task_id,
+                        final AbstractGrabber crawler,
+                        final Set<URL> url_list) {
+        if (!_finished) {
+            if (null != crawler) {
+                _crawlers.remove(crawler.uuid());
+            }
+            _finished = _crawlers.isEmpty();
+
+            this.onTaskFinished(task_id, url_list);
+        }
+    }
 }

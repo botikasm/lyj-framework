@@ -48,9 +48,17 @@ public interface IDatabaseCollection<T> {
 
     void forEach(final Delegates.FunctionArg<T, Boolean> callback);
 
+    void forEachAsc(final String[] sort, final Delegates.FunctionArg<T, Boolean> callback);
+
+    void forEachDesc(final String[] sort, final Delegates.FunctionArg<T, Boolean> callback);
+
     void forEach(final String query, final Map<String, Object> bindArgs, final Delegates.FunctionArg<T, Boolean> callback);
 
     void forEachEqual(final Map<String, Object> bindArgs, final Delegates.FunctionArg<T, Boolean> callback);
+
+    void forEachEqualAsc(final Map<String, Object> bindArgs, final String[] sort, final Delegates.FunctionArg<T, Boolean> callback);
+
+    void forEachEqualDesc(final Map<String, Object> bindArgs, final String[] sort, final Delegates.FunctionArg<T, Boolean> callback);
 
     T removeOne(final String query, final Map<String, Object> bindArgs);
 

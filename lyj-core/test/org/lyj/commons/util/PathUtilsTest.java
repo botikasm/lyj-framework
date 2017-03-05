@@ -30,6 +30,10 @@ public class PathUtilsTest {
         assertTrue(PathUtils.pathMatch("/root/dir1/dir2", "/root/dir1/dir2"));
         assertFalse(PathUtils.pathMatch("/root/dir1/dir2/", "/root/dir1/dir2"));
         assertFalse(PathUtils.pathMatch("http://root/dir1/dir2", "http://root2/dir1/*"));
+        // advanced parsing
+        assertFalse(PathUtils.pathMatch("http://root/dir1/dir2", "http://root2/dir1/*?query=1234"));
+        assertTrue(PathUtils.pathMatch("http://root/dir1/dir2?query=1234", "http://root2/*?query=1234"));
+        assertTrue(PathUtils.pathMatch("http://root/dir1/dir2?query=1234", "http://root2/*?query=*"));
     }
 
     @Test

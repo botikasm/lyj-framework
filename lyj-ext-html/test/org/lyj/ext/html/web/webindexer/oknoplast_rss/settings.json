@@ -1,0 +1,25 @@
+[
+  {
+    "type": "rss_2",
+    "channel_tag": "generic",
+    "url": "http://blog.oknoplast.it/feed",
+    "default_image": "http://37.187.32.48/media/bots/h24hotel/room.png",
+    "intro_block": "web_search_intro",
+    "key_size": 5,
+    "key_exclude": [
+    ],
+    "key_replace": {
+      "siamo": "siete"
+    },
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://blog.oknoplast.it",
+      "http://blog.oknoplast.it/blog/*",
+      "http://blog.oknoplast.it/tag/*",
+      "http://blog.oknoplast.it/category/*",
+      "http://blog.oknoplast.it/2016/*"
+    ]
+  }
+]

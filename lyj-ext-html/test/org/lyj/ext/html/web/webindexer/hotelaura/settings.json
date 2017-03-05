@@ -1,0 +1,39 @@
+[
+  {
+    "type":"html",
+    "channel_name":"",
+    "url": "http://www.hotelaurea.it",
+    "default_image": "http://37.187.32.48/media/bots/h24hotel/room.png",
+    "intro_block": "web_search_intro",
+    "key_size": 5,
+    "key_exclude": [
+      "hotel", "nellhotel", "lhotel"
+    ],
+    "key_replace": {
+      "siamo": "siete"
+    },
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://www.hotelaurea.it",
+      "http://www.hotelaurea.it/fr/*",
+      "http://www.hotelaurea.it/de/*",
+      "http://www.hotelaurea.it/en/*",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-speciali-1",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-aprile",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-maggio-2",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-giugno-2",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-luglio-1",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-agosto-1",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-settembre-1",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-benessere-2",
+      "http://www.hotelaurea.it/offerte-lastminute/offerte-fiere-1",
+      "http://www.hotelaurea.it/offerte-lastminute/ponti-festivita-2",
+      "http://www.hotelaurea.it/ultime-notizie/news-informazioni",
+      "http://www.hotelaurea.it/blog/*",
+      "http://www.hotelaurea.it/tag/*",
+      "http://www.hotelaurea.it/category/*"
+    ]
+  }
+]

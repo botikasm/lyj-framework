@@ -39,6 +39,7 @@ public class FormatUtils {
 
     public static final String DEFAULT_DATEFORMAT = "yyyyMMdd";
     public static final String DEFAULT_TIMEFORMAT = "HH:mm:ss";
+    public static final String DEFAULT_DATETIMEFORMAT = "yyyyMMdd HH:mm:ss";
 
     //---------------------------------------------------------------------
     //  String

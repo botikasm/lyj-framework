@@ -1,0 +1,36 @@
+[
+  {
+    "type": "html",
+    "channel_tag": "generic",
+    "url": "http://www.yourboost.it",
+    "default_image": "http://www.yourboost.it/wp-content/uploads/2016/10/yourboost-mobile.png",
+    "intro_block": "web_search_intro",
+    "key_size": 5,
+    "key_exclude": [
+    ],
+    "key_replace": {
+      "siamo": "siete"
+    },
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+      "http://www.yourboost.it",
+      "http://www.yourboost.it/blog/*",
+      "http://www.yourboost.it/tag/*",
+      "http://www.yourboost.it/category/*",
+      "http://www.yourboost.it/2016/*",
+      "http://www.yourboost.it/copertina-villini-2/",
+      "http://www.yourboost.it/contatti/",
+      "http://www.yourboost.it/author/*",
+      "http://www.yourboost.it/policy-privacy/",
+      "http://www.yourboost.it/home",
+      "http://www.yourboost.it/rassegna-stampa/photogallery/",
+      "http://www.yourboost.it/portfolio/",
+      "http://www.yourboost.it/portfolio_page/*",
+      "http://www.yourboost.it/copertina_stealth-2/" ,
+      "http://www.yourboost.it/cristina-ravara-montebelli/*",
+      "http://www.yourboost.it/halieutica-pescatori-nel-mondo-antico-2/"
+    ]
+  }
+]

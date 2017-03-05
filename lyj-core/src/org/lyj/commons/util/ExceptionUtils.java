@@ -24,6 +24,8 @@
  */
 package org.lyj.commons.util;
 
+import org.lyj.commons.async.AsyncUtils;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -88,6 +90,9 @@ public abstract class ExceptionUtils {
             for (Throwable t = ex; ; ) {
                 s = t.getMessage();
                 if (StringUtils.hasText(s)) {
+                    if(t instanceof OutOfMemoryError){
+                       s = s.concat(" (Threads:").concat(AsyncUtils.countThreadsInGroup()+", ").concat(AsyncUtils.countThreads()+"").concat(")");
+                    }
                     break; //found
                 }
                 t = getCause(t);
