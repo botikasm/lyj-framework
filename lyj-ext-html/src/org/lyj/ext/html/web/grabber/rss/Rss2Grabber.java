@@ -3,8 +3,8 @@ package org.lyj.ext.html.web.grabber.rss;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.ext.html.web.grabber.CrawlerSettings;
 import org.lyj.ext.html.web.grabber.AbstractGrabber;
+import org.lyj.ext.html.web.grabber.CrawlerSettings;
 import org.lyj.ext.html.web.grabber.DocItem;
 import org.lyj.ext.html.web.webindexer.WebIndexerSettings;
 
@@ -72,7 +72,7 @@ public class Rss2Grabber
                 iterator.remove();
                 try {
                     final List<DocItem> docs = future.get();
-                    for(final DocItem doc:docs){
+                    for (final DocItem doc : docs) {
                         pageSet.add(doc);
                         this.doResult(doc);
                     }
@@ -90,28 +90,38 @@ public class Rss2Grabber
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void loopRssPages(final URL url, final int page_count){
-        // submit url to create future task
-        if(super.processURL(url, page_count)) {
-            // LOOP
-            try {
-                final String query = url.getQuery();
-                if (StringUtils.hasText(query)) {
-                    final String count = CollectionUtils.getLast(StringUtils.split(query, "="));
-                    final int count_n = ConversionUtils.toInteger(count, -1);
-                    if (count_n > 1) {
-                        final URL next = new URL(url.toString().replace(query, "") + "paged=" + (count_n + 1));
-                        this.loopRssPages(next, count_n);
-                    }
-                } else {
-                    // no query, this is first page
-                    final URL next = new URL(url.toString() + "?paged=2");
-                    this.loopRssPages(next, 1);
-                }
-            }catch(Throwable t){
+    private void loopRssPages(final URL url, final int page_count) {
 
+        // submit url to create future task
+        if (super.processURL(url, page_count)) {
+            final String page_param = this.getPagingParam();
+            if (StringUtils.hasText(page_param)) {
+                // NEXT PAGE
+                try {
+                    final String query = url.getQuery();
+                    if (StringUtils.hasText(query)) {
+                        final String count = CollectionUtils.getLast(StringUtils.split(query, "="));
+                        final int count_n = ConversionUtils.toInteger(count, -1);
+                        if (count_n > 1) {
+                            final URL next = new URL(url.toString().replace(query, "") + page_param + "=" + (count_n + 1));
+                            this.loopRssPages(next, count_n); // RECURSIVE
+                        }
+                    } else {
+                        // no query, this is first page
+                        final URL next = new URL(url.toString() + "?" + page_param + "=2");
+                        this.loopRssPages(next, 1); // RECURSIVE
+                    }
+                } catch (Throwable t) {
+
+                }
             }
         }
+    }
+
+    private String getPagingParam() {
+        final String paging_mode = super.settings().pagingMode();
+        final String page_param = StringUtils.hasText(paging_mode) ? paging_mode : WebIndexerSettings.RSS_PAGING_PAGED;
+        return page_param.equalsIgnoreCase(WebIndexerSettings.RSS_PAGING_NONE) ? "" : page_param;
     }
 
 }

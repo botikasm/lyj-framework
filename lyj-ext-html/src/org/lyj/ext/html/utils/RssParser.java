@@ -31,8 +31,11 @@ public final class RssParser {
     private static final String NODE_LINK = "link";
     private static final String NODE_TITLE = "title";
     private static final String NODE_DESCRIPTION = "description";
+    private static final String NODE_ENCLOSURE = "enclosure";
     private static final String NODE_CONTENT = "content";
     private static final String NODE_CONTENT_ENCODED = "content:encoded";
+
+    private static final String ATTR_URL = "url";
 
     private static final Map<String, String> REMAP_NODES = MapBuilder.createSS()
             .put(NODE_CONTENT_ENCODED, NODE_CONTENT)
@@ -130,7 +133,11 @@ public final class RssParser {
 
             element.children().forEach((node) -> {
                 final String tag = node.nodeName();
-                put(item, tag, node.text());
+                if (tag.equalsIgnoreCase(NODE_ENCLOSURE)) {
+                    put(item, tag, node.attr(ATTR_URL));
+                } else {
+                    put(item, tag, node.text());
+                }
             });
 
             return item;
@@ -296,7 +303,8 @@ public final class RssParser {
         private static final String FLD_CONTENT_HTML = "content_html";
         private static final String FLD_CATEGORY = "category";
         private static final String FLD_IMAGE = "image";
-
+        private static final String FLD_ENCLOSURE = "enclosure"; // usually are images
+        private static final String FLD_PUBDATE = "pubdate";
         // ------------------------------------------------------------------------
         //                      c o n s t r u c t o r
         // ------------------------------------------------------------------------
@@ -356,6 +364,14 @@ public final class RssParser {
             return this;
         }
 
+        public String pubDate() {
+            return super.getString(FLD_PUBDATE);
+        }
+
+        public Item pubDate(final String value) {
+            super.put(FLD_PUBDATE, value);
+            return this;
+        }
 
         public String image() {
             return super.getString(FLD_IMAGE);
@@ -386,6 +402,32 @@ public final class RssParser {
 
         public Collection<String> categories() {
             return JsonWrapper.toListOfString(this.category());
+        }
+
+        public JSONArray enclosure() {
+            if (!super.has(FLD_ENCLOSURE)) {
+                super.put(FLD_ENCLOSURE, new JSONArray());
+            } else {
+                final Object existing = super.get(FLD_ENCLOSURE);
+                if (!(existing instanceof JSONArray)) {
+                    super.put(FLD_ENCLOSURE, new JSONArray());
+                    super.getJSONArray(FLD_ENCLOSURE).put(existing);
+                }
+            }
+            return super.getJSONArray(FLD_ENCLOSURE);
+        }
+
+        public Item enclosure(final JSONArray value) {
+            super.put(FLD_ENCLOSURE, value);
+            return this;
+        }
+
+        public Collection<String> enclosures() {
+            return JsonWrapper.toListOfString(this.enclosure());
+        }
+
+        public String enclosure(final int index) {
+            return CollectionUtils.get(this.enclosures(), index, "");
         }
 
     }

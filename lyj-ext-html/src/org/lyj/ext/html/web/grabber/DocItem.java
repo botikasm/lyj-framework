@@ -1,8 +1,11 @@
 package org.lyj.ext.html.web.grabber;
 
+import org.lyj.commons.util.DateUtils;
+import org.lyj.commons.util.DateWrapper;
 import org.lyj.commons.util.URLWrapper;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +27,7 @@ public class DocItem {
     private String _title;
     private String _image;
     private String _description;
+    private Date _date;
 
     private String _html;       // html
     private String _text;       // html to text
@@ -39,6 +43,8 @@ public class DocItem {
 
         _url_list = new HashSet<>();
         _keywords = new HashSet<>();
+
+        _date = DateUtils.now();
     }
 
     // ------------------------------------------------------------------------
@@ -87,6 +93,22 @@ public class DocItem {
 
     public void image(final String value) {
         _image = value;
+    }
+
+    public Date date() {
+        return _date;
+    }
+
+    public void date(final Date value) {
+        _date = value;
+    }
+
+    public void date(final String value) {
+        try{
+            final Date date = DateWrapper.parse(value).getDateTime();
+            this.date(date);
+        } catch(Throwable ignored){
+        }
     }
 
     public String html() {

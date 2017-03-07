@@ -87,7 +87,8 @@ public abstract class WebIndexer {
 
     protected abstract void onTaskIndex(final String task_id, final WebIndexerSettings config,
                                         final Map<String, Double> keywords, final String title,
-                                        final String description, final String image, final String url);
+                                        final String description, final String image,
+                                        final Date date, final String url);
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
@@ -119,8 +120,8 @@ public abstract class WebIndexer {
 
                 _crawlers.put(crawler.uuid(), crawler);
 
-                crawler.settings().document()
-                crawler.settings().pageExclude(setting.pageExclude()); // exclude from crawler
+                crawler.settings().pagingMode(setting.rssPaging());     // only for RSS
+                crawler.settings().pageExclude(setting.pageExclude());  // exclude from crawler
                 crawler.settings().document().type(param_type);
                 crawler.settings().document().minKeywordSize(setting.keySize());
                 crawler.settings().document().autodetectContentThreashold(setting.contentSize());
@@ -162,6 +163,7 @@ public abstract class WebIndexer {
                 final String title = document.title();
                 final String description = document.description();
                 final String image = document.image();
+                final Date date = document.date();
 
                 final WebKeywordDetector keyword_detector = this.keywordTool(setting);
                 final Map<String, Double> keywords = keyword_detector.level(
@@ -171,7 +173,7 @@ public abstract class WebIndexer {
 
                 if (!keywords.isEmpty()) {
                     this.onTaskIndex(task_id, setting, keywords,
-                            title, description, image, document.urlNoHash());
+                            title, description, image, date, document.urlNoHash());
                 }
             } else {
                 // STOP INDEXING

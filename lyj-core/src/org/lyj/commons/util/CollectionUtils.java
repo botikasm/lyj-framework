@@ -1623,8 +1623,12 @@ public abstract class CollectionUtils {
     }
 
     public static <T> T get(final Collection<T> collection, final int index) {
+        return get(collection, index, null);
+    }
+
+    public static <T> T get(final Collection<T> collection, final int index, final T defVal) {
         if (collection.size() < index + 1) {
-            return null;
+            return defVal;
         }
         int i = 0;
         for (T item : collection) {
@@ -1633,7 +1637,7 @@ public abstract class CollectionUtils {
             }
             i++;
         }
-        return null;
+        return defVal;
     }
 
     /**

@@ -3,6 +3,7 @@ package org.lyj.ext.html.web.webindexer;
 import org.json.JSONArray;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
@@ -55,10 +56,14 @@ public class TestSiteIndexer
                                final WebIndexerSettings site,
                                final Map<String, Double> keywords,
                                final String title, final String description,
-                               final String image, final String url) {
+                               final String image, final Date date,
+                               final String url) {
         System.out.println("INDEXED: " + url);
         System.out.println("\tkeywords: " + keywords.keySet());
         System.out.println("\timage : " + image);
+        System.out.println("\ttitle : " + title);
+        System.out.println("\tdescription : " + description);
+        System.out.println("\tdate : " + date);
     }
 
 

@@ -29,8 +29,8 @@ public class CrawlerSettings
     private static final String FLD_NAVIGATE_EXTERNAL = "allow_external_links";
     private static final String FLD_LINK_LIMIT = "link_limit";
     private static final String FLD_LOOP_DETECTION_THREASHOLD = "loop_detection_threashold";
+    private static final String FLD_PAGING_MODE = "paging_mode";    // only  for RSS
     private static final String FLD_PAGE_EXCLUDE = "page_exclude";
-    private static final String FLD_PAGING_MODE = "paging_mode";    // only
     private static final String FLD_DOCUMENT = "document";          // document settings
 
 
@@ -81,6 +81,15 @@ public class CrawlerSettings
      */
     public CrawlerSettings loopDetectionThreashold(final int value) {
         super.put(FLD_LOOP_DETECTION_THREASHOLD, value);
+        return this;
+    }
+
+    public String pagingMode() {
+        return super.getString(FLD_PAGING_MODE);
+    }
+
+    public CrawlerSettings pagingMode(final String value) {
+        super.put(FLD_PAGING_MODE, value);
         return this;
     }
 
