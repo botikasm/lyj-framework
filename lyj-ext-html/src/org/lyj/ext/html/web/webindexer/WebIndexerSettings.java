@@ -24,6 +24,7 @@ public class WebIndexerSettings
     private final String FLD_CHANNEL_TAGS = "channel_tags"; // array of channels
     private final String FLD_UPDATE_EXISTING = "update_existing"; // root url
     private final String FLD_URL = "url"; // root url
+    private final String FLD_RSS_PAGING = "rss_paging"; // optional rss_paging (none=no-paging) default = paged
 
     private final String FLD_PAGE_EXCLUDE = "page_exclude"; // excluded from crawler
     private final String FLD_EXCLUDE = "exclude"; // excluded paths from indexing
@@ -35,6 +36,9 @@ public class WebIndexerSettings
     private final String FLD_PAGE_KEY_LIMIT = "page_key_limit";   // max number of keywords per page
     private final String FLD_CONTENT_SIZE = "content_size"; // min content threashold
     private final String FLD_DEFAULT_IMAGE = "default_image";
+
+    public static final String RSS_PAGING_NONE = "none";
+    public static final String RSS_PAGING_PAGED = "paged";
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -58,6 +62,15 @@ public class WebIndexerSettings
 
     public WebIndexerSettings type(final String value) {
         super.put(FLD_TYPE, value);
+        return this;
+    }
+
+    public String rssPaging() {
+        return super.getString(FLD_RSS_PAGING);
+    }
+
+    public WebIndexerSettings rssPaging(final String value) {
+        super.put(FLD_RSS_PAGING, value);
         return this;
     }
 

@@ -1,7 +1,10 @@
 package org.lyj.ext.html.web.grabber.rss;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.lyj.commons.network.URLUtils;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.html.utils.HtmlParserUtil;
 import org.lyj.ext.html.utils.RssParser;
 import org.lyj.ext.html.web.grabber.CrawlerSettings;
 import org.lyj.ext.html.web.grabber.DocItem;
@@ -9,6 +12,7 @@ import org.lyj.ext.html.web.grabber.DocItem;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 public class Rss2GrabberTask
@@ -81,6 +85,14 @@ public class Rss2GrabberTask
                 doc.content(item.content());
 
                 doc.keywords().addAll(item.categories());
+
+                if (!StringUtils.hasText(doc.image())) {
+                    final Document html = Jsoup.parse(doc.html());
+                    final Set<URL> images = HtmlParserUtil.getImages(html, doc.url());
+                    if (!images.isEmpty()) {
+                        doc.image(images.iterator().next().toString());
+                    }
+                }
 
                 _docs.add(doc);
 

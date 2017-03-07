@@ -971,7 +971,7 @@ public final class StringUtils {
     }
 
     public static boolean isXml(final Object value) {
-        final String string = null != value ? RegExpUtils.replaceLineTerminators(value.toString()) : "";
+        final String string = null != value ? RegExpUtils.replaceLineTerminators(value.toString()).trim() : "";
         return string.startsWith("<?xml") && string.endsWith(">");
     }
 

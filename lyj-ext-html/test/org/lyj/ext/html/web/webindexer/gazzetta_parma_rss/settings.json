@@ -1,0 +1,22 @@
+[
+  {
+    "type": "rss_2",
+    "channel_tag": "generic",
+    "url": "http://www.gazzettadiparma.it/rss.jsp?sezione=3",
+    "rss_paging":"none",
+    "default_image": "http://37.187.32.48/media/bots/h24hotel/room.png",
+    "intro_block": "web_search_intro",
+    "key_size": 5,
+    "key_exclude": [
+    ],
+    "key_replace": {
+      "siamo": "siete"
+    },
+    "page_limit": -1,
+    "page_key_limit": 3,
+    "lang": "it",
+    "exclude": [
+
+    ]
+  }
+]

@@ -6,6 +6,7 @@ import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.html.web.grabber.CrawlerSettings;
 import org.lyj.ext.html.web.grabber.AbstractGrabber;
 import org.lyj.ext.html.web.grabber.DocItem;
+import org.lyj.ext.html.web.webindexer.WebIndexerSettings;
 
 import java.net.URL;
 import java.util.HashSet;
@@ -22,6 +23,9 @@ public class Rss2Grabber
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
+
+    public static final String RSS_PAGING_NONE = WebIndexerSettings.RSS_PAGING_NONE;
+    public static final String RSS_PAGING_PAGED = WebIndexerSettings.RSS_PAGING_PAGED;
 
     // ------------------------------------------------------------------------
     //                      f i e l d s

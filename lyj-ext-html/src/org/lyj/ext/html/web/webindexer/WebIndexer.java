@@ -119,6 +119,7 @@ public abstract class WebIndexer {
 
                 _crawlers.put(crawler.uuid(), crawler);
 
+                crawler.settings().document()
                 crawler.settings().pageExclude(setting.pageExclude()); // exclude from crawler
                 crawler.settings().document().type(param_type);
                 crawler.settings().document().minKeywordSize(setting.keySize());

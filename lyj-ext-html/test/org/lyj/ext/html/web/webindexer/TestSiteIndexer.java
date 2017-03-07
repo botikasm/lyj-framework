@@ -57,7 +57,8 @@ public class TestSiteIndexer
                                final String title, final String description,
                                final String image, final String url) {
         System.out.println("INDEXED: " + url);
-        System.out.println("\t: " + keywords.keySet());
+        System.out.println("\tkeywords: " + keywords.keySet());
+        System.out.println("\timage : " + image);
     }
 
 
