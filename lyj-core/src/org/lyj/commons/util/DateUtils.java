@@ -106,15 +106,15 @@ public abstract class DateUtils {
     }
 
     public static String UnitFromInt(final int unit) {
-        if (MILLISECOND==unit) {
+        if (MILLISECOND == unit) {
             return sMILLISECOND;
-        } else if (SECOND==unit) {
+        } else if (SECOND == unit) {
             return sSECOND;
-        } else if (MINUTE==unit) {
+        } else if (MINUTE == unit) {
             return sMINUTE;
-        } else if (HOUR==unit) {
+        } else if (HOUR == unit) {
             return sHOUR;
-        } else if (DAY==unit) {
+        } else if (DAY == unit) {
             return sDAY;
         } else {
             return sMILLISECOND;
@@ -138,15 +138,15 @@ public abstract class DateUtils {
     }
 
     public static TimeUnit TimeUnitFromInt(final int unit) {
-        if (MILLISECOND==unit) {
+        if (MILLISECOND == unit) {
             return TimeUnit.MILLISECONDS;
-        } else if (SECOND==unit) {
+        } else if (SECOND == unit) {
             return TimeUnit.SECONDS;
-        } else if (MINUTE==unit) {
+        } else if (MINUTE == unit) {
             return TimeUnit.MINUTES;
-        } else if (HOUR==unit) {
+        } else if (HOUR == unit) {
             return TimeUnit.HOURS;
-        } else if (DAY==unit) {
+        } else if (DAY == unit) {
             return TimeUnit.DAYS;
         } else {
             return TimeUnit.MILLISECONDS;
@@ -718,6 +718,7 @@ public abstract class DateUtils {
 
     /**
      * 1=sunday, 2=monday, etc...
+     *
      * @return The day of week
      */
     public static int getDayOfWeek() {
@@ -869,10 +870,9 @@ public abstract class DateUtils {
     }
 
     /**
-     *
      * @param time Time string with pattern: 10:25, 10.25, 10,25
-     * @param now Time to check
-     * @return  true if passed time string is expired
+     * @param now  Time to check
+     * @return true if passed time string is expired
      */
     public static boolean isExpiredTime(final String time, final Date now) {
         try {
@@ -894,9 +894,52 @@ public abstract class DateUtils {
     }
 
     /**
+     * Calculate if passed time is inside a range of threshold_minutes from now.
      *
-     * @param date  String date in format yyyyMMdd
-     * @param now Date to check
+     * @param time              Time to check
+     * @param now               Current time or time to consider as start time
+     * @param threshold_minutes Minutes of validity from now.
+     */
+    public static boolean isWithinThreashold(final String time,
+                                             final Date now,
+                                             final int threshold_minutes) {
+        try {
+            if (StringUtils.hasText(time)) {
+                final String[] tokens = StringUtils.split(time, new String[]{":", ",", "."}); // 10:25
+                final int hour = ConversionUtils.toInteger(tokens[0], -1);
+                final int minutes = ConversionUtils.toInteger(tokens[1], -1);
+                final int now_hour = DateUtils.getHourOfDay(now);
+                final int now_min = DateUtils.getMinutes(now);
+                final int f = threshold_minutes / 60;
+                final int th_hour;
+                final int th_min;
+                if (threshold_minutes > 0) {
+                    if (f > 0) {
+                        th_hour = f;
+                        th_min = threshold_minutes - (f * 60);
+                    } else {
+                        th_hour = f;
+                        th_min = threshold_minutes;
+                    }
+                } else {
+                    th_hour = 0;
+                    th_min = 0;
+                }
+                final int t_now = now_hour * 60 + now_min;
+                final int t_now_max = (now_hour + th_hour) * 60 + (now_min + th_min);
+                final int t_check = hour * 60 + minutes;
+
+                return t_check>=t_now && t_check<=t_now_max;
+            }
+        } catch (Throwable ignored) {
+        }
+        return true;
+    }
+
+
+    /**
+     * @param date String date in format yyyyMMdd
+     * @param now  Date to check
      * @return true if passed date string is expired
      */
     public static boolean isExpiredDate(final String date, final Date now) {

@@ -32,6 +32,37 @@ public abstract class JsonConverter {
     // ------------------------------------------------------------------------
 
     /**
+     * Always return json object or json array
+     *
+     * @param value an object
+     * @return JSONObject or JSONArray
+     */
+    public static Object toJson(final Object value) {
+        if (value instanceof JsonItem) {
+            return ((JsonItem) value).json();
+        } else {
+            final Object compatible = toJsonCompatible(value);
+            if (compatible instanceof JSONArray) {
+                return compatible;
+            } else if (compatible instanceof JSONObject) {
+                return compatible;
+            } else if (compatible instanceof String) {
+                if (StringUtils.isJSON(compatible)) {
+                    if (StringUtils.isJSONObject(compatible)) {
+                        return new JSONObject((String) compatible);
+                    } else {
+                        return new JSONArray((String) compatible);
+                    }
+                }
+            }
+            // return array wrapping object
+            final JSONArray array = new JSONArray();
+            array.put(compatible);
+            return array;
+        }
+    }
+
+    /**
      * Return a JSON compatible value: Primitive, JSONObject, JSONArray
      *
      * @param value Value to convert

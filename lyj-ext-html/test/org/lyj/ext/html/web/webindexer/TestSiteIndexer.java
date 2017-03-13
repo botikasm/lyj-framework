@@ -39,20 +39,20 @@ public class TestSiteIndexer
         System.out.println(t);
     }
 
-    protected synchronized void onTaskError(final String task_id, final String url, final Throwable t) {
+    protected synchronized void onTaskError(final String task_group_id,final String task_id, final String url, final Throwable t) {
         System.out.println("ERROR: " + t.toString() + " " + url);
     }
 
-    protected void onTaskStarted(final String task_id, final WebIndexerSettings setting) {
+    protected void onTaskStarted(final String task_group_id,final String task_id, final WebIndexerSettings setting) {
         System.out.println("STARTED: " + setting.toString());
     }
 
-    protected void onTaskFinished(final String task_id, final Set<URL> paths) {
+    protected void onTaskFinished(final String task_group_id,final String task_id, final Set<URL> paths) {
         System.out.println("FINISHED");
     }
 
     @Override
-    protected void onTaskIndex(final String task_id,
+    protected void onTaskIndex(final String task_group_id,final String task_id,
                                final WebIndexerSettings site,
                                final Map<String, Double> keywords,
                                final String title, final String description,

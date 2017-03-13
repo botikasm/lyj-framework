@@ -3,6 +3,7 @@ package org.lyj.ext.html.web.webindexer;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.async.Async;
+import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.util.*;
 import org.lyj.ext.html.web.WebKeywordDetector;
 import org.lyj.ext.html.web.grabber.AbstractGrabber;
@@ -79,13 +80,13 @@ public abstract class WebIndexer {
 
     protected abstract void onError(final Throwable t);
 
-    protected abstract void onTaskError(final String task_id, final String url, final Throwable t);
+    protected abstract void onTaskError(final String task_group_id, final String task_id, final String url, final Throwable t);
 
-    protected abstract void onTaskStarted(final String task_id, final WebIndexerSettings site);
+    protected abstract void onTaskStarted(final String task_group_id, final String task_id, final WebIndexerSettings site);
 
-    protected abstract void onTaskFinished(final String task_id, final Set<URL> paths);
+    protected abstract void onTaskFinished(final String task_group_id, final String task_id, final Set<URL> paths);
 
-    protected abstract void onTaskIndex(final String task_id, final WebIndexerSettings config,
+    protected abstract void onTaskIndex(final String task_group_id, final String task_id, final WebIndexerSettings config,
                                         final Map<String, Double> keywords, final String title,
                                         final String description, final String image,
                                         final Date date, final String url);
@@ -107,6 +108,8 @@ public abstract class WebIndexer {
             throws Exception {
 
         final String task_id = RandomUtils.randomUUID();
+        final String task_group_id = MD5.encode(setting.toString());
+
         final String param_url = setting.url();
         final String param_type = setting.type();
 
@@ -116,7 +119,7 @@ public abstract class WebIndexer {
             final AbstractGrabber<DocItem> crawler = GrabberFactory.create(param_type);
             if (null != crawler) {
 
-                this.onTaskStarted(task_id, setting);
+                this.onTaskStarted(task_group_id, task_id, setting);
 
                 _crawlers.put(crawler.uuid(), crawler);
 
@@ -129,25 +132,26 @@ public abstract class WebIndexer {
                 crawler.settings().document().keyReplace(setting.keyReplace());
 
                 crawler.onError((url, err) -> {
-                    onTaskError(task_id, url.toString(), err);
+                    onTaskError(task_group_id, task_id, url.toString(), err);
                 });
                 crawler.onResult((document) -> {
-                    index(task_id, crawler, document, setting);
+                    index(task_group_id, task_id, crawler, document, setting);
                 });
 
                 crawler.onFinish((instance) -> {
-                    this.finish(task_id, crawler, crawler.urls());
+                    this.finish(task_group_id, task_id, crawler, crawler.urls());
                 });
 
                 crawler.startAsync(param_url);
             } else {
-                this.finish(task_id, null, new HashSet<>());
+                this.finish(task_group_id, task_id, null, new HashSet<>());
                 throw new Exception("Crawler not fount for type: " + param_type);
             }
         }
     }
 
-    private void index(final String task_id,
+    private void index(final String task_group_id,
+                       final String task_id,
                        final AbstractGrabber crawler,
                        final DocItem document,
                        final WebIndexerSettings setting) {
@@ -172,7 +176,7 @@ public abstract class WebIndexer {
                         keyword_detector.detect(description));
 
                 if (!keywords.isEmpty()) {
-                    this.onTaskIndex(task_id, setting, keywords,
+                    this.onTaskIndex(task_group_id, task_id, setting, keywords,
                             title, description, image, date, document.urlNoHash());
                 }
             } else {
@@ -189,7 +193,8 @@ public abstract class WebIndexer {
         return detector;
     }
 
-    private void finish(final String task_id,
+    private void finish(final String task_group_id,
+                        final String task_id,
                         final AbstractGrabber crawler,
                         final Set<URL> url_list) {
         if (!_finished) {
@@ -198,7 +203,7 @@ public abstract class WebIndexer {
             }
             _finished = _crawlers.isEmpty();
 
-            this.onTaskFinished(task_id, url_list);
+            this.onTaskFinished(task_group_id, task_id, url_list);
         }
     }
 }
