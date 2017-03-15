@@ -88,8 +88,8 @@ public abstract class ConversionUtils {
      *                    less than zero or the number style is not recognized)
      * @param locale      the {@link Locale} to be used
      * @return an instance of {@link NumberFormat} or <code>null</code>
-     *         if an instance cannot be constructed with the given
-     *         parameters
+     * if an instance cannot be constructed with the given
+     * parameters
      */
     public static NumberFormat getNumberFormat(int numberStyle, Locale locale) {
         try {
@@ -217,7 +217,7 @@ public abstract class ConversionUtils {
      * @param format - the format the number is in
      * @param locale - the {@link Locale}
      * @return the string as a {@link Number} or <code>null</code> if no
-     *         conversion is possible
+     * conversion is possible
      * @see NumberFormat#parse
      */
     public static Number toNumber(String value, String format, Locale locale) {
@@ -240,7 +240,7 @@ public abstract class ConversionUtils {
      * @param format - the format the number is in
      * @param locale - the {@link Locale}
      * @return the object as a {@link Number} or <code>null</code> if no
-     *         conversion is possible
+     * conversion is possible
      * @see NumberFormat#parse
      */
     public static Number toNumber(Object value, String format, Locale locale) {
@@ -316,7 +316,8 @@ public abstract class ConversionUtils {
         }
 
         try {
-            return Integer.parseInt(s);
+            final int factor = s.startsWith("-") ? -1 : 1;
+            return factor == -1 ? Integer.parseInt(s.replace("-", "")) * factor : Integer.parseInt(s);
         } catch (Throwable t) {
             return defValue;
         }
@@ -349,7 +350,7 @@ public abstract class ConversionUtils {
                 bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
                 result = bd.doubleValue();
             }
-            return null!=result ? result : defValue;
+            return null != result ? result : defValue;
         } catch (Throwable t) {
             return defValue;
         }
@@ -365,7 +366,7 @@ public abstract class ConversionUtils {
      *
      * @param value the object to be converted
      * @return a {@link Boolean} object for the specified value or
-     *         <code>null</code> if the value is null or the conversion failed
+     * <code>null</code> if the value is null or the conversion failed
      */
     public static Boolean toBoolean(final Object value, final Boolean defValue) {
         if (value instanceof Boolean) {
@@ -461,8 +462,8 @@ public abstract class ConversionUtils {
      * @param locale    the {@link Locale} to be used
      * @param timezone  the {@link TimeZone} to be used
      * @return an instance of {@link DateFormat} or <code>null</code>
-     *         if an instance cannot be constructed with the given
-     *         parameters
+     * if an instance cannot be constructed with the given
+     * parameters
      */
     public static DateFormat getDateFormat(final int dateStyle,
                                            final int timeStyle,
@@ -564,7 +565,7 @@ public abstract class ConversionUtils {
      * @param locale   - the {@link Locale}
      * @param timezone - the {@link TimeZone}
      * @return the object as a {@link Date} or <code>null</code> if no
-     *         conversion is possible
+     * conversion is possible
      * @see #getDateFormat
      * @see SimpleDateFormat#parse
      */
@@ -592,7 +593,7 @@ public abstract class ConversionUtils {
      * @param locale   - the {@link Locale}
      * @param timezone - the {@link TimeZone}
      * @return the string as a {@link Date} or <code>null</code> if the
-     *         parsing fails
+     * parsing fails
      * @see #getDateFormat
      * @see SimpleDateFormat#parse
      */
@@ -637,7 +638,7 @@ public abstract class ConversionUtils {
      *
      * @param value the object to be turned into a String
      * @return the string value of the object or null if the value is null
-     *         or it is an array whose first value is null
+     * or it is an array whose first value is null
      */
     public static String toString(final Object value) {
         if (value instanceof String) {
@@ -678,7 +679,7 @@ public abstract class ConversionUtils {
      *
      * @param values the Collection to be turned into a string
      * @return the string value of the first object in the collection
-     *         or null if the collection is empty
+     * or null if the collection is empty
      */
     public static String toString(Collection values) {
         if (values != null && !values.isEmpty()) {
@@ -742,19 +743,19 @@ public abstract class ConversionUtils {
 
 
     public static double bytesToMbyte(long bytes) {
-        return (double)bytes / MBYTE;
+        return (double) bytes / MBYTE;
     }
 
     public static double bytesToKbyte(long bytes) {
-        return (double)bytes / KBYTE;
+        return (double) bytes / KBYTE;
     }
 
     public static double bytesToMbyte(long bytes, final int decimals) {
-        return MathUtils.round((double)bytes / MBYTE, decimals);
+        return MathUtils.round((double) bytes / MBYTE, decimals);
     }
 
     public static double bytesToKbyte(long bytes, final int decimals) {
-        return MathUtils.round((double)bytes / KBYTE, decimals);
+        return MathUtils.round((double) bytes / KBYTE, decimals);
     }
 
     public static Charset toCharset(final Object val) {
@@ -858,7 +859,7 @@ public abstract class ConversionUtils {
      * @param object Instance to convert.
      * @param type   Destination type (e.g. Boolean.class).
      * @return Converted instance/datatype/collection or null if input object is
-     *         null.
+     * null.
      * @since 2.11.0
      */
     @SuppressWarnings("unchecked")
