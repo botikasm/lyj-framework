@@ -251,7 +251,7 @@ public final class JsonWrapper implements Cloneable {
     public Object deepRemove(final String path) {
         if (null != _object) {
             final Object result;
-            if (path.contains(".")) {
+            if (isPath(path)) {
                 final String[] tokens = StringUtils.splitLast(path, ".");
                 final JSONObject parent = JsonWrapper.getJSON(_object, tokens[0]);
                 result = JsonWrapper.remove(parent, tokens[1]);
@@ -1259,7 +1259,7 @@ public final class JsonWrapper implements Cloneable {
                                  final boolean autocreate) {
         final Object value = (val instanceof JsonWrapper) ? ((JsonWrapper) val).getObject() : val;
         try {
-            if (path.indexOf(".") > 0) {
+            if (isPath(path)) {
                 final int len = StringUtils.countOccurrencesOf(path, ".");
                 final String[] tokens = StringUtils.splitAt(len, path, ".");
                 final Object obj = getValueIfAny(item, tokens[0]);
@@ -1344,7 +1344,7 @@ public final class JsonWrapper implements Cloneable {
     public static boolean has(final Object object, final String path) {
         // check JSONObject
         if ((object instanceof JSONObject) && StringUtils.hasText(path)) {
-            if (!path.contains(".")) {
+            if (!isPath(path)) {
                 return ((JSONObject) object).has(path);
             }
             final String[] tokens = StringUtils.splitLast(path, ".");
@@ -1717,7 +1717,7 @@ public final class JsonWrapper implements Cloneable {
     public static void provide(final JSONObject item,
                                final String path) throws JSONException {
         if (null != item) {
-            if (path.indexOf(".") > 0) {
+            if (isPath(path)) {
                 final String[] tokens = StringUtils.splitAt(1, path, ".");
                 if (!item.has(tokens[0])) {
                     item.putOnce(tokens[0], new JSONObject());
@@ -1730,6 +1730,10 @@ public final class JsonWrapper implements Cloneable {
     // ------------------------------------------------------------------------
     //                      S T A T I C  p r i v a t e
     // ------------------------------------------------------------------------
+    private static boolean isPath(final String text) {
+        return text.indexOf(".")>0 && !text.trim().contains(" ");
+    }
+
     private static Logger getLoggerStatic() {
         return LoggingUtils.getLogger(JsonWrapper.class);
     }
