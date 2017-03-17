@@ -94,6 +94,16 @@ public class CompareUtils {
         return compare(o1, o2) < 0;
     }
 
+    public static boolean near(final double d1, final double d2,
+                               final double threshold) {
+        if (d1 == d2) {
+            return true;
+        }
+        final int decimals = MathUtils.countDecimals(threshold);
+        final double diff = MathUtils.round(Math.abs(d1 - d2), decimals);
+        return diff <= threshold;
+    }
+
     // --------------------------------------------------------------------
     //               p r i v a t e
     // --------------------------------------------------------------------

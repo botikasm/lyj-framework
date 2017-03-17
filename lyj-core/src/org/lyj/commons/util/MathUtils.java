@@ -691,6 +691,13 @@ public abstract class MathUtils {
         return value.indexOf('.') >= 0;
     }
 
+    public static int countDecimals(final double value) {
+        String text = Double.toString(Math.abs(value));
+        int integerPlaces = text.indexOf('.');
+        int decimalPlaces = text.length() - integerPlaces - 1;
+        return decimalPlaces;
+    }
+
     // --------------------------------------------------------------------
     //              S T A T I C
     // --------------------------------------------------------------------

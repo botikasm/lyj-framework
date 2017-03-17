@@ -48,4 +48,11 @@ public class CompareUtilsTest {
         assertTrue(CompareUtils.equals(arr1, arr2));
         assertFalse(CompareUtils.equals(arr1, arr3));
     }
+
+    @Test
+    public void testNear() throws Exception {
+        assertTrue(CompareUtils.near(2.3, 2.4, 0.1));
+        assertFalse(CompareUtils.near(2.2, 2.4, 0.1));
+    }
+
 }

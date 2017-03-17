@@ -758,6 +758,22 @@ public abstract class ConversionUtils {
         return MathUtils.round((double) bytes / KBYTE, decimals);
     }
 
+    public static double inchToMm(final double inch) {
+        return MathUtils.round(inchToCm(inch)*10.0, 4);
+    }
+
+    public static double mmToInch(final double mm) {
+        return cmToInch(mm/10.0);
+    }
+
+    public static double inchToCm(final double inch) {
+        return MathUtils.round(inch/0.39370, 4);
+    }
+
+    public static double cmToInch(final double cm) {
+        return MathUtils.round(cm*0.39370, 4);
+    }
+
     public static Charset toCharset(final Object val) {
         return toCharset(val, "UTF-8");
     }
