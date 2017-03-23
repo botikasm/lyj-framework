@@ -161,7 +161,7 @@ public class Program
         return this.getEngine();
     }
 
-    public Object run() throws Exception {
+    public synchronized Object run() throws Exception {
         return this.engine().eval();
     }
 

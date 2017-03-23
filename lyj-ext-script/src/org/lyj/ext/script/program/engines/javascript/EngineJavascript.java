@@ -80,16 +80,20 @@ public class EngineJavascript
     // ------------------------------------------------------------------------
 
     private void init() {
-        if (!_initialized) {
-            _initialized = true;
-            try {
-                // eval extended scripts
-                final String extension = super.loadResource(EXTENSION_FILE);
-                if (StringUtils.hasText(extension)) {
-                    _engine.eval(extension);
+        synchronized (this) {
+            if (!_initialized) {
+                try {
+                    // eval extended scripts
+                    final String extension = super.loadResource(EXTENSION_FILE);
+                    if (StringUtils.hasText(extension)) {
+                        _engine.eval(extension);
+                    } else {
+                        super.program().logger().warn("[ScriptEngine.init]", "EXTENSION 'ly' not loaded!");
+                    }
+                    _initialized = true;
+                } catch (Throwable t) {
+                    super.program().logger().error("[ScriptEngine.init]", t);
                 }
-            } catch (Throwable t) {
-                super.program().logger().error("[ScriptEngine.init]", t);
             }
         }
     }

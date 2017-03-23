@@ -621,6 +621,10 @@ public abstract class DateUtils {
         return new Date();
     }
 
+    public static long timestamp() {
+        return now().getTime();
+    }
+
     public static Date yesterday() {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
