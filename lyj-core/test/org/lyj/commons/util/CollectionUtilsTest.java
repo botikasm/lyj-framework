@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -16,10 +15,10 @@ public class CollectionUtilsTest {
 
     @Test
     public void testMerge() throws Exception {
-        byte[] arr1 = new byte[]{1,2,3};
-        byte[] arr2 = new byte[]{4,5,6,7};
+        byte[] arr1 = new byte[]{1, 2, 3};
+        byte[] arr2 = new byte[]{4, 5, 6, 7};
         byte[] arr3 = CollectionUtils.merge(arr1, arr2);
-        assertTrue(arr3.length==arr1.length+arr2.length);
+        assertTrue(arr3.length == arr1.length + arr2.length);
         assertEquals(arr1[0], arr3[0]);
         assertEquals(arr2[3], arr3[6]);
     }
@@ -43,6 +42,14 @@ public class CollectionUtilsTest {
 
         Collection<Collection> tokens = CollectionUtils.subList(list, 2);
         System.out.println(tokens);
-        assertTrue(tokens.size()==4);
+        assertTrue(tokens.size() == 4);
+
+        final String[] sarray = new String[]{"a", "b", "c", "d"};
+        final Collection<String> sub_sarray = CollectionUtils.subList(sarray, 2, 3);
+        System.out.println(StringUtils.toString(sub_sarray.toArray()));
+        System.out.println(StringUtils.toString(sub_sarray));
+
+        final String[] sub_sarray2 = CollectionUtils.subArray(sarray, 2, 3);
+        System.out.println(StringUtils.toString(sub_sarray2));
     }
 }

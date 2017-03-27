@@ -899,11 +899,11 @@ public abstract class CollectionUtils {
         return response;
     }
 
-    public static <T> T[] subList(final T[] list, final int fromIndex, final int toIndex) {
-        final List response = new LinkedList<>();
+    public static <T> Collection<T> subList(final T[] list, final int fromIndex, final int toIndex) {
+        final List<T> response = new LinkedList<T>();
         try {
             int count = 0;
-            for (Object item : list) {
+            for (T item : list) {
                 if (count > fromIndex - 1) {
                     response.add(item);
                 }
@@ -915,7 +915,26 @@ public abstract class CollectionUtils {
         } catch (Throwable ignored) {
             // index out of bound
         }
-        return (T[]) response.toArray(new Object[response.size()]);
+        return response;
+    }
+
+    public static String[] subArray(final String[] list, final int fromIndex, final int toIndex) {
+        final List<String> response = new LinkedList<>();
+        try {
+            int count = 0;
+            for (final String item : list) {
+                if (count > fromIndex - 1) {
+                    response.add(item);
+                }
+                count++;
+                if (count > toIndex) {
+                    break;
+                }
+            }
+        } catch (Throwable ignored) {
+            // index out of bound
+        }
+        return response.toArray(new String[response.size()]);
     }
 
     public static List<Collection> subList(final Collection list, final int subListSize) {
