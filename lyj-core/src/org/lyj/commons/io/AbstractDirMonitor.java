@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ *  Zip and Directories raise an event for each file.
  */
 public class AbstractDirMonitor
         extends AbstractLogEmitter {
@@ -117,7 +117,11 @@ public class AbstractDirMonitor
             }
         } finally {
             if (remove) {
-                file.delete();
+                try {
+                    FileUtils.delete(file.getPath());
+                } catch (Throwable t) {
+                    file.delete();
+                }
             }
         }
     }

@@ -57,7 +57,7 @@ public class JsonItem
             _data = ((JsonItem) item)._data;
         } else if (item instanceof Properties) {
             _data = new JsonWrapper(new JSONObject((Properties) item));
-        } else if (item instanceof Map){
+        } else if (item instanceof Map) {
             _data = new JsonWrapper(JsonWrapper.toJSONObject(item));
         } else {
             if (StringUtils.isJSONObject(item)) {
@@ -172,6 +172,28 @@ public class JsonItem
         for (final String key : keys) {
             if (!only_existing_fields || this.has(key)) {
                 this.putValue(key, values.get(key));
+            }
+        }
+        return this;
+    }
+
+    public JsonItem putAllNotEmpty(final JSONObject values,
+                                   final boolean only_existing_fields) {
+        return putAllNotEmpty(values, only_existing_fields, null);
+    }
+
+    public JsonItem putAllNotEmpty(final JSONObject values,
+                                   final boolean only_existing_fields,
+                                   final String[] exclude_fields) {
+        final Set<String> keys = values.keySet();
+        for (final String key : keys) {
+            if (!only_existing_fields || this.has(key)) {
+                if (!CollectionUtils.contains(exclude_fields, key)) {
+                    final Object value = values.opt(key);
+                    if (null != value) {
+                        this.putValue(key, value);
+                    }
+                }
             }
         }
         return this;

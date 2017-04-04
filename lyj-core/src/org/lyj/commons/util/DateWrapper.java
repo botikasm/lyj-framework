@@ -57,7 +57,13 @@ public class DateWrapper {
             "EEE, dd MM yyyy HH:mm:ss Z", // Tue, 05 06 2013 21:47:38 +0200
             "EEE, dd MM yyyy HH:mm:ss", // Tue, 05 06 2013 21:47:38
             "EEE, dd-MM-yyyy HH:mm:ss z", // Tue, 05-06-2013 21:47:38 GMT
-            "EEE, dd-MM-yyyy HH:mm:ss" // Tue, 05-06-2013 21:47:38
+            "EEE, dd-MM-yyyy HH:mm:ss", // Tue, 05-06-2013 21:47:38
+            "dd/MM/yyyy", // 13/01/2016
+            "dd/MM/yy", // 13/01/16
+            "MM/dd/yyyy", // 01/13/2016
+            "MM/dd/yy", // 01/13/16
+            "dd-MMM-yy",
+            "dd MMM yy"
     };
     public static final String DATEFORMAT_DEFAULT = PATTERNS[0];
     public static final String DATEFORMAT_GENERAL = PATTERNS[1];
