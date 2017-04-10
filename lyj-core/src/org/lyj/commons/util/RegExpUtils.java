@@ -117,7 +117,11 @@ public abstract class RegExpUtils {
         return emailMatcher.find();
     }
 
-    public static boolean isValidIntNumber(String value) {
+    public static boolean isNumeric(final String str){
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    }
+
+    public static boolean isValidIntNumber(final String value) {
         if (!StringUtils.hasText(value)) {
             return false;
         }
