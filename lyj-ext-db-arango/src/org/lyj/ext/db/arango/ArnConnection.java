@@ -3,6 +3,7 @@ package org.lyj.ext.db.arango;
 import com.arangodb.ArangoDB;
 import org.lyj.ext.db.AbstractDatabaseConnection;
 import org.lyj.ext.db.IDatabase;
+import org.lyj.ext.db.arango.serialization.ArangoJsonItemSerializer;
 import org.lyj.ext.db.configuration.DatabaseConfiguration;
 import org.lyj.ext.db.configuration.DatabaseConfigurationCredential;
 import org.lyj.ext.db.configuration.DatabaseConfigurationHost;
@@ -90,7 +91,11 @@ public class ArnConnection
             final String host = hosts.length > 0 ? hosts[0].host() : "";
             final int port = hosts.length > 0 ? hosts[0].port() : 0;
 
-            __connection = new ArangoDB.Builder().host(host).port(port).user(username).password(password).build();
+            __connection = new ArangoDB.Builder()
+                    .host(host, port)
+                    .user(username).password(password)
+                    //.registerModule(new ArangoJsonItemSerializer())
+                    .build();
         }
         return __connection;
     }

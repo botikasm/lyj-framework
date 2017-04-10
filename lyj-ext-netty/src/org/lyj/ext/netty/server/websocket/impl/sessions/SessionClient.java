@@ -14,7 +14,7 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.JsonConverter;
+import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.HttpServerConfig;

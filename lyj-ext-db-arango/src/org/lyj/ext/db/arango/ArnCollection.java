@@ -80,6 +80,7 @@ public class ArnCollection<T>
         return this.collection().count().getCount();
     }
 
+    /*
     public long count(final String query, final Map<String, Object> bindArgs) {
         try {
             long count = 0;
@@ -87,6 +88,20 @@ public class ArnCollection<T>
             while (cursor.hasNext()) {
                 cursor.next();
                 count++;
+            }
+            return count;
+        } catch (Throwable ignored) {
+            return 0;
+        }
+    }*/
+
+    public long count(final String query, final Map<String, Object> bindArgs) {
+        try {
+            final String count_query = "LET collection_response = (" + query + ") RETURN LENGTH(collection_response)";
+            long count = 0;
+            final ArangoCursor<Long> cursor = _db.query(count_query, bindArgs, null, Long.class);
+            if (cursor.hasNext()) {
+                return cursor.next();
             }
             return count;
         } catch (Throwable ignored) {

@@ -110,7 +110,7 @@ public class ArangoConnectorTest {
     @Test
     public void nonASCII() throws Exception {
 
-        IDatabaseCollection<String> collection = this.collection("sample");
+        IDatabaseCollection<String> collection = TestHelper.collection("sample");
 
         final Set<String> keys = new HashSet<>();
         for (int i = 0; i < 100; i++) {
@@ -160,7 +160,7 @@ public class ArangoConnectorTest {
         final String no_working_item = "{\"name\":\"job_04_detail_1\",\"seven__\":\"123456789\",\"_key\":\"191d936d-1eb9-4094-9c1c-9e0ba1d01867\",\"lang\":\"it\",\"value\":\"[CTO]\\n Ha supervisionato e gestito il reparto di R&D per il software, 1234567 formulando una visione di lungo periodo con la Direzione dell'Azienda.\"}";
         final String working_item = "{\"name1\":\"job_04_detail_1\",\"seven__\":\"123456789\",\"_key\":\"191d936d-1eb9-4094-9c1c-9e0ba1d01867\",\"lang\":\"it\",\"value\":\"[CTO]\\n Ha supervisionato e gestito il reparto di R&D per il software, 1234567 formulando una visione di lungo periodo con la Direzione dell'Azienda.\"}";
 
-        IDatabaseCollection<String> collection = this.collection("sample");
+        IDatabaseCollection<String> collection = TestHelper.collection("sample");
 
         final String new_item = collection.insert(working_item);
 
@@ -171,16 +171,5 @@ public class ArangoConnectorTest {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private IDatabaseCollection<String> collection(final String coll_name) throws DatabaseDoesNotExists {
-        DatabaseConfiguration configuration = new DatabaseConfiguration();
-        configuration.add(new DatabaseConfigurationHost().host("localhost").port(8529),
-                new DatabaseConfigurationCredential().username("root").password("!qaz2WSX098"));
 
-        ArnConnector.instance().add("sample", configuration);
-        IDatabaseConnection connection = ArnConnector.instance().connection("sample");
-
-        IDatabase db = connection.database("test");
-
-        return db.collection(coll_name, String.class);
-    }
 }

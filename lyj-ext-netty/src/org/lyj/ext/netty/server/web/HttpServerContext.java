@@ -2,8 +2,8 @@ package org.lyj.ext.netty.server.web;
 
 import org.json.JSONObject;
 import org.lyj.commons.util.*;
+import org.lyj.commons.util.converters.JsonConverter;
 
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -268,19 +268,32 @@ public class HttpServerContext
     // ------------------------------------------------------------------------
 
     private static String validateJson(final Object obj) {
+        /*
         String response = "";
         if (obj instanceof Map) {
             final JSONObject json = new JSONObject((Map) obj);
             response = json.toString();
         } else if (StringUtils.isJSON(obj)) {
             response = obj.toString();
-        } else if (obj instanceof Collection){
+        } else if (obj instanceof Collection) {
             response = JsonWrapper.toJSONArray(obj).toString();
         } else {
             final JSONObject json = new JSONObject();
             json.putOpt(FLD_RESPONSE, null != obj ? obj.toString() : "");
             response = json.toString();
         }
+        */
+
+        // convert to json compatible value
+        String response = JsonConverter.toJson(obj).toString();
+
+        // wrap  a simple value
+        if(!StringUtils.isJSON(response)){
+            final JSONObject json = new JSONObject();
+            json.putOpt(FLD_RESPONSE, null != response ? response : "");
+            response = json.toString();
+        }
+        
         // check eur symbol that can cause problems (2 more bytes are needed)
         // TODO: REMOVE THIS UGLY CODE
         if (StringUtils.isJSON(response) && response.contains("€")) {

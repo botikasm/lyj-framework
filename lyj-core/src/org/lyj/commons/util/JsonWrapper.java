@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
+import org.lyj.commons.util.converters.MapConverter;
 
 import java.util.*;
 
@@ -948,20 +949,7 @@ public final class JsonWrapper implements Cloneable {
      * @return Converted Map.
      */
     public static Map<String, Object> toMap(final JSONObject item) {
-        final Map<String, Object> result = new LinkedHashMap<String, Object>();
-        final Iterator keys = item.keys();
-        while (keys.hasNext()) {
-            final String name = keys.next().toString();
-            if (null != name) {
-                final Object value = item.opt(name);
-                if (value instanceof JSONObject) {
-                    result.put(name, toMap((JSONObject) value));
-                } else {
-                    result.put(name, null != value ? value : "");
-                }
-            }
-        }
-        return result;
+        return MapConverter.toMap(item);
     }
 
     public static Map<String, Object> toFlatMap(final JSONObject item) {
