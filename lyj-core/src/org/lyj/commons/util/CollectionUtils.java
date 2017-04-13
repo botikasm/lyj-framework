@@ -962,6 +962,15 @@ public abstract class CollectionUtils {
     //
     //---------------------------------------------------------------------
 
+    public static boolean contains(final JSONArray string_array, final String value) {
+        return indexOf(string_array, value) > -1;
+    }
+
+    public static boolean contains(final JSONArray list, final String fieldName,
+                                   final Object fieldValue) {
+        return indexOf(list, fieldName, fieldValue) > -1;
+    }
+
     public static boolean contains(final Collection list, final String fieldName,
                                    final Object fieldValue) {
         return indexOf(list, fieldName, fieldValue) > -1;
@@ -1623,6 +1632,13 @@ public abstract class CollectionUtils {
                 separator);
         final String result = get(array, index);
         return null != result ? result : defaultValue;
+    }
+
+    public static <T> T get(final JSONArray array, int index) {
+        if (array.length() < index + 1) {
+            return null;
+        }
+        return (T) array.get(index);
     }
 
     public static <T> T get(T[] array, int index) {

@@ -174,10 +174,11 @@ public abstract class PathUtils
         if (path == null) {
             return null;
         }
-        final int separatorIndex = path.lastIndexOf(FOLDER_SEPARATOR);
+        final String unix_path = toUnixPath(path);
+        final int separatorIndex = unix_path.lastIndexOf(FOLDER_SEPARATOR);
         final String filename = separatorIndex != -1
-                ? path.substring(separatorIndex + 1)
-                : path;
+                ? unix_path.substring(separatorIndex + 1)
+                : unix_path;
         if (!includeextension) {
             return stripFilenameExtension(filename);
         } else {

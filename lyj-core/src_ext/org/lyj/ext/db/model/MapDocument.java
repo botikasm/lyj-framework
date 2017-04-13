@@ -153,12 +153,12 @@ public class MapDocument
         return ConversionUtils.toBoolean(super.get(name), def_val);
     }
 
-    public MapDocument getJSONObject(final String name) {
-        return this.getJSONObject(name, true);
+    public MapDocument getMap(final String name) {
+        return this.getMap(name, true);
     }
 
-    public MapDocument getJSONObject(final String name,
-                                     final boolean auto_create) {
+    public MapDocument getMap(final String name,
+                              final boolean auto_create) {
         final Object response = super.get(name);
         final MapDocument item;
         if (null != response) {
@@ -179,6 +179,15 @@ public class MapDocument
         return item;
     }
 
+    public JSONObject getJSONObject(final String name) {
+        return this.getJSONObject(name, true);
+    }
+
+    public JSONObject getJSONObject(final String name,
+                                    final boolean auto_create) {
+        return JsonConverter.toObject(this.getMap(name, auto_create));
+    }
+
     public JSONArray getJSONArray(final String name) {
         return this.getJSONArray(name, true);
     }
@@ -197,7 +206,7 @@ public class MapDocument
                               final boolean auto_create) {
         final Object response = super.get(name);
         final MapList list;
-        
+
         if (null != response) {
             list = new MapList(MapConverter.toList(response));
         } else if (auto_create) {
