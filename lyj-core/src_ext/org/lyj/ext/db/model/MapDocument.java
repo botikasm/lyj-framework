@@ -83,6 +83,39 @@ public class MapDocument
         return this;
     }
 
+    @Override
+    public void putAll(final Map<? extends String, ?> item) {
+        final Set<? extends String> keys = item.keySet();
+        for (final String key : keys) {
+            this.put(key, item.get(key));
+        }
+    }
+
+    public void putAll(final Map<? extends String, ?> item, final boolean only_existing_fields) {
+        final Set<? extends String> keys = item.keySet();
+        for (final String key : keys) {
+            if (!only_existing_fields || this.has(key)) {
+                this.put(key, item.get(key));
+            }
+        }
+    }
+
+    public void putAll(final JSONObject item) {
+        final Set<String> keys = item.keySet();
+        for (final String key : keys) {
+            this.put(key, item);
+        }
+    }
+
+    public void putAll(final JSONObject item, final boolean only_existing_fields) {
+        final Set<String> keys = item.keySet();
+        for (final String key : keys) {
+            if (!only_existing_fields || this.has(key)) {
+                this.put(key, item.get(key));
+            }
+        }
+    }
+
     public MapDocument putNotEmpty(final String key, final Object value) {
         if (null != value && StringUtils.hasText(value.toString())) {
             this.put(key, value);
@@ -162,8 +195,10 @@ public class MapDocument
         final Object response = super.get(name);
         final MapDocument item;
         if (null != response) {
-            if (response instanceof MapDocument) {
-                item = (MapDocument) response;
+            if(response instanceof MapDocument){
+                item = (MapDocument)response;
+            }else if (response instanceof Map) {
+                item = new MapDocument(response);
             } else {
                 // convert to json document
                 super.put(name, new MapDocument(response));
@@ -176,6 +211,7 @@ public class MapDocument
             return null;
         }
         super.put(name, item);
+        
         return item;
     }
 
