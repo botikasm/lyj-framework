@@ -18,8 +18,10 @@ package org.lyj.ext.netty.server.web.base.web;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.ssl.NotSslRecordException;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
+import org.lyj.commons.util.FormatUtils;
 import org.lyj.ext.netty.server.web.HttpServer;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
 import org.lyj.ext.netty.server.web.controllers.HttpServerRequestContext;
@@ -61,7 +63,11 @@ public class WebServerHandler
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
-        this.logger().error(cause.toString());
+        if(cause instanceof NotSslRecordException){
+            // request is not SSL
+        } else {
+            this.logger().error(FormatUtils.format("[%s.%s]: %s", this.getClass().getName(), "exceptionCaught", cause.toString()));
+        }
         if (ctx.channel().isActive()) {
             ResponseUtil.sendError(ctx, INTERNAL_SERVER_ERROR);
         }
