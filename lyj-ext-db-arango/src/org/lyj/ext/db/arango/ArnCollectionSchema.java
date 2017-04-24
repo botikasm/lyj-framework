@@ -3,10 +3,10 @@ package org.lyj.ext.db.arango;
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoDatabase;
 import com.arangodb.model.HashIndexOptions;
-import com.sun.tools.javac.util.List;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.ext.db.IDatabaseCollectionSchema;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -42,7 +42,7 @@ public class ArnCollectionSchema
         try {
             final HashIndexOptions options = new HashIndexOptions();
             options.unique(unique);
-            _collection.createHashIndex(List.from(fields), options);
+            _collection.createHashIndex(Arrays.asList(fields), options);
         } catch (Throwable ignored) {
 
         }

@@ -567,6 +567,10 @@ public abstract class CollectionUtils {
         return sb.toString();
     }
 
+    public static <T> List<T> toList(final T[] collection) {
+        return Arrays.asList(collection);
+    }
+
     public static <T> T[] toArray(final Collection<T> collection) {
         return isEmpty(collection) ? (T[]) new Object[0] : collection.toArray((T[]) new Object[collection.size()]);
     }
