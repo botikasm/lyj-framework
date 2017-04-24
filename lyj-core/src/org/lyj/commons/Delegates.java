@@ -96,6 +96,11 @@ public class Delegates {
     }
 
     @FunctionalInterface
+    public static interface CallbackThrowable<T> {
+        void handle(final T data) throws Exception;
+    }
+
+    @FunctionalInterface
     public static interface CallbackEntry<K, V> {
         void handle(final K param1, final V param2);
     }

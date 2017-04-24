@@ -197,6 +197,7 @@ public class HttpServer extends AbstractLogEmitter {
                             .sslProvider(SslProvider.JDK).build();
                 }
             } else {
+                super.warning("createSSL", "Starting with Self-Signed Certificate.");
                 SelfSignedCertificate ssc = new SelfSignedCertificate();
                 return SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey())
                         .sslProvider(SslProvider.JDK).build();

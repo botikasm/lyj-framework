@@ -13,11 +13,11 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/netty-4.1.7" />
+          <root url="file://$MODULE_DIR$/vendor/netty-4.1.9" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.7" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.9" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="module-library">

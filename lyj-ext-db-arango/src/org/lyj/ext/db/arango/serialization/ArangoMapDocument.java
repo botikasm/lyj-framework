@@ -1,10 +1,7 @@
 package org.lyj.ext.db.arango.serialization;
 
-import org.json.JSONObject;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.db.model.MapDocument;
-
-import java.util.Map;
 
 /**
  *
