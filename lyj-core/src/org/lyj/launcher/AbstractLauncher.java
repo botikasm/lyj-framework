@@ -215,6 +215,7 @@ public abstract class AbstractLauncher {
             final CmdLineParser.Option testOpt = parser.addBooleanOption('t', "test"); // test mode (only for test unit)
             final CmdLineParser.Option adminOpt = parser.addBooleanOption('a', "admin"); // admin mode (only for administration mode)
             final CmdLineParser.Option proxyOpt = parser.addBooleanOption('p', "proxy"); // proxy (-p true, -p false) if true uses system proxy
+            final CmdLineParser.Option debugOpt = parser.addBooleanOption('d', "debug");
 
             parser.parse(args);
 
@@ -237,6 +238,9 @@ public abstract class AbstractLauncher {
 
             final boolean test = (Boolean) parser.getOptionValue(testOpt, false);
             _argsMap.put("t", test);
+
+            final boolean debug = (Boolean) parser.getOptionValue(debugOpt, false);
+            _argsMap.put("d", debug);
 
             final boolean admin = (Boolean) parser.getOptionValue(adminOpt, false);
             _argsMap.put("a", admin);

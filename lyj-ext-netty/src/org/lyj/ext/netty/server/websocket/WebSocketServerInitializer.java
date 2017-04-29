@@ -23,6 +23,11 @@ public class WebSocketServerInitializer
     public void initChannel(final SocketChannel ch) throws Exception {
         final ChannelPipeline pipeline = ch.pipeline();
 
+        // SSL ( must be the first )
+        if (_server.ssl() != null) {
+            pipeline.addLast(_server.ssl().newHandler(ch.alloc()));
+        }
+
         pipeline.addLast(new HttpServerCodec());
         pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new WebSocketServerCompressionHandler());

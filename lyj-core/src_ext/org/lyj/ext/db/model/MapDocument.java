@@ -179,7 +179,7 @@ public class MapDocument
     }
 
     public boolean getBoolean(final String name) {
-        return this.getBoolean(name, true);
+        return this.getBoolean(name, false);
     }
 
     public boolean getBoolean(final String name, final boolean def_val) {
