@@ -65,7 +65,7 @@ public class AbstractDirMonitor
     // ------------------------------------------------------------------------
 
     public boolean useTask() {
-        return _task_interval>0;
+        return _task_interval > 0;
     }
 
     public long taskInterval() {
