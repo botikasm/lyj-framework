@@ -49,7 +49,7 @@ public class AbstractDirMonitor
     // ------------------------------------------------------------------------
 
     public AbstractDirMonitor(final String path) {
-        this(path, DEFAULT_LOOP_INTERVAL);
+        this(path, 0);
     }
 
     public AbstractDirMonitor(final String path,
