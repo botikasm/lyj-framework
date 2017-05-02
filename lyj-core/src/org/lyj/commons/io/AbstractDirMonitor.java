@@ -90,7 +90,8 @@ public class AbstractDirMonitor
 
             _watchdog = new FileObserver(_root_monitor, (event, path) -> {
                 try {
-                    if (event == FileObserver.EVENT_CREATE) {
+                    if (event == FileObserver.EVENT_CREATE
+                            || event == FileObserver.EVENT_MODIFY) {
                         // new file to install?
                         final File file = new File(path);
                         this.handle(file, true);
