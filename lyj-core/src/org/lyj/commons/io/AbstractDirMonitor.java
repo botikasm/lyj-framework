@@ -340,8 +340,6 @@ public class AbstractDirMonitor
                         _owner.error("MonitorTask#handle",
                                 FormatUtils.format("Found '%s' errors. First error is '%s'", errors.size(), errors.get(0)));
                     }
-                } catch (Throwable t) {
-
                 } finally {
                     _busy = false;
                 }
