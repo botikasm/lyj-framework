@@ -343,7 +343,6 @@ public class AbstractDirMonitor
                 } finally {
                     _busy = false;
                 }
-
             }
         }
 
