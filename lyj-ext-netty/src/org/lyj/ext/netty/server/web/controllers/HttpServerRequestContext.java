@@ -6,6 +6,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.*;
+import org.json.JSONObject;
 import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.RandomUtils;
@@ -290,9 +291,13 @@ public class HttpServerRequestContext {
             final String content = _content_buffer.toString(charset());
             try {
                 if (StringUtils.isJSONObject(content)) {
-                    final Map<String, Object> map = new JsonWrapper(content).toMap();
-                    for (final Map.Entry<String, Object> entry : map.entrySet()) {
-                        result.put(entry.getKey(), StringUtils.toString(entry.getValue()));
+                    final JSONObject map = new JSONObject(content);
+                    final Set<String> keys = map.keySet();
+                    for(final String key:keys){
+                        final Object value = map.opt(key);
+                        if(null!=value){
+                            result.put(key, StringUtils.toString(value));
+                        }
                     }
                 } else {
                     final String[] tokens = StringUtils.split(content, "&", true);
