@@ -27,6 +27,7 @@ import org.lyj.commons.lang.Base64;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
+import org.lyj.commons.util.RandomUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -35,6 +36,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Simple DES encoder/decoder
+ *
+ * Key must be 56 bit (8 byte)
  *
  * @author angelo.geminiani
  */
@@ -139,4 +142,16 @@ public final class DESEncrypter {
         final SecretKeySpec sk = new SecretKeySpec(bytes, "DES");
         return sk;
     }
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    /**
+     * Generate 56bit (8 byte) key
+     */
+    public static String generate8ByteKey() {
+        return RandomUtils.randomAscii(8);
+    }
+
 }
