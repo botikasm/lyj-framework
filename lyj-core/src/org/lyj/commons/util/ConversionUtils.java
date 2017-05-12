@@ -374,7 +374,7 @@ public abstract class ConversionUtils {
         }
         try {
             final String s = value.toString();
-            return (s != null) ? Boolean.valueOf(s) : defValue;
+            return StringUtils.hasText(s) ? Boolean.valueOf(s) : defValue;
         } catch (Throwable ignored) {
             return defValue;
         }
