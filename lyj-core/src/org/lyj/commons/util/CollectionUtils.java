@@ -1131,6 +1131,22 @@ public abstract class CollectionUtils {
         return -1;
     }
 
+    public static <T> T get(final Collection<T> list, final String fieldName,
+                            final Object fieldValue) {
+        if (!isEmpty(list)) {
+            final Iterator<T> iterator = list.iterator();
+            while (iterator.hasNext()) {
+                final T item = iterator.next();
+                final Object value = BeanUtils.getValueIfAny(item, fieldName);
+                if (CompareUtils.equals(value, fieldValue)) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+
     @SuppressWarnings("unchecked")
     public static int indexOfLike(Class[] a, Class key) {
         if (null == a || a.length == 0 || null == key) {

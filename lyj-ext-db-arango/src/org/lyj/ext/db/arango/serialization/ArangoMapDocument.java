@@ -14,8 +14,8 @@ public class ArangoMapDocument
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final String FLD_KEY = "_key";
-    private static final String FLD_REV = "_rev";
+    protected static final String FLD_KEY = "_key";
+    protected static final String FLD_REV = "_rev";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
