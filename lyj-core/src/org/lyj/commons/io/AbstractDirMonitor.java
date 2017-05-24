@@ -25,7 +25,7 @@ public class AbstractDirMonitor
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final int RETRY_IDLE = 1000;
+    private static final int RETRY_IDLE = 5000;
     private static final int RETRY_COUNT = 20;
 
     private static final int DEFAULT_LOOP_INTERVAL = 15000;
@@ -40,6 +40,7 @@ public class AbstractDirMonitor
     private FileObserver _watchdog;
     private Timed _timed_task;
     private Delegates.CallbackThrowable<File> _callback; // invoked for each single file (zip are deflated)
+    private Delegates.Callback<File> _callback_on_before_delete;
 
     // properties
     private long _task_interval = DEFAULT_LOOP_INTERVAL;
@@ -77,12 +78,26 @@ public class AbstractDirMonitor
         return this;
     }
 
+    public void onBeforeDeleteFile(final Delegates.Callback<File> callback) {
+        _callback_on_before_delete = callback;
+    }
+
+    public void onFile(final Delegates.CallbackThrowable<File> callback) {
+        _callback = callback;
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public void open() {
+        this.open(null);
+    }
+
     public void open(final Delegates.CallbackThrowable<File> callback) {
-        _callback = callback;
+        if (null != callback) {
+            _callback = callback;
+        }
 
         // creates paths
         FileUtils.tryMkdirs(_root_monitor);
@@ -208,7 +223,7 @@ public class AbstractDirMonitor
 
                         // should remove file?
                         if (remove) {
-                            AbstractDirMonitor.deleteFileAsync(file);
+                            AbstractDirMonitor.deleteFileAsync(file, _callback_on_before_delete);
                         }
 
                         this.popFile(file);
@@ -291,13 +306,19 @@ public class AbstractDirMonitor
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
-    private static void deleteFileAsync(final File file) {
+    private static void deleteFileAsync(final File file,
+                                        final Delegates.Callback<File> callback) {
         Async.delay((args) -> {
-            AbstractDirMonitor.deleteFile(file);
+            AbstractDirMonitor.deleteFile(file, callback);
         }, 1000);
     }
 
-    private static void deleteFile(final File file) {
+    private static void deleteFile(final File file,
+                                   final Delegates.Callback<File> callback) {
+        try {
+            Delegates.invoke(callback, file);
+        } catch (Throwable ignored) {
+        }
         try {
             FileUtils.delete(file.getPath());
         } catch (Throwable t) {
@@ -339,6 +360,13 @@ public class AbstractDirMonitor
                         // errors checking files
                         _owner.error("MonitorTask#handle",
                                 FormatUtils.format("Found '%s' errors. First error is '%s'", errors.size(), errors.get(0)));
+
+                        // some errors occurred
+                        // wait a little before restart the task
+                        try{
+                            Thread.sleep(RETRY_IDLE);
+                        } catch(Throwable ignored){
+                        }
                     }
                 } finally {
                     _busy = false;
