@@ -15,8 +15,14 @@ public class StringUtilsTest {
 
     @Test
     public void testToString() throws Exception {
-         String str = StringUtils.toString(new String[]{"val1", "val2"});
-         assertTrue(str.equalsIgnoreCase("val1,val2"));
+        String str = StringUtils.toString(new String[]{"val1", "val2"});
+        assertTrue(str.equalsIgnoreCase("val1,val2"));
+    }
+
+    @Test
+    public void testFill() throws Exception {
+        String str = StringUtils.fillString("123456", "0", 8);
+        assertTrue(str.equalsIgnoreCase("00123456"));
     }
 
     @Test
