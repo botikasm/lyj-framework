@@ -78,6 +78,6 @@ public interface IDatabaseCollection<T> {
 
     Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort);
 
-    Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort, final int limit);
+    Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort, final int offset, final int count);
 
 }

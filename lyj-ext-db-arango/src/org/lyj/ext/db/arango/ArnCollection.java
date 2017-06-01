@@ -110,7 +110,7 @@ public class ArnCollection<T>
     }
 
     public long countEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs, null, 0);
+        final String query = this.queryEqual(bindArgs, null, 0, 0);
         return this.count(query, bindArgs);
     }
 
@@ -219,12 +219,12 @@ public class ArnCollection<T>
     }
 
     public T removeOneEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs, null, 0);
+        final String query = this.queryEqual(bindArgs, null, 0, 0);
         return this.removeOne(query, bindArgs);
     }
 
     public Collection<T> removeEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs, null, 0);
+        final String query = this.queryEqual(bindArgs, null, 0, 0);
         return this.remove(query, bindArgs);
     }
 
@@ -277,7 +277,7 @@ public class ArnCollection<T>
     @Override
     public void forEachEqual(final Map<String, Object> bindArgs, final Delegates.FunctionArg<T, Boolean> callback) {
         if (null != callback) {
-            final String query = this.queryEqual(bindArgs, null, 0);
+            final String query = this.queryEqual(bindArgs, null, 0, 0);
             this.forEach(query, bindArgs, callback);
         }
     }
@@ -285,7 +285,7 @@ public class ArnCollection<T>
     public void forEachEqualAsc(final Map<String, Object> bindArgs, final String[] sort,
                                 final Delegates.FunctionArg<T, Boolean> callback) {
         if (null != callback) {
-            final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), 0);
+            final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), 0, 0);
             this.forEach(query, bindArgs, callback);
         }
     }
@@ -293,7 +293,7 @@ public class ArnCollection<T>
     public void forEachEqualDesc(final Map<String, Object> bindArgs, final String[] sort,
                                  final Delegates.FunctionArg<T, Boolean> callback) {
         if (null != callback) {
-            final String query = this.queryEqual(bindArgs, this.sortMap(SORT_DESC, sort), 0);
+            final String query = this.queryEqual(bindArgs, this.sortMap(SORT_DESC, sort), 0, 0);
             this.forEach(query, bindArgs, callback);
         }
     }
@@ -316,22 +316,23 @@ public class ArnCollection<T>
     }
 
     public T findOneEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs, null, 0);
+        final String query = this.queryEqual(bindArgs, null, 0, 0);
         return this.findOne(query, bindArgs);
     }
 
     public Collection<T> findEqual(final Map<String, Object> bindArgs) {
-        final String query = this.queryEqual(bindArgs, null, 0);
+        final String query = this.queryEqual(bindArgs, null, 0, 0);
         return this.find(query, bindArgs);
     }
 
     public Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort) {
-        final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), 0);
+        final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), 0, 0);
         return this.find(query, bindArgs);
     }
 
-    public Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort, final int limit) {
-        final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), limit);
+    public Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort,
+                                   final int offset, final int count) {
+        final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), offset, count);
         return this.find(query, bindArgs);
     }
 
@@ -412,7 +413,8 @@ public class ArnCollection<T>
 
     private String queryEqual(final Map<String, Object> params,
                               final Map<String, String[]> sort_fields,
-                              final int limit) {
+                              final int limit_offset,
+                              final int limit_count) {
         final Set<String> names = params.keySet();
         final StringBuilder sb = new StringBuilder();
         sb.append(FormatUtils.format(QUERY_FOR, super.name()));
@@ -448,8 +450,8 @@ public class ArnCollection<T>
         }
 
         // limit
-        if (limit > 0) {
-            sb.append(" ").append("LIMIT ").append(limit);
+        if (limit_count > 0) {
+            sb.append(" ").append("LIMIT ").append(limit_offset).append(", ").append(limit_count);
         }
 
         // return
