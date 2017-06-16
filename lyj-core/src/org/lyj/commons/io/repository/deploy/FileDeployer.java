@@ -20,7 +20,7 @@
 
 package org.lyj.commons.io.repository.deploy;
 
-import org.lyj.commons.Delegates;
+import org.json.JSONObject;
 import org.lyj.commons.cryptograph.GUID;
 import org.lyj.commons.io.repository.FileRepository;
 import org.lyj.commons.io.repository.Resource;
@@ -59,8 +59,9 @@ public abstract class FileDeployer {
     // ------------------------------------------------------------------------
 
     private final FileDeployerSettings _settings;
-    private final String _startFolder;
-    private final String _targetFolder;
+
+    private String _startFolder;
+    private String _targetFolder;
     private boolean _overwrite;
     private String[] _always_overwrite_items;
     private String[] _never_overwrite_items;
@@ -72,6 +73,16 @@ public abstract class FileDeployer {
     // ------------------------------------------------------------------------
     //                      Constructor
     // ------------------------------------------------------------------------
+
+    public FileDeployer() {
+        this("", "", false, false, false);
+    }
+
+    public FileDeployer(final String startFolder,
+                        final String targetFolder) {
+        this(startFolder, targetFolder, false, false, false);
+    }
+
     public FileDeployer(final String startFolder,
                         final String targetFolder,
                         final boolean verbose,
@@ -91,6 +102,7 @@ public abstract class FileDeployer {
                 this.getClass().getSimpleName(), startFolder, targetFolder);
 
         _settings = new FileDeployerSettings(_globalSettings);
+
         _startFolder = startFolder;
         _targetFolder = targetFolder;
         _overwrite = false;
@@ -104,6 +116,21 @@ public abstract class FileDeployer {
         this.init();
     }
 
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append(this.getClass().getName());
+
+        final JSONObject obj = new JSONObject();
+        obj.put("start_folder", _startFolder);
+        obj.put("target_folder", _startFolder);
+        obj.put("overwrite", _overwrite);
+
+        sb.append(" ").append(obj.toString());
+
+        return sb.toString();
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -112,8 +139,16 @@ public abstract class FileDeployer {
         return _settings;
     }
 
+    public void setSourceFolder(final String value) {
+        _startFolder = value;
+    }
+
     public String getSourceFolder() {
         return _startFolder;
+    }
+
+    public void setTargetFolder(final String value) {
+        _targetFolder = value;
     }
 
     public String getTargetFolder() {
@@ -221,9 +256,11 @@ public abstract class FileDeployer {
             // targetPath is absolute file name of deployed file
             String targetPath;
             if (children) {
-                targetPath = (new File(PathUtils.merge(targetFolder, PathUtils.subtract(_startFolder, filename)))).getAbsolutePath();
+                targetPath = (new File(PathUtils.merge(PathUtils.getAbsolutePath(targetFolder),
+                        PathUtils.subtract(_startFolder, filename)))).getAbsolutePath();
             } else {
-                targetPath = (new File(PathUtils.merge(targetFolder, filename))).getAbsolutePath();
+                targetPath = (new File(PathUtils.merge(PathUtils.getAbsolutePath(targetFolder),
+                        filename))).getAbsolutePath();
             }
             final String targetName = (new File(targetPath)).getName();
             final boolean exists = PathUtils.exists(targetPath); //target.exists();
@@ -399,7 +436,8 @@ public abstract class FileDeployer {
                     this.getClass().getSimpleName(), result.size());
 
         } catch (Throwable t) {
-            this.getLogger().severe(FormatUtils.format("Unable to Create FileDeployer: {0}", t));
+            this.getLogger().severe(FormatUtils.format("Unable to Create FileDeployer '{0}': {1}",
+                    this.toString(), t));
         }
 
         return result;

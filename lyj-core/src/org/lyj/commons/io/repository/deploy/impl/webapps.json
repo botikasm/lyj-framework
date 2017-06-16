@@ -1,0 +1,10 @@
+{
+  "apps": {
+    "app": {
+      "deploy": {
+        "path": "./htdocs",
+        "exclude":["/src/*"]
+      }
+    }
+  }
+}
