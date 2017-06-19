@@ -37,7 +37,7 @@ public class FileItem {
     private final String _root;
     private final String _folder;
 
-    public FileItem(final Object deployer,
+    public FileItem(final Class deployer,
                     final String root,
                     final String absolutePath) {
         _absolutePath = PathUtils.validateFolderSeparator(absolutePath);
@@ -47,7 +47,7 @@ public class FileItem {
             if (!this.isJar(_absolutePath)) {
                 _fileName = PathUtils.subtract(_root, _absolutePath);
                 _relativePath = PathUtils.merge(
-                        PathUtils.getPackagePath(deployer.getClass()),
+                        PathUtils.getPackagePath(deployer),
                         _fileName);
             } else {
                 // root: file:/C:/lib/BEEingX.jar!/org/sf/quickpin/htdocs/

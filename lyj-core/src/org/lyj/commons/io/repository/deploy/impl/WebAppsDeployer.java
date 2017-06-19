@@ -35,10 +35,11 @@ public class WebAppsDeployer
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public WebAppsDeployer(final String start_path,
+    public WebAppsDeployer(final Class<? extends WebAppsDeployController> owner_class,
+                           final String start_path,
                            final String target_path,
                            final String[] exclude) {
-        super(start_path, target_path);
+        super(owner_class, start_path, target_path);
 
         super.setOverwrite(true); // always overwrite
         for (final String item : exclude) {

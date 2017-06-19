@@ -59,9 +59,11 @@ public abstract class FileDeployer {
     // ------------------------------------------------------------------------
 
     private final FileDeployerSettings _settings;
+    private final Class<? extends FileDeployer> _class_owner; // used to get resources from package
 
     private String _startFolder;
     private String _targetFolder;
+
     private boolean _overwrite;
     private String[] _always_overwrite_items;
     private String[] _never_overwrite_items;
@@ -74,13 +76,15 @@ public abstract class FileDeployer {
     //                      Constructor
     // ------------------------------------------------------------------------
 
-    public FileDeployer() {
-        this("", "", false, false, false);
-    }
-
     public FileDeployer(final String startFolder,
                         final String targetFolder) {
-        this(startFolder, targetFolder, false, false, false);
+        this(null, startFolder, targetFolder, true, false, false, false);
+    }
+
+    public FileDeployer(final Class class_owner,
+                        final String startFolder,
+                        final String targetFolder) {
+        this(class_owner, startFolder, targetFolder, true, false, false, false);
     }
 
     public FileDeployer(final String startFolder,
@@ -88,10 +92,20 @@ public abstract class FileDeployer {
                         final boolean verbose,
                         final boolean debugApp,
                         final boolean debugJs) {
-        this(startFolder, targetFolder, false, verbose, debugApp, debugJs);
+        this(null, startFolder, targetFolder, true, verbose, debugApp, debugJs);
     }
 
     public FileDeployer(final String startFolder,
+                        final String targetFolder,
+                        final boolean silent,
+                        final boolean verbose,
+                        final boolean debugApp,
+                        final boolean debugJs) {
+        this(null, startFolder, targetFolder, silent, verbose, debugApp, debugJs);
+    }
+
+    public FileDeployer(final Class class_owner,
+                        final String startFolder,
                         final String targetFolder,
                         final boolean silent,
                         final boolean verbose,
@@ -101,6 +115,7 @@ public abstract class FileDeployer {
                         + "Start Folder: '{1}', Target Folder: '{2}'",
                 this.getClass().getSimpleName(), startFolder, targetFolder);
 
+        _class_owner = null != class_owner ? class_owner : this.getClass();
         _settings = new FileDeployerSettings(_globalSettings);
 
         _startFolder = startFolder;
@@ -429,7 +444,7 @@ public abstract class FileDeployer {
 
             //-- creates resource and add to list --//
             for (final String child : children) {
-                result.add(new FileItem(this, root, child));
+                result.add(new FileItem(_class_owner, root, child));
             }
 
             this.logInfo("Created FileDeployer '{0}'. Resources: {1}",
@@ -453,7 +468,7 @@ public abstract class FileDeployer {
     }
 
     private String getRootFullPath() {
-        final URL url = ClassLoaderUtils.getResource(null, this.getClass(), "");
+        final URL url = ClassLoaderUtils.getResource(null, _class_owner, "");
         return null != url ? url.getPath() : "";
     }
 

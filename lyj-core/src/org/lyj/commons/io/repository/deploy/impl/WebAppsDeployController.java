@@ -12,6 +12,12 @@ import java.util.LinkedList;
 import java.util.Set;
 
 /**
+ * Extends this class to create a parametrized deployed.
+ * Subclass must be located in root path of resources to deploy.
+ * Deploy parameters are defined in a json configuration file.
+ *
+ * i.e.:
+ *
  * {
  * "app": {
  * "deploy": {
@@ -24,8 +30,9 @@ import java.util.Set;
  * }
  * }
  * }
+ *
  */
-public class WebAppsDeployController {
+public abstract class WebAppsDeployController {
 
 
     // ------------------------------------------------------------------------
@@ -50,7 +57,7 @@ public class WebAppsDeployController {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    private WebAppsDeployController() {
+    public WebAppsDeployController() {
         _deployers = new LinkedList<>();
     }
 
@@ -84,7 +91,7 @@ public class WebAppsDeployController {
                     final String path = item.getString(FLD_DEPLOY_PATH);
                     final String[] exclude = JsonWrapper.toArrayOfString(item.getJSONArray(FLD_DEPLOY_EXCLUDE));
                     if (StringUtils.hasText(path)) {
-                        _deployers.add(new WebAppsDeployer(key, path, exclude));
+                        _deployers.add(new WebAppsDeployer(this.getClass(), key, path, exclude));
                     }
                 }
 
@@ -99,18 +106,6 @@ public class WebAppsDeployController {
     }
 
 
-    // ------------------------------------------------------------------------
-    //                      S T A T I C
-    // ------------------------------------------------------------------------
-
-    private static WebAppsDeployController __instance;
-
-    public static WebAppsDeployController instance() {
-        if (null == __instance) {
-            __instance = new WebAppsDeployController();
-        }
-        return __instance;
-    }
 
 
 }
