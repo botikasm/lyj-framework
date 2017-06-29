@@ -24,7 +24,8 @@ public class MessageBusEventWrapper {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public MessageBusEventWrapper(final Event event, final int timeout){
+    public MessageBusEventWrapper(final Event event,
+                                  final int timeout) {
         _event = event;
         _timeout = timeout;
         _timestamp = System.currentTimeMillis();
@@ -33,7 +34,7 @@ public class MessageBusEventWrapper {
 
     @Override
     public void finalize() throws Throwable {
-        try{
+        try {
 
         } finally {
             super.finalize();
@@ -48,31 +49,35 @@ public class MessageBusEventWrapper {
         return _event;
     }
 
-    public boolean isExpired(){
+    public boolean isExpired() {
         return (System.currentTimeMillis() - _timestamp) > _timeout;
     }
 
-    public boolean match(final String tag, final String name){
+    public void setExpired() {
+        _timeout = 0;
+    }
+
+    public boolean match(final String tag, final String name) {
         final String event_tag = _event.getTag();
         final String event_name = _event.getName();
         boolean result = true;
-        if(StringUtils.hasText(tag)){
+        if (StringUtils.hasText(tag)) {
             result = tag.equals(event_tag);
         }
-        if(result && StringUtils.hasText(name)){
+        if (result && StringUtils.hasText(name)) {
             result = name.equals(event_name);
         }
         return result;
     }
 
-    public boolean isListened(final String id){
-        synchronized (_listeners){
+    public boolean isListened(final String id) {
+        synchronized (_listeners) {
             return _listeners.contains(id);
         }
     }
 
-    public MessageBusEventWrapper setListened(final String id){
-        synchronized (_listeners){
+    public MessageBusEventWrapper setListened(final String id) {
+        synchronized (_listeners) {
             _listeners.add(id);
         }
         return this;
@@ -81,7 +86,6 @@ public class MessageBusEventWrapper {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
-
 
 
 }

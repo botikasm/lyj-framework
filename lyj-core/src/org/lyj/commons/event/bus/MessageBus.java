@@ -24,7 +24,7 @@ public class MessageBus {
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final int DEF_EVENT_TIMEOUT = 2 * 1000;
+    private static final int DEF_EVENT_TIMEOUT = 5 * 1000;  // default timeout
     private static final int DEF_GC_INTERVAL = 2 * 1000;
     private static final int DEF_LISTEN_INTERVAL = 500;
 

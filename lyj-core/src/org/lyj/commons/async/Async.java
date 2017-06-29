@@ -102,6 +102,19 @@ public abstract class Async {
         }
     }
 
+    public static void sleep(final int delay){
+        final Task<Void> task = new Task<>((t)->{
+            try {
+                Async.delay((args) -> {
+                    t.success(null);
+                }, delay);
+            }catch(Throwable err){
+               t.fail(err);
+            }
+        });
+        task.getSilent();
+    }
+
     public static void maxConcurrent(final Thread[] threads,
                                      final int maxConcurrentThreads) {
         maxConcurrent(threads, maxConcurrentThreads, null);

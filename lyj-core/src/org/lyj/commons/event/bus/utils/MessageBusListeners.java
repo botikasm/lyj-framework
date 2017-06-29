@@ -1,7 +1,6 @@
 package org.lyj.commons.event.bus.utils;
 
 import org.lyj.commons.async.future.Timed;
-import org.lyj.commons.event.Event;
 import org.lyj.commons.event.IEventListener;
 import org.lyj.commons.event.bus.MessageBus;
 import org.lyj.commons.event.bus.MessageListener;
@@ -46,21 +45,22 @@ public class MessageBusListeners {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public int getInterval(){
+    public int getInterval() {
         return _interval;
     }
 
-    public void setInterval(final int value){
+    public void setInterval(final int value) {
         _interval = value;
 
         // reset task
-        if(null!=_task) {
+        if (null != _task) {
             _task.stop(true);
             _task = null;
             _task = new ListenersTask(this, value);
             _task.start();
         }
     }
+
 
     public int size() {
         return _listeners.size();
@@ -102,6 +102,13 @@ public class MessageBusListeners {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    private void processBus() {
+        if (!_bus.isDisposed()) {
+            final MessageBusEvents eventBus = _bus.events();
+            this.process(eventBus);
+        }
+    }
+
     private void process(final MessageBusEvents eventBus) {
         synchronized (_listeners) {
             final List<MessageListener> remove_list = new ArrayList<>();
@@ -114,18 +121,21 @@ public class MessageBusListeners {
                     final String id = listener.getId();
                     final String name = listener.getEventName();
                     final String[] tags = listener.getEventTags();
-                    final Event[] events = eventBus.listen(id, tags, name);
+                    final MessageBusEventWrapper[] events = eventBus.listen(id, tags, name);
                     if (events.length > 0) {
                         final IEventListener[] executors = listener.listeners();
                         if (executors.length > 0) {
-                            for (final Event event : events) {
+                            for (final MessageBusEventWrapper event : events) {
+                                // call all listeners for this event
                                 for (final IEventListener executor : executors) {
                                     try {
-                                        executor.on(event);
+                                        executor.on(event.event());
                                     } catch (Throwable t) {
                                         remove_list.add(listener); // mark as remove
                                     }
                                 }
+                                // already listened
+                                event.setExpired();
                             }
                         }
                     }
@@ -188,6 +198,8 @@ public class MessageBusListeners {
                 } catch (Throwable err) {
                     super.error("run", FormatUtils.format("Error running garbage collector for EventBus: %s",
                             ExceptionUtils.getMessage(err)));
+                } finally {
+
                 }
             });
         }
@@ -199,7 +211,7 @@ public class MessageBusListeners {
         private void run() {
             if (null != _listeners) {
                 try {
-                    _listeners.process(_listeners._bus.events());
+                    _listeners.processBus();
                 } catch (Throwable ignored) {
                 }
             }

@@ -103,30 +103,30 @@ public class MessageBusEvents {
         return this;
     }
 
-    public Event[] listen(final String listenerId, final Set<String> tags, final String name) {
+    public MessageBusEventWrapper[] listen(final String listenerId, final Set<String> tags, final String name) {
         return this.listen(listenerId, null != tags ? tags.toArray(new String[tags.size()]) : new String[0], name);
     }
 
-    public Event[] listen(final String listenerId, final String[] tags, final String name) {
+    public MessageBusEventWrapper[] listen(final String listenerId, final String[] tags, final String name) {
         synchronized (_events) {
-            final List<Event> response = new ArrayList<>();
-            for (final MessageBusEventWrapper event : _events) {
+            final List<MessageBusEventWrapper> response = new ArrayList<>();
+            for (final MessageBusEventWrapper event_wrapper : _events) {
                 if (CollectionUtils.isEmpty(tags)) {
                     // no tag filter
-                    if (this.match(event, listenerId, null, name)) {
-                        response.add(event.setListened(listenerId).event());
+                    if (this.match(event_wrapper, listenerId, null, name)) {
+                        response.add(event_wrapper.setListened(listenerId));
                     }
                 } else {
                     // tag filter
                     for (final String tag : tags) {
-                        if (this.match(event, listenerId, tag, name)) {
-                            response.add(event.setListened(listenerId).event());
+                        if (this.match(event_wrapper, listenerId, tag, name)) {
+                            response.add(event_wrapper.setListened(listenerId));
                         }
                     }
                 }
             }
 
-            return response.toArray(new Event[response.size()]);
+            return response.toArray(new MessageBusEventWrapper[response.size()]);
         }
     }
 
