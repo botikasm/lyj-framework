@@ -307,12 +307,14 @@ public class ArnCollection<T>
     }
 
     public Collection<T> find(final String query, final Map<String, Object> bindArgs) {
+        return super.database().find(query, bindArgs, super.entityClass());
+        /*
         final Collection<T> response = new LinkedList<T>();
         final ArangoCursor<T> cursor = _db.query(query, bindArgs, null, super.entityClass());
         while (cursor.hasNext()) {
             response.add(cursor.next());
         }
-        return response;
+        return response;*/
     }
 
     public T findOneEqual(final Map<String, Object> bindArgs) {
@@ -325,14 +327,25 @@ public class ArnCollection<T>
         return this.find(query, bindArgs);
     }
 
-    public Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort) {
+    public Collection<T> findEqualAsc(final Map<String, Object> bindArgs, final String[] sort) {
         final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), 0, 0);
         return this.find(query, bindArgs);
     }
 
-    public Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort,
-                                   final int offset, final int count) {
+    public Collection<T> findEqualAsc(final Map<String, Object> bindArgs, final String[] sort,
+                                      final int offset, final int count) {
         final String query = this.queryEqual(bindArgs, this.sortMap(SORT_ASC, sort), offset, count);
+        return this.find(query, bindArgs);
+    }
+
+    public Collection<T> findEqualDesc(final Map<String, Object> bindArgs, final String[] sort) {
+        final String query = this.queryEqual(bindArgs, this.sortMap(SORT_DESC, sort), 0, 0);
+        return this.find(query, bindArgs);
+    }
+
+    public Collection<T> findEqualDesc(final Map<String, Object> bindArgs, final String[] sort,
+                                       final int offset, final int count) {
+        final String query = this.queryEqual(bindArgs, this.sortMap(SORT_DESC, sort), offset, count);
         return this.find(query, bindArgs);
     }
 

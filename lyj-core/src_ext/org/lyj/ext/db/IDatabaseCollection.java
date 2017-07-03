@@ -76,8 +76,11 @@ public interface IDatabaseCollection<T> {
 
     Collection<T> findEqual(final Map<String, Object> bindArgs);
 
-    Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort);
+    Collection<T> findEqualAsc(final Map<String, Object> bindArgs, final String[] sort);
 
-    Collection<T> findEqual(final Map<String, Object> bindArgs, final String[] sort, final int offset, final int count);
+    Collection<T> findEqualAsc(final Map<String, Object> bindArgs, final String[] sort, final int offset, final int count);
 
+    Collection<T> findEqualDesc(final Map<String, Object> bindArgs, final String[] sort);
+
+    Collection<T> findEqualDesc(final Map<String, Object> bindArgs, final String[] sort, final int offset, final int count);
 }

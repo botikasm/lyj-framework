@@ -1,14 +1,13 @@
 package org.lyj.ext.db.arango;
 
+import com.arangodb.ArangoCursor;
 import com.arangodb.ArangoDB;
 import com.arangodb.ArangoDatabase;
 import com.arangodb.entity.CollectionEntity;
 import org.lyj.ext.db.AbstractDatabase;
 import org.lyj.ext.db.IDatabaseCollection;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  *
@@ -61,6 +60,17 @@ public class ArnDatabase
     @Override
     public <T> IDatabaseCollection<T> collection(final String name, final Class<T> entityClass) {
         return new ArnCollection<>(this, this.db(), name, entityClass);
+    }
+
+    public <T> Collection<T> find(final String query,
+                                  final Map<String, Object> bindArgs,
+                                  final Class<T> entityClass) {
+        final Collection<T> response = new LinkedList<T>();
+        final ArangoCursor<T> cursor = this.db().query(query, bindArgs, null, entityClass);
+        while (cursor.hasNext()) {
+            response.add(cursor.next());
+        }
+        return response;
     }
 
     // ------------------------------------------------------------------------
