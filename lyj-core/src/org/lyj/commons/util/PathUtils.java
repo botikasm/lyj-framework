@@ -863,7 +863,7 @@ public abstract class PathUtils
             return false;
         }
         final String lower = path.toLowerCase();
-        return lower.startsWith("web:") || lower.startsWith("https:");
+        return lower.startsWith("web:") || lower.startsWith("http:") ||lower.startsWith("https:");
     }
 
     public static boolean isFtp(final String path) {
