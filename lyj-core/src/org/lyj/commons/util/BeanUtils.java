@@ -768,15 +768,25 @@ public abstract class BeanUtils {
                             continue;
                         }
                     } else {
-                        // try with some standard field names
-                        for (final String fname : ID_FIELDS) {
-                            try {
-                                final Object value = getSimplePropertyValue(item, fname);
-                                if (CompareUtils.equals(value, fieldValue)) {
-                                    return item;
+                        // check if "fieldValue" is an index. i.e. "[0]"
+                        if (fieldValue instanceof String && ((String) fieldValue).startsWith("[")) {
+                            final int index = ConversionUtils.toInteger(
+                                    StringUtils.replace(fieldValue.toString(), new String[]{"[", "]"}, "")
+                            );
+                            if (index == i) {
+                                return item;
+                            }
+                        } else {
+                            // try with some standard field names
+                            for (final String fname : ID_FIELDS) {
+                                try {
+                                    final Object value = getSimplePropertyValue(item, fname);
+                                    if (CompareUtils.equals(value, fieldValue)) {
+                                        return item;
+                                    }
+                                } catch (Throwable t) {
+                                    continue;
                                 }
-                            } catch (Throwable t) {
-                                continue;
                             }
                         }
                     }

@@ -71,12 +71,12 @@ public class PathUtilsTest {
     @Test
     public void testResolve() throws Exception {
 
-        String root = "web://localhost/dir1/dir2/";
+        String root = "http://localhost/dir1/dir2/";
         String path = "../../file.html";
         String concat = root + path;
         String resolved = PathUtils.resolve(concat);
 
-        assertTrue(resolved.equalsIgnoreCase("web://localhost/file.html"));
+        assertTrue(resolved.equalsIgnoreCase("http://localhost/file.html"));
         System.out.println(resolved);
 
     }
@@ -84,33 +84,33 @@ public class PathUtilsTest {
     @Test
     public void addUriParameters() throws Exception {
 
-        String root = "web://localhost/dir1/dir2/";
+        String root = "http://localhost/dir1/dir2/";
         Map<String, String> params = new HashMap<String, String>();
         params.put("param1", "value1");
         params.put("param2", "value2 value2bis");
 
         String resolved = PathUtils.addURIParameters(root, params, true);
 
-        assertTrue(resolved.equalsIgnoreCase("web://localhost/dir1/dir2/?param1=value1&param2=value2+value2bis"));
+        assertTrue(resolved.equalsIgnoreCase("http://localhost/dir1/dir2/?param1=value1&param2=value2+value2bis"));
         System.out.println(resolved);
 
-        root = "web://localhost/dir1/dir2/?param1=value1";
+        root = "http://localhost/dir1/dir2/?param1=value1";
         params = new HashMap<String, String>();
         params.put("param2", "value2 value2bis");
 
         resolved = PathUtils.addURIParameters(root, params, true);
 
-        assertTrue(resolved.equalsIgnoreCase("web://localhost/dir1/dir2/?param1=value1&param2=value2+value2bis"));
+        assertTrue(resolved.equalsIgnoreCase("http://localhost/dir1/dir2/?param1=value1&param2=value2+value2bis"));
         System.out.println(resolved);
 
-        root = "web://localhost/dir1/dir2/?param1=value1";
+        root = "http://localhost/dir1/dir2/?param1=value1";
         params = new HashMap<String, String>();
         params.put("param1", "value1_replaced");
         params.put("param2", "value2 value2bis");
 
         resolved = PathUtils.addURIParameters(root, params, true);
 
-        assertTrue(resolved.equalsIgnoreCase("web://localhost/dir1/dir2/?param1=value1_replaced&param2=value2+value2bis"));
+        assertTrue(resolved.equalsIgnoreCase("http://localhost/dir1/dir2/?param1=value1_replaced&param2=value2+value2bis"));
         System.out.println(resolved);
     }
 

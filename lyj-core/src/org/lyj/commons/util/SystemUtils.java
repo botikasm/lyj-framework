@@ -53,7 +53,7 @@ public abstract class SystemUtils {
         tbz2("tbz2://"),
         gz("gz://"),
         bz2("bz2://"),
-        http("web://"),
+        http("http://"),
         https("https://"),
         webdav("webdav://"),
         ftp("ftp://"),

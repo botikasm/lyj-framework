@@ -31,7 +31,7 @@ import org.lyj.commons.util.FormatUtils;
  */
 public final class IPLocator {
 
-    private static final String URL_PATTERN = "web://api.hostip.info/get_html.php?ip={0}&position=true";
+    private static final String URL_PATTERN = "http://api.hostip.info/get_html.php?ip={0}&position=true";
 
     private IPLocator() {
     }

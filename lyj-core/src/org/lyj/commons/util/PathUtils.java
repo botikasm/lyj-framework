@@ -47,7 +47,7 @@ public abstract class PathUtils
     // ------------------------------------------------------------------------
 
     /**
-     * Array of file system types. i.e. ["web://", "ftp://", ...] *
+     * Array of file system types. i.e. ["http://", "ftp://", ...] *
      */
     public static final String[] FILESYSTEM_TYPES = SystemUtils.FileType.getValues();
 
@@ -371,7 +371,7 @@ public abstract class PathUtils
 
     /**
      * Replace all windows folder separator "\" with java separator "/".
-     * Remove also duplicates, but preserve protocols ("web://", "ftp://", etc..).
+     * Remove also duplicates, but preserve protocols ("http://", "ftp://", etc..).
      *
      * @param path path to convert. i.e. "c:\\myfile.txt", "file:///path//folder/file.txt"
      * @return converted path. i.e. : "c:/myfile.txt", "file:///path/folder/file.txt"
@@ -387,7 +387,7 @@ public abstract class PathUtils
      * @param path      path to convert. i.e. "c:\\myfile.txt"
      *                  are removed. i.e. "//" become "/".
      * @param exclusion Array of esclusions from duplicates replacement.
-     *                  i.e. ["file://", "web://"]
+     *                  i.e. ["file://", "http://"]
      * @return converted path. i.e. : "c:/myfile.txt"
      */
     public static String toUnixPath(final String path,
@@ -522,7 +522,7 @@ public abstract class PathUtils
 
     /**
      * Transform a path in relative path adding a dot (.) at beginning.<br/>
-     * If path has a protocol (i.e. "web://"), the absolute path is returned.
+     * If path has a protocol (i.e. "http://"), the absolute path is returned.
      *
      * @param path Path. i.e. "/system/templates"
      * @return Relative path. i.e. "./system/templates"
@@ -809,7 +809,7 @@ public abstract class PathUtils
             return false;
         } else if (checkpath.indexOf(":") > 0
                 || checkpath.startsWith(FOLDER_SEPARATOR)) {
-            // 'c:', 'web://'
+            // 'c:', 'http://'
             return true;
         }
         return false;
@@ -836,7 +836,7 @@ public abstract class PathUtils
     public static boolean isAbsoluteOS(final String path) {
         final String checkpath = toUnixPath(path);
         if (checkpath.indexOf(":") > 0) {
-            // 'c:', 'web://'
+            // 'c:', 'http://'
             return true;
         } else if (checkpath.startsWith("./") || checkpath.startsWith("../")) {
             // './', '../'

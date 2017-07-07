@@ -1442,7 +1442,7 @@ public final class StringUtils {
      *
      * @param text       Text to check for duplicates
      * @param symbol     character to remove duplicates
-     * @param exclusions Array of strings. i.e. ["file://", "web://"]
+     * @param exclusions Array of strings. i.e. ["file://", "http://"]
      * @return cleaned from duplicates string
      */
     public static String replaceDuplicates(final String text,

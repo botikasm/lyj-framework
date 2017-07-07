@@ -36,7 +36,7 @@ import java.util.Map;
 public class TinyUrl
         implements IURLShortener {
 
-    private static final String API_URL = "web://tinyurl.com/api-create.php?url={url}";
+    private static final String API_URL = "http://tinyurl.com/api-create.php?url={url}";
 
     @Override
     public String getShortUrl(final String url) throws Exception {

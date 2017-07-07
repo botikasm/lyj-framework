@@ -296,7 +296,7 @@ public class NetworkUtils {
 
         List list = null;
         try {
-            list = ProxySelector.getDefault().select(new URI("web://foo/bar"));
+            list = ProxySelector.getDefault().select(new URI("http://foo/bar"));
         } catch (URISyntaxException e) {
             LoggingUtils.getLogger().log(Level.SEVERE, null, e);
         }
