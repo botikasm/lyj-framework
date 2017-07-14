@@ -3,6 +3,7 @@ package org.lyj.commons.io.repository.deploy.impl;
 import org.lyj.Lyj;
 import org.lyj.commons.io.jsonrepository.JsonRepository;
 import org.lyj.commons.io.repository.deploy.FileDeployer;
+import org.lyj.commons.util.ClassLoaderUtils;
 import org.lyj.commons.util.JsonItem;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
@@ -12,12 +13,12 @@ import java.util.LinkedList;
 import java.util.Set;
 
 /**
- * Extends this class to create a parametrized deployed.
+ * Extends this class to create a parametrized deployer.
  * Subclass must be located in root path of resources to deploy.
  * Deploy parameters are defined in a json configuration file.
- *
+ * <p>
  * i.e.:
- *
+ * <p>
  * {
  * "app": {
  * "deploy": {
@@ -30,7 +31,6 @@ import java.util.Set;
  * }
  * }
  * }
- *
  */
 public abstract class WebAppsDeployController {
 
@@ -39,7 +39,7 @@ public abstract class WebAppsDeployController {
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final String PARAM_NAME = "webapp"; // configuration name
+    private static final String CONFIG_NAME = "webdeploy"; // configuration name
 
 
     private static final String FLD_DEPLOY_PATH = "deploy.path";
@@ -80,14 +80,13 @@ public abstract class WebAppsDeployController {
 
     private boolean init() throws Exception {
         if (!_initialized) {
-            final JsonRepository config = Lyj.getConfiguration();
-            if (null != config) {
+            final JsonItem config = this.initConfiguration();
+            if (null != config && !config.isEmpty()) {
                 _initialized = true;
 
-                final JsonItem param = new JsonItem(config.getJSONObject(PARAM_NAME));
-                final Set<String> keys = param.keys();
+                final Set<String> keys = config.keys();
                 for (final String key : keys) {
-                    final JsonItem item = new JsonItem(param.getJSONObject(key));
+                    final JsonItem item = new JsonItem(config.getJSONObject(key));
                     final String path = item.getString(FLD_DEPLOY_PATH);
                     final String[] exclude = JsonWrapper.toArrayOfString(item.getJSONArray(FLD_DEPLOY_EXCLUDE));
                     if (StringUtils.hasText(path)) {
@@ -105,7 +104,23 @@ public abstract class WebAppsDeployController {
         return false;
     }
 
-
+    private JsonItem initConfiguration() {
+        final JsonRepository config = Lyj.getConfiguration();
+        if (null != config) {
+            // lookup configuration into filesystem (customized configuration that override internal one)
+            JsonItem param = new JsonItem(config.getJSONObject(CONFIG_NAME));
+            if (param.isEmpty()) {
+                // lookup configuration into internal resources
+                final String json_config = ClassLoaderUtils.getResourceAsString(null,
+                        this.getClass(), CONFIG_NAME.concat(".json"));
+                if (StringUtils.isJSONObject(json_config)) {
+                    param = new JsonItem(json_config);
+                }
+            }
+            return param;
+        }
+        return null;
+    }
 
 
 }
