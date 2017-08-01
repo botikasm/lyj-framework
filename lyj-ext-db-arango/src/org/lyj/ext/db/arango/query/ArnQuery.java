@@ -7,7 +7,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Utility to build Arango QUERY
+ * Utility to build Arango QUERY.
+ * https://docs.arangodb.com/3.1/AQL/Operators.html
+ * --------------------------------------------------
  * <p>
  * FOR user1 IN users
  * ...FOR user2 IN users
@@ -87,6 +89,18 @@ public class ArnQuery {
     public ArnQuery FILTER(final String filter) {
         if (StringUtils.hasText(filter)) {
             this.addLine(FILTER).append(" ").append(filter);
+        }
+        return this;
+    }
+
+    /**
+     *
+     * @param sort_statement  "t1.name asc, t1.name1 des"
+     * @return
+     */
+    public ArnQuery SORT(final String sort_statement) {
+        if (StringUtils.hasText(sort_statement)) {
+            this.addLine(SORT).append(" ").append(sort_statement);
         }
         return this;
     }

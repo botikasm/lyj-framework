@@ -13,7 +13,7 @@ public class ArnQueryTest {
         final ArnQuery query = new ArnQuery();
         query.FOR("users")
                 .FOR("accounts")
-                .FILTER("t1.name=@name")
+                .FILTER("t1.name==@name")
                 .LET("sumAge", "t1.age + t2.age")
                 .RETURN("{" +
                         "sumAge:sumAge" +

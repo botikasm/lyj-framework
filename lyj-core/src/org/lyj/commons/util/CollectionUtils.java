@@ -600,10 +600,10 @@ public abstract class CollectionUtils {
      * @param prefix string to start each element with
      * @param suffix string to end each element with
      */
-    public static String tooDelimitedString(final Collection coll,
-                                            final String delim,
-                                            final String prefix,
-                                            final String suffix) {
+    public static String toDelimitedString(final Collection coll,
+                                           final String delim,
+                                           final String prefix,
+                                           final String suffix) {
         if (coll == null) {
             return "";
         }
@@ -630,7 +630,7 @@ public abstract class CollectionUtils {
      */
     public static String toDelimitedString(final Collection coll,
                                            final String delim) {
-        return tooDelimitedString(coll, delim, "", "");
+        return toDelimitedString(coll, delim, "", "");
     }
 
     /**
