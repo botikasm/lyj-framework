@@ -24,6 +24,9 @@
  */
 package org.lyj.commons.cryptograph;
 
+import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.StringUtils;
+
 /**
  * @author angelo.geminiani
  */
@@ -45,6 +48,25 @@ public class MD5 {
 
     public static String encode(final String text) {
         return encode(text, "");
+    }
+
+
+    public static String encode(final String[] tokens) {
+        return encode(tokens, false);
+    }
+
+    public static String encode(final String[] tokens, final boolean sort_items) {
+        final String[] list = sort_items ? CollectionUtils.sortStringArrayCopy(tokens) : tokens;
+        return encode(StringUtils.toString(list, ""));
+    }
+
+    public static String encodeIgnoreCase(final String[] tokens) {
+        return encodeIgnoreCase(tokens, false);
+    }
+
+    public static String encodeIgnoreCase(final String[] tokens, final boolean sort_items) {
+        final String[] list = sort_items ? CollectionUtils.sortStringArrayCopyToLowerCase(tokens) : tokens;
+        return encode(StringUtils.toString(list, ""));
     }
 
 }

@@ -359,6 +359,28 @@ public abstract class CollectionUtils {
         return array;
     }
 
+    public static String[] sortStringArrayCopy(final String[] array) {
+        if (isEmpty(array)) {
+            return new String[0];
+        }
+        final String[] copy = Arrays.copyOf(array, array.length);
+        Arrays.sort(copy);
+        return copy;
+    }
+
+    public static String[] sortStringArrayCopyToLowerCase(final String[] array) {
+        if (isEmpty(array)) {
+            return new String[0];
+        }
+        final String[] copy = Arrays.copyOf(array, array.length);
+        for (int i = 0; i < copy.length; i++) {
+            copy[i] = copy[i].toLowerCase();
+        }
+        Arrays.sort(copy);
+
+        return copy;
+    }
+
     /**
      * Remove duplicate Strings from the given array. Also sorts the array, as
      * it uses a TreeSet.
@@ -1655,7 +1677,7 @@ public abstract class CollectionUtils {
     }
 
     public static <T> T get(final JSONArray array, int index) {
-        if (array.length() < index + 1) {
+        if (null == array || array.length() < index + 1) {
             return null;
         }
         return (T) array.get(index);
@@ -1670,7 +1692,7 @@ public abstract class CollectionUtils {
 
     public static <T> T get(final T[] array, final int index,
                             final T defaultValue) {
-        if (array.length < index + 1) {
+        if (null == array || array.length < index + 1) {
             return defaultValue;
         }
         final T result = array[index];

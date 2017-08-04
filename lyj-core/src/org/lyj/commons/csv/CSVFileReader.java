@@ -219,7 +219,8 @@ public final class CSVFileReader extends CSVReader {
     }
 
     public static List<Map<String, String>> readTextAsMap(final String text,
-                                                          char separator, boolean headerOnFirstRow) throws Exception {
+                                                          char separator,
+                                                          boolean headerOnFirstRow) throws Exception {
         final CSVReader reader = new CSVReader();
         reader.setSeparator(separator);
         reader.setReader(new StringReader(text));

@@ -43,7 +43,7 @@ public class MapDocumentWrapper {
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
 
-    public MapDocument document() {
+    public MapDocument mapDocument() {
         return _document;
     }
 
