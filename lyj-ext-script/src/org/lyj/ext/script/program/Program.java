@@ -8,7 +8,7 @@ import org.lyj.ext.script.program.engines.AbstractEngine;
 import org.lyj.ext.script.program.engines.javascript.EngineJavascript;
 import org.lyj.ext.script.program.tools.sys.ToolConsole;
 import org.lyj.ext.script.program.tools.sys.ToolEngine;
-import org.lyj.ext.script.program.tools.sys.ToolRequire;
+import org.lyj.ext.script.program.tools.sys.ToolRequirer;
 
 import java.io.File;
 import java.util.HashMap;
@@ -192,8 +192,8 @@ public class Program
             context.put(ToolConsole.NAME, _logger);
         }
 
-        if (!context.containsKey(ToolRequire.NAME)) {
-            context.put(ToolRequire.NAME, new ToolRequire(this));
+        if (!context.containsKey(ToolRequirer.NAME)) {
+            context.put(ToolRequirer.NAME, new ToolRequirer(this));
         }
 
         if (!context.containsKey(ToolEngine.NAME)) {

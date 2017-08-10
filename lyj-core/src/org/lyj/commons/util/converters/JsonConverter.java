@@ -72,7 +72,7 @@ public abstract class JsonConverter {
      * @return JSON compatible value
      */
     public static Object toJsonCompatible(final Object value) {
-        if(null!=value){
+        if (null != value) {
             if (value instanceof JSONArray || value instanceof JSONObject) {
                 return value;
             } else if (value instanceof JsonItem) {
@@ -83,11 +83,18 @@ public abstract class JsonConverter {
                 return toArray((Collection) value);
             } else if (value instanceof Map) {
                 return toObject((Map) value);
-            } else if (StringUtils.isJSONArray(value)) {
-                return new JSONArray(value.toString());
-            } else if (StringUtils.isJSONObject(value)) {
-                return new JSONObject(value.toString());
-            } else if (BeanUtils.PrimitiveClasses.isPrimitive(value.getClass()) || value instanceof String) {
+            } else if (value instanceof String) {
+                try {
+                    if (StringUtils.isJSONArray(value)) {
+                        return new JSONArray(value.toString());
+                    } else if (StringUtils.isJSONObject(value)) {
+                        return new JSONObject(value.toString());
+                    }
+                } catch (Throwable ignored) {
+                    // malformed json like string
+                }
+                return value;
+            } else if (BeanUtils.PrimitiveClasses.isPrimitive(value.getClass())) {
                 return value;
             }
         }

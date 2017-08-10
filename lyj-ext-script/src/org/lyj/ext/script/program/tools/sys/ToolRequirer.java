@@ -6,6 +6,8 @@ import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.program.Program;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * System Tool.
@@ -15,7 +17,7 @@ import java.io.File;
  * Usage:
  * requirer.require('dir/file');
  */
-public class ToolRequire {
+public class ToolRequirer {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -28,13 +30,15 @@ public class ToolRequire {
     // ------------------------------------------------------------------------
 
     private final Program _program;
+    private final Map<String, String> _cache_script;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public ToolRequire(final Program program) {
+    public ToolRequirer(final Program program) {
         _program = program;
+        _cache_script = new HashMap<>();
     }
 
     // ------------------------------------------------------------------------
@@ -55,7 +59,11 @@ public class ToolRequire {
             final String path = _program.hasFiles()
                     ? _program.files().path(relative_path)
                     : PathUtils.getAbsolutePath(relative_path);
-            return FileUtils.readFileToString(new File(path));
+            // update cache
+            if (!_cache_script.containsKey(path)) {
+                _cache_script.put(path, FileUtils.readFileToString(new File(path)));
+            }
+            return _cache_script.get(path);//FileUtils.readFileToString(new File(path));
         } catch (Throwable t) {
             _program.logger().error("require", t);
         }
