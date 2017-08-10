@@ -112,12 +112,16 @@ public class AbstractDirMonitor
     }
 
     public void close() {
+        this.close(true);
+    }
+
+    public void close(final boolean force) {
         if (null != _watchdog) {
             _watchdog.stopWatching();
             _watchdog = null;
         }
         if (null != _timed_task) {
-            _timed_task.stop(true);
+            _timed_task.stop(force);
             _timed_task = null;
         }
     }
