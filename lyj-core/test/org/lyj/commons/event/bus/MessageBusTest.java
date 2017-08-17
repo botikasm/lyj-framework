@@ -31,14 +31,14 @@ public class MessageBusTest {
         final Event event2 = new Event(this, "on_test2").setTag("sample2");
 
         MessageBus bus = MessageBus.getInstance();
-       bus.emit(event1).emit(event2);
+        bus.emit(event1).emit(event2);
 
         System.gc(); // force GC
 
         System.out.println(bus.toString());
 
         MessageListener listener = bus.createListener();
-        listener.on((event)->{
+        listener.on((event) -> {
             System.out.println("LISTENER ALL: " + event.getTag());
         });
 
@@ -46,19 +46,19 @@ public class MessageBusTest {
         listener = null;
 
         MessageListener listener_tag = bus.createListener().setEventTag("sample2");
-        listener_tag.on((event)->{
+        listener_tag.on((event) -> {
             System.out.println("LISTENER TAG 2: " + event.getTag());
         });
 
         MessageListener listener_multi_tag = bus.createListener().setEventTag("sample2").addEventTag("tag 3");
-        listener_multi_tag.on((event)->{
+        listener_multi_tag.on((event) -> {
             System.out.println("LISTENER MULTI TAG: " + event.getTag());
         });
 
         // emit another event
         bus.emit(new Event(this, "on_test3").setTag("tag 3"));
 
-        while(bus.events().size()>0){
+        while (bus.events().size() > 0) {
             Thread.sleep(3000);
         }
 

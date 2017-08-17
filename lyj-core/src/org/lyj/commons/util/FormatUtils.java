@@ -601,6 +601,18 @@ public class FormatUtils {
         return result;
     }
 
+    public static String formatDouble(String value, final String pattern) {
+        value = value.replace(",", "\\.");
+        final BigDecimal bd = new BigDecimal(value);
+        return formatDouble(bd.doubleValue(), pattern);
+    }
+
+    public static String formatDouble(final double value, final String pattern) {
+        final NumberWrapper number = new NumberWrapper(value);
+        final String result = number.toString(pattern);
+        return result;
+    }
+
     public static String formatInteger(final Integer value,
                                        final Locale locale) {
         final String pattern = "#,##0;(#,##0)";

@@ -228,15 +228,15 @@ public class NumberWrapper {
         return toString(_pattern, _locale);
     }
 
-    public String toString(Locale locale) {
+    public String toString(final Locale locale) {
         return toString(_pattern, locale);
     }
 
-    public String toString(String pattern) {
+    public String toString(final String pattern) {
         return toString(pattern, _locale);
     }
 
-    public String toString(String pattern, Locale locale) {
+    public String toString(final String pattern, final Locale locale) {
         final DecimalFormat f = new DecimalFormat(pattern,
                 new DecimalFormatSymbols(locale));
 
