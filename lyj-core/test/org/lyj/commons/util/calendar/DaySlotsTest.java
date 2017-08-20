@@ -14,6 +14,9 @@ public class DaySlotsTest {
 
         DaySlots day = new DaySlots("en");
 
+        day.parse("puppa");
+        assertFalse(day.isValid());
+
         day.parse("sun 8.30 12.30 15.00 16");
         System.out.println(day);
 
