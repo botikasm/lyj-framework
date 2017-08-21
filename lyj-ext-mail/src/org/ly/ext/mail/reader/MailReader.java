@@ -21,7 +21,8 @@ import java.util.Properties;
  * <p>
  * https://www.tutorialspoint.com/javamail_api/javamail_api_fetching_emails.htm
  */
-public class MailReader extends AbstractLogEmitter {
+public class MailReader
+        extends AbstractLogEmitter {
 
 
     // ------------------------------------------------------------------------
@@ -198,7 +199,7 @@ public class MailReader extends AbstractLogEmitter {
         }
     }
 
-    public Collection<MailMessage> check() {
+    public Collection<MailMessage> check() throws Exception {
         final List<MailMessage> list = new LinkedList<>();
         try {
 
@@ -223,12 +224,10 @@ public class MailReader extends AbstractLogEmitter {
             emailFolder.close(_remove_after_read);
             store.close();
 
-        } catch (NoSuchProviderException e) {
-            super.error("check", e);
-        } catch (MessagingException e) {
-            super.error("check", e);
         } catch (Exception e) {
-            super.error("check", e);
+            // handle error outside
+            super.debug("check", e.toString());
+            throw e;
         }
         return list;
     }
