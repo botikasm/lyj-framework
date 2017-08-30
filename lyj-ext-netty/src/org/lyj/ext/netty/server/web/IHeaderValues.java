@@ -4,6 +4,10 @@ package org.lyj.ext.netty.server.web;
  * Header Values
  */
 public interface IHeaderValues {
+
+    public static final String APPLICATION_JSON =
+            "application/json";
+
     /**
      * {@code "application/x-www-form-urlencoded"}
      */

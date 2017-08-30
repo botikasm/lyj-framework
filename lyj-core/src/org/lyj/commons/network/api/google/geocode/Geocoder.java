@@ -1,10 +1,12 @@
 package org.lyj.commons.network.api.google.geocode;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.lyj.commons.network.URLUtils;
-import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.JsonItem;
-import org.lyj.commons.util.MapBuilder;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
+import org.lyj.commons.util.converters.MapConverter;
+
+import java.util.Map;
 
 /**
  * Helper to use Google API for geocoding.
@@ -146,8 +148,16 @@ public class Geocoder {
             return _item;
         }
 
+        public Map<String, Object> itemAsMap() {
+            return MapConverter.toMap(_item);
+        }
+
         public JsonItem result() {
             return _main_result;
+        }
+
+        public Map<String, Object> resultAsMap() {
+            return MapConverter.toMap(_main_result);
         }
 
         public boolean isError() {
@@ -170,6 +180,54 @@ public class Geocoder {
                 return new JsonItem(_main_result.getJSONObject("geometry.location"));
             }
             return new JsonItem();
+        }
+
+        public Map<String, Object> locationAsMap() {
+            return MapConverter.toMap(this.location());
+        }
+
+        public JsonItem simplify() {
+            final JsonItem response = new JsonItem();
+            try {
+                // address
+                response.put("address", this.formattedAddress());
+                // location
+                final JsonItem location = this.location();
+                response.put("lng", location.getString("lng"));
+                response.put("lat", location.getString("lat"));
+                // address_components array
+                final JSONArray addres_components = _main_result.getJSONArray("address_components");
+                CollectionUtils.forEach(addres_components, (item) -> {
+                    if (item instanceof JSONObject) {
+                        final JsonItem jitem = new JsonItem(item);
+                        final String[] types = JsonWrapper.toArrayOfString(jitem.getJSONArray("types"));
+                        final String short_name = jitem.getString("short_name");
+                        if (CollectionUtils.contains(types, "administrative_area_level_3")) {
+                            // city
+                            response.put("city", short_name);
+                        } else if (CollectionUtils.contains(types, "administrative_area_level_2")) {
+                            // province
+                            response.put("province", short_name);
+                        } else if (CollectionUtils.contains(types, "administrative_area_level_1")) {
+                            // region
+                            response.put("region", short_name);
+                        } else if (CollectionUtils.contains(types, "country")) {
+                            // country
+                            response.put("country", short_name);
+                        } else if (CollectionUtils.contains(types, "postal_code")) {
+                            // postal_code
+                            response.put("postal_code", short_name);
+                        }
+                    }
+                });
+            } catch (Throwable ignored) {
+                // unhandled error
+            }
+            return response;
+        }
+
+        public Map<String, Object> simplifyAsMap() {
+            return MapConverter.toMap(this.simplify());
         }
 
         // ------------------------------------------------------------------------

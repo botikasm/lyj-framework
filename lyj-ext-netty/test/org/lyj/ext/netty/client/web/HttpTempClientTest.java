@@ -17,7 +17,7 @@ import java.io.IOException;
  * Created by angelogeminiani on 29/07/16.
  * Simple Test for HttpClient Class.
  */
-public class HttpClientTest {
+public class HttpTempClientTest {
 
 
     private static final String HTTPS_URL = "https://www.google.it/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=bot";

@@ -228,9 +228,11 @@ public class LocaleUtils {
 
     public static Locale getLocaleByCountry(final String country) {
         if (StringUtils.hasText(country)) {
+            final String[] tokens = StringUtils.split(country, new String[]{"_", "-"});
+            final String country_code = tokens.length == 2 ? tokens[1] : country;
             final Set<Locale> keys = _founds.keySet();
             for (final Locale locale : keys) {
-                if (locale.getCountry().equalsIgnoreCase(country)) {
+                if (locale.getCountry().equalsIgnoreCase(country_code)) {
                     return _founds.get(locale);
                 }
             }

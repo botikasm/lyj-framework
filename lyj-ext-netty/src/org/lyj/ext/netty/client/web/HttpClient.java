@@ -93,6 +93,11 @@ public class HttpClient {
         return this;
     }
 
+    public HttpClient body(final Object value) {
+        this.info().body(value);
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------

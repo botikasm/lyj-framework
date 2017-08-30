@@ -7,8 +7,10 @@ import org.asynchttpclient.Response;
 import org.lyj.commons.network.http.IHttpConstants;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.ext.netty.client.web.HttpClient;
+import org.lyj.ext.netty.client.web.HttpClientInfo;
 import org.lyj.ext.netty.client.web.HttpClientResponse;
 
+import java.util.Set;
 import java.util.concurrent.Future;
 
 /**
@@ -57,19 +59,41 @@ public class HttpClientExecutor {
 
     private BoundRequestBuilder prepareRequest() throws Exception {
         final String method = _client.method();
+        final HttpClientInfo info = _client.info();
+
+        //AsyncHttpClientConfig config = new DefaultAsyncHttpClientConfig.Builder().build();
         final AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
+        final BoundRequestBuilder request;
         if (method.equalsIgnoreCase(IHttpConstants.METHOD_GET)) {
-            return asyncHttpClient.prepareGet(_client.info().url());
+            request = asyncHttpClient.prepareGet(info.url());
         } else if (method.equalsIgnoreCase(IHttpConstants.METHOD_POST)) {
-            return asyncHttpClient.preparePost(_client.info().url());
+            request = asyncHttpClient.preparePost(info.url());
         } else if (method.equalsIgnoreCase(IHttpConstants.METHOD_PUT)) {
-            return asyncHttpClient.preparePut(_client.info().url());
+            request = asyncHttpClient.preparePut(info.url());
         } else if (method.equalsIgnoreCase(IHttpConstants.METHOD_OPTIONS)) {
-            return asyncHttpClient.prepareOptions(_client.info().url());
+            request = asyncHttpClient.prepareOptions(info.url());
         } else if (method.equalsIgnoreCase(IHttpConstants.METHOD_DELETE)) {
-            return asyncHttpClient.prepareDelete(_client.info().url());
+            request = asyncHttpClient.prepareDelete(info.url());
+        } else {
+            request = null;
         }
-        throw new Exception(FormatUtils.format("Method not supported: %s", method));
+
+        if (null == request) {
+            throw new Exception(FormatUtils.format("Method not supported: %s", method));
+        }
+
+        if(null!=info.body()){
+            request.setBody(info.body().toString());
+        }
+
+        if (info.headers().length() > 0) {
+            final Set<String> keys = info.headers().keySet();
+            for (final String key : keys) {
+                request.addHeader(key, info.headers().get(key));
+            }
+        }
+
+        return request;
     }
 
 
