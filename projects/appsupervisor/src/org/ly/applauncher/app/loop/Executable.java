@@ -1,5 +1,6 @@
 package org.ly.applauncher.app.loop;
 
+import org.lyj.commons.Delegates;
 import org.lyj.commons.util.StringUtils;
 
 import java.io.BufferedReader;
@@ -19,6 +20,8 @@ public class Executable {
     private final String[] _cmd;
 
     private Process _process;
+    private Delegates.Callback<String> _callback_out;
+    private Delegates.Callback<String> _callback_error;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -41,6 +44,7 @@ public class Executable {
             final ProcessBuilder ps = new ProcessBuilder(_cmd);
             _process = ps.start();
             this.handleOutput(_process);
+            this.handleError(_process);
         }
         return this;
     }
@@ -60,15 +64,43 @@ public class Executable {
         return false;
     }
 
+    public Executable output(final Delegates.Callback<String> callback) {
+        _callback_out = callback;
+        return this;
+    }
+
+    public Executable error(final Delegates.Callback<String> callback) {
+        _callback_error = callback;
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
     private void handleOutput(final Process p) {
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))){
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
             String line;
             while ((line = in.readLine()) != null) {
-                System.out.println(line);
+                if (null != _callback_out) {
+                    _callback_out.handle(line);
+                }
+            }
+        } catch (Throwable ignored) {
+
+        }
+    }
+
+    private void handleError(final Process p) {
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+            String line;
+            while ((line = in.readLine()) != null) {
+                if (null != _callback_error) {
+                    _callback_error.handle(line);
+                } else if (null != _callback_out) {
+                    _callback_out.handle(line);
+
+                }
             }
         } catch (Throwable ignored) {
 

@@ -56,7 +56,7 @@ public class MainLoop
         if (!_working) {
             _working = true;
             try {
-                ExecMonitor.instance().monitor();
+                ExecMonitor.instance().monitor(this::handleOutput, null);
             } catch (Throwable t) {
                 super.error("handle", t);
             } finally {
@@ -65,5 +65,11 @@ public class MainLoop
         }
     }
 
+    /**
+     * Handle program console output
+     */
+    private void handleOutput(final String line){
+        System.out.println(line);
+    }
 
 }

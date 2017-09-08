@@ -1,5 +1,7 @@
 package org.ly.applauncher.deploy.config;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.lyj.Lyj;
 import org.lyj.commons.io.jsonrepository.JsonRepository;
 
@@ -17,6 +19,8 @@ public class ConfigHelper {
     private static final String TASK_INTERVAL_SEC = "lyj.task_interval_sec";
 
     private static final String LAUNCHER_EXEC = "launcher.exec";
+    private static final String LAUNCHER_RULES = "launcher.rules";
+    private static final String LAUNCHER_ACTIONS = "launcher.actions";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -50,6 +54,14 @@ public class ConfigHelper {
 
     public String launcherExec() {
         return _configuration.getString(LAUNCHER_EXEC);
+    }
+
+    public JSONArray rules() {
+        return _configuration.getJSONArray(LAUNCHER_RULES);
+    }
+
+    public JSONObject actions() {
+        return _configuration.getJSONObject(LAUNCHER_ACTIONS);
     }
 
     // ------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 package org.ly.applauncher.app.loop;
 
-import org.ly.applauncher.deploy.config.ConfigHelper;
+import org.ly.applauncher.app.loop.operations.RuleController;
+import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.AbstractLogEmitter;
 
 import java.io.IOException;
@@ -10,16 +11,11 @@ public class ExecMonitor
 
 
     // ------------------------------------------------------------------------
-    //                      c o n s t
-    // ------------------------------------------------------------------------
-
-    private static final String CMD = ConfigHelper.instance().launcherExec();
-
-    // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private Executable _exec;
+    private Delegates.Callback<String> _callback_out;
+    private Delegates.Callback<String> _callback_error;
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -33,13 +29,33 @@ public class ExecMonitor
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void monitor() {
-        try {
-            if (null == _exec) {
-                _exec = new Executable(CMD).run();
-            } else {
+    public void outputHandler(final Delegates.Callback<String> callback) {
+        _callback_out = callback;
+    }
 
-            }
+    public Delegates.Callback<String> outputHandler() {
+        return _callback_out;
+    }
+
+    public void errorHandler(final Delegates.Callback<String> callback) {
+        _callback_error = callback;
+    }
+
+    public Delegates.Callback<String> errorHandler() {
+        return _callback_error;
+    }
+
+    public void monitor() {
+        this.monitor(null, null);
+    }
+
+    public void monitor(final Delegates.Callback<String> output,
+                        final Delegates.Callback<String> error) {
+        try {
+            this.outputHandler(output);
+            this.errorHandler(error);
+
+            this.checkRules();
         } catch (final IOException exec_error) {
             super.error("monitor", exec_error);
         }
@@ -49,6 +65,10 @@ public class ExecMonitor
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    private void checkRules() throws IOException {
+        RuleController.instance().check();
+
+    }
 
     // ------------------------------------------------------------------------
     //                      S T A T I C
