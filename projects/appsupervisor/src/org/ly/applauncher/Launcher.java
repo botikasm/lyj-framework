@@ -1,37 +1,35 @@
-package org.lyj.automator;
+package org.ly.applauncher;
 
+import org.ly.applauncher.app.Application;
+import org.ly.applauncher.deploy.config.Deployer;
 import org.lyj.Lyj;
-import org.lyj.automator.app.App;
-import org.lyj.automator.app.controllers.projects.ProjectsController;
-import org.lyj.automator.deploy.config.ConfigurationDeployer;
-import org.lyj.automator.deploy.projects.ProjectsDeployer;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.launcher.LyjLauncher;
 
 /**
  * Main server class.
- *
  */
-public class CmdLauncher
+public class Launcher
         extends LyjLauncher {
-
 
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private App _application;
     private boolean _test_mode;
+    private boolean _debug_mode;
+    private Application _application;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public CmdLauncher(final String[] args) {
+    public Launcher(final String[] args) {
         // run Lyj app framework
         super(args);
         _test_mode = super.getArgBoolean("t");
+        _debug_mode = super.getArgBoolean("d");
     }
 
     // ------------------------------------------------------------------------
@@ -40,12 +38,21 @@ public class CmdLauncher
 
     @Override
     public void ready() {
-        if (!_test_mode)  {
+
+        if (_debug_mode) {
+            // wait 5 seconds to allow debugger to connect
+            LoggingUtils.getLogger(this).info("DEBUG MODE ON: waiting 5 seconds to allow debugger to connect....");
             try {
+                Thread.sleep(5000);
+            } catch (Throwable ignored) {
+            }
+        }
 
-                _application = new App(this);
+        if (!_test_mode) {
+            try {
+                // run
+                _application = new Application(_test_mode);
                 _application.start();
-
             } catch (Exception e) {
                 e.printStackTrace();
                 LoggingUtils.getLogger(this).error("Error Initializing Application", e);
@@ -53,31 +60,38 @@ public class CmdLauncher
         } else {
             // TEST MODE: ONLY FOR TEST UNIT
             try {
-                _application = new App(this);
-                _application.start();
+                //_application = new Application(_test_mode);
+                //_application.start();
             } catch (Exception e) {
                 e.printStackTrace();
+                LoggingUtils.getLogger(this).error("Error Initializing Application", e);
             }
         }
     }
 
     @Override
     public void shutdown() {
-        
+        if (null != _application) {
+            _application.stop();
+        }
     }
-
 
     // ------------------------------------------------------------------------
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
-    public static void main(final String[] args){
-        final CmdLauncher main = new CmdLauncher(args);
+    private static Launcher _instance;
 
-        Lyj.registerDeployer(new ConfigurationDeployer(Lyj.getConfigurationPath(), Lyj.isSilent()));
-        Lyj.registerDeployer(new ProjectsDeployer(ProjectsController.getInstance().path(), Lyj.isSilent()));
+    public static void main(final String[] args) {
+        _instance = new Launcher(args);
+        final String config_path = Lyj.getConfigurationPath();
 
-        main.run();
+        Lyj.registerDeployer(new Deployer(config_path, Lyj.isSilent()));
+
+        _instance.run();
     }
 
+    public static boolean isDebug() {
+        return _instance._debug_mode;
+    }
 }

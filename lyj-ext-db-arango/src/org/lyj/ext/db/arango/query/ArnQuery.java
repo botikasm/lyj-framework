@@ -20,6 +20,10 @@ import java.util.Map;
  * ......pair: [user1.name, user2.name],
  * ......sumOfAges: sumOfAges
  * ...}
+ * <p>
+ * FOR doc IN @@collection
+ * FILTER @value IN doc.`tags`
+ * RETURN doc
  */
 public class ArnQuery {
 
@@ -94,8 +98,7 @@ public class ArnQuery {
     }
 
     /**
-     *
-     * @param sort_statement  "t1.name asc, t1.name1 des"
+     * @param sort_statement "t1.name asc, t1.name1 des"
      * @return
      */
     public ArnQuery SORT(final String sort_statement) {
