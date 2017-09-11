@@ -1,11 +1,16 @@
 package org.ly.applauncher.app.loop.operations;
 
+import org.json.JSONObject;
 import org.ly.applauncher.app.loop.ExecMonitor;
 import org.ly.applauncher.app.loop.Executable;
 import org.ly.applauncher.app.model.Action;
 import org.ly.applauncher.deploy.config.ConfigHelper;
+import org.ly.ext.mail.SmtpRequest;
+import org.lyj.commons.util.StringUtils;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class ActionController {
 
@@ -22,6 +27,7 @@ public class ActionController {
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
+    private final Map<String, Action> _actions;
 
     private Executable _exec;
 
@@ -30,16 +36,41 @@ public class ActionController {
     // ------------------------------------------------------------------------
 
     private ActionController() {
-
+        _actions = new HashMap<>();
+        this.init();
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void run(final Action action) {
+    public void run(final String action) throws Exception {
+        if (_actions.containsKey(action)) {
+            this.run(_actions.get(action));
+        }
+    }
+
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private void init() {
+        // init actions
+        final JSONObject actions = ConfigHelper.instance().actions();
+        final Set<String> keys = actions.keySet();
+        for (final String key : keys) {
+            final Action action = new Action(actions.optJSONObject(key));
+            if (action.commands().length > 0) {
+                _actions.put(key, action);
+            }
+        }
+    }
+
+    private void run(final Action action) throws Exception {
         // get rules and check what to do next
         try {
+            // commands
             final String[] commands = action.commands();
             for (final String command : commands) {
                 if (COMMAND_START.equalsIgnoreCase(command)) {
@@ -48,13 +79,16 @@ public class ActionController {
                     this.stop(action);
                 }
             }
-        } catch (Throwable t) {
-            // error starting or stopping program
 
+            // email
+            this.sendEmail(action);
+        } catch (Exception e) {
+            // error starting or stopping program
+            throw e;
         }
     }
 
-    private void start(final Action action) throws IOException {
+    private void start(final Action action) throws Exception {
         if (null == _exec) {
 
             // START
@@ -66,9 +100,44 @@ public class ActionController {
 
     private void stop(final Action action) {
         if (null != _exec) {
-
+            _exec.interrupt();
+            if (!_exec.isAlive()) {
+                _exec = null;
+            }
         }
     }
+
+    private void sendEmail(final Action action) {
+        final String host = action.emailConnectionHost();
+        if (StringUtils.hasText(host)) {
+            final String user = action.emailConnectionUsername();
+            final String password = action.emailConnectionPassword();
+            final boolean is_tls = action.emailConnectionIsTls();
+            final boolean is_ssl = action.emailConnectionIsSsl();
+            final int port = action.emailConnectionPort();
+
+            // creates the request
+            final SmtpRequest request = new SmtpRequest();
+            request.host(host);
+            request.port(port);
+            request.tls(is_tls);
+            request.ssl(is_ssl);
+            request.user(user);
+            request.password(password);
+            request.from(user);
+            request.replyTo(user);
+
+            // create the message
+            final String message = action.emailMessage();
+            final String[] targets =  action.emailTarget();
+
+            // send email
+            for(final String target:targets){
+                
+            }
+        }
+    }
+
 
     // ------------------------------------------------------------------------
     //                      S T A T I C

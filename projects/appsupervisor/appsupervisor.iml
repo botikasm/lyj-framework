@@ -9,6 +9,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="lyj-core" />
+    <orderEntry type="module" module-name="lyj-ext-mail" />
     <orderEntry type="library" scope="TEST" name="junit:junit:4.12" level="application" />
   </component>
 </module>

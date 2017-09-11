@@ -50,6 +50,9 @@ public class EngineJavascript
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public void close(){
+
+    }
 
     @Override
     public void addRuntimeAttribute(final String key, Object value) {

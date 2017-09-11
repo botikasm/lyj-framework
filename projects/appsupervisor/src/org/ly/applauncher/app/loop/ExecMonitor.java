@@ -1,10 +1,12 @@
 package org.ly.applauncher.app.loop;
 
+import org.ly.applauncher.app.loop.operations.ActionController;
 import org.ly.applauncher.app.loop.operations.RuleController;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.AbstractLogEmitter;
 
 import java.io.IOException;
+import java.util.Set;
 
 public class ExecMonitor
         extends AbstractLogEmitter {
@@ -56,7 +58,7 @@ public class ExecMonitor
             this.errorHandler(error);
 
             this.checkRules();
-        } catch (final IOException exec_error) {
+        } catch (final Exception exec_error) {
             super.error("monitor", exec_error);
         }
     }
@@ -65,9 +67,13 @@ public class ExecMonitor
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void checkRules() throws IOException {
-        RuleController.instance().check();
+    private void checkRules() throws Exception {
+        final Set<String> actions = RuleController.instance().check();
 
+        // run actions
+        for (final String action_name : actions) {
+            ActionController.instance().run(action_name);
+        }
     }
 
     // ------------------------------------------------------------------------

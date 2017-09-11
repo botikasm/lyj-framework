@@ -35,6 +35,8 @@ public abstract class AbstractEngine
     //                      a b s t r a c t
     // ------------------------------------------------------------------------
 
+    public abstract void close();
+
     public abstract Object eval(final String script) throws Exception;
 
     public abstract Object eval(final String script, final Map<String, Object> context) throws Exception;

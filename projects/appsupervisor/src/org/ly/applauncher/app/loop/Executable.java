@@ -1,11 +1,12 @@
 package org.ly.applauncher.app.loop;
 
 import org.lyj.commons.Delegates;
+import org.lyj.commons.async.Async;
 import org.lyj.commons.util.StringUtils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 public class Executable {
 
@@ -28,7 +29,11 @@ public class Executable {
     // ------------------------------------------------------------------------
 
     public Executable(final String cmd) {
-        _cmd = new String[]{cmd};
+        this(StringUtils.split(cmd, " "));
+    }
+
+    public Executable(final String[] cmd) {
+        _cmd = cmd;
     }
 
     // ------------------------------------------------------------------------
@@ -39,12 +44,16 @@ public class Executable {
         return StringUtils.toString(_cmd);
     }
 
-    public Executable run() throws IOException {
-        if (_cmd.length > 0) {
-            final ProcessBuilder ps = new ProcessBuilder(_cmd);
-            _process = ps.start();
-            this.handleOutput(_process);
-            this.handleError(_process);
+    public Executable run() throws Exception {
+        try {
+            if (_cmd.length > 0) {
+                final ProcessBuilder ps = new ProcessBuilder(_cmd);
+                _process = ps.start();
+                this.handleOutput(_process);
+                this.handleError(_process);
+            }
+        } catch (Exception e) {
+            throw e;
         }
         return this;
     }
@@ -52,16 +61,19 @@ public class Executable {
     public Executable interrupt() {
         if (null != _process) {
             _process.destroy();
+            try {
+                if (!_process.waitFor(10, TimeUnit.SECONDS)) {
+                    _process.destroyForcibly();
+                }
+            } catch (Throwable ignored) {
+            }
             _process = null;
         }
         return this;
     }
 
     public boolean isAlive() {
-        if (null != _process) {
-            return _process.isAlive();
-        }
-        return false;
+        return null != _process && _process.isAlive();
     }
 
     public Executable output(final Delegates.Callback<String> callback) {
@@ -79,32 +91,36 @@ public class Executable {
     // ------------------------------------------------------------------------
 
     private void handleOutput(final Process p) {
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                if (null != _callback_out) {
-                    _callback_out.handle(line);
+        Async.invoke((args) -> {
+            try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    if (null != _callback_out) {
+                        _callback_out.handle(line);
+                    }
                 }
-            }
-        } catch (Throwable ignored) {
+            } catch (Throwable ignored) {
 
-        }
+            }
+        });
     }
 
     private void handleError(final Process p) {
-        try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                if (null != _callback_error) {
-                    _callback_error.handle(line);
-                } else if (null != _callback_out) {
-                    _callback_out.handle(line);
+        Async.invoke((args) -> {
+            try (final BufferedReader in = new BufferedReader(new InputStreamReader(p.getErrorStream()))) {
+                String line;
+                while ((line = in.readLine()) != null) {
+                    if (null != _callback_error) {
+                        _callback_error.handle(line);
+                    } else if (null != _callback_out) {
+                        _callback_out.handle(line);
 
+                    }
                 }
-            }
-        } catch (Throwable ignored) {
+            } catch (Throwable ignored) {
 
-        }
+            }
+        });
     }
 
 }

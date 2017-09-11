@@ -107,8 +107,8 @@ public class Application {
         sb.append("**************************************").append("\n");
         sb.append("\t").append("VERSION: ").append(IConstants.APP_VERSION).append("\n");
         sb.append("\t").append("MAIN LOOP ENABLED: ").append(config.taskEnabled()).append("\n");
-        sb.append("\t").append("MAIN LOOP INTERVAL: ").append(config.taskInterval()).append("\n");
-        sb.append("\t").append("EXEC: ").append(config.launcherExec()).append(" sec.").append("\n");
+        sb.append("\t").append("MAIN LOOP INTERVAL: ").append(config.taskInterval()).append(" sec.").append("\n");
+        sb.append("\t").append("EXEC: ").append(config.launcherExec()).append("\n");
         sb.append("**************************************");
 
         this.getLogger().info(sb.toString());
