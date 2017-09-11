@@ -2,7 +2,7 @@ package org.ly.applauncher.app.loop.operations;
 
 import org.json.JSONObject;
 import org.ly.applauncher.app.loop.ExecMonitor;
-import org.ly.applauncher.app.loop.Executable;
+import org.ly.applauncher.app.loop.exec.Executable;
 import org.ly.applauncher.app.model.Action;
 import org.ly.applauncher.deploy.config.ConfigHelper;
 import org.ly.ext.mail.SmtpRequest;
@@ -90,7 +90,6 @@ public class ActionController {
 
     private void start(final Action action) throws Exception {
         if (null == _exec) {
-
             // START
             _exec = new Executable(CMD)
                     .output(ExecMonitor.instance().outputHandler())
@@ -115,7 +114,11 @@ public class ActionController {
             final boolean is_tls = action.emailConnectionIsTls();
             final boolean is_ssl = action.emailConnectionIsSsl();
             final int port = action.emailConnectionPort();
+            // create the message
+            final String message = action.emailMessage();
+            final String[] targets = action.emailTarget();
 
+            //-- send email --//
             // creates the request
             final SmtpRequest request = new SmtpRequest();
             request.host(host);
@@ -126,15 +129,11 @@ public class ActionController {
             request.password(password);
             request.from(user);
             request.replyTo(user);
+            request.addresses(targets);
+            request.subject("Message from App Supervisor");
+            request.bodyText(message);
 
-            // create the message
-            final String message = action.emailMessage();
-            final String[] targets =  action.emailTarget();
-
-            // send email
-            for(final String target:targets){
-                
-            }
+            request.send();
         }
     }
 

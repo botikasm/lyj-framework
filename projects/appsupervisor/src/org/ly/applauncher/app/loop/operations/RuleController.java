@@ -1,12 +1,11 @@
 package org.ly.applauncher.app.loop.operations;
 
 import org.json.JSONArray;
+import org.ly.applauncher.app.IConstants;
 import org.ly.applauncher.app.model.Rule;
 import org.ly.applauncher.deploy.config.ConfigHelper;
 import org.lyj.commons.network.URLUtils;
-import org.lyj.commons.util.ByteUtils;
-import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
 
 import java.io.InputStream;
 import java.util.HashSet;
@@ -20,9 +19,19 @@ public class RuleController {
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    public static final String TYPE_MEMORY = "memory"; // check memory free
-    public static final String TYPE_CLOCK = "clock";  // check date time
-    public static final String TYPE_PING = "ping";    // check a ping response timeout
+    private static final String TYPE_MEMORY = IConstants.TYPE_MEMORY; // check memory free
+    private static final String TYPE_CLOCK = IConstants.TYPE_CLOCK;  // check date time
+    private static final String TYPE_PING = IConstants.TYPE_PING;   // check a ping response timeout
+
+    private static final String MU_DATE = IConstants.MU_DATE; // check datetime
+    private static final String MU_TIME = IConstants.MU_TIME; // check time
+    private static final String MU_DATETIME = IConstants.MU_DATETIME; // check datetime
+    private static final String MU_MB = IConstants.MU_MB;  // megabyte
+    private static final String MU_GB = IConstants.MU_GB;  // gigabyte
+
+    private static final String PATTERN_DATE = IConstants.PATTERN_DATE;
+    private static final String PATTERN_DATE_TIME = IConstants.PATTERN_DATE_TIME;
+    private static final String PATTERN_TIME = IConstants.PATTERN_TIME;
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -99,12 +108,51 @@ public class RuleController {
     }
 
     private String validateMemoryRule(final Rule rule) {
+        try {
+            final String mu = rule.mu();
+            final String lower_than = rule.lowerThan();
+            final String greater_than = rule.greaterThan();
+            if (StringUtils.hasText(mu)) {
+                final long free_memory = this.freeMemory(mu);
+                if (StringUtils.hasText(lower_than)) {
+                    final int check_value = ConversionUtils.toInteger(lower_than, -1);
+                    if (free_memory <= check_value) {
+                        return rule.action();
+                    }
+                } else if (StringUtils.hasText(greater_than)) {
+                    final int check_value = ConversionUtils.toInteger(greater_than, -1);
+                    if (free_memory >= check_value) {
+                        return rule.action();
+                    }
+                }
+            }
+        } catch (Throwable ignored) {
 
+        }
         return "";
     }
 
     private String validateClockRule(final Rule rule) {
+        try {
+            final String mu = rule.mu();
+            final String lower_than = rule.lowerThan();
+            final String greater_than = rule.greaterThan();
+            if (StringUtils.hasText(mu)) {
+                if (StringUtils.hasText(lower_than)) {
+                    // now < 10,30
+                    if (!this.isExpired(lower_than, mu)) {
+                        return rule.action();
+                    }
+                } else if (StringUtils.hasText(greater_than)) {
+                    // now > 10,30
+                    if (this.isExpired(greater_than, mu)) {
+                        return rule.action();
+                    }
+                }
+            }
+        } catch (Throwable ignored) {
 
+        }
         return "";
     }
 
@@ -130,6 +178,35 @@ public class RuleController {
         return "";
     }
 
+    private long freeMemory(final String mu) {
+        // garbage collector
+        SystemUtils.gc();
+        // get total free memory
+        //final long total_memory = SystemUtils.getTotalMemory();
+        //final long max_memory = SystemUtils.getMaxMemory();
+        final long free_memory = SystemUtils.getFreeMemory();
+        if (mu.equalsIgnoreCase(MU_MB)) {
+            return (long) ConversionUtils.bytesToMbyte(free_memory);
+        } else if (mu.equalsIgnoreCase(MU_GB)) {
+            return (long) ConversionUtils.bytesToMbyte(free_memory) / 1000;
+        } else {
+            return free_memory;
+        }
+    }
+
+    private boolean isExpired(final String value, final String mu) throws Exception {
+        if (mu.equalsIgnoreCase(MU_DATE)) {
+            final DateWrapper dw = new DateWrapper(value, PATTERN_DATE);
+            return DateUtils.isExpiredDate(dw, DateUtils.now());
+        } else if (mu.equalsIgnoreCase(MU_DATETIME)) {
+            final DateWrapper dw = new DateWrapper(value, PATTERN_DATE_TIME);
+            return DateUtils.isExpiredDate(dw, DateUtils.now()) && DateUtils.isExpiredTime(dw, DateUtils.now());
+        } else if (mu.equalsIgnoreCase(MU_TIME)) {
+            final DateWrapper dw = new DateWrapper(value, PATTERN_TIME);
+            return DateUtils.isExpiredTime(dw, DateUtils.now());
+        }
+        throw new Exception("Unsupported 'Clock' Measure Unit: " + mu);
+    }
     // ------------------------------------------------------------------------
     //                      S T A T I C
     // ------------------------------------------------------------------------

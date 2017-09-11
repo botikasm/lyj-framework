@@ -218,6 +218,10 @@ public abstract class SystemUtils {
         return runtime().availableProcessors();
     }
 
+    public static void gc() {
+        runtime().gc();
+    }
+
     // ------------------------------------------------------------------------
     //                      R E P O R T
     // ------------------------------------------------------------------------

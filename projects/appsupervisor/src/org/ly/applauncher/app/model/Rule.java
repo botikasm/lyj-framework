@@ -9,11 +9,6 @@ public class Rule
     //                      c o n s
     // ------------------------------------------------------------------------
 
-    public static final String MU_TIME = "time"; // check time
-    public static final String MU_DATETIME = "datetime"; // check datetime
-    public static final String MU_MB = "mb";  // megabyte
-    public static final String MU_GB = "gb";  // gigabyte
-
     private static final String FLD_ENABLED = "enabled";
     private static final String FLD_TYPE = "type";
     private static final String FLD_MU = "mu";

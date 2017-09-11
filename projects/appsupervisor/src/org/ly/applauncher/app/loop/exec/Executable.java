@@ -1,4 +1,4 @@
-package org.ly.applauncher.app.loop;
+package org.ly.applauncher.app.loop.exec;
 
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
@@ -6,6 +6,7 @@ import org.lyj.commons.util.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
 public class Executable {
@@ -86,6 +87,18 @@ public class Executable {
         return this;
     }
 
+    /**
+     * Return PID for linux system
+     *
+     * @return PID
+     */
+    public int pid() {
+        if (null != _process) {
+            return this.pid(_process);
+        }
+        return 0;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -121,6 +134,36 @@ public class Executable {
 
             }
         });
+    }
+
+    private int pid(final Process p) {
+        if (p.getClass().getName().equals("java.lang.UNIXProcess")) {
+            /* get the PID on unix/linux systems */
+            try {
+                final Field f = p.getClass().getDeclaredField("pid");
+                f.setAccessible(true);
+                return f.getInt(p);
+            } catch (Throwable e) {
+            }
+        } else if (p.getClass().getName().equals("java.lang.Win32Process") ||
+                p.getClass().getName().equals("java.lang.ProcessImpl")) {
+                /* determine the pid on windows plattforms */
+            try {
+                final Field f = p.getClass().getDeclaredField("handle");
+                f.setAccessible(true);
+                long handl = f.getLong(p);
+
+                //Kernel32 kernel = Kernel32.INSTANCE;
+                //W32API.HANDLE handle = new W32API.HANDLE();
+                //handle.setPointer(Pointer.createConstant(handl));
+                //pid = kernel.GetProcessId(handle);
+
+                return 0;
+            } catch (Throwable e) {
+            }
+        }
+
+        return 0;
     }
 
 }
