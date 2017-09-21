@@ -1,7 +1,7 @@
-package org.ly.applauncher.app;
+package org.ly.appsupervisor.app;
 
-import org.ly.applauncher.app.loop.MainLoop;
-import org.ly.applauncher.deploy.config.ConfigHelper;
+import org.ly.appsupervisor.app.loop.MainLoop;
+import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.lyj.Lyj;
 import org.lyj.commons.io.jsonrepository.JsonRepository;
 import org.lyj.commons.logging.Logger;

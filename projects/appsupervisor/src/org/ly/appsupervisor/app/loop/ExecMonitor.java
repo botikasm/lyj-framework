@@ -1,11 +1,10 @@
-package org.ly.applauncher.app.loop;
+package org.ly.appsupervisor.app.loop;
 
-import org.ly.applauncher.app.loop.operations.ActionController;
-import org.ly.applauncher.app.loop.operations.RuleController;
+import org.ly.appsupervisor.app.loop.operations.ActionController;
+import org.ly.appsupervisor.app.loop.operations.RuleController;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.AbstractLogEmitter;
 
-import java.io.IOException;
 import java.util.Set;
 
 public class ExecMonitor

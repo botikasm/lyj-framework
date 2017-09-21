@@ -1,4 +1,4 @@
-package org.ly.applauncher.app.loop;
+package org.ly.appsupervisor.app.loop;
 
 import org.lyj.commons.async.future.Timed;
 

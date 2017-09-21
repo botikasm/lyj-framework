@@ -1,10 +1,10 @@
-package org.ly.applauncher.app.loop.operations;
+package org.ly.appsupervisor.app.loop.operations;
 
 import org.json.JSONObject;
-import org.ly.applauncher.app.loop.ExecMonitor;
-import org.ly.applauncher.app.loop.exec.Executable;
-import org.ly.applauncher.app.model.Action;
-import org.ly.applauncher.deploy.config.ConfigHelper;
+import org.ly.appsupervisor.app.loop.ExecMonitor;
+import org.ly.appsupervisor.app.loop.exec.Executable;
+import org.ly.appsupervisor.app.model.Action;
+import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.ly.ext.mail.SmtpRequest;
 import org.lyj.commons.util.StringUtils;
 

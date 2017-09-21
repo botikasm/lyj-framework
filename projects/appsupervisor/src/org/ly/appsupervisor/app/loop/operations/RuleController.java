@@ -1,9 +1,9 @@
-package org.ly.applauncher.app.loop.operations;
+package org.ly.appsupervisor.app.loop.operations;
 
 import org.json.JSONArray;
-import org.ly.applauncher.app.IConstants;
-import org.ly.applauncher.app.model.Rule;
-import org.ly.applauncher.deploy.config.ConfigHelper;
+import org.ly.appsupervisor.app.IConstants;
+import org.ly.appsupervisor.app.model.Rule;
+import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.lyj.commons.network.URLUtils;
 import org.lyj.commons.util.*;
 

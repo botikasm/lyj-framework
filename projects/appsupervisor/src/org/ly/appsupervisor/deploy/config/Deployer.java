@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.ly.applauncher.deploy.config;
+package org.ly.appsupervisor.deploy.config;
 
 
 import org.lyj.commons.io.repository.deploy.FileDeployer;

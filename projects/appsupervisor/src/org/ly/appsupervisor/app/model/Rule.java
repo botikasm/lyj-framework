@@ -1,4 +1,4 @@
-package org.ly.applauncher.app.model;
+package org.ly.appsupervisor.app.model;
 
 import org.lyj.commons.util.JsonItem;
 

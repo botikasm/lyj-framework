@@ -1,4 +1,4 @@
-package org.ly.applauncher.deploy.config;
+package org.ly.appsupervisor.deploy.config;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
