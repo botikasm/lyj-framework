@@ -55,7 +55,7 @@ public class HttpClientResponse
         return new byte[0];
     }
 
-    public String contendAsString() {
+    public String contentAsString() {
         final byte[] content = this.content();
         try {
             return new String(content, 0, content.length, _info.encoding());

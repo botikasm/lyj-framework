@@ -548,8 +548,10 @@ public abstract class ConversionUtils {
             return ((Calendar) obj).getTime();
         }
         if (obj instanceof Number) {
-            Date d = new Date();
-            d.setTime(((Number) obj).longValue());
+            final long long_value = ((Number) obj).longValue();
+            final int digits = (long_value + "").length(); // should have 13 digits. unix timestamp has 10
+            final Date d = new Date();
+            d.setTime(digits == 10 ? long_value * 1000 : long_value);
             return d;
         }
         return null;
@@ -759,19 +761,19 @@ public abstract class ConversionUtils {
     }
 
     public static double inchToMm(final double inch) {
-        return MathUtils.round(inchToCm(inch)*10.0, 4);
+        return MathUtils.round(inchToCm(inch) * 10.0, 4);
     }
 
     public static double mmToInch(final double mm) {
-        return cmToInch(mm/10.0);
+        return cmToInch(mm / 10.0);
     }
 
     public static double inchToCm(final double inch) {
-        return MathUtils.round(inch/0.39370, 4);
+        return MathUtils.round(inch / 0.39370, 4);
     }
 
     public static double cmToInch(final double cm) {
-        return MathUtils.round(cm*0.39370, 4);
+        return MathUtils.round(cm * 0.39370, 4);
     }
 
     public static Charset toCharset(final Object val) {
