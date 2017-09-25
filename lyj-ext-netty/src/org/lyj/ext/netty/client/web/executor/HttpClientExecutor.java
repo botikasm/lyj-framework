@@ -50,19 +50,23 @@ public class HttpClientExecutor {
 
 
     private String executeRequest() throws Exception {
-        final BoundRequestBuilder request = this.prepareRequest();
-        Future<Response> f = request.execute();
-        Response r = f.get();
+        final AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
+        try {
+            final BoundRequestBuilder request = this.prepareRequest(asyncHttpClient);
+            Future<Response> f = request.execute();
+            Response r = f.get();
 
-        return r.getResponseBody();
+            return r.getResponseBody();
+        } finally {
+            asyncHttpClient.close();
+        }
     }
 
-    private BoundRequestBuilder prepareRequest() throws Exception {
+    private BoundRequestBuilder prepareRequest(final AsyncHttpClient asyncHttpClient) throws Exception {
         final String method = _client.method();
         final HttpClientInfo info = _client.info();
 
         //AsyncHttpClientConfig config = new DefaultAsyncHttpClientConfig.Builder().build();
-        final AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
         final BoundRequestBuilder request;
         if (method.equalsIgnoreCase(IHttpConstants.METHOD_GET)) {
             request = asyncHttpClient.prepareGet(info.url());
@@ -82,7 +86,7 @@ public class HttpClientExecutor {
             throw new Exception(FormatUtils.format("Method not supported: %s", method));
         }
 
-        if(null!=info.body()){
+        if (null != info.body()) {
             request.setBody(info.body().toString());
         }
 

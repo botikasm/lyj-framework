@@ -68,6 +68,7 @@ public class DateWrapper {
     public static final String DATEFORMAT_DEFAULT = PATTERNS[0];
     public static final String DATEFORMAT_GENERAL = PATTERNS[1];
     public static final String TIMEFORMAT_DEFAULT = "hh:mm:ss";
+    public static final String DATETIMEFORMAT_DEFAULT = "yyyyMMdd hh:mm:ss";
     // ------------------------------------------------------------------------
     //                      Variables
     // ------------------------------------------------------------------------
