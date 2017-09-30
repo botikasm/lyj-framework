@@ -103,7 +103,7 @@ public class MapDocument
     public void putAll(final JSONObject item) {
         final Set<String> keys = item.keySet();
         for (final String key : keys) {
-            this.put(key, item);
+            this.put(key, item.get(key));
         }
     }
 
