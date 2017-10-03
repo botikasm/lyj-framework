@@ -282,7 +282,6 @@ public class CSVWriter
 
         sb.append(_lineEnd);
         this.getPWriter().write(sb.toString());
-
     }
 
     /**

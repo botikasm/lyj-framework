@@ -554,6 +554,9 @@ public abstract class ConversionUtils {
             d.setTime(digits == 10 ? long_value * 1000 : long_value);
             return d;
         }
+        if(obj instanceof String){
+            return DateWrapper.parse((String)obj).getDateTime();
+        }
         return null;
     }
 

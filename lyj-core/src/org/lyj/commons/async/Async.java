@@ -33,7 +33,6 @@ import java.util.Set;
  */
 public abstract class Async {
 
-
     public static Thread invoke(final Delegates.VarArgsCallback handler, final Object... args) {
         if (null != handler) {
             Thread t = new Thread(new Runnable() {
