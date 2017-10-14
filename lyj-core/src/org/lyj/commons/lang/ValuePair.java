@@ -41,7 +41,7 @@ public class ValuePair<K, V> {
         return _key;
     }
 
-    public void content(final K value) {
+    public void key(final K value) {
         _key = value;
     }
 

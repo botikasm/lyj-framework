@@ -15,8 +15,6 @@ public class MemoryCache {
 
     private final TreeMap<String, MemoryCacheItem> _cache;
 
-    private long _life_time;
-
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -49,7 +47,12 @@ public class MemoryCache {
         synchronized (_cache) {
             if (!_cache.containsKey(key)) {
                 // insert
-                _cache.put(key, new MemoryCacheItem().item(item));
+                if (item instanceof MemoryCacheItem) {
+                    _cache.put(key, (MemoryCacheItem) item);
+                } else {
+                    _cache.put(key, new MemoryCacheItem().item(item));
+                }
+
             } else {
                 // update
                 _cache.get(key).item(item);
