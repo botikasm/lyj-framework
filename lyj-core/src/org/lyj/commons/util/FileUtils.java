@@ -280,6 +280,16 @@ public abstract class FileUtils {
         }
     }
 
+    public static void append(final File file, final String text){
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))){
+            bw.write(text);
+            bw.newLine();
+            bw.flush();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+    }
+
     //---------------------------------------------------------------------
     // Copy methods for java.io.File
     //---------------------------------------------------------------------
