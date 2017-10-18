@@ -3,6 +3,7 @@ package org.ly.appsupervisor;
 import org.ly.appsupervisor.app.Application;
 import org.ly.appsupervisor.deploy.config.Deployer;
 import org.lyj.Lyj;
+import org.lyj.commons.logging.LoggingRepository;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.launcher.LyjLauncher;
 
@@ -30,6 +31,8 @@ public class Launcher
         super(args);
         _test_mode = super.getArgBoolean("t");
         _debug_mode = super.getArgBoolean("d");
+
+        LoggingRepository.getInstance().setArchiveExisting(!_test_mode && !_debug_mode);
     }
 
     // ------------------------------------------------------------------------
