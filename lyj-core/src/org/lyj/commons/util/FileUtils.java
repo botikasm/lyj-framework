@@ -318,7 +318,8 @@ public abstract class FileUtils {
      * @throws IOException in case of I/O errors
      */
     public static byte[] copyToByteArray(final File in) throws IOException {
-        return copyToByteArray(new BufferedInputStream(new FileInputStream(in)));
+        return Files.readAllBytes(Paths.get(in.getAbsolutePath()));
+        // return copyToByteArray(new BufferedInputStream(new FileInputStream(in)));
     }
 
     public static byte[] copyToByteArray(final File in, final long skip, final long length) throws IOException {
@@ -636,13 +637,13 @@ public abstract class FileUtils {
      * @throws IOException
      */
     public static String readFileToString(final File file) throws IOException {
-        final byte[] bytes = copyToByteArray(file);
+        final byte[] bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath())); //copyToByteArray(file);
         return new String(bytes);
     }
 
     public static String readFileToString(final File file,
                                           final String encoding) throws IOException {
-        final byte[] bytes = copyToByteArray(file);
+        final byte[] bytes = Files.readAllBytes(Paths.get(file.getAbsolutePath())); //copyToByteArray(file);
         return new String(bytes, encoding);
     }
 
@@ -720,7 +721,7 @@ public abstract class FileUtils {
     public static File[] listDirs(final File startDir) {
         final List<File> result = new LinkedList<>();
         final File[] files = startDir.listFiles();
-        if(null!=files){
+        if (null != files) {
             for (final File file : files) {
                 if (file.isDirectory()) {
                     result.add(file);

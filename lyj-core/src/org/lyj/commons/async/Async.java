@@ -194,13 +194,20 @@ public abstract class Async {
                     } else if (Thread.State.TERMINATED.equals(state)) {
                         terminated.add(thread.getId());
                     } else {
-                        System.out.println(state);
+                        // System.out.println(state);
                     }
                 } catch (Throwable ignored) {
                 }
             }
         }
 
+    }
+
+    public static void joinAllThreads(final Collection<? extends Thread> threads) {
+        if (null != threads && threads.size() > 0) {
+            // final Task[] array = tasks.toArray(new Task[tasks.size()]);
+            joinAll(threads.toArray(new Thread[threads.size()]));
+        }
     }
 
     public static void joinAll(final Collection<? extends Task> tasks) {
