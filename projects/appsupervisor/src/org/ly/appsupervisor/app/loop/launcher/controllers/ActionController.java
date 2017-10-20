@@ -1,8 +1,8 @@
-package org.ly.appsupervisor.app.loop.operations;
+package org.ly.appsupervisor.app.loop.launcher.controllers;
 
 import org.json.JSONObject;
-import org.ly.appsupervisor.app.loop.ExecMonitor;
-import org.ly.appsupervisor.app.loop.exec.Executable;
+import org.ly.appsupervisor.app.loop.launcher.ExecMonitor;
+import org.ly.appsupervisor.app.loop.launcher.exec.Executable;
 import org.ly.appsupervisor.app.model.Action;
 import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.ly.ext.mail.SmtpRequest;

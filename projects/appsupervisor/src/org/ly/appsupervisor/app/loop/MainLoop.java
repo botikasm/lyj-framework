@@ -1,5 +1,9 @@
 package org.ly.appsupervisor.app.loop;
 
+import org.ly.appsupervisor.app.loop.installer.InstallMonitor;
+import org.ly.appsupervisor.app.loop.launcher.ExecMonitor;
+import org.ly.appsupervisor.app.loop.launcher.controllers.ActionController;
+import org.ly.appsupervisor.app.model.Action;
 import org.lyj.commons.async.future.Timed;
 
 import java.util.concurrent.TimeUnit;
@@ -56,7 +60,16 @@ public class MainLoop
         if (!_working) {
             _working = true;
             try {
+
+                // check if files are to install
+                final int installed = InstallMonitor.instance().monitor(null, null);
+                if (installed > 0) {
+                    super.info("handle", "Installed Files: " + installed);
+                }
+
+                // check executable tasks
                 ExecMonitor.instance().monitor(this::handleOutput, null);
+
             } catch (Throwable t) {
                 super.error("handle", t);
             } finally {
@@ -68,8 +81,16 @@ public class MainLoop
     /**
      * Handle program console output
      */
-    private void handleOutput(final String line){
+    private void handleOutput(final String line) {
         System.out.println(line);
+    }
+
+    private void stopExec() {
+        try {
+            ActionController.instance().run(Action.COMMAND_STOP);
+        } catch (Throwable t) {
+            super.error("stopExec", t);
+        }
     }
 
 }

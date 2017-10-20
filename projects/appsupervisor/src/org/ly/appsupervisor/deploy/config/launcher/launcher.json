@@ -18,6 +18,12 @@
       "action": "default"
     },
     {
+      "enabled": true,
+      "name": "restart server if not launched",
+      "type": "null",
+      "action": "default"
+    },
+    {
       "enabled": false,
       "name": "start server at time",
       "type": "clock",

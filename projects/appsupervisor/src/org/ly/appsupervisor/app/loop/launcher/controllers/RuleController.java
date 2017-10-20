@@ -1,4 +1,4 @@
-package org.ly.appsupervisor.app.loop.operations;
+package org.ly.appsupervisor.app.loop.launcher.controllers;
 
 import org.json.JSONArray;
 import org.ly.appsupervisor.app.IConstants;
@@ -22,6 +22,7 @@ public class RuleController {
     private static final String TYPE_MEMORY = IConstants.TYPE_MEMORY; // check memory free
     private static final String TYPE_CLOCK = IConstants.TYPE_CLOCK;  // check date time
     private static final String TYPE_PING = IConstants.TYPE_PING;   // check a ping response timeout
+    private static final String TYPE_NULL = IConstants.TYPE_NULL;
 
     private static final String MU_DATE = IConstants.MU_DATE; // check datetime
     private static final String MU_TIME = IConstants.MU_TIME; // check time
