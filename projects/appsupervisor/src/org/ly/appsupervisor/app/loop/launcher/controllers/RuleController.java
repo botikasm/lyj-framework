@@ -103,6 +103,8 @@ public class RuleController {
                 return this.validateClockRule(rule);
             } else if (TYPE_PING.equalsIgnoreCase(type)) {
                 return this.validatePingRule(rule);
+            } else if (TYPE_NULL.equalsIgnoreCase(type)) {
+                return this.validateNullRule(rule);
             }
         }
         return "";
@@ -177,6 +179,11 @@ public class RuleController {
         }
 
         return "";
+    }
+
+    private String validateNullRule(final Rule rule) {
+        // is application running?
+        return ActionController.instance().isExecuting() ? "" : rule.action();
     }
 
     private long freeMemory(final String mu) {

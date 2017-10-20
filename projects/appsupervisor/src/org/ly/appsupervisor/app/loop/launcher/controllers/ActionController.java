@@ -50,7 +50,9 @@ public class ActionController {
         }
     }
 
-
+    public boolean isExecuting() {
+        return null != _exec && _exec.isAlive();
+    }
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
