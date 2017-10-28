@@ -61,9 +61,9 @@
     };
 
     ly.isArray = nativeIsArray || function (value) {
-            return value && typeof value == 'object' && typeof value.length == 'number' &&
-                toString.call(value) == '[object Array]' || false;
-        };
+        return value && typeof value == 'object' && typeof value.length == 'number' &&
+            toString.call(value) == '[object Array]' || false;
+    };
 
     ly.isArguments = function (value) {
         return value && typeof value == 'object' && typeof value.length == 'number' &&
@@ -193,7 +193,7 @@
                         }
                     } catch (err) {
                         console.error(err);
-                        return text;
+                        return !!err.message ? err.message : text;
                     }
                 } else {
                     var json = ly.parseJSON(text);

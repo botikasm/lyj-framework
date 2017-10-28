@@ -37,7 +37,7 @@ public class ToolRequirer {
 
     public ToolRequirer(final Program program) {
         _program = program;
-        _cache_script = ProgramScriptCache.instance();
+        _cache_script = ProgramScriptCache.instance(); // singleton global cache
     }
 
     // ------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 package org.ly.appsupervisor.app;
 
 import org.ly.appsupervisor.app.loop.MainLoop;
+import org.ly.appsupervisor.app.loop.installer.controllers.FileController;
 import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.lyj.Lyj;
 import org.lyj.commons.io.jsonrepository.JsonRepository;
@@ -109,6 +110,7 @@ public class Application {
         sb.append("\t").append("MAIN LOOP ENABLED: ").append(config.taskEnabled()).append("\n");
         sb.append("\t").append("MAIN LOOP INTERVAL: ").append(config.taskInterval()).append(" sec.").append("\n");
         sb.append("\t").append("EXEC: ").append(config.launcherExec()).append("\n");
+        sb.append("\t").append("INSTALL PATH: ").append(FileController.ROOT).append("\n");
         sb.append("**************************************");
 
         this.getLogger().info(sb.toString());

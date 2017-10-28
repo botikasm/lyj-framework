@@ -18,7 +18,7 @@ public class FileController
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final String ROOT = PathUtils.getAbsolutePath(IConstants.PATH_INSTALL);
+    public static final String ROOT = PathUtils.getAbsolutePath(IConstants.PATH_INSTALL);
 
     // ------------------------------------------------------------------------
     //                      f i e l d s

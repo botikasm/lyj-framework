@@ -1,7 +1,7 @@
 package org.lyj.ext.script.program;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ProgramScriptCache {
 
@@ -16,23 +16,35 @@ public class ProgramScriptCache {
     // ------------------------------------------------------------------------
 
     public ProgramScriptCache() {
-        _cache_script = new HashMap<>();
+        _cache_script = new ConcurrentHashMap<>();
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public void clear() {
+        synchronized (_cache_script) {
+            _cache_script.clear();
+        }
+    }
+
     public boolean contains(final String key) {
-        return _cache_script.containsKey(key);
+        synchronized (_cache_script) {
+            return _cache_script.containsKey(key);
+        }
     }
 
     public String get(final String key) {
-        return _cache_script.get(key);
+        synchronized (_cache_script) {
+            return _cache_script.get(key);
+        }
     }
 
     public void put(final String key, final String value) {
-        _cache_script.put(key, value);
+        synchronized (_cache_script) {
+            _cache_script.put(key, value);
+        }
     }
 
     // ------------------------------------------------------------------------

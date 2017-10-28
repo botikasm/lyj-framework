@@ -73,7 +73,10 @@ public abstract class CollectionUtils {
         if (null != callback && null != items && items.length() > 0) {
             final int len = items.length();
             for (int i = 0; i < len; i++) {
-                callback.handle(items.get(i), i, null);
+                try {
+                    callback.handle(items.get(i), i, null);
+                } catch (Throwable ignored) {
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 package org.ly.appsupervisor.app.loop.installer;
 
 import org.ly.appsupervisor.app.loop.installer.controllers.FileController;
-import org.ly.appsupervisor.app.loop.installer.controllers.PackageController;
+import org.ly.appsupervisor.app.loop.installer.controllers.PackageInstaller;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.lang.Counter;
 import org.lyj.commons.logging.AbstractLogEmitter;
@@ -22,7 +22,7 @@ public class InstallMonitor
     private Delegates.Callback<String> _callback_error;
 
     private final FileController _watchdog;
-    private final PackageController _package;
+    private final PackageInstaller _installer;
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -30,7 +30,7 @@ public class InstallMonitor
 
     private InstallMonitor() {
         _watchdog = new FileController();
-        _package = new PackageController();
+        _installer = new PackageInstaller();
     }
 
     // ------------------------------------------------------------------------
@@ -81,7 +81,7 @@ public class InstallMonitor
         if (!files.isEmpty()) {
             // ready to install something
             for (final File file : files) {
-                if (_package.install(file)) {
+                if (_installer.install(file)) {
                     counter.inc();
                     // remove installed
                     FileUtils.delete(file.getAbsolutePath());
