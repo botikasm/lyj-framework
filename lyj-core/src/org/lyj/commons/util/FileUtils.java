@@ -104,36 +104,29 @@ public abstract class FileUtils {
         }
     }
 
-    public static void delete(final String path) throws IOException {
-        final File file = new File(path);
-        if (file.exists()) {
-            if (file.isFile()) {
-                file.delete();
-            } else {
-                final Path root = Paths.get(path);
-                Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-                    @Override
-                    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
-                            throws IOException {
-                        Files.delete(file);
-                        return FileVisitResult.CONTINUE;
-                    }
+    public static void delete(final String path) throws IOException{
+        delete(new File(path));
+    }
 
-                    @Override
-                    public FileVisitResult preVisitDirectory(final Path file, final BasicFileAttributes attrs)
-                            throws IOException {
-                        if (!file.toString().equalsIgnoreCase(root.toString())) {
-                            delete(file.toString());
-                        }
-                        return FileVisitResult.CONTINUE;
-                    }
-                });
-                try {
-                    file.delete();
-                } catch (Throwable ignored) {
+    public static void delete(final File file) {
+        //exit if file does not exists
+        if (!file.exists())
+            return;
+
+        //if directory, go inside and call recursively
+        if (file.isDirectory()) {
+            try {
+                for (final File f : file.listFiles()) {
+                    //call recursively
+                    delete(f);
                 }
+            } catch (Throwable ignored) {
+
             }
         }
+
+        //call delete to delete files and empty directory
+        file.delete();
     }
 
     public static boolean exists(final String fileName) {
@@ -280,8 +273,8 @@ public abstract class FileUtils {
         }
     }
 
-    public static void append(final File file, final String text){
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))){
+    public static void append(final File file, final String text) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
             bw.write(text);
             bw.newLine();
             bw.flush();
