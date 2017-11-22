@@ -23,6 +23,19 @@ public class PathUtilsTest {
     }
 
     @Test
+    public void testCombine() throws Exception {
+
+        String path1 = "./root/dir1";
+        String path2 = "./dir2/file.txt";
+
+        String path = "." + PathUtils.combine(path1.substring(1), path2);
+
+        assertEquals(path, "./root/dir1/dir2/file.txt");
+        System.out.println(path);
+
+    }
+
+    @Test
     public void testPathMatch() throws Exception {
 
         assertTrue(PathUtils.pathMatch("/root/dir1/dir2", "/root/dir1/*"));

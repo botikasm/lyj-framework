@@ -5,7 +5,7 @@ import org.json.JSONObject;
 import org.lyj.commons.lang.Base64;
 import org.lyj.commons.util.BeanUtils;
 import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.Collection;

@@ -4,6 +4,7 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.FixedBlockingPool;
 import org.lyj.commons.util.*;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

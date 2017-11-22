@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.util;
+package org.lyj.commons.util.json;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

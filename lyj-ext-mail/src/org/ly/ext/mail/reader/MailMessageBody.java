@@ -3,6 +3,7 @@ package org.ly.ext.mail.reader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.*;
+import org.lyj.commons.util.json.JsonItem;
 
 import javax.mail.BodyPart;
 import javax.mail.Message;

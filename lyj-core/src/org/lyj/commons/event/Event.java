@@ -25,7 +25,7 @@
 package org.lyj.commons.event;
 
 import org.json.JSONObject;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
 

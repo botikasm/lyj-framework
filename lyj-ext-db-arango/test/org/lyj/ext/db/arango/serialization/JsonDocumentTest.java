@@ -3,7 +3,7 @@ package org.lyj.ext.db.arango.serialization;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 import org.lyj.ext.db.IDatabaseCollection;
 import org.lyj.ext.db.arango.TestHelper;
 

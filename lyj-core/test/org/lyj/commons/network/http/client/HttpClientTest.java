@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.util.ClassLoaderUtils;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.SystemUtils;
 

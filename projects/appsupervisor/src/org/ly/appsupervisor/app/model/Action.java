@@ -1,7 +1,7 @@
 package org.ly.appsupervisor.app.model;
 
-import org.lyj.commons.util.JsonItem;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonItem;
+import org.lyj.commons.util.json.JsonWrapper;
 
 public class Action
         extends JsonItem {

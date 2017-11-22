@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.lyj.commons.util.*;
 import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.commons.util.converters.MapConverter;
+import org.lyj.commons.util.json.JsonItem;
 
 import java.util.Collection;
 import java.util.HashMap;

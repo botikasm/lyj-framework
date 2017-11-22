@@ -27,7 +27,7 @@ import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.network.URLUtils;
 import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.HashMap;

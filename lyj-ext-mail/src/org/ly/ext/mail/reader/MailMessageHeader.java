@@ -1,8 +1,8 @@
 package org.ly.ext.mail.reader;
 
 import org.json.JSONArray;
-import org.lyj.commons.util.JsonItem;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonItem;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.RegExpUtils;
 import org.lyj.commons.util.StringUtils;
 

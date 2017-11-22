@@ -2,8 +2,8 @@ package org.lyj.ext.html.web.webindexer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lyj.commons.util.JsonItem;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonItem;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.ext.html.web.grabber.IWebCrawlerConstants;
 
 import java.util.HashSet;

@@ -1,6 +1,6 @@
 package org.lyj.commons.io.memorycache;
 
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 
 /**
  * Wrap a cached item

@@ -23,7 +23,7 @@ package org.lyj.commons.io;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.InputStream;
 import java.util.HashSet;

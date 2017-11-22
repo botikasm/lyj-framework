@@ -2,7 +2,7 @@ package org.ly.ext.mail.reader;
 
 import org.json.JSONObject;
 import org.lyj.commons.logging.AbstractLogEmitter;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
 import javax.mail.Message;

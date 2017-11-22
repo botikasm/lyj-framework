@@ -1,7 +1,7 @@
 package org.lyj.config.network;
 
 import org.lyj.Lyj;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
 /**

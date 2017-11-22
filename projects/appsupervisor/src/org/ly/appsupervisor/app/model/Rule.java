@@ -1,6 +1,6 @@
 package org.ly.appsupervisor.app.model;
 
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 
 public class Rule
         extends JsonItem {

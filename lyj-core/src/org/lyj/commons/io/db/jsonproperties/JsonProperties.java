@@ -3,8 +3,8 @@ package org.lyj.commons.io.db.jsonproperties;
 import org.json.JSONObject;
 import org.lyj.commons.io.db.jsondb.JsonDB;
 import org.lyj.commons.io.db.jsondb.JsonDBCollection;
-import org.lyj.commons.util.JsonList;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonList;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
 

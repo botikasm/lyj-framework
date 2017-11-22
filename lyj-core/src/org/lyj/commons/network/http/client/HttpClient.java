@@ -5,7 +5,7 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.network.http.IHttpConstants;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.Map;

@@ -4,7 +4,7 @@ import com.arangodb.velocypack.*;
 import com.arangodb.velocypack.exception.VPackException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.Set;

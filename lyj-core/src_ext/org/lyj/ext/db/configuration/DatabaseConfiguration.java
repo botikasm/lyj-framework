@@ -3,7 +3,7 @@ package org.lyj.ext.db.configuration;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 
 import java.util.LinkedList;
 import java.util.List;

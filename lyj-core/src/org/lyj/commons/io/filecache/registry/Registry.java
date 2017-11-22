@@ -23,7 +23,7 @@ package org.lyj.commons.io.filecache.registry;
 import org.json.JSONObject;
 import org.lyj.Lyj;
 import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.File;
 import java.io.IOException;

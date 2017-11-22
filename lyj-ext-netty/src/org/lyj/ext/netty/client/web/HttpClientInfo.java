@@ -2,7 +2,7 @@ package org.lyj.ext.netty.client.web;
 
 import org.json.JSONObject;
 import org.lyj.commons.lang.CharEncoding;
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.IHeaderNames;
 import org.lyj.ext.netty.server.web.IHeaderValues;

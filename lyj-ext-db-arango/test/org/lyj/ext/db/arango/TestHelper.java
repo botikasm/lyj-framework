@@ -1,6 +1,5 @@
 package org.lyj.ext.db.arango;
 
-import org.lyj.commons.util.JsonItem;
 import org.lyj.ext.db.IDatabase;
 import org.lyj.ext.db.IDatabaseCollection;
 import org.lyj.ext.db.IDatabaseConnection;

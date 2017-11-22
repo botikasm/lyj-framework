@@ -3,7 +3,7 @@ package org.lyj.ext.db.arango;
 
 import org.json.JSONObject;
 import org.junit.Test;
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.MapBuilder;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.db.IDatabase;

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.util;
+package org.lyj.commons.util.json;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +26,7 @@ import org.json.JSONObject;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
+import org.lyj.commons.util.*;
 import org.lyj.commons.util.converters.MapConverter;
 
 import java.util.*;

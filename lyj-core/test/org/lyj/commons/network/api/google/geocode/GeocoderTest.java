@@ -1,8 +1,7 @@
 package org.lyj.commons.network.api.google.geocode;
 
-import org.json.JSONObject;
 import org.junit.Test;
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

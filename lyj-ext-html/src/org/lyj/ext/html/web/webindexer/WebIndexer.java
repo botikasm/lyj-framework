@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.util.*;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.ext.html.web.WebKeywordDetector;
 import org.lyj.ext.html.web.grabber.AbstractGrabber;
 import org.lyj.ext.html.web.grabber.DocItem;

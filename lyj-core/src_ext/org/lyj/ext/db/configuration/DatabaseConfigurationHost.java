@@ -1,7 +1,6 @@
 package org.lyj.ext.db.configuration;
 
-import org.json.JSONObject;
-import org.lyj.commons.util.JsonItem;
+import org.lyj.commons.util.json.JsonItem;
 
 /**
  * host item
