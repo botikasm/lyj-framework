@@ -3,6 +3,7 @@ package org.lyj.ext.netty.server.web;
 import io.netty.util.internal.SystemPropertyUtil;
 import org.json.JSONObject;
 import org.lyj.commons.lang.CharEncoding;
+import org.lyj.commons.network.URLUtils;
 import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
@@ -456,6 +457,9 @@ public class HttpServerConfig {
         if (uri.isEmpty() || uri.charAt(0) != '/') {
             return null;
         }
+
+        // remove query
+        uri = StringUtils.splitFirst(uri, "?")[0];
 
         // Convert file separators.
         uri = uri.replace('/', File.separatorChar);

@@ -261,6 +261,7 @@ public class MimeTypeUtils {
         map.put(".stm", "text/html");
         map.put(".sv4cpio", "application/x-sv4cpio");
         map.put(".sv4crc", "application/x-sv4crc");
+        map.put(".svg", "image/svg+xml");
         map.put(".t", "application/x-troff");
         map.put(".tar", "application/x-tar");
         map.put(".tcl", "application/x-tcl");
