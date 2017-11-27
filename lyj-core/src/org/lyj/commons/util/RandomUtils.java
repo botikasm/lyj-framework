@@ -231,6 +231,10 @@ public abstract class RandomUtils {
         return random(count, true, true);
     }
 
+    public static String randomAlphanumericLower(int count) {
+        return random(count, CHARS_LOW_NUMBERS);
+    }
+
     /**
      * <p>Creates a random string whose length is the number of characters
      * specified.</p>
