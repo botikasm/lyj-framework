@@ -4,9 +4,9 @@ import org.lyj.Lyj;
 import org.lyj.commons.io.jsonrepository.JsonRepository;
 import org.lyj.commons.io.repository.deploy.FileDeployer;
 import org.lyj.commons.util.ClassLoaderUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.json.JsonWrapper;
-import org.lyj.commons.util.StringUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -50,6 +50,7 @@ public abstract class WebAppsDeployController {
     // ------------------------------------------------------------------------
 
     private final Collection<FileDeployer> _deployers;
+    private final JsonItem _configuration;
 
     private boolean _initialized;
 
@@ -59,11 +60,17 @@ public abstract class WebAppsDeployController {
 
     public WebAppsDeployController() {
         _deployers = new LinkedList<>();
+
+        _configuration = this.initConfiguration();
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public JsonItem configuration() {
+        return this._configuration;
+    }
 
     public void deploy() throws Exception {
         // avoid running multiple times
@@ -80,13 +87,13 @@ public abstract class WebAppsDeployController {
 
     private boolean init() throws Exception {
         if (!_initialized) {
-            final JsonItem config = this.initConfiguration();
-            if (null != config && !config.isEmpty()) {
+
+            if (null != _configuration && !_configuration.isEmpty()) {
                 _initialized = true;
 
-                final Set<String> keys = config.keys();
+                final Set<String> keys = this._configuration.keys();
                 for (final String key : keys) {
-                    final JsonItem item = new JsonItem(config.getJSONObject(key));
+                    final JsonItem item = new JsonItem(this._configuration.getJSONObject(key));
                     final String path = item.getString(FLD_DEPLOY_PATH);
                     final String[] exclude = JsonWrapper.toArrayOfString(item.getJSONArray(FLD_DEPLOY_EXCLUDE));
                     if (StringUtils.hasText(path)) {
