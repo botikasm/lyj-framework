@@ -11,6 +11,15 @@ import static org.junit.Assert.*;
 
 public class PathUtilsTest {
 
+    @Test
+    public void testSubtract() throws Exception {
+
+        String absolute = PathUtils.subtract("C:/dir1/dir2", "C:\\dir1\\dir2\\file.txt");
+
+        assertEquals("/file.txt", absolute);
+        System.out.println(absolute);
+
+    }
 
     @Test
     public void testGetAbsolutePath() throws Exception {

@@ -1145,6 +1145,8 @@ public abstract class PathUtils
 
         //-- Clean the subtract path --//
         subtractPath = PathUtils.validateFolderSeparator(subtractPath);
+        fullPath = PathUtils.toUnixPath(fullPath);
+
         //subtractPath = PathUtils.cleanPath(subtractPath);
         if (subtractPath.startsWith(FOLDER_SEPARATOR)
                 && subtractPath.endsWith(FOLDER_SEPARATOR)) {
