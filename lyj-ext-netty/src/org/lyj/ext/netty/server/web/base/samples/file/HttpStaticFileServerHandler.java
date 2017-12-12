@@ -8,12 +8,12 @@ import io.netty.handler.ssl.SslHandler;
 import io.netty.handler.stream.ChunkedFile;
 import io.netty.util.CharsetUtil;
 import io.netty.util.internal.SystemPropertyUtil;
+import org.lyj.commons.util.MimeTypeUtils;
 import org.lyj.ext.netty.server.web.IHeaderNames;
 import org.lyj.ext.netty.server.web.IHeaderValues;
 import org.lyj.ext.netty.server.web.IHttpConstants;
 import org.lyj.ext.netty.server.web.utils.ResponseUtil;
 
-import javax.activation.MimetypesFileTypeMap;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
@@ -325,7 +325,6 @@ public class HttpStaticFileServerHandler
      *            file to extract content type
      */
     private static void setContentTypeHeader(HttpResponse response, File file) {
-        MimetypesFileTypeMap mimeTypesMap = new MimetypesFileTypeMap();
-        response.headers().set(IHeaderNames.CONTENT_TYPE, mimeTypesMap.getContentType(file.getPath()));
+        response.headers().set(IHeaderNames.CONTENT_TYPE, MimeTypeUtils.getMimeType(file.getPath()));
     }
 }

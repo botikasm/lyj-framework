@@ -1,7 +1,5 @@
 package org.lyj.commons.util;
 
-import sun.util.resources.cldr.vai.CalendarData_vai_Latn_LR;
-
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -92,7 +90,7 @@ public class LimitedLinkedList<T>
                 while (this.size() > _max_size) {
                     try {
                         this.remove(0);
-                    }catch(Throwable ignored){
+                    } catch (Throwable ignored) {
                         break;
                     }
                 }

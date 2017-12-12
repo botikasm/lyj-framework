@@ -1,4 +1,4 @@
-package org.lyj.commons.io.db.jdbm.util;
+package org.lyj.commons.util.json;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
