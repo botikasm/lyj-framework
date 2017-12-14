@@ -975,19 +975,33 @@ public abstract class DateUtils {
         return true;
     }
 
+    public static boolean isExpiredDate(final Date date, final Date now) {
+        try {
+            if (null!=date && null!=now) {
+                final DateWrapper dw = new DateWrapper(date);
+                return isExpiredDate(dw, now);
+            }
+        } catch (Throwable ignored) {
+        }
+        return true;
+    }
+
     public static boolean isExpiredDate(final DateWrapper dw,
                                         final Date now) {
-        final int year = dw.getYear();
-        final int month = dw.getMonth();
-        final int day = dw.getDay();
-        if (year <= DateUtils.getYear(now)) {
-            if (month <= DateUtils.getMonth(now)) {
-                if (day <= DateUtils.getDayOfMonth(now)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return DateUtils.isExpiredDate(dw, new DateWrapper(now));
+    }
+
+    public static boolean isExpiredDate(final DateWrapper dw,
+                                        final DateWrapper now) {
+        dw.setHour(0);
+        dw.setMinute(0);
+        dw.setSecond(0);
+        now.setHour(0);
+        now.setMinute(0);
+        now.setSecond(0);
+
+        final long dif = DateUtils.dateDiff(dw.getDateTime(), now.getDateTime());
+        return dif<0;
     }
 
 }

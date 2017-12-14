@@ -39,6 +39,19 @@ public class DateUtilsTest {
     @Test
     public void testIsTimeExpired() throws Exception {
 
+        final DateWrapper now = new DateWrapper(DateUtils.now());
+        final DateWrapper yesterday = new DateWrapper(DateUtils.yesterday());
+
+        assertTrue(DateUtils.isExpiredDate(yesterday, now));
+        assertFalse(DateUtils.isExpiredDate(now, yesterday));
+        assertFalse(DateUtils.isExpiredDate(now, now));
+        Thread.sleep(1000);
+        assertFalse(DateUtils.isExpiredDate(now, DateUtils.now()));
+    }
+
+    @Test
+    public void isWithinThreashold() throws Exception {
+
         // 10.30 am
         DateWrapper now = DateWrapper.parse(DateUtils.now());
         now.setHour(10);

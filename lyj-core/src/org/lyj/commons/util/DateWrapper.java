@@ -424,6 +424,9 @@ public class DateWrapper {
     }
 
     private void init(Calendar calendar) {
+        // reset milliseconds
+        _calendar.set(Calendar.MILLISECOND, 0);
+        
         _year = calendar.get(Calendar.YEAR);
         _month = calendar.get(Calendar.MONTH) + 1;
         _day = calendar.get(Calendar.DAY_OF_MONTH);
