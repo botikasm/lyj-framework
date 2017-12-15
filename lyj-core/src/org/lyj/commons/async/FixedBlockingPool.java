@@ -144,7 +144,7 @@ public class FixedBlockingPool {
     }
 
     public void join(final long timeout) throws InterruptedException {
-        if (null != __executor) {
+        if (null != __executor && !__executor.isTerminated()) {
             __executor.awaitTermination(timeout, TimeUnit.MILLISECONDS);
         }
         if (null != _executor_monitor) {

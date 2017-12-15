@@ -1,15 +1,25 @@
 package org.lyj.commons.util;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
  */
 public class SortUtils {
 
+
+    /**
+     * Sort strings
+     * @param args  Var args strings to sort
+     * @return Sorted strings
+     */
+    public static String sortChars(final String ...args){
+        final String concatenation = StringUtils.concatArgsEx("", args);
+        final char[] chars = concatenation.toCharArray();
+        Arrays.sort(chars);
+
+        return new String(chars);
+    }
 
     public static <K, V extends Comparable<? super V>> List<Map.Entry<K, V>> sortByKeyAsc(final Map<K, V> map) {
         return sortByKey(map, false);

@@ -1896,6 +1896,7 @@ public abstract class CollectionUtils {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
     private static Object _getValue(final Object item, final String propertyName) {
         try {
             return BeanUtils.getValue(item, propertyName);
