@@ -622,7 +622,7 @@ public abstract class DateUtils {
     }
 
     public static long timestamp() {
-        return now().getTime();
+        return System.currentTimeMillis();
     }
 
     public static Date yesterday() {
