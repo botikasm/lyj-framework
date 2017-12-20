@@ -371,7 +371,10 @@ public abstract class ConversionUtils {
     public static Boolean toBoolean(final Object value, final Boolean defValue) {
         if (value instanceof Boolean) {
             return (Boolean) value;
+        } else if (value instanceof Number){
+            return value.equals(1);
         }
+
         try {
             final String s = value.toString();
             return StringUtils.hasText(s) ? Boolean.valueOf(s) : defValue;

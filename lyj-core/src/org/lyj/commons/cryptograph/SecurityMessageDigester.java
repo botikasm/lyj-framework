@@ -25,6 +25,11 @@
  */
 package org.lyj.commons.cryptograph;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -82,20 +87,11 @@ public final class SecurityMessageDigester
     // ------------------------------------------------------------------------
     //                      S T A T I C
     // ------------------------------------------------------------------------
-    private static SecurityMessageDigester _instance;
-
-    public static SecurityMessageDigester getInstance()
-            throws NoSuchAlgorithmException {
-        if (null == _instance) {
-            _instance = new SecurityMessageDigester(AlgorithmMessageDigest.MD5);
-        }
-        return _instance;
-    }
 
     public static String encodeMD5(final String text,
                                    final String opvalue) {
         try {
-            final SecurityMessageDigester instance = getInstance();
+            final SecurityMessageDigester instance = new SecurityMessageDigester();
             return instance.getEncodedText(text);
         } catch (Throwable t) {
             return opvalue;
@@ -104,28 +100,49 @@ public final class SecurityMessageDigester
 
     public static String encodeMD5(final String text)
             throws NoSuchAlgorithmException {
-        SecurityMessageDigester instance = getInstance();
+        final SecurityMessageDigester instance = new SecurityMessageDigester();
         return instance.getEncodedText(text);
     }
 
     public static String encodeMD2(final String text)
             throws NoSuchAlgorithmException {
-        SecurityMessageDigester instance = getInstance();
+        final SecurityMessageDigester instance = new SecurityMessageDigester();
         instance.setAlgorithm(AlgorithmMessageDigest.MD2);
         return instance.getEncodedText(text);
     }
 
     public static String encodeSHA(final String text)
             throws NoSuchAlgorithmException {
-        SecurityMessageDigester instance = getInstance();
+        final SecurityMessageDigester instance = new SecurityMessageDigester();
         instance.setAlgorithm(AlgorithmMessageDigest.SHA);
         return instance.getEncodedText(text);
     }
 
     public static String encodeSHA_1(final String text)
             throws NoSuchAlgorithmException {
-        SecurityMessageDigester instance = getInstance();
+        final SecurityMessageDigester instance = new SecurityMessageDigester();
         instance.setAlgorithm(AlgorithmMessageDigest.SHA_1);
         return instance.getEncodedText(text);
     }
+
+    public static String encodeSHA_512(final String value, final String secret) {
+        String result;
+        try {
+            final Mac hmacSHA512 = Mac.getInstance("HmacSHA512");
+            final SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA512");
+            hmacSHA512.init(secretKeySpec);
+
+            byte[] digest = hmacSHA512.doFinal(value.getBytes());
+            BigInteger hash = new BigInteger(1, digest);
+            result = hash.toString(16);
+            if ((result.length() % 2) != 0) {
+                result = "0" + result;
+            }
+        } catch (IllegalStateException | InvalidKeyException | NoSuchAlgorithmException ex) {
+            throw new RuntimeException("Problemas calculando HMAC", ex);
+        }
+        return result;
+    }
+
+
 }

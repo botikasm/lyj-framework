@@ -44,6 +44,11 @@ public abstract class CollectionUtils {
         void handle(final T item);
     }
 
+    @FunctionalInterface
+    public static interface IterationEqualsCallback<T> {
+        boolean handle(final T item1, final T item2);
+    }
+
     //---------------------------------------------------------------------
     // forEach utilities
     // Use to filter, map reduce or simply loop on items
@@ -899,6 +904,99 @@ public abstract class CollectionUtils {
         for (final T value : checkvalues) {
             if (targetvalues.contains(value)) {
                 result.add(value);
+            }
+        }
+        return result;
+    }
+
+    public static <T> Collection<T> matchAllUnique(final Collection<T>... collections) {
+        return matchAllUnique((item1, item2) -> {
+            return item1.equals(item2);
+        }, collections);
+    }
+
+    public static <T> Collection<T> matchAllUnique(final IterationEqualsCallback<T> callback,
+                                                   final Collection<Collection<T>> collections) {
+        final Collection[] array = collections.toArray(new Collection[collections.size()]);
+        return matchAllUnique(callback, array);
+    }
+
+    public static <T> Collection<T> matchAllUnique(final IterationEqualsCallback<T> callback,
+                                                   final Collection<T>... collections) {
+        final List<T> result = new LinkedList<T>();
+        if (collections.length > 0) {
+            final Collection<T> header = collections[0];
+            if (collections.length == 1) {
+                result.addAll(header);
+            } else {
+                for (final T item : header) {
+                    boolean add = true;
+                    for (int i = 1; i < collections.length; i++) {
+                        final Collection<T> check = collections[i];
+                        boolean contains = false;
+                        for (final T check_item : check) {
+                            if (callback.handle(item, check_item)) {
+                                contains = true;
+                                break;
+                            }
+                        }
+                        add = add && contains;
+                        if (!add) {
+                            break;
+                        }
+                    }
+                    if (add) {
+                        result.add(item);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static <T> Collection<T> matchAll(final Collection<T>... collections) {
+        return matchAll((item1, item2) -> {
+            return item1.equals(item2);
+        }, collections);
+    }
+
+    public static <T> Collection<T> matchAll(final IterationEqualsCallback<T> callback,
+                                             final Collection<Collection<T>> collections) {
+        final Collection[] array = collections.toArray(new Collection[collections.size()]);
+        return matchAll(callback, array);
+    }
+
+    public static <T> Collection<T> matchAll(final IterationEqualsCallback<T> callback,
+                                             final Collection<T>... collections) {
+        final List<T> result = new LinkedList<T>();
+        if (collections.length > 0) {
+            final Collection<T> header = collections[0];
+            if (collections.length == 1) {
+                result.addAll(header);
+            } else {
+                for (final T item : header) {
+                    boolean add = true;
+                    for (int i = 1; i < collections.length; i++) {
+                        final Collection<T> check = collections[i];
+                        boolean contains = false;
+                        for (final T check_item : check) {
+                            if (callback.handle(item, check_item)) {
+                                contains = true;
+                                if (!result.contains(check_item)) {
+                                    result.add(check_item);
+                                }
+                                break;
+                            }
+                        }
+                        add = add && contains;
+                        if (!add) {
+                            break;
+                        }
+                    }
+                    if (add) {
+                        result.add(item);
+                    }
+                }
             }
         }
         return result;

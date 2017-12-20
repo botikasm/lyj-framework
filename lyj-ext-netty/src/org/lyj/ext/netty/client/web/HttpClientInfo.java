@@ -2,10 +2,13 @@ package org.lyj.ext.netty.client.web;
 
 import org.json.JSONObject;
 import org.lyj.commons.lang.CharEncoding;
-import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonItem;
 import org.lyj.ext.netty.server.web.IHeaderNames;
 import org.lyj.ext.netty.server.web.IHeaderValues;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Configuration for http client
@@ -76,8 +79,8 @@ public class HttpClientInfo
     public HttpClientInfo body(final Object value) {
         super.put(FLD_BODY, value);
 
-        if(StringUtils.isJSON(value)){
-             this.headers().put( IHeaderNames.CONTENT_TYPE, IHeaderValues.APPLICATION_JSON);
+        if (StringUtils.isJSON(value)) {
+            this.headers().put(IHeaderNames.CONTENT_TYPE, IHeaderValues.APPLICATION_JSON);
         }
 
         return this;
@@ -89,6 +92,15 @@ public class HttpClientInfo
         }
         return super.getJSONObject(FLD_HEADERS);
     }
-    
+
+    public HttpClientInfo headers(final Map<String, ?> values) {
+        if(null!=values && !values.isEmpty()){
+            final Set<String> keys = values.keySet();
+            for (final String key : keys) {
+                this.headers().put(key, values.get(key));
+            }
+        }
+        return this;
+    }
 
 }

@@ -198,7 +198,7 @@ public final class StringUtils {
                                  final boolean trimTokens,
                                  final boolean ignoreEmptyTokens,
                                  final boolean unique) {
-        final String placeholder = "___DELIM___";
+        final String placeholder = "DELIM";
         final Collection<String> result = unique ? new LinkedHashSet<String>() : new LinkedList<String>();
         if (null != delimiters && delimiters.length > 0) {
             String s_tokens = str;
