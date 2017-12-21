@@ -280,7 +280,7 @@ public final class LoggingRepository
     // ------------------------------------------------------------------------
     private static LoggingRepository __instance;
 
-    public static LoggingRepository getInstance() {
+    public static synchronized LoggingRepository getInstance() {
         if (null == __instance) {
             __instance = new LoggingRepository();
         }

@@ -146,7 +146,7 @@ public final class SessionManager
 
     private static SessionManager __instance;
 
-    public static SessionManager instance() {
+    public static synchronized SessionManager instance() {
         if (null == __instance) {
             __instance = new SessionManager();
         }

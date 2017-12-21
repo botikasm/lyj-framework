@@ -126,7 +126,7 @@ public class MessageBus {
 
     private static MessageBus __instance;
 
-    public static MessageBus getInstance() {
+    public static synchronized MessageBus getInstance() {
         if (null == __instance) {
             __instance = new MessageBus();
         }

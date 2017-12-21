@@ -101,7 +101,7 @@ public class DictionaryController {
 
     private static DictionaryController __instance;
 
-    public static DictionaryController getInstance() {
+    public static synchronized DictionaryController getInstance() {
         if (null == __instance) {
             __instance = new DictionaryController();
         }

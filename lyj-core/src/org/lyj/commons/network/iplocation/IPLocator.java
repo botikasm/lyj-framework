@@ -50,7 +50,7 @@ public final class IPLocator {
     // ------------------------------------------------------------------------
     private static IPLocator __instance;
 
-    public static IPLocator getInstance() {
+    public static synchronized IPLocator getInstance() {
         if (null == __instance) {
             __instance = new IPLocator();
         }

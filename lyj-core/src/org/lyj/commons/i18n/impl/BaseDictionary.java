@@ -101,14 +101,14 @@ public class BaseDictionary extends AbstractI18nBundle {
     private static ClassLoader __classLoader;
     private static BaseDictionary __instance;
 
-    public static BaseDictionary getInstance() {
+    public static synchronized BaseDictionary getInstance() {
         if (null == __instance) {
             __instance = new BaseDictionary();
         }
         return __instance;
     }
 
-    public static ClassLoader getClassLoader() {
+    public static synchronized ClassLoader getClassLoader() {
         if (null == __classLoader) {
             __classLoader = Thread.currentThread().getContextClassLoader();
         }

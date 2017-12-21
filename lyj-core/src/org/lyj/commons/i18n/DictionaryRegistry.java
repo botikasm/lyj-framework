@@ -93,7 +93,7 @@ public class DictionaryRegistry {
 
     private static DictionaryRegistry __instance;
 
-    private static DictionaryRegistry getInstance() {
+    private static synchronized DictionaryRegistry getInstance() {
         if (null == __instance) {
             __instance = new DictionaryRegistry();
         }

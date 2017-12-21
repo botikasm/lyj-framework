@@ -103,7 +103,7 @@ public final class CompilerRegistry {
 
     private static CompilerRegistry __instance;
 
-    private static CompilerRegistry getInstance() {
+    private static synchronized CompilerRegistry getInstance() {
         if (null == __instance) {
             __instance = new CompilerRegistry();
         }

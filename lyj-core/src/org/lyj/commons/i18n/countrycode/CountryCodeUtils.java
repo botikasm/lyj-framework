@@ -104,7 +104,7 @@ public class CountryCodeUtils extends AbstractLogEmitter {
 
     private static CountryCodeUtils __instance;
 
-    public static CountryCodeUtils instance() {
+    public static synchronized CountryCodeUtils instance() {
         if (null == __instance) {
             __instance = new CountryCodeUtils();
         }

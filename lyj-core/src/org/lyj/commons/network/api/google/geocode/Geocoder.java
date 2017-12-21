@@ -108,7 +108,7 @@ public class Geocoder {
 
     private static Geocoder __instance;
 
-    public static Geocoder instance() {
+    public static synchronized Geocoder instance() {
         if (null == __instance) {
             __instance = new Geocoder();
         }

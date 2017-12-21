@@ -138,7 +138,7 @@ public class Cicles {
 
     private static Cicles __instance;
 
-    public static Cicles instance() {
+    public static synchronized Cicles instance() {
         if (null == __instance) {
             __instance = new Cicles();
         }

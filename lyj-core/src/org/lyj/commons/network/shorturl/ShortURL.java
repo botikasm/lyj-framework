@@ -129,7 +129,7 @@ public class ShortURL {
     // ------------------------------------------------------------------------
     private static ShortURL __instance;
 
-    private static ShortURL getInstance() {
+    private static synchronized ShortURL getInstance() {
         if (null == __instance) {
             __instance = new ShortURL();
         }

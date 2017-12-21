@@ -151,7 +151,7 @@ public class PacketMonitorTask
 
     private static PacketMonitorTask __instance;
 
-    public static PacketMonitorTask instance() {
+    public static synchronized PacketMonitorTask instance() {
         if (null == __instance) {
             __instance = new PacketMonitorTask(30); // 30 seconds task
         }

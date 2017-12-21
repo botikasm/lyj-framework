@@ -98,7 +98,7 @@ public final class EventDispatcher {
      *
      * @return EventDispatcher singleton
      */
-    public static EventDispatcher getInstance() {
+    public static synchronized EventDispatcher getInstance() {
         if (null == __instance) {
             __instance = new EventDispatcher();
         }

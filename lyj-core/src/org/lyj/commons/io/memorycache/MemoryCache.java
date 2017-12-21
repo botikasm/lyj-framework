@@ -96,7 +96,7 @@ public class MemoryCache {
 
     private static MemoryCache __instance;
 
-    public static MemoryCache singleton() {
+    public static synchronized MemoryCache singleton() {
         if (null == __instance) {
             __instance = new MemoryCache();
         }

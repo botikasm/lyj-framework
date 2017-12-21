@@ -1,8 +1,8 @@
 package org.lyj.config.network;
 
 import org.lyj.Lyj;
-import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 
 /**
  * Network Configuration Helper
@@ -97,7 +97,7 @@ public class ConfigNetwork {
 
     private static ConfigNetwork __instance;
 
-    public static ConfigNetwork getInstance() {
+    public static synchronized ConfigNetwork getInstance() {
         if (null == __instance) {
             __instance = new ConfigNetwork();
         }

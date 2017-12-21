@@ -133,7 +133,7 @@ public class LogFileWriter {
 
     private static LogFileWriter __instance;
 
-    public static LogFileWriter instance() {
+    public static synchronized LogFileWriter instance() {
         if (null == __instance) {
             __instance = new LogFileWriter();
         }

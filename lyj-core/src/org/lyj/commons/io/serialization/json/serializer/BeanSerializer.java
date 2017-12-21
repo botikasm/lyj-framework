@@ -270,7 +270,7 @@ public class BeanSerializer {
     // ------------------------------------------------------------------------
     private static BeanSerializer __instance;
 
-    public static BeanSerializer getInstance() {
+    public static synchronized BeanSerializer getInstance() {
         if (null == __instance) {
             __instance = new BeanSerializer();
         }
