@@ -203,6 +203,10 @@ public abstract class Async {
 
     }
 
+    public static void startAllThreads(final Collection<? extends Thread> threads) {
+        startAll(threads.toArray(new Thread[threads.size()]));
+    }
+
     public static void joinAllThreads(final Collection<? extends Thread> threads) {
         if (null != threads && threads.size() > 0) {
             // final Task[] array = tasks.toArray(new Task[tasks.size()]);
