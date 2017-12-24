@@ -34,6 +34,8 @@ public interface IDatabaseCollection<T> {
 
     long countNotEqual(final Map<String, Object> bindArgs);
 
+    long countLikeOr(final Map<String, Object> bindArgs);
+
     boolean exists(final Object key);
 
     T insert(final T entity);
@@ -91,4 +93,13 @@ public interface IDatabaseCollection<T> {
     Collection<T> findEqualDesc(final Map<String, Object> bindArgs, final String[] sort);
 
     Collection<T> findEqualDesc(final Map<String, Object> bindArgs, final String[] sort, final int offset, final int count);
+
+    Collection<T> findLikeOrDesc(final Map<String, Object> bindArgs, final String[] sort);
+
+    Collection<T> findLikeOrDesc(final Map<String, Object> bindArgs, final String[] sort, final int offset, final int count);
+
+    Collection<T> findLikeOrAsc(final Map<String, Object> bindArgs, final String[] sort);
+
+    Collection<T> findLikeOrAsc(final Map<String, Object> bindArgs, final String[] sort, final int offset, final int count);
+
 }
