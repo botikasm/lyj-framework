@@ -125,6 +125,25 @@ public final class SecurityMessageDigester
         return instance.getEncodedText(text);
     }
 
+    public static String encodeSHA_256(final String value, final String secret) {
+        String result;
+        try {
+            final Mac hmacSHA512 = Mac.getInstance("HmacSHA256");
+            final SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+            hmacSHA512.init(secretKeySpec);
+
+            byte[] digest = hmacSHA512.doFinal(value.getBytes());
+            BigInteger hash = new BigInteger(1, digest);
+            result = hash.toString(16);
+            if ((result.length() % 2) != 0) {
+                result = "0" + result;
+            }
+        } catch (IllegalStateException | InvalidKeyException | NoSuchAlgorithmException ex) {
+            throw new RuntimeException("Problemas calculando HMAC", ex);
+        }
+        return result;
+    }
+
     public static String encodeSHA_512(final String value, final String secret) {
         String result;
         try {
