@@ -500,27 +500,29 @@ public class ArnCollection<T>
         sb.append(FormatUtils.format(QUERY_FOR, super.name()));
 
         // filter
-        sb.append(" ").append(QUERY_FILTER).append(" ");
-        final Counter count = new Counter(0);
-        for (final String name : names) {
-            if (count.value() > 0) {
-                sb.append(" && ");
-            }
-            if (name.contains(ARRAY_EXPANSION_OPERATOR)) {
-                final String fld_val = MD5.encode(name);
-                params.put(fld_val, params.get(name)); // add value to parameters
-                params.remove(name);
-                sb.append(FormatUtils.format(QUERY_FILTER_IN, fld_val, name));
-            } else if (name.contains(".")) {
-                final String fld_name = MD5.encode(name);
-                params.put(fld_name, params.get(name)); // add value to parameters
-                params.remove(name);
-                sb.append(FormatUtils.format(is_equality ? QUERY_FILTER_EQUAL : QUERY_FILTER_NOT_EQUAL, name, fld_name));
-            } else {
-                sb.append(FormatUtils.format(is_equality ? QUERY_FILTER_EQUAL : QUERY_FILTER_NOT_EQUAL, name, name));
-            }
+        if (!params.isEmpty()) {
+            sb.append(" ").append(QUERY_FILTER).append(" ");
+            final Counter count = new Counter(0);
+            for (final String name : names) {
+                if (count.value() > 0) {
+                    sb.append(" && ");
+                }
+                if (name.contains(ARRAY_EXPANSION_OPERATOR)) {
+                    final String fld_val = MD5.encode(name);
+                    params.put(fld_val, params.get(name)); // add value to parameters
+                    params.remove(name);
+                    sb.append(FormatUtils.format(QUERY_FILTER_IN, fld_val, name));
+                } else if (name.contains(".")) {
+                    final String fld_name = MD5.encode(name);
+                    params.put(fld_name, params.get(name)); // add value to parameters
+                    params.remove(name);
+                    sb.append(FormatUtils.format(is_equality ? QUERY_FILTER_EQUAL : QUERY_FILTER_NOT_EQUAL, name, fld_name));
+                } else {
+                    sb.append(FormatUtils.format(is_equality ? QUERY_FILTER_EQUAL : QUERY_FILTER_NOT_EQUAL, name, name));
+                }
 
-            count.inc();
+                count.inc();
+            }
         }
 
         // sort
@@ -563,27 +565,29 @@ public class ArnCollection<T>
         sb.append(FormatUtils.format(QUERY_FOR, super.name()));
 
         // filter
-        sb.append(" ").append(QUERY_FILTER).append(" ");
-        final Counter count = new Counter(0);
-        for (final String name : names) {
-            if (count.value() > 0) {
-                sb.append(" " + logic_op + " ");
-            }
-            if (name.contains(ARRAY_EXPANSION_OPERATOR)) {
-                final String fld_val = MD5.encode(name);
-                params.put(fld_val, params.get(name)); // add value to parameters
-                params.remove(name);
-                sb.append(FormatUtils.format(QUERY_FILTER_IN, fld_val, name));
-            } else if (name.contains(".")) {
-                final String fld_name = MD5.encode(name);
-                params.put(fld_name, params.get(name)); // add value to parameters
-                params.remove(name);
-                sb.append(FormatUtils.format(QUERY_FILTER_LIKE, name, fld_name));
-            } else {
-                sb.append(FormatUtils.format(QUERY_FILTER_LIKE, name, name));
-            }
+        if (!params.isEmpty()) {
+            sb.append(" ").append(QUERY_FILTER).append(" ");
+            final Counter count = new Counter(0);
+            for (final String name : names) {
+                if (count.value() > 0) {
+                    sb.append(" " + logic_op + " ");
+                }
+                if (name.contains(ARRAY_EXPANSION_OPERATOR)) {
+                    final String fld_val = MD5.encode(name);
+                    params.put(fld_val, params.get(name)); // add value to parameters
+                    params.remove(name);
+                    sb.append(FormatUtils.format(QUERY_FILTER_IN, fld_val, name));
+                } else if (name.contains(".")) {
+                    final String fld_name = MD5.encode(name);
+                    params.put(fld_name, params.get(name)); // add value to parameters
+                    params.remove(name);
+                    sb.append(FormatUtils.format(QUERY_FILTER_LIKE, name, fld_name));
+                } else {
+                    sb.append(FormatUtils.format(QUERY_FILTER_LIKE, name, name));
+                }
 
-            count.inc();
+                count.inc();
+            }
         }
 
         // sort
