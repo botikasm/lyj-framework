@@ -18,7 +18,12 @@ import org.lyj.ext.db.IDatabase;
 import java.util.*;
 
 /**
- *
+ * https://docs.arangodb.com/3.1/AQL/Operators.html
+ * https://docs.arangodb.com/3.1/AQL/Advanced/ArrayOperators.html#array-expansion
+ * <p>
+ * FOR doc IN @@collection
+ * FILTER @value IN doc.`tags`
+ * RETURN doc
  */
 public class ArnCollection<T>
         extends AbstractDatabaseCollection<T> {
@@ -392,7 +397,7 @@ public class ArnCollection<T>
     }
 
     public Collection<T> findLikeOrDesc(final Map<String, Object> bindArgs, final String[] sort,
-                                      final int offset, final int count) {
+                                        final int offset, final int count) {
         final String query = this.queryLikeOr(bindArgs, this.sortMap(SORT_DESC, sort), offset, count);
         return this.find(query, bindArgs);
     }
@@ -403,7 +408,7 @@ public class ArnCollection<T>
     }
 
     public Collection<T> findLikeOrAsc(final Map<String, Object> bindArgs, final String[] sort,
-                                        final int offset, final int count) {
+                                       final int offset, final int count) {
         final String query = this.queryLikeOr(bindArgs, this.sortMap(SORT_ASC, sort), offset, count);
         return this.find(query, bindArgs);
     }
