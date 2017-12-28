@@ -2,6 +2,8 @@ package org.lyj.commons.util;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -17,6 +19,9 @@ public class StringUtilsTest {
     public void testToString() throws Exception {
         String str = StringUtils.toString(new String[]{"val1", "val2"});
         assertTrue(str.equalsIgnoreCase("val1,val2"));
+
+        System.out.println(StringUtils.toString(123.0000000003300000));
+        System.out.println(StringUtils.toString(0.000000000000000000000000000000001));
     }
 
     @Test

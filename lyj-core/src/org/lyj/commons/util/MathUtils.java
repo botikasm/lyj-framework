@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.util;
 
@@ -692,10 +692,25 @@ public abstract class MathUtils {
     }
 
     public static int countDecimals(final double value) {
+        if (value == (int) value) {
+            return 0;
+        }
+
+        int i = 1;
+        while (true) {
+            double p = (value * Math.pow(10, i) % 1);
+            if (p == 0) {
+                break;
+            }
+            i++;
+        }
+        /*
         String text = Double.toString(Math.abs(value));
         int integerPlaces = text.indexOf('.');
         int decimalPlaces = text.length() - integerPlaces - 1;
         return decimalPlaces;
+        */
+        return i;
     }
 
     // --------------------------------------------------------------------
