@@ -304,10 +304,12 @@ public final class JsonWrapper implements Cloneable {
     public int deepInteger(final String path, final int def) {
         try {
             final Object result = this.deep(path);
-            if (result instanceof Integer) {
-                return Integer.parseInt(result.toString());
-            } else {
-                return ConversionUtils.toInteger(result, def);
+            if(null!=result){
+                if (result instanceof Integer) {
+                    return Integer.parseInt(result.toString());
+                } else {
+                    return ConversionUtils.toInteger(result, def);
+                }
             }
         } catch (Throwable ignored) {
         }
@@ -321,10 +323,12 @@ public final class JsonWrapper implements Cloneable {
     public long deepLong(final String path, final long def) {
         try {
             final Object result = this.deep(path);
-            if (result instanceof Long) {
-                return Long.parseLong(result.toString());
-            } else {
-                return ConversionUtils.toLong(result, def);
+            if (null != result) {
+                if (result instanceof Long) {
+                    return Long.parseLong(result.toString());
+                } else {
+                    return ConversionUtils.toLong(result, def);
+                }
             }
         } catch (Throwable ignored) {
         }
@@ -338,10 +342,12 @@ public final class JsonWrapper implements Cloneable {
     public double deepDouble(final String path, final double def) {
         try {
             final Object result = this.deep(path);
-            if (result instanceof Double) {
-                return Double.parseDouble(result.toString());
-            } else {
-                return ConversionUtils.toDouble(result);
+            if (null != result) {
+                if (result instanceof Double) {
+                    return Double.parseDouble(result.toString());
+                } else {
+                    return ConversionUtils.toDouble(result);
+                }
             }
         } catch (Throwable ignored) {
         }
@@ -1720,7 +1726,7 @@ public final class JsonWrapper implements Cloneable {
     //                      S T A T I C  p r i v a t e
     // ------------------------------------------------------------------------
     private static boolean isPath(final String text) {
-        return text.indexOf(".")>0 && !text.trim().contains(" ");
+        return text.indexOf(".") > 0 && !text.trim().contains(" ");
     }
 
     private static Logger getLoggerStatic() {
