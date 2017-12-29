@@ -28,6 +28,7 @@ public class FileDBCollection {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private final FileDB _db;
     private final String _file_path;
     private final String _name; // collection name
     private final Set<String> _field_names;
@@ -39,7 +40,9 @@ public class FileDBCollection {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public FileDBCollection(final String file_path) {
+    public FileDBCollection(final FileDB db,
+                            final String file_path) {
+        _db = db;
         _file_path = file_path;
         _name = PathUtils.getFilename(_file_path, false);
         _field_names = new HashSet<>();
@@ -61,12 +64,22 @@ public class FileDBCollection {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public FileDB db() {
+        return _db;
+    }
+
     public boolean isReady() {
         return _ready;
     }
 
     public String name() {
         return _name;
+    }
+
+    public void drop() {
+        if (this.remove()) {
+            _db.removeCollection(_name);
+        }
     }
 
     public boolean exists(final Object key) {
@@ -107,6 +120,10 @@ public class FileDBCollection {
         return this.write(item, false, true);
     }
 
+    public void forEach(final Delegates.FunctionArg<FileDBEntity, Boolean> callback) {
+        this.read(callback);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -127,12 +144,14 @@ public class FileDBCollection {
     }
 
 
-    private void remove() {
+    private boolean remove() {
         try {
             if (PathUtils.exists(_file_path)) {
                 FileUtils.delete(_file_path);
             }
+            return true;
         } catch (Throwable ignored) {
+            return false;
         }
     }
 
@@ -170,6 +189,7 @@ public class FileDBCollection {
             if (!entity.has(KEY)) {
                 // just append
                 entity.put(KEY, GUID.create());
+                this.addFieldNames(entity);
                 this.append(entity);
                 response = entity;
             } else {

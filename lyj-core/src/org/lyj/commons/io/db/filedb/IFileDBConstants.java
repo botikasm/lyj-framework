@@ -29,4 +29,6 @@ public interface IFileDBConstants {
     String TIMESTAMP = "_timestamp";
     String INDEX = "_index";
 
+    String COLL_EXT = ".fdb"; // filedb extension
+
 }
