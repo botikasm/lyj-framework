@@ -17,8 +17,8 @@ public final class FileDB
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final String ROOT = PathUtils.getAbsolutePath("./filedb");
-    private static final String COLLECTIONS_PATH = "./collections";
+    private static final String ROOT = PathUtils.getAbsolutePath("filedb");
+    private static final String COLLECTIONS_PATH = "collections";
     private static final String COLL_EXT = IFileDBConstants.COLL_EXT;
 
     // ------------------------------------------------------------------------

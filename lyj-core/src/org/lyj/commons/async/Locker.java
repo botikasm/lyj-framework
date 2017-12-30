@@ -1,8 +1,8 @@
 package org.lyj.commons.async;
 
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Lock/Unlock a key (string)
@@ -15,31 +15,39 @@ public class Locker {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final Set<String> _locks;
+    private final Map<String, Object> _locks;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     private Locker() {
-        _locks = Collections.synchronizedSet(new HashSet<>());
+        _locks = Collections.synchronizedMap(new HashMap<>());
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public boolean locked(final String key) {
-        return _locks.contains(key);
+    public boolean isLocked(final String key) {
+        return _locks.containsKey(key);
+    }
+
+    public Object getLocked(final String key) {
+        return _locks.get(key);
     }
 
     public void lock(final String key) {
-        this.await(key);
-        this.add(key);
+        this.lock(key, key);
     }
 
-    public void unlock(final String key) {
-        this.remove(key);
+    public void lock(final String key, final Object obj) {
+        this.await(key);
+        this.add(key, obj);
+    }
+
+    public Object unlock(final String key) {
+        return this.remove(key);
     }
 
 
@@ -47,9 +55,9 @@ public class Locker {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private synchronized void await(final String key) {
+    private void await(final String key) {
         try {
-            while (_locks.contains(key)) {
+            while (_locks.containsKey(key)) {
                 Thread.sleep(100);
             }
         } catch (Throwable t) {
@@ -57,21 +65,20 @@ public class Locker {
         }
     }
 
-    private void add(final String key) {
+    private void add(final String key, final Object obj) {
         synchronized (_locks) {
-            if (!_locks.contains(key)) {
-                _locks.add(key);
-            } else {
-
+            if (!_locks.containsKey(key)) {
+                _locks.put(key, obj);
             }
         }
     }
 
-    private void remove(final String key) {
+    private Object remove(final String key) {
         synchronized (_locks) {
-            if (_locks.contains(key)) {
-                _locks.remove(key);
+            if (_locks.containsKey(key)) {
+                return _locks.remove(key);
             }
+            return null;
         }
     }
 

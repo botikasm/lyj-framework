@@ -4,13 +4,17 @@ import org.json.JSONArray;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lyj.TestInitializer;
+import org.lyj.commons.async.Async;
 import org.lyj.commons.io.db.filedb.exporter.FileDBExporter;
 import org.lyj.commons.timewatching.TimeWatcher;
 import org.lyj.commons.util.DateUtils;
 import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.junit.Assert.assertTrue;
 
@@ -29,7 +33,7 @@ public class FileDBCollectionTest {
         FileDBCollection collection = db.collection("test_collection");
 
         System.out.println(StringUtils.toString(db.collectionNames()));
-
+        System.out.println(db.dbPath());
     }
 
     @Test
@@ -80,7 +84,7 @@ public class FileDBCollectionTest {
         final FileDBEntity item = new FileDBEntity();
         item.put("text", "This is a text \"quoted\" with a CSV quote char");
         collection.upsert(item);
-        
+
         String path = FileDBExporter.instance().exporter(".json").export(collection);
         String json_content = FileUtils.readFileToString(new File(path));
         assertTrue(StringUtils.isJSONArray(json_content));
@@ -96,7 +100,7 @@ public class FileDBCollectionTest {
 
         FileDBCollection collection = db.collection("test_big_collection");
 
-        for(int i=0;i<100000;i++){
+        for (int i = 0; i < 100000; i++) {
             final FileDBEntity item = new FileDBEntity();
             item.put("text", "This is a text \"quoted\" with a CSV quote char");
             collection.upsert(item);
@@ -116,6 +120,54 @@ public class FileDBCollectionTest {
         t.stop();
         System.out.println("EXPORT ELAPSED: " + t.elapsed());
         System.out.println("ROWS: " + collection.count());
+    }
+
+    @Test
+    public void multi_thread() throws Exception {
+        final Collection<Thread> tasks = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            tasks.add(new Task());
+        }
+
+        Async.startAllThreads(tasks);
+        Async.joinAllThreads(tasks);
+
+    }
+
+    private static class Task
+            extends Thread {
+
+        @Override
+        public void run() {
+            try {
+                Thread.sleep((long) RandomUtils.rnd(10d, 500d));
+
+                final FileDB db = new FileDB("test");
+                final FileDBCollection collection = db.collection("test_big_collection");
+
+                for (int i = 0; i < 100; i++) {
+                    final FileDBEntity item = new FileDBEntity();
+                    item.put("text", "This is a text \"quoted\" with a CSV quote char");
+                    collection.upsert(item);
+
+                }
+
+                Thread t = Async.debounce("test", this::delayed, 1000, collection);
+                t.join();
+
+            } catch (Throwable t) {
+                System.out.println(t);
+            }
+
+        }
+
+        private void delayed(final Object[] args) {
+            try {
+                FileDBExporter.instance().exporter("csv").export((FileDBCollection) args[0]);
+            } catch (Throwable t) {
+                System.out.println(t);
+            }
+        }
     }
 
 }

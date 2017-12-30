@@ -4,6 +4,7 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Locker;
 import org.lyj.commons.cryptograph.GUID;
 import org.lyj.commons.lang.CharEncoding;
+import org.lyj.commons.lang.Counter;
 import org.lyj.commons.lang.ValueObject;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
@@ -34,7 +35,7 @@ public class FileDBCollection {
     private final Set<String> _field_names;
 
     private boolean _ready;
-    private long _row_count;
+    private final Counter _row_count;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -47,7 +48,7 @@ public class FileDBCollection {
         _name = PathUtils.getFilename(_file_path, false);
         _field_names = new HashSet<>();
 
-        _row_count = 0;
+        _row_count = new Counter(0);
 
         try {
             // initialize
@@ -87,7 +88,7 @@ public class FileDBCollection {
     }
 
     public long count() {
-        return _row_count;
+        return _row_count.value();
     }
 
     public String[] fields() {
@@ -129,17 +130,19 @@ public class FileDBCollection {
     // ------------------------------------------------------------------------
 
     private void init() throws IOException {
-        final File file = new File(_file_path);
-        if (!file.exists()) {
-            FileUtils.mkdirs(_file_path);
-            FileUtils.writeStringToFile(file, "", ENCODING);
-        } else {
-            // file exists
-            this.read((entity) -> {
-                _row_count++;
-                this.addFieldNames(entity);
-                return false;
-            });
+        synchronized (_row_count) {
+            final File file = new File(_file_path);
+            if (!file.exists()) {
+                FileUtils.mkdirs(_file_path);
+                FileUtils.writeStringToFile(file, "", ENCODING);
+            } else {
+                // file exists
+                this.read((entity) -> {
+                    _row_count.inc();
+                    this.addFieldNames(entity);
+                    return false;
+                });
+            }
         }
     }
 
@@ -182,79 +185,81 @@ public class FileDBCollection {
     private FileDBEntity write(final FileDBEntity entity,
                                final boolean upsert,
                                final boolean remove) throws Exception {
-        FileDBEntity response = null;
-        try {
-            Locker.instance().lock(_file_path);
+        synchronized (_row_count) {
+            FileDBEntity response = null;
+            try {
+                Locker.instance().lock(_file_path);
 
-            if (!entity.has(KEY)) {
-                // just append
-                entity.put(KEY, GUID.create());
-                this.addFieldNames(entity);
-                this.append(entity);
-                response = entity;
-            } else {
-                final File inputFile = new File(_file_path);
-                final File tempFile = new File(_file_path + ".tmp");
-
-                final BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-                final BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-
-                String line;
-                long index = 0;
-                boolean append = !remove;
-                while ((line = reader.readLine()) != null) {
-                    // trim newline when comparing with lineToRemove
-                    final String trimmed_line = line.trim();
-                    if (StringUtils.isJSONObject(trimmed_line)) {
-                        final FileDBEntity row = new FileDBEntity(index, trimmed_line);
-                        if (row.key().equals(entity.get(KEY))) {
-                            // ALREADY EXISTS
-                            if (remove) {
-                                _row_count--;
-                                continue;
-                            } else if (upsert) {
-                                // UPSERT ITEM
-                                this.addFieldNames(entity);
-                                row.putAll(entity);
-                                writer.write(this.prepareRowToWrite(row));
-                                append = false; // no need to append
-                                response = row;
-                            } else {
-                                throw new Exception("Entity already exists: " + row.toString());
-                            }
-                        } else {
-                            writer.write(this.prepareRowToWrite(row));
-                        }
-
-                        index++;
-                    }
-                }
-
-                writer.close();
-                reader.close();
-                boolean successful = tempFile.renameTo(inputFile);
-
-                if (successful && append) {
+                if (!entity.has(KEY)) {
+                    // just append
+                    entity.put(KEY, GUID.create());
                     this.addFieldNames(entity);
                     this.append(entity);
                     response = entity;
-                }
-            }
+                } else {
+                    final File inputFile = new File(_file_path);
+                    final File tempFile = new File(_file_path + ".tmp");
 
-        } finally {
-            Locker.instance().unlock(_file_path);
+                    final BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+                    final BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+                    String line;
+                    long index = 0;
+                    boolean append = !remove;
+                    while ((line = reader.readLine()) != null) {
+                        // trim newline when comparing with lineToRemove
+                        final String trimmed_line = line.trim();
+                        if (StringUtils.isJSONObject(trimmed_line)) {
+                            final FileDBEntity row = new FileDBEntity(index, trimmed_line);
+                            if (row.key().equals(entity.get(KEY))) {
+                                // ALREADY EXISTS
+                                if (remove) {
+                                    _row_count.inc(-1);
+                                    continue;
+                                } else if (upsert) {
+                                    // UPSERT ITEM
+                                    this.addFieldNames(entity);
+                                    row.putAll(entity);
+                                    writer.write(this.prepareRowToWrite(row));
+                                    append = false; // no need to append
+                                    response = row;
+                                } else {
+                                    throw new Exception("Entity already exists: " + row.toString());
+                                }
+                            } else {
+                                writer.write(this.prepareRowToWrite(row));
+                            }
+
+                            index++;
+                        }
+                    }
+
+                    writer.close();
+                    reader.close();
+                    boolean successful = tempFile.renameTo(inputFile);
+
+                    if (successful && append) {
+                        this.addFieldNames(entity);
+                        this.append(entity);
+                        response = entity;
+                    }
+                }
+
+            } finally {
+                Locker.instance().unlock(_file_path);
+            }
+            return response;
         }
-        return response;
     }
 
     private void append(final FileDBEntity entity) throws IOException {
-        entity.index(_row_count);
+        entity.index(_row_count.value());
         final String line = this.prepareRowToWrite(entity);
         final BufferedWriter writer = new BufferedWriter(new FileWriter(_file_path, true));
         writer.write(line);
         writer.flush();
         writer.close();
-        _row_count++;
+        _row_count.inc();
     }
 
     private String prepareRowToWrite(final JsonItem item) {

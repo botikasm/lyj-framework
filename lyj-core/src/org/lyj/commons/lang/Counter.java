@@ -15,7 +15,7 @@ public class Counter {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public Counter(int initial) {
+    public Counter(long initial) {
         _count = initial;
     }
 

@@ -22,6 +22,7 @@ package org.lyj.commons.async;
 
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.future.Task;
+import org.lyj.commons.lang.ValueObject;
 import org.lyj.commons.util.MathUtils;
 
 import java.util.Collection;
@@ -72,6 +73,44 @@ public abstract class Async {
         }
     }
 
+    public static Thread debounce(final String func_uid,
+                                  final Delegates.VarArgsCallback handler,
+                                  final int delay,
+                                  final Object... args) {
+        if (null != handler) {
+            if (!Locker.instance().isLocked(func_uid)) {
+                final ValueObject<Long> clock = new ValueObject<>(System.currentTimeMillis());
+                Locker.instance().lock(func_uid, clock);
+                try {
+                    while (System.currentTimeMillis() - clock.content() < delay) {
+                        Thread.sleep(delay);
+                    }
+                    final Thread t = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                handler.handle(args);
+                            } catch (Throwable ignored) {
+                            }
+                        }
+                    });
+                    t.setName("debounced-" + t.getName());
+                    t.setDaemon(true);
+                    t.setPriority(Thread.NORM_PRIORITY);
+                    t.start();
+                    return t;
+                } catch (Throwable ignored) {
+                } finally {
+                    Locker.instance().unlock(func_uid);
+                }
+            } else {
+                ((ValueObject<Long>) Locker.instance().getLocked(func_uid)).content(System.currentTimeMillis());
+            }
+        }
+        return null;
+
+    }
+
     public static Thread loop(final Delegates.Function<Boolean> handler) {
         return loop(handler, 100);
     }
@@ -101,14 +140,14 @@ public abstract class Async {
         }
     }
 
-    public static void sleep(final int delay){
-        final Task<Void> task = new Task<>((t)->{
+    public static void sleep(final int delay) {
+        final Task<Void> task = new Task<>((t) -> {
             try {
                 Async.delay((args) -> {
                     t.success(null);
                 }, delay);
-            }catch(Throwable err){
-               t.fail(err);
+            } catch (Throwable err) {
+                t.fail(err);
             }
         });
         task.getSilent();

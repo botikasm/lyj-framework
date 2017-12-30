@@ -625,6 +625,10 @@ public abstract class DateUtils {
         return System.currentTimeMillis();
     }
 
+    public static long timestampUnix() {
+        return System.currentTimeMillis() / 1000; // unix has only 10 digits
+    }
+
     public static Date yesterday() {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -977,7 +981,7 @@ public abstract class DateUtils {
 
     public static boolean isExpiredDate(final Date date, final Date now) {
         try {
-            if (null!=date && null!=now) {
+            if (null != date && null != now) {
                 final DateWrapper dw = new DateWrapper(date);
                 return isExpiredDate(dw, now);
             }
@@ -1001,7 +1005,7 @@ public abstract class DateUtils {
         now.setSecond(0);
 
         final long dif = DateUtils.dateDiff(dw.getDateTime(), now.getDateTime());
-        return dif<0;
+        return dif < 0;
     }
 
 }
