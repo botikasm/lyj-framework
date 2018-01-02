@@ -1,5 +1,7 @@
 package org.lyj.ext.db.arango.query;
 
+import org.lyj.commons.util.StringUtils;
+
 /**
  * Helper class for query building.
  */
@@ -41,12 +43,57 @@ public class ArnQueryUtils {
      * @param values
      * @return
      */
-    public static String none(final String collection, final String field, final Object[] values) {
+    public static String none(final String collection,
+                              final String field,
+                              final Object[] values) {
         final StringBuilder query = new StringBuilder();
 
         query.append("FOR t IN ").append(collection).append(" \n");
         query.append("FILTER ").append(arrayOf(values));
         query.append(" NONE == t.").append(field).append(" \n");
+        query.append("RETURN t");
+
+        return query.toString();
+    }
+
+    public static String anyIn(final String collection,
+                               final String field,
+                               final Object[] values) {
+        return anyIn(collection, field, values, "", 0, 0);
+    }
+
+    public static String anyIn(final String collection,
+                               final String field,
+                               final Object[] values,
+                               final int limit_offset,
+                               final int limit_count) {
+        return anyIn(collection, field, values, "", limit_offset, limit_count);
+    }
+
+    public static String anyIn(final String collection,
+                               final String field,
+                               final Object[] values,
+                               final String more_conditions,
+                               final int limit_offset,
+                               final int limit_count) {
+        final StringBuilder query = new StringBuilder();
+
+        query.append("FOR t IN ").append(collection).append(" \n");
+        query.append("FILTER ");
+        query.append("(");
+        query.append(arrayOf(values));
+        query.append(" ANY IN t.").append(field);
+        query.append(")");
+        if (StringUtils.hasText(more_conditions)) {
+            query.append(" ").append(more_conditions);
+        }
+        query.append(" \n");
+
+        // limit
+        if (limit_count > 0) {
+            query.append(" ").append("LIMIT ").append(limit_offset).append(", ").append(limit_count).append(" \n");
+        }
+
         query.append("RETURN t");
 
         return query.toString();

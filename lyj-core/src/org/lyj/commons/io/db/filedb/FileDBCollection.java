@@ -234,14 +234,19 @@ public class FileDBCollection {
                         }
                     }
 
+                    writer.flush();
                     writer.close();
                     reader.close();
-                    boolean successful = tempFile.renameTo(inputFile);
 
-                    if (successful && append) {
-                        this.addFieldNames(entity);
-                        this.append(entity);
-                        response = entity;
+                    if (inputFile.delete()) {
+                        boolean successful = tempFile.renameTo(new File(_file_path));
+                        if (successful) {
+                            if (append) {
+                                this.addFieldNames(entity);
+                                this.append(entity);
+                                response = entity;
+                            }
+                        }
                     }
                 }
 
