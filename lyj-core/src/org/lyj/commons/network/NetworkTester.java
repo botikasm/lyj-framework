@@ -3,6 +3,7 @@ package org.lyj.commons.network;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.DateUtils;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonItem;
 
 import java.util.Date;
 
@@ -17,7 +18,7 @@ public final class NetworkTester
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final String URL = "https://httpbin.org/ip";
+    private static final String URL = "http://httpbin.org/ip"; // { "origin": "2.38.6.188" }
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -31,11 +32,13 @@ public final class NetworkTester
     private long _count_online_time;
     private long _count_offline;
 
+    private String _ip;
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    private NetworkTester() {
+    public NetworkTester() {
         _connected = false;
         _count_offline = 0;
     }
@@ -43,6 +46,8 @@ public final class NetworkTester
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
+        sb.append("IP=").append(this._ip);
+        sb.append(", ");
         sb.append("is_online=").append(this._connected);
         sb.append(", ");
         sb.append("was_offline=").append(this.wasOffLine());
@@ -58,9 +63,12 @@ public final class NetworkTester
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
-
     public boolean isConnected() {
-        if (!_connected) {
+        return this.isConnected(false);
+    }
+
+    public boolean isConnected(final boolean force) {
+        if (!_connected || force) {
             this.refresh();
         }
         return _connected;
@@ -84,16 +92,29 @@ public final class NetworkTester
 
     public synchronized void refresh() {
         try {
-            final String content = URLUtils.getUrlContent(URL);
-            this.setConnected(StringUtils.hasText(content));
+            final String content = URLUtils.getUrlContent(URL, URLUtils.TYPE_JSON);
+            this.parseResponse(content);
         } catch (Throwable t) {
             this.setConnected(false);
         }
     }
 
+    public String ip() {
+        return _ip;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private void parseResponse(final String content) {
+        // parse json response
+        if (StringUtils.isJSONObject(content)) {
+            _ip = new JsonItem(content).getString("origin");
+        }
+
+        this.setConnected(StringUtils.hasText(content));
+    }
 
     private void setConnected(final boolean value) {
         final boolean changed = !(value && _connected);
@@ -111,16 +132,5 @@ public final class NetworkTester
         }
     }
 
-    // ------------------------------------------------------------------------
-    //                      S T A T I C
-    // ------------------------------------------------------------------------
 
-    private static NetworkTester __instance;
-
-    public static synchronized NetworkTester instance() {
-        if (null == __instance) {
-            __instance = new NetworkTester();
-        }
-        return __instance;
-    }
 }
