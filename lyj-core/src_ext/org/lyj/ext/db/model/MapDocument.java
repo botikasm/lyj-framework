@@ -2,7 +2,9 @@ package org.lyj.ext.db.model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lyj.commons.util.*;
+import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.RandomUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.commons.util.converters.MapConverter;
 import org.lyj.commons.util.json.JsonItem;
@@ -131,7 +133,7 @@ public class MapDocument
         final Set<String> keys = values.keySet();
         for (final String key : keys) {
             if (!only_existing_fields || this.has(key)) {
-                if (!CollectionUtils.contains(exclude_fields, key)) {
+                if (!MapDocument.contains(exclude_fields, key)) {
                     final Object value = values.opt(key);
                     if (null != value) {
                         this.put(key, value);
@@ -196,9 +198,9 @@ public class MapDocument
         final Object response = super.get(name);
         final MapDocument item;
         if (null != response) {
-            if(response instanceof MapDocument){
-                item = (MapDocument)response;
-            }else if (response instanceof Map) {
+            if (response instanceof MapDocument) {
+                item = (MapDocument) response;
+            } else if (response instanceof Map) {
                 item = new MapDocument(response);
             } else {
                 // convert to json document
@@ -212,7 +214,7 @@ public class MapDocument
             return null;
         }
         super.put(name, item);
-        
+
         return item;
     }
 
@@ -265,6 +267,28 @@ public class MapDocument
 
     private void init() {
 
+    }
+
+    private static boolean contains(final String[] array,
+                                    final String value) {
+        for (final String item : array) {
+            if (item.endsWith("*")) {
+                if (value.startsWith(StringUtils.replace(item, "*", ""))) {
+                    return true;
+                }
+            } else if (item.startsWith("*")){
+                if (value.endsWith(StringUtils.replace(item, "*", ""))) {
+                    return true;
+                }
+            } else {
+                if(item.equalsIgnoreCase(value)){
+                    return true;
+                }
+            }
+
+        }
+
+        return false;
     }
 
     // ------------------------------------------------------------------------
