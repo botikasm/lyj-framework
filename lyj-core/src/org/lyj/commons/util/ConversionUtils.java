@@ -309,7 +309,7 @@ public abstract class ConversionUtils {
         if (null == val) {
             return defValue;
         }
-        String s = val.toString();
+        String s = StringUtils.toString(val);
         int i = s.indexOf('.');
         if (i > 0) {
             s = s.substring(0, i);

@@ -132,3 +132,9 @@ Sample install.json file with relative target path:
     "action-after":"start"
 }
 ```
+
+To create an installation package you need a zip (.zip) archive containig an "install.json" file directives and 
+files you need to replace in "target" directory.
+
+Once you have the package, simply copy it into "install" directory on your server 
+(ex: "/your-appsupervisor-folder/install"). App Supervisor will detect new package to install and proceed with installation.
