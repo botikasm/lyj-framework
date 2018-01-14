@@ -461,6 +461,13 @@ public abstract class MathUtils {
         return matchType(total, avg);
     }
 
+    public static double addToAvg(final double value,
+                                  final double curr_avg,
+                                  final int curr_count) {
+        // (currentAverage * currentNumberOfItems + X) / (currentNumberOfItems + 1)
+        return (curr_avg * curr_count + value) / (curr_count + 1);
+    }
+
     // --------------------------------------------------------------------
     //               R O U N D
     // --------------------------------------------------------------------

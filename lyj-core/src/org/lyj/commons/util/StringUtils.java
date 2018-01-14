@@ -687,7 +687,9 @@ public final class StringUtils {
             });
             return sb.toString();
         } else if (obj instanceof Double) {
-            return String.format("%." + MathUtils.countDecimals((double) obj) + "f", (double) obj);
+            final double num = (double) obj;
+            final int count_decimals = MathUtils.countDecimals(num);
+            return String.format("%." + count_decimals + "f", num);
         } else {
             return obj.toString();
         }
