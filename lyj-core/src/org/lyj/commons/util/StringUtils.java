@@ -664,6 +664,11 @@ public final class StringUtils {
      * </pre> @param obj Object @return a string.
      */
     public static String toString(final Object obj) {
+        return toString(LocaleUtils.getCurrent(), obj);
+    }
+
+    public static String toString(final Locale locale,
+                                  final Object obj) {
         if (null == obj) {
             return "";
         } else if (obj instanceof Throwable) {
@@ -689,7 +694,7 @@ public final class StringUtils {
         } else if (obj instanceof Double) {
             final double num = (double) obj;
             final int count_decimals = MathUtils.countDecimals(num);
-            return String.format("%." + count_decimals + "f", num);
+            return String.format(locale, "%." + count_decimals + "f", num);
         } else {
             return obj.toString();
         }

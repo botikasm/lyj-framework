@@ -391,7 +391,12 @@ public class FormatUtils {
         return formatDate(new Date(dateToFormat), style, locale, false);
     }
 
-    public static String formatDate(final Date dateToFormat, final Locale locale,
+    public static String formatDate(final long dateToFormat, int style, Locale locale, final boolean includetime) {
+        return formatDate(new Date(dateToFormat), style, locale, includetime);
+    }
+
+    public static String formatDate(final Date dateToFormat,
+                                    final Locale locale,
                                     final boolean includetime) {
         return formatDate(dateToFormat, DateFormat.MEDIUM, locale, includetime);
     }

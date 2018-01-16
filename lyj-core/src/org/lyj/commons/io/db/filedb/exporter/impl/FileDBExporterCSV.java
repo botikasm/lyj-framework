@@ -3,9 +3,11 @@ package org.lyj.commons.io.db.filedb.exporter.impl;
 import org.lyj.commons.io.db.filedb.FileDBCollection;
 import org.lyj.commons.io.db.filedb.FileDBEntity;
 import org.lyj.commons.io.db.filedb.exporter.AbstractFileDBExporter;
+import org.lyj.commons.util.LocaleUtils;
 import org.lyj.commons.util.StringUtils;
 
 import java.io.Writer;
+import java.util.Locale;
 
 /**
  * Export database collections in JSON format
@@ -26,6 +28,9 @@ public class FileDBExporterCSV
     private static final String PROP_QUOTE_CHAR = "quote_char";
     private static final String PROP_QUOTE_CHAR_VALUE = "\"";
 
+    private static final String PROP_LOCALE = "locale";
+    private static final String PROP_LOCALE_VALUE = LocaleUtils.getCurrent().toString();
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -33,6 +38,7 @@ public class FileDBExporterCSV
     public FileDBExporterCSV() {
         this.separator(PROP_SEPARATOR_VALUE);
         this.quoteChar(PROP_QUOTE_CHAR_VALUE);
+        this.locale(LocaleUtils.getLocale(PROP_LOCALE_VALUE));
     }
 
     // ------------------------------------------------------------------------
@@ -55,6 +61,15 @@ public class FileDBExporterCSV
 
     public FileDBExporterCSV quoteChar(final String value) {
         super.properties().put(PROP_QUOTE_CHAR, value);
+        return this;
+    }
+
+    public String locale() {
+        return super.properties().getString(PROP_LOCALE);
+    }
+
+    public FileDBExporterCSV locale(final Locale value) {
+        super.properties().put(PROP_LOCALE, value.toString());
         return this;
     }
 
@@ -120,14 +135,21 @@ public class FileDBExporterCSV
     // ------------------------------------------------------------------------
 
     private String quote(final Object value) {
-        if (null == value) {
-            return "";
-        } else {
-            if (value instanceof String) {
-                final String quote_char = this.quoteChar();
-                final String escaped = StringUtils.replace((String) value, quote_char, quote_char + quote_char);
-                return StringUtils.quote(escaped, quote_char);
+        try {
+            if (null == value) {
+                return "";
+            } else {
+                final Locale locale = LocaleUtils.getLocale(this.locale());
+                final String decimal_sep = new String(new char[]{LocaleUtils.getDecimalFormatSymbols(locale).getDecimalSeparator()});
+                if (value instanceof String || decimal_sep.equals(this.separator())) {
+                    final String quote_char = this.quoteChar();
+                    final String s_value = StringUtils.toString(locale, value);
+                    final String escaped = StringUtils.replace(s_value, quote_char, quote_char + quote_char);
+                    return StringUtils.quote(escaped, quote_char);
+                }
             }
+        } catch (Throwable t) {
+            // System.out.println(t);
         }
         return StringUtils.toString(value);
     }

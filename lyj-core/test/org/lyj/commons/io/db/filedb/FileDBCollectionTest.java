@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.lyj.TestInitializer;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.io.db.filedb.exporter.FileDBExporter;
+import org.lyj.commons.io.db.filedb.exporter.impl.FileDBExporterCSV;
 import org.lyj.commons.timewatching.TimeWatcher;
 import org.lyj.commons.util.DateUtils;
 import org.lyj.commons.util.FileUtils;
@@ -15,6 +16,7 @@ import org.lyj.commons.util.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import static org.junit.Assert.assertTrue;
 
@@ -83,7 +85,10 @@ public class FileDBCollectionTest {
 
         final FileDBEntity item = new FileDBEntity();
         item.put("text", "This is a text \"quoted\" with a CSV quote char");
+        item.put("float", 3.2d);
+        item.put("int", 3);
         collection.upsert(item);
+
 
         String path = FileDBExporter.instance().exporter(".json").export(collection);
         String json_content = FileUtils.readFileToString(new File(path));
@@ -91,7 +96,12 @@ public class FileDBCollectionTest {
 
         JSONArray array = new JSONArray(json_content);
 
-        path = FileDBExporter.instance().exporter(".csv").export(collection);
+        final FileDBExporterCSV exporter_csv = (FileDBExporterCSV) FileDBExporter.instance().exporter(".csv");
+        exporter_csv.separator(",");
+        exporter_csv.locale(Locale.ITALIAN);
+        path = exporter_csv.export(collection);
+
+        System.out.println("CSV exported: " + path);
     }
 
     @Test
