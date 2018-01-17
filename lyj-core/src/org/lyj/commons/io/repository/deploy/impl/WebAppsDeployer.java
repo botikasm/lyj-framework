@@ -41,7 +41,7 @@ public class WebAppsDeployer
                            final String[] exclude) {
         super(owner_class, start_path, target_path);
 
-        super.setOverwrite(true); // always overwrite
+        super.setOverwrite(false); // never overwrite
         for (final String item : exclude) {
             super.settings().excludeFileOrExts().add(item);
         }

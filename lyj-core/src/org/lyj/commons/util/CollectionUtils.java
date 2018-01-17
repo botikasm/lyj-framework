@@ -1125,22 +1125,24 @@ public abstract class CollectionUtils {
     }
 
     public static boolean contains(final String[] array,
-                                    final String value) {
-        for (final String item : array) {
-            if (item.endsWith("*")) {
-                if (value.startsWith(StringUtils.replace(item, "*", ""))) {
-                    return true;
+                                   final String value) {
+        if (null != array) {
+            for (final String item : array) {
+                if (item.endsWith("*")) {
+                    if (value.startsWith(StringUtils.replace(item, "*", ""))) {
+                        return true;
+                    }
+                } else if (item.startsWith("*")) {
+                    if (value.endsWith(StringUtils.replace(item, "*", ""))) {
+                        return true;
+                    }
+                } else {
+                    if (item.equalsIgnoreCase(value)) {
+                        return true;
+                    }
                 }
-            } else if (item.startsWith("*")){
-                if (value.endsWith(StringUtils.replace(item, "*", ""))) {
-                    return true;
-                }
-            } else {
-                if(item.equalsIgnoreCase(value)){
-                    return true;
-                }
-            }
 
+            }
         }
 
         return false;

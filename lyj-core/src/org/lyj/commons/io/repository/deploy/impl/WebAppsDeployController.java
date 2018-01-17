@@ -42,6 +42,7 @@ public abstract class WebAppsDeployController {
     private static final String CONFIG_NAME = "webdeploy"; // configuration name
 
 
+    private static final String FLD_DEPLOY_OVERWRITE = "deploy.overwrite";
     private static final String FLD_DEPLOY_PATH = "deploy.path";
     private static final String FLD_DEPLOY_EXCLUDE = "deploy.exclude";
 
@@ -95,9 +96,12 @@ public abstract class WebAppsDeployController {
                 for (final String key : keys) {
                     final JsonItem item = new JsonItem(this._configuration.getJSONObject(key));
                     final String path = item.getString(FLD_DEPLOY_PATH);
+                    final boolean overwrite = item.getBoolean(FLD_DEPLOY_OVERWRITE, false);
                     final String[] exclude = JsonWrapper.toArrayOfString(item.getJSONArray(FLD_DEPLOY_EXCLUDE));
                     if (StringUtils.hasText(path)) {
-                        _deployers.add(new WebAppsDeployer(this.getClass(), key, path, exclude));
+                        final WebAppsDeployer deployer = new WebAppsDeployer(this.getClass(), key, path, exclude);
+                        deployer.setOverwrite(overwrite);
+                        _deployers.add(deployer);
                     }
                 }
 
