@@ -309,7 +309,7 @@ public abstract class ConversionUtils {
         if (null == val) {
             return defValue;
         }
-        String s = StringUtils.toString(val);
+        String s = StringUtils.toString(Locale.ITALY, val);
         int i = s.indexOf('.');
         if (i > 0) {
             s = s.substring(0, i);
@@ -371,7 +371,7 @@ public abstract class ConversionUtils {
     public static Boolean toBoolean(final Object value, final Boolean defValue) {
         if (value instanceof Boolean) {
             return (Boolean) value;
-        } else if (value instanceof Number){
+        } else if (value instanceof Number) {
             return value.equals(1);
         }
 
@@ -557,8 +557,8 @@ public abstract class ConversionUtils {
             d.setTime(digits == 10 ? long_value * 1000 : long_value);
             return d;
         }
-        if(obj instanceof String){
-            return DateWrapper.parse((String)obj).getDateTime();
+        if (obj instanceof String) {
+            return DateWrapper.parse((String) obj).getDateTime();
         }
         return null;
     }
