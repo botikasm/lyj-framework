@@ -309,7 +309,7 @@ public abstract class ConversionUtils {
         if (null == val) {
             return defValue;
         }
-        String s = StringUtils.toString(Locale.ITALY, val);
+        String s = StringUtils.toString(Locale.US, val);
         int i = s.indexOf('.');
         if (i > 0) {
             s = s.substring(0, i);
