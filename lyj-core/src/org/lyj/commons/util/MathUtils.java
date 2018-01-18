@@ -478,11 +478,13 @@ public abstract class MathUtils {
      * less than the given number
      */
     public static Integer ceil(Object num) {
-        Number n = ConversionUtils.toNumber(num);
-        if (n == null) {
-            return null;
+        if (null != num) {
+            final Number n = ConversionUtils.toNumber(num);
+            if (null != n) {
+                return Integer.valueOf((int) Math.ceil(n.doubleValue()));
+            }
         }
-        return Integer.valueOf((int) Math.ceil(n.doubleValue()));
+        return 0;
     }
 
     /**
