@@ -171,12 +171,5 @@ public class ByteUtils {
         return null;
     }
 
-    public static byte[] getDataNotAvailable() {
-        try {
-            return getBytes(ClassLoaderUtils.getResourceAsStream(null, ByteUtils.class, "nodata.png"));
-        } catch (Throwable ignored) {
-        }
-        return new byte[0];
-    }
 
 }
