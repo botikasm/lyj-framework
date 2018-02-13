@@ -2,8 +2,6 @@ package org.lyj.commons.util;
 
 import org.junit.Test;
 
-import java.math.BigDecimal;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -14,6 +12,13 @@ import static org.junit.Assert.assertTrue;
  */
 public class StringUtilsTest {
 
+    @Test
+    public void concatArgsExt() throws Exception {
+        String[] array = new String[]{"val1", "val2"};
+        final String out = StringUtils.concatArgsEx(",", array);
+        assertTrue(out.equalsIgnoreCase("val1,val2"));
+        System.out.println(out);
+    }
 
     @Test
     public void testToString() throws Exception {
