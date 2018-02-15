@@ -980,8 +980,13 @@ public final class StringUtils {
     }
 
     public static boolean isXml(final Object value) {
-        final String string = null != value ? RegExpUtils.replaceLineTerminators(value.toString()).trim() : "";
+        final String string = null != value ? RegExpUtils.replaceLineTerminators(value.toString()).trim().toLowerCase() : "";
         return string.startsWith("<?xml") && string.endsWith(">");
+    }
+
+    public static boolean isHTML(final Object value) {
+        final String string = null != value ? RegExpUtils.replaceLineTerminators(value.toString()).trim().toLowerCase() : "";
+        return string.contains("<html") && string.contains("</html>");
     }
 
     /**
