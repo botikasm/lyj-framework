@@ -228,6 +228,11 @@ public abstract class PathUtils
         return null != response ? response : "";
     }
 
+    public static boolean hasExtension(final String path) {
+        final String ext = PathUtils.getFilenameExtension(path);
+        return StringUtils.hasText(ext);
+    }
+
     /**
      * Return true if path has an extension.
      *
@@ -863,7 +868,7 @@ public abstract class PathUtils
             return false;
         }
         final String lower = path.toLowerCase();
-        return lower.startsWith("web:") || lower.startsWith("http:") ||lower.startsWith("https:");
+        return lower.startsWith("web:") || lower.startsWith("http:") || lower.startsWith("https:");
     }
 
     public static boolean isFtp(final String path) {

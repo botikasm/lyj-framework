@@ -190,6 +190,9 @@ public class FormatUtils {
         if (null == text) {
             return null;
         }
+        if (null == contextData) {
+            return text;
+        }
 
         final StringBuilder buf = new StringBuilder(text);
         int count = 0;

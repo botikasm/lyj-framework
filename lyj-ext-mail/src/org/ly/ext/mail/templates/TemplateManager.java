@@ -42,9 +42,14 @@ public class TemplateManager
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public String buildKey(final String template_name, final String field_name) {
+        final String name = PathUtils.getFilename(template_name.toLowerCase(), false);
+        return name.concat(".").concat(field_name);
+    }
+
     public String getSubject(final String lang, final String templateName) {
-        final String name = PathUtils.getFilename(templateName.toLowerCase(), false);
-        return super.get(lang, name + "." + SUBJECT);
+        final String key = this.buildKey(templateName, SUBJECT);
+        return super.get(lang, key);
     }
 
     public String getHtml(final String lang, final String templateName) {
@@ -55,19 +60,31 @@ public class TemplateManager
         return this.getTemplate(lang, templateName, TEXT);
     }
 
+    public String getResource(final String lang,
+                      final String template_name,
+                      final String suffix) {
+        return this.getTemplate(lang, template_name, suffix);
+    }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    protected String getTemplate(final String lang, final String templateName, final String type) {
-        final String name = PathUtils.getFilename(templateName.toLowerCase(), false);
-        String resource = super.get(lang, name + "." + type);
+    protected String getTemplate(final String lang,
+                                 final String templateName,
+                                 final String suffix) {
+        final String key = this.buildKey(templateName, suffix);
+        String resource = super.get(lang, key);
         if (!StringUtils.hasText(resource)) {
-            resource = name + "_" + lang + "." + type; // try with a default pattern
+            final String name = PathUtils.getFilename(templateName.toLowerCase(), false);
+            resource = name + "_" + lang + "." + suffix; // try with a default pattern
         }
         if (StringUtils.hasText(resource)) {
-            return this.readFile(templateName.toLowerCase(), resource);
+            if (PathUtils.hasExtension(resource)) {
+                return this.readFile(templateName.toLowerCase(), resource);
+            } else {
+                return resource;
+            }
         } else {
             return "";
         }
