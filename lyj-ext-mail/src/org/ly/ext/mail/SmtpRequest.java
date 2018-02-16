@@ -69,6 +69,8 @@ public class SmtpRequest
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    private final Map<String, String> _headers;
+
     private String _host;
     private int _port = 25;
     private String _user = null;
@@ -96,6 +98,7 @@ public class SmtpRequest
     // ------------------------------------------------------------------------
 
     public SmtpRequest() {
+        _headers = new HashMap<>();
         _addresses = new HashSet<>();
         _reply_addresses = new HashSet<String>();
         _fileAttachments = new ArrayList<File>();
@@ -123,6 +126,10 @@ public class SmtpRequest
 
     public Exception exception() {
         return _exception;
+    }
+
+    public Map<String, String> headers() {
+        return _headers;
     }
 
     public boolean tls() {
@@ -345,7 +352,7 @@ public class SmtpRequest
                 transport.connect();
                 int count = _addresses.size();
                 // send all messages
-                for (final String mailAddress:_addresses) {
+                for (final String mailAddress : _addresses) {
                     final InternetAddress[] addressTo = new InternetAddress[1];
                     addressTo[0] = new InternetAddress(mailAddress);
                     final InternetAddress addressFrom = new InternetAddress(_from);
@@ -363,6 +370,17 @@ public class SmtpRequest
                     //msg.setContent(_message, _mailFormat.toString());
                     final Multipart mp = this.getMailMultiPart();
                     message.setContent(mp);
+
+                    // headers
+                    if (_headers.size() > 0) {
+                        _headers.forEach((key, value) -> {
+                            try {
+                                message.addHeader(key, value);
+                            } catch (Throwable t) {
+                                super.error("send#addHeader", t);
+                            }
+                        });
+                    }
 
                     // Send the message
                     transport.sendMessage(message, message.getAllRecipients());
