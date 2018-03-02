@@ -62,11 +62,54 @@ public final class StringUtils {
      * @return the string split into a string array
      */
     public static String[] chunk(final String str) {
-        return split(str, ", \t\n\r\f");
+        return chunk(str, 1024);
     }
 
+    /**
+     * Split a string into an array of strings of a defined lenght. <br>
+     * Default chunk size is 1024 bytes
+     *
+     * @param str       the string to split
+     * @param chunkSize Chunk sizi
+     * @return the string split into a string array
+     */
     public static String[] chunk(final String str, final int chunkSize) {
         return str.split("(?<=\\G.{" + chunkSize + "})");
+    }
+
+    /**
+     * Split a long string in multiple lines preserving word integrity.
+     *
+     * @param str     String to split
+     * @param max_len Max line length
+     * @return the string split into a string array
+     */
+    public static String[] splitLines(final String str, final int max_len) {
+        if (StringUtils.hasText(str)) {
+            if (str.length() > max_len) {
+                final Collection<String> lines = new LinkedList<>();
+                final String[] tokens = split(str);
+
+                StringBuilder line = new StringBuilder();
+                for (final String token : tokens) {
+                    if (line.length() > 0) {
+                        line.append(" ");
+                    }
+                    line.append(token);
+                    if (line.length() >= max_len) {
+                        lines.add(line.toString());
+                        line = new StringBuilder();
+                    }
+                }
+                if (line.length()>0){
+                    lines.add(line.toString());
+                }
+                return lines.toArray(new String[lines.size()]);
+            } else {
+                return new String[]{str};
+            }
+        }
+        return new String[0];
     }
 
     /**
@@ -120,14 +163,6 @@ public final class StringUtils {
 
         }
         return s;
-        /*
-        final String[] result = RegExUtils.split(trim ? str.trim() : str, delim);
-        if (trim) {
-            for (int i = 0; i < result.length; i++) {
-                result[i] = result[i].trim();
-            }
-        }
-        return result;*/
     }
 
     public static String[] split(final String str,

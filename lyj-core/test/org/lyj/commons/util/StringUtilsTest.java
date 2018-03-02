@@ -13,6 +13,24 @@ import static org.junit.Assert.assertTrue;
 public class StringUtilsTest {
 
     @Test
+    public void chunk() throws Exception {
+        String[] array = StringUtils.chunk("questa aaaaa aaaa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga ", 128);
+        System.out.println(array.length);
+        for(final String line:array){
+            System.out.println(line);
+        }
+    }
+
+    @Test
+    public void splitLines() throws Exception {
+        String[] array = StringUtils.splitLines("questa aaaaa aaaa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga ", 128);
+        System.out.println(array.length);
+        for(final String line:array){
+            System.out.println(line);
+        }
+    }
+
+    @Test
     public void concatArgsExt() throws Exception {
         String[] array = new String[]{"val1", "val2"};
         final String out = StringUtils.concatArgsEx(",", array);
