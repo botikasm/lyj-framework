@@ -101,7 +101,7 @@ public final class StringUtils {
                         line = new StringBuilder();
                     }
                 }
-                if (line.length()>0){
+                if (line.length() > 0) {
                     lines.add(line.toString());
                 }
                 return lines.toArray(new String[lines.size()]);
@@ -471,6 +471,22 @@ public final class StringUtils {
                         result.append(separator);
                     }
                     result.append(arg);
+                }
+            }
+        }
+        return result.toString();
+    }
+
+    public static String concatArgsQuoted(final String separator,
+                                          final Object... args) {
+        final StringBuilder result = new StringBuilder();
+        if (null != args && args.length > 0) {
+            for (final Object arg : args) {
+                if (!isNULL(arg)) {
+                    if (hasText(separator) && result.length() > 0) {
+                        result.append(separator);
+                    }
+                    result.append(StringUtils.quote(toString(arg)));
                 }
             }
         }
