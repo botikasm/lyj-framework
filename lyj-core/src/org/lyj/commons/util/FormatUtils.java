@@ -168,7 +168,14 @@ public class FormatUtils {
     public static String formatTemplate(final String text,
                                         final String prefix, final String suffix,
                                         final Map<String, ?> contextData) {
-        return formatTemplate(text, prefix, suffix, contextData, 3);
+        return formatTemplate(text, prefix, suffix, contextData, 3, false);
+    }
+
+    public static String formatTemplate(final String text,
+                                        final String prefix, final String suffix,
+                                        final Map<String, ?> contextData,
+                                        final boolean remove_empty_placeholders) {
+        return formatTemplate(text, prefix, suffix, contextData, 3, remove_empty_placeholders);
     }
 
     /**
@@ -186,7 +193,8 @@ public class FormatUtils {
     public static String formatTemplate(final String text,
                                         final String prefix, final String suffix,
                                         final Map<String, ?> contextData,
-                                        final int loopCount) {
+                                        final int loopCount,
+                                        final boolean remove_empty_placeholders) {
         if (null == text) {
             return null;
         }
@@ -224,6 +232,9 @@ public class FormatUtils {
                         startIndex = buf.toString().indexOf(prefix, startIndex + propVal.toString().length());
                     } else {
                         // Could not resolve placeholder
+                        if (remove_empty_placeholders) {
+                            buf.replace(startIndex, endIndex + suffix.length(), "");
+                        }
                         startIndex = buf.toString().indexOf(prefix, endIndex + suffix.length());
                     }
                 } else {
