@@ -45,9 +45,19 @@ For example, this simple script (json syntax) in Automator produce a web request
 }
 ```
 #### Current Version ####
-Current version is BETA 0.1.2
+Current version is BETA 0.1.3
 
 We are not ready for production and have a lack of documentation.
 
 If you want contribute to libraries or documentation, you are welcome ([Write Me](https://plus.google.com/u/0/+GianAngeloGeminiani))
 
+# TEAM #
+
+**Gian Angelo Geminiani** (Project Administrator) -
+Profile: [LinkedIn](https://www.linkedin.com/in/angelogeminiani/)
+
+**Alexandro Scarnicchia** (Contributor) - 
+Profile: [LinkedIn](https://www.linkedin.com/in/alexandro-scarnicchia-32142838/)
+
+**Davide Brunetti** (Contributor) - 
+Profile: [LinkedIn](https://www.linkedin.com/in/davide-brunetti-10487ba7/)
