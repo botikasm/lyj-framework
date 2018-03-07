@@ -61,3 +61,7 @@ Profile: [LinkedIn](https://www.linkedin.com/in/alexandro-scarnicchia-32142838/)
 
 **Davide Brunetti** (Contributor) - 
 Profile: [LinkedIn](https://www.linkedin.com/in/davide-brunetti-10487ba7/)
+
+**Antonio Di Pinto** (Contributor) - 
+Profile: [LinkedIn](https://www.linkedin.com/in/antoniodipinto/)
+
