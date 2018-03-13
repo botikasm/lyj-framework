@@ -67,5 +67,8 @@ Profile: [LinkedIn](https://www.linkedin.com/in/antoniodipinto/)
 
 # SPECIAL MENTION #
 
-![Logo](https://bitbucket.org/angelogeminiani/lyj/raw/master/jetbrains.png)
-This project has been developed and supported by [Jetbrains Open Source License Program](https://www.jetbrains.com/community/support/#section=open-source). Thanks to [Jetbrains](https://www.jetbrains.com/) for the great tools made available to us.
+![Jetbrains](https://bitbucket.org/angelogeminiani/lyj/raw/master/jetbrains.png)
+
+This project has been developed and supported by [Jetbrains Open Source License Program](https://www.jetbrains.com/community/support/#section=open-source).
+
+Thanks to [Jetbrains](https://www.jetbrains.com/) for the great tools made available to us.
