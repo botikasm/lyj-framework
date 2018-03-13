@@ -56,6 +56,25 @@ public class HttpServerContext
         return _uri;
     }
 
+    public String protocol() {
+        final String protocol_version = _request.protocolVersion().protocolName().toLowerCase();
+        return _config.useSsl() ? protocol_version.concat("s://") : protocol_version.concat("://");
+    }
+
+    public String rootUrl() {
+        final String protocol = this.protocol();
+        final String host = this._request.host();
+
+        return protocol.concat(host);
+    }
+
+    public String fullUrl() {
+        final String root = this.rootUrl();
+        final String uri = this.uri();
+
+        return root.concat(uri);
+    }
+
     public String method() {
         return _request.method();
     }
@@ -288,12 +307,12 @@ public class HttpServerContext
         String response = JsonConverter.toJson(obj).toString();
 
         // wrap  a simple value
-        if(!StringUtils.isJSON(response)){
+        if (!StringUtils.isJSON(response)) {
             final JSONObject json = new JSONObject();
             json.putOpt(FLD_RESPONSE, null != response ? response : "");
             response = json.toString();
         }
-        
+
         // check eur symbol that can cause problems (2 more bytes are needed)
         // TODO: REMOVE THIS UGLY CODE
         if (StringUtils.isJSON(response) && response.contains("€")) {
