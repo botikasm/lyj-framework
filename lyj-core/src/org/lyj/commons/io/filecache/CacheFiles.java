@@ -18,6 +18,8 @@ public class CacheFiles
     public static final long ONE_MINUTE = DateUtils.ONE_MINUTE_MS;
     public static final long ONE_HOUR = DateUtils.ONE_HOUR_MS;
     public static final long ONE_DAY = DateUtils.ONE_DAY_MS;
+    public static final long ONE_YEAR = ONE_DAY * 365;
+    public static final long FOREVER = ONE_YEAR * 1000;
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -75,15 +77,25 @@ public class CacheFiles
                     final String content,
                     final long duration) {
         try {
-            final String target = this.path(key.concat(".txt"));
+            if(!this.has(key)){
+                final String target = this.path(key.concat(".txt"));
 
-            FileUtils.tryMkdirs(target);
-            FileUtils.writeStringToFile(new File(target), content, _encoding);
+                FileUtils.tryMkdirs(target);
+                FileUtils.writeStringToFile(new File(target), content, _encoding);
 
-            super.registry().addItem(key, target, duration);
-            super.registry().save();
+                super.registry().addItem(key, target, duration);
+                super.registry().save();
+            } else {
+               this.update(key, duration);
+            }
         } catch (Throwable t) {
             super.logger().error("putContent", t);
+        }
+    }
+
+    public void update(final String key, final long duration_ms) {
+        if (this.registry().has(key)) {
+            this.registry().get(key).duration(duration_ms);
         }
     }
 
@@ -97,7 +109,7 @@ public class CacheFiles
         return null;
     }
 
-    private byte[] getBytes(final String key) {
+    public byte[] getBytes(final String key) {
         try {
             if (super.registry().has(key)) {
                 final String target = super.registry().get(key).path();

@@ -407,5 +407,8 @@ public class MimeTypeUtils {
                 .concat(StringUtils.hasText(encoding) ? encoding : CharEncoding.getDefault());
     }
 
+    public static String getMimeImageJpg() {
+        return MimeTypeUtils.getMimeType(".jpg");
+    }
 
 }

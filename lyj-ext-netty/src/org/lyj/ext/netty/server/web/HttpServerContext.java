@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.lyj.commons.util.*;
 import org.lyj.commons.util.converters.JsonConverter;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -264,6 +265,19 @@ public class HttpServerContext
         _response.write(content);
         _response.flush();
     }
+
+    public void writeImage(final byte[] content) {
+        _response.headers().put(CONTENT_TYPE, MimeTypeUtils.getMimeImageJpg());
+        _response.headers().put(CONTENT_LENGTH, content.length + "");
+        _response.write(content);
+        _response.flush();
+    }
+
+    public void writeFile(final File file) {
+        _response.writeFile(file);
+        _response.flush();
+    }
+
 
     public void writeXml(final String content) {
         this.addCORSHeaders();
