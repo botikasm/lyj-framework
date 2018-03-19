@@ -19,10 +19,11 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.network;
 
+import com.sun.net.httpserver.HttpServer;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.StringUtils;
@@ -69,8 +70,8 @@ public class NetworkUtils {
      * @param address1 an ip address
      * @param address2 an ip address
      * @return Returns a negative value if address1 is lower than address2<br>
-     *         Returns zero if equals<br>
-     *         Returns a positive value if address1 is greater than address2.
+     * Returns zero if equals<br>
+     * Returns a positive value if address1 is greater than address2.
      */
     public static int ipCompare(final String address1, final String address2) {
         final String[] masterIp = address1.split("\\.");
@@ -210,7 +211,7 @@ public class NetworkUtils {
         final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(url, port));
 
         System.setProperty("web.proxyHost", url);
-        System.setProperty("web.proxyPort", port+"");
+        System.setProperty("web.proxyPort", port + "");
         System.setProperty("web.proxyUser", user);
         System.setProperty("web.proxyPassword", password);
 
@@ -243,6 +244,17 @@ public class NetworkUtils {
         } catch (Throwable ignored) {
         }
         return false;
+    }
+
+    public static int getFreePort(final int start_from) {
+        for (int i = start_from; ; i++) {
+            try {
+                final ServerSocket socket = new ServerSocket(i);
+                socket.close();
+                return i;
+            } catch (Throwable ignored) {
+            }
+        }
     }
 
     // ------------------------------------------------------------------------

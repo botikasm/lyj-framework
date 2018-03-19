@@ -1045,7 +1045,9 @@ public abstract class CollectionUtils {
         return response;
     }
 
-    public static String[] subArray(final String[] list, final int fromIndex, final int toIndex) {
+    public static String[] subArray(final String[] list,
+                                    final int fromIndex,
+                                    final int toIndex) {
         final List<String> response = new LinkedList<>();
         try {
             int count = 0;
@@ -1062,6 +1064,22 @@ public abstract class CollectionUtils {
             // index out of bound
         }
         return response.toArray(new String[response.size()]);
+    }
+
+    public static byte[] subArray(final byte[] array,
+                                  final int fromIndex,
+                                  final int toIndex) {
+        try {
+            if (toIndex >= fromIndex) {
+                if (array.length >= toIndex) {
+                    return Arrays.copyOfRange(array, fromIndex, toIndex);
+                } else {
+                    return Arrays.copyOfRange(array, fromIndex, array.length);
+                }
+            }
+        } catch (Throwable ignored) {
+        }
+        return new byte[0];
     }
 
     public static List<Collection> subList(final Collection list, final int subListSize) {

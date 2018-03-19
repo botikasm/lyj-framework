@@ -53,6 +53,15 @@ public class CollectionUtilsTest {
     }
 
     @Test
+    public void testSubArray() throws Exception {
+        byte[] arr1 = new byte[]{1, 2, 3};
+        byte[] arr2 = new byte[]{4, 5, 6, 7};
+
+        byte[] response = CollectionUtils.subArray(arr1, 0, 0);
+        System.out.println(response.length);
+    }
+
+    @Test
     public void matchAll() throws Exception {
         final Collection<Integer> list1 = new ArrayList<>();
         list1.add(0);
