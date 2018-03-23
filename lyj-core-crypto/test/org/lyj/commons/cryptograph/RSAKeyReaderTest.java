@@ -1,16 +1,21 @@
 package org.lyj.commons.cryptograph;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lyj.TestInitializer;
+import org.lyj.commons.cryptograph.pem.IRSAConstants;
+import org.lyj.commons.cryptograph.pem.RSAHelper;
+import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.PathUtils;
 
 import java.io.IOException;
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
 
 public class RSAKeyReaderTest {
 
-    private static final String BEGIN_RSA_PRIVATE_KEY = RSAKeyReader.BEGIN_RSA_PRIVATE_KEY;
-    private static final String END_RSA_PRIVATE_KEY = RSAKeyReader.END_RSA_PRIVATE_KEY;
 
     private static final String KEY_TEXT = "-----BEGIN RSA PRIVATE KEY-----\n" +
             "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJLORhDfV6VwpZCF\n" +
@@ -29,11 +34,38 @@ public class RSAKeyReaderTest {
             "hmciN50QAVL2Bg==\n" +
             "-----END RSA PRIVATE KEY-----";
 
+    @BeforeClass
+    public static void setUp() throws Exception {
+        TestInitializer.init();
+    }
+
     @Test
     public void RSAPrivateKeyFromText() throws NoSuchAlgorithmException, IOException, InvalidKeySpecException {
-        final RSAKeyReader reader = new RSAKeyReader();
+        final RSAHelper reader = new RSAHelper();
 
-        final PrivateKey key =  reader.RSAPrivateKeyFromText(KEY_TEXT);
+        final PrivateKey key = reader.readRSAPrivateKeyFromText(KEY_TEXT);
         System.out.println(key);
     }
+
+    @Test
+    public void generateKeyPairTest() throws Exception {
+        final RSAHelper reader = new RSAHelper();
+
+        final KeyPair key = RSAHelper.generateRSAKeyPair();
+        System.out.println("PUBLIC: " + new String(key.getPublic().getEncoded()));
+        System.out.println("PRIVATE: " + new String(key.getPublic().getEncoded()));
+
+        final String file_private = PathUtils.getAbsolutePath("./crypto/private_key");
+        final String file_public = PathUtils.getAbsolutePath("./crypto/public_key.pub");
+
+        FileUtils.mkdirs(file_public);
+
+        RSAHelper.writePemFile(key.getPublic(), IRSAConstants.RSA_PUBLIC_KEY, file_public);
+        RSAHelper.writePemFile(key.getPrivate(), IRSAConstants.RSA_PRIVATE_KEY, file_private);
+
+        System.out.println(RSAHelper.writePemString(key.getPublic(), IRSAConstants.RSA_PUBLIC_KEY));
+        System.out.println(RSAHelper.writePemString(key.getPrivate(), IRSAConstants.RSA_PRIVATE_KEY));
+        System.out.println(RSAHelper.writePemString(key.getPrivate(), ""));
+    }
+
 }
