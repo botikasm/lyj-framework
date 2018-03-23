@@ -46,10 +46,24 @@ public class MD5 {
         }
     }
 
+    public static String encode(final byte[] data,
+                                final String opvalue) {
+        try {
+            final SecurityMessageDigester instance = new SecurityMessageDigester(
+                    ICryptographConstants.AlgorithmMessageDigest.MD5);
+            return instance.getEncodedText(data);
+        } catch (Throwable t) {
+            return opvalue;
+        }
+    }
+
     public static String encode(final String text) {
         return encode(text, "");
     }
 
+    public static String encode(final byte[] data) {
+        return encode(data, "");
+    }
 
     public static String encode(final String[] tokens) {
         return encode(tokens, false);

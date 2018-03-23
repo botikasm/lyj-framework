@@ -27,7 +27,6 @@ package org.lyj.commons.cryptograph;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -65,13 +64,24 @@ public final class SecurityMessageDigester
         _md = MessageDigest.getInstance(_algorithm.toString());
     }
 
-    public String getEncodedText(String clearText) {
+    public String getEncodedText(final String clearText) {
         if (null == _md) {
             return clearText;
         }
         // Reset the digester for further use.
         _md.reset();
         _md.update(clearText.getBytes());
+
+        return HexString.bufferToHex(_md.digest());
+    }
+
+    public String getEncodedText(final byte[] bytes) {
+        if (null == _md) {
+            return "";
+        }
+        // Reset the digester for further use.
+        _md.reset();
+        _md.update(bytes);
 
         return HexString.bufferToHex(_md.digest());
     }

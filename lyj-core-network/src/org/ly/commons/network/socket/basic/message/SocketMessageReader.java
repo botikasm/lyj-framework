@@ -1,57 +1,123 @@
 package org.ly.commons.network.socket.basic.message;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import org.lyj.commons.util.ByteUtils;
 
+import java.io.*;
+
+/**
+ * Read a message and check message integrity.
+ */
 public class SocketMessageReader
-        extends ByteArrayOutputStream {
+        implements AutoCloseable{
 
     // ------------------------------------------------------------------------
-    //                      c o n s t
+    //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private final OutputStream _out;
+    private final File _out_file;
+
+    private boolean _initialized;
+    private boolean _complete;
+    private Exception _error;
+
+
     // ------------------------------------------------------------------------
-    //                      o v e r r i d e
+    //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    @Override
-    public synchronized void write(final int b) {
-        super.write(b);
+    public SocketMessageReader() {
+        _out = new ByteArrayOutputStream();
+        _out_file = null;
     }
 
-    @Override
+    /**
+     * Use this constructor for very big messages you do not want to store in memory.
+     * Passing an out_file parameter, the file will be created and all data will be written in file.
+     */
+    public SocketMessageReader(final File out_file) throws FileNotFoundException {
+        _out = new FileOutputStream(out_file);
+        _out_file = out_file;
+    }
+
+    // ------------------------------------------------------------------------
+    //                      s t r e a m
+    // ------------------------------------------------------------------------
+
+    public byte[] toByteArray() {
+        try {
+            // flush buffer
+            this.flush();
+
+            if (_out instanceof ByteArrayOutputStream) {
+                return ((ByteArrayOutputStream) _out).toByteArray();
+            } else if (_out instanceof FileOutputStream && null != _out_file) {
+                return ByteUtils.getBytes(_out_file);
+            }
+        } catch (Throwable ignored) {
+        }
+        return new byte[0];
+    }
+
+    public synchronized void write(final int b) throws IOException {
+        _out.write(b);
+    }
+
     public void write(byte[] b) throws IOException {
-        super.write(b);
+        _out.write(b);
     }
 
-    @Override
-    public synchronized void write(byte[] b, int off, int len) {
-        super.write(b, off, len);
+    public synchronized void write(byte[] b, int off, int len) throws IOException {
+        _out.write(b, off, len);
     }
 
-    @Override
-    public synchronized void writeTo(OutputStream out) throws IOException {
-        super.writeTo(out);
+    public void flush() throws IOException {
+        _out.flush();
+    }
+
+    public void close() throws IOException {
+        _out.flush();
+        _out.close();
+        if (null != _out_file) {
+            if (!_out_file.delete()) {
+                _out_file.deleteOnExit();
+            }
+        }
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public synchronized boolean hasError() {
+        return null != _error;
+    }
+
+    public synchronized String errorMessage() {
+        return this.hasError() ? _error.toString() : "";
+    }
+
     public synchronized boolean isComplete() {
         try {
-            final byte[] bytes = super.toByteArray();
-            return isComplete(bytes);
-        } catch (Throwable t) {
-            //System.out.println(t);
+            if (!_complete) {
+                _initialized = true;
+                final byte[] bytes = this.toByteArray();
+                _complete = isComplete(bytes);
+            }
+        } catch (Exception e) {
+            _error = e;
         }
-        return false;
+        return _complete;
     }
 
     public synchronized SocketMessage message() {
-        if (this.isComplete()) {
-            return new SocketMessage(super.toByteArray());
+        if (!this.hasError()) {
+            if (!_complete && !_initialized) {
+                this.isComplete();
+            }
+            if (_complete) {
+                return new SocketMessage(this.toByteArray());
+            }
         }
         return null;
     }
