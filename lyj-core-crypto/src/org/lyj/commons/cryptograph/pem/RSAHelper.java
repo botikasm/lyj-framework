@@ -5,6 +5,7 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
 
 import javax.crypto.BadPaddingException;
@@ -65,6 +66,12 @@ public class RSAHelper
 
     //-- r e a d --//
 
+    public static String readKeyFile(final String pem_file,
+                                     final boolean remove_description) throws IOException {
+        final String pem_string = FileUtils.readFileToString(new File(pem_file));
+        return remove_description ? removeDescription(pem_string) : pem_string;
+    }
+
     public static PrivateKey readRSAPrivateKeyFromFile(final String pem_file) throws
             IOException,
             NoSuchAlgorithmException,
@@ -113,6 +120,28 @@ public class RSAHelper
     }
 
     //-- i o --//
+
+    public static String[] writePemFiles(final KeyPair key_pair,
+                                         final String root)
+            throws FileNotFoundException,
+            IOException {
+
+        final String[] response = new String[2];
+        // private
+        response[0] = PathUtils.getAbsolutePath(PathUtils.concat(root, "private.pem"));
+        //public
+        response[1] = PathUtils.getAbsolutePath(PathUtils.concat(root, "public.pem"));
+
+        FileUtils.mkdirs(response[0]); // ensure parent exusts
+
+        // write private
+        writePemFile(key_pair.getPrivate(), RSA_PRIVATE_KEY, response[0]);
+
+        // write public
+        writePemFile(key_pair.getPublic(), RSA_PUBLIC_KEY, response[1]);
+
+        return response;
+    }
 
     /**
      * Write a pem file containing private or public key

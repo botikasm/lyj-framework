@@ -7,12 +7,15 @@ import org.lyj.commons.cryptograph.pem.IRSAConstants;
 import org.lyj.commons.cryptograph.pem.RSAHelper;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.StringUtils;
 
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
+
+import static org.junit.Assert.assertTrue;
 
 public class RSAKeyReaderTest {
 
@@ -66,6 +69,20 @@ public class RSAKeyReaderTest {
         System.out.println(RSAHelper.writePemString(key.getPublic(), IRSAConstants.RSA_PUBLIC_KEY));
         System.out.println(RSAHelper.writePemString(key.getPrivate(), IRSAConstants.RSA_PRIVATE_KEY));
         System.out.println(RSAHelper.writePemString(key.getPrivate(), ""));
+    }
+
+    @Test
+    public void writePemFilesTest() throws Exception {
+
+        final KeyPair key_pair = RSAHelper.generateRSAKeyPair();
+        final String[] response = RSAHelper.writePemFiles(key_pair, PathUtils.getAbsolutePath("./keyStore"));
+        assertTrue(response.length == 2);
+
+        System.out.println(StringUtils.toString(response));
+
+        // try read private key
+        System.out.println(RSAHelper.readKeyFile(response[0], true));
+        System.out.println(RSAHelper.readKeyFile(response[0], false));
     }
 
 }
