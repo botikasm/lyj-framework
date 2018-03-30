@@ -5,7 +5,6 @@ import org.ly.commons.network.socket.basic.SocketContext;
 import org.ly.commons.network.socket.basic.message.SocketMessage;
 import org.ly.commons.network.socket.basic.message.SocketMessageDispatcher;
 import org.ly.commons.network.socket.basic.message.SocketMessageHandShake;
-import org.lyj.commons.lang.CharEncoding;
 
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -91,7 +90,7 @@ public class SocketBasicServerHandler
                 if (request.isHandShake()) {
                     _message.encodeKey(request.signature());
 
-                    final SocketMessageHandShake response = new SocketMessageHandShake();
+                    final SocketMessageHandShake response = new SocketMessageHandShake(context.uid());
                     response.signature(_message.publicKey());
 
                     _message.write(channel, context, response);
@@ -164,13 +163,13 @@ public class SocketBasicServerHandler
     }
 
     private SocketMessage doChannelMessage(final AsynchronousSocketChannel ch,
-                                           final SocketContext attachment,
+                                           final SocketContext context,
                                            final SocketMessage request) {
-        final SocketMessage response = new SocketMessage();
+        final SocketMessage response = new SocketMessage(context.uid());
         response.copySignature(request);
         response.body(new byte[0]); // initialize response with empty content
         if (null != _callback_on_channel_message) {
-            _callback_on_channel_message.handle(new SocketBasicServer.ChannelInfo(ch, attachment), request, response);
+            _callback_on_channel_message.handle(new SocketBasicServer.ChannelInfo(ch, context), request, response);
         }
         return response;
     }

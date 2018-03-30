@@ -29,7 +29,7 @@ public class SocketMessageTest {
 
         final String TEXT = "ABv";
 
-        final SocketMessage message = new SocketMessage();
+        final SocketMessage message = new SocketMessage("");
         message.signature("hello");
         message.body(TEXT);
         final byte[] bytes = message.bytes();
@@ -75,17 +75,17 @@ public class SocketMessageTest {
 
         // test file upload
         File file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
-        SocketMessage file_message = new SocketMessage();
+        SocketMessage file_message = new SocketMessage("");
         file_message.body(file);
         System.out.println(file_message.toString());
 
         file = new File(PathUtils.getAbsolutePath("./testdb.t"));
-        file_message = new SocketMessage();
+        file_message = new SocketMessage("");
         file_message.body(file);
         System.out.println(file_message.toString());
 
         file = new File(PathUtils.getAbsolutePath("./test_pdf.pdf"));
-        file_message = new SocketMessage();
+        file_message = new SocketMessage("");
         file_message.body(file);
         System.out.println(file_message.toString());
     }
@@ -95,7 +95,7 @@ public class SocketMessageTest {
 
         final KeyManager keys = new KeyManager();
 
-        final SocketMessage message = new SocketMessage();
+        final SocketMessage message = new SocketMessage("");
         message.body("Hello secure message!");
 
         final SocketMessage message_sec = new SocketMessage(message.bytes());

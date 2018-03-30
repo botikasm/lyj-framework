@@ -5,6 +5,7 @@ import org.ly.commons.network.socket.basic.message.SocketMessage;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.cryptograph.SecurityMessageDigester;
 import org.lyj.commons.lang.CharEncoding;
+import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.json.JsonItem;
 
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class SocketBasicServer
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private final String _uid;
     private int _port;
     private int _timeout_ms;
     private String _charset;
@@ -50,6 +52,7 @@ public class SocketBasicServer
     // ------------------------------------------------------------------------
 
     public SocketBasicServer() {
+        _uid = "server_".concat(RandomUtils.randomUUID());
         _port = 5000;
         _timeout_ms = 5000;
         _charset = CharEncoding.UTF_8;
@@ -110,7 +113,7 @@ public class SocketBasicServer
             // Create an AsynchronousServerSocketChannel that will listen on port 5000
             _listener = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(_port));
             _listener.accept(
-                    new SocketContext()
+                    new SocketContext(_uid)
                             .port(this.port())
                             .charset(this.charset())
                             .timeout(this.timeout()),

@@ -7,6 +7,7 @@ import org.ly.commons.network.socket.basic.message.SocketMessageDispatcher;
 import org.ly.commons.network.socket.basic.message.SocketMessageHandShake;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.RandomUtils;
+import org.lyj.commons.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -95,16 +96,21 @@ public class SocketBasicClient
         return this;
     }
 
+    public boolean encrypted() {
+        return null != _message && StringUtils.hasText(_message.encodeKey());
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
     /**
-     * Client sent an handshake request to a target
+     * Client sent an handshake request to a target.
+     * Use handshake to activate encryption.
      */
     public void handShake() throws Exception {
         final String public_key = _message.publicKey();
-        final SocketMessageHandShake handshake = new SocketMessageHandShake();
+        final SocketMessageHandShake handshake = new SocketMessageHandShake(_uid);
         handshake.signature(public_key);
 
         final SocketMessage response = this.send(handshake);
@@ -158,7 +164,7 @@ public class SocketBasicClient
     }
 
     private SocketMessage newMessage() {
-        final SocketMessage message = new SocketMessage();
+        final SocketMessage message = new SocketMessage(_uid);
         message.signature(this.uid());
 
         return message;
@@ -189,7 +195,7 @@ public class SocketBasicClient
 
         try (AsynchronousSocketChannel socket = this.openSocket(timeout_ms);) {
 
-            final SocketContext context = new SocketContext()
+            final SocketContext context = new SocketContext(_uid)
                     .port(this.port())
                     .timeout(timeout_ms)
                     .charset(this.charset());

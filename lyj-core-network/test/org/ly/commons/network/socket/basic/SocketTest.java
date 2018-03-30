@@ -8,6 +8,7 @@ import org.ly.commons.network.socket.basic.server.SocketBasicServer;
 import org.lyj.TestInitializer;
 import org.lyj.commons.util.RandomUtils;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -24,21 +25,32 @@ public class SocketTest {
 
         try (final SocketBasicServer server = this.getServer()) {
 
+            SocketBasicClient client_ssl = this.getClient(server.port());
             SocketBasicClient client = this.getClient(server.port());
 
             // HANDSHAKE
-            // client.handShake();
+            client_ssl.handShake();
+
+            assertTrue(client_ssl.encrypted());
+            assertFalse(client.encrypted());
 
             int count = 0;
 
-            SocketMessage response = client.send(count + ": " + RandomUtils.randomAlphanumeric(6));
+            SocketMessage response = client_ssl.send(count + ": " + RandomUtils.randomAlphanumeric(6));
             assertNotNull(response);
             assertTrue(response.isValid());
             System.out.println(response.toString());
             System.out.println(new String(response.body()));
 
             count++;
-            response = client.send(count + ": " + "This is a message");
+            response = client_ssl.send(count + ": " + "This is a message");
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
+            // error if server does not distinguish between clients
+            response = client.send("This is a clear message");
             assertNotNull(response);
             assertTrue(response.isValid());
             System.out.println(response.toString());

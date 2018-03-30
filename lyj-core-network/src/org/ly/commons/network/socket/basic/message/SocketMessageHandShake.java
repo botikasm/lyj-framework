@@ -7,7 +7,8 @@ public class SocketMessageHandShake
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public SocketMessageHandShake() {
+    public SocketMessageHandShake(final String uid) {
+        super(uid);
         super.type(MessageType.Handshake);
     }
 

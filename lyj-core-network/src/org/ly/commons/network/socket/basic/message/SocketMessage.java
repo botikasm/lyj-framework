@@ -51,6 +51,7 @@ public class SocketMessage {
     private static final int LEN_SIZE = 10;
     private static final int HASH_SIZE = 32;
     private static final int SIGNATURE_SIZE = 220;
+    private static final int OWNER_SIZE = HASH_SIZE;
 
     private static final int LEN_POS_START = MSG_START.length;
     private static final int LEN_POS_END = LEN_POS_START + LEN_SIZE;
@@ -59,9 +60,13 @@ public class SocketMessage {
     private static final int HASH_POS_END = HASH_POS_START + HASH_SIZE;
     private static final int SIGNATURE_POS_START = HASH_POS_END;
     private static final int SIGNATURE_POS_END = SIGNATURE_POS_START + SIGNATURE_SIZE;
-    private static final int BODY_POS_START = SIGNATURE_POS_END;
+    private static final int OWNER_POS_START = SIGNATURE_POS_END;
+    private static final int OWNER_POS_END = OWNER_POS_START + OWNER_SIZE;
 
-    private static final int HEADERS_SIZE = MSG_START.length + MSG_END.length + TYPE_SIZE + LEN_SIZE + HASH_SIZE + SIGNATURE_SIZE;
+    private static final int BODY_POS_START = OWNER_POS_END;
+
+    private static final int HEADERS_SIZE = MSG_START.length + MSG_END.length +
+            TYPE_SIZE + LEN_SIZE + HASH_SIZE + SIGNATURE_SIZE + OWNER_SIZE;
 
     private static final String UNSIGNED = StringUtils.fillString("", " ", SIGNATURE_SIZE);
 
@@ -69,6 +74,7 @@ public class SocketMessage {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private String _owner_id;
     private long _length;
     private MessageType _type;
     // hash (calculated with MD5 on body)
@@ -80,7 +86,8 @@ public class SocketMessage {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public SocketMessage() {
+    public SocketMessage(final String owner_id) {
+        _owner_id = MD5.encode(owner_id);
         this.init();
     }
 
@@ -214,7 +221,8 @@ public class SocketMessage {
     /**
      * If a message has been encrypted, "signature" field is filled with an MD5 hash of public key used to encrypt the message.
      * Use this method to verify public key validity.
-     * @param public_key  The Public Key to check
+     *
+     * @param public_key The Public Key to check
      * @return
      */
     public boolean isValidSignature(final String public_key) {
@@ -268,6 +276,10 @@ public class SocketMessage {
         return _hash.getBytes();
     }
 
+    private byte[] encodeOwnerId() {
+        return _owner_id.getBytes();
+    }
+
     private byte[] encodeSignature() {
         //final String s_signature = StringUtils.leftStr(MD5.encode(_signature), HASH_SIZE);
         return _signature.getBytes();
@@ -286,6 +298,8 @@ public class SocketMessage {
             out.write(this.encodeHash());
             // signature
             out.write(this.encodeSignature());
+            // owner_id
+            out.write(this.encodeOwnerId());
 
             // body
             out.write(_body);
@@ -316,6 +330,7 @@ public class SocketMessage {
 
                 _signature = decodeSignature(message);
                 _hash = decodeHash(message);
+                _owner_id = decodeOwnerId(message);
 
                 this.setBody(decodeBody(message));
             }
@@ -383,6 +398,16 @@ public class SocketMessage {
         if (message.length > 0) {
             final byte[] bytes = CollectionUtils.subArray(message, HASH_POS_START, HASH_POS_END);
             if (bytes.length == HASH_SIZE) {
+                return new String(bytes);
+            }
+        }
+        return getHashFrom(new byte[0]);
+    }
+
+    public static String decodeOwnerId(final byte[] message) {
+        if (message.length > 0) {
+            final byte[] bytes = CollectionUtils.subArray(message, OWNER_POS_START, OWNER_POS_END);
+            if (bytes.length == OWNER_SIZE) {
                 return new String(bytes);
             }
         }
