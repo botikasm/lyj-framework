@@ -27,7 +27,7 @@ public class SocketTest {
             SocketBasicClient client = this.getClient(server.port());
 
             // HANDSHAKE
-            client.handShake();
+            // client.handShake();
 
             int count = 0;
 
@@ -56,7 +56,6 @@ public class SocketTest {
     private SocketBasicServer getServer() {
         SocketBasicServer server = new SocketBasicServer();
         server.port(5000)
-                .encrypt(true)
                 .onChannelOpen(this::channelOpen)
                 .onChannelClose(this::channelClose)
                 .onChannelMessage(this::channelMessage)

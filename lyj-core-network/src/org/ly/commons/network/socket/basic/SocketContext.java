@@ -9,7 +9,6 @@ public class SocketContext {
     // ------------------------------------------------------------------------
 
     private int _port;
-    private boolean _encrypt;
     private int _timeout_ms;
     private String _charset;
 
@@ -22,7 +21,6 @@ public class SocketContext {
         _charset = CharEncoding.UTF_8;
         _port = 5000;
         _timeout_ms = 5000;
-        _encrypt = true;
     }
 
     // ------------------------------------------------------------------------
@@ -35,15 +33,6 @@ public class SocketContext {
 
     public SocketContext port(final int value) {
         _port = value;
-        return this;
-    }
-
-    public boolean encrypt() {
-        return _encrypt;
-    }
-
-    public SocketContext encrypt(final boolean value) {
-        _encrypt = value;
         return this;
     }
 

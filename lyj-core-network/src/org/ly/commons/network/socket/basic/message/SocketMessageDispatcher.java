@@ -4,6 +4,7 @@ import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
 import org.ly.commons.network.socket.crypto.KeyManager;
 import org.ly.commons.network.socket.utils.SocketUtils;
+import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.cryptograph.pem.RSAHelper;
 import org.lyj.commons.util.StringUtils;
 
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class SocketMessageDispatcher
-        extends SocketLogger{
+        extends SocketLogger {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -30,8 +31,10 @@ public class SocketMessageDispatcher
     private final String _name;
     private final KeyManager _keys;
 
-    private String _encode_key; // used to encode outboud message
+    private String _encode_key; // used to encode outbound message
     private String _decode_key; // used to decode inbound messages
+
+    private String _encode_signature;// MD5 hash for further _encode_key validation
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -62,27 +65,26 @@ public class SocketMessageDispatcher
 
     public SocketMessageDispatcher encodeKey(final String value) {
         _encode_key = value;
+        _encode_signature = MD5.encode(value);
         return this;
     }
 
     public void write(final AsynchronousSocketChannel socket,
                       final SocketContext context,
-                      final SocketMessage message,
-                      final int timeout_ms)
+                      final SocketMessage message)
             throws ExecutionException, InterruptedException, TimeoutException {
 
         // write data
-        this.writeData(socket, context, message, timeout_ms);
+        this.writeData(socket, context, message, context.timeout());
 
 
     }
 
     public SocketMessage read(final AsynchronousSocketChannel socket,
-                              final SocketContext context,
-                              final int timeout_ms) {
+                              final SocketContext context) {
         // read data
-        final SocketMessage message = SocketUtils.read(socket, timeout_ms);
-        if (null!=message && !message.isHandShake()) {
+        final SocketMessage message = SocketUtils.read(socket, context.timeout());
+        if (null != message && !message.isHandShake()) {
 
             // decode
             this.decode(message, context);
@@ -97,7 +99,7 @@ public class SocketMessageDispatcher
 
     private void init() {
         _decode_key = _keys.privateKeyString(); // used to decode messages
-        _encode_key = "";
+        this.encodeKey("");
     }
 
     private void writeData(final AsynchronousSocketChannel socket,
@@ -128,7 +130,7 @@ public class SocketMessageDispatcher
                 message.body(encrypt(message.body()));
 
                 // write public key for encrypted response
-                message.signature(_keys.publicKeyString());
+                message.signature(_encode_signature);
             }
         } catch (Throwable t) {
             // unable to encode due an encoding error
@@ -144,8 +146,6 @@ public class SocketMessageDispatcher
                 // encrypt the body using a public key
                 message.body(decrypt(message.body()));
 
-                // write public key for encrypted response
-                // message.signature(_keys.publicKeyString());
             }
         } catch (Throwable t) {
             // unable to encode due an encoding error

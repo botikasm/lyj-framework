@@ -22,8 +22,6 @@ public class SocketBasicServerHandler
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final int DEF_TIMEOUT = 5000;
-    private static final String DEF_CHARSET = CharEncoding.getDefault();
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -38,9 +36,6 @@ public class SocketBasicServerHandler
 
     private boolean _closed;
 
-    private int _timeout_ms;
-    private String _charset;
-
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -48,8 +43,6 @@ public class SocketBasicServerHandler
     public SocketBasicServerHandler(final AsynchronousServerSocketChannel listener) {
         _listener = listener;
         _closed = false;
-        _charset = DEF_CHARSET;
-        _timeout_ms = DEF_TIMEOUT;
 
         _message = new SocketMessageDispatcher("server");
     }
@@ -57,24 +50,6 @@ public class SocketBasicServerHandler
     // ------------------------------------------------------------------------
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
-
-    public int timeout() {
-        return _timeout_ms;
-    }
-
-    public SocketBasicServerHandler timeout(final int value) {
-        _timeout_ms = value;
-        return this;
-    }
-
-    public String charset() {
-        return _charset;
-    }
-
-    public SocketBasicServerHandler charset(final String value) {
-        _charset = value;
-        return this;
-    }
 
     public SocketBasicServerHandler onChannelOpen(SocketBasicServer.OpenCloseCallback value) {
         _callback_on_channel_open = value;
@@ -111,7 +86,7 @@ public class SocketBasicServerHandler
             // _message.write(channel, context, new SocketMessage(), _time_out);
 
             // wait for client message
-            final SocketMessage request = _message.read(channel, context, _timeout_ms);
+            final SocketMessage request = _message.read(channel, context);
             if (null != request) {
                 if (request.isHandShake()) {
                     _message.encodeKey(request.signature());
@@ -119,14 +94,14 @@ public class SocketBasicServerHandler
                     final SocketMessageHandShake response = new SocketMessageHandShake();
                     response.signature(_message.publicKey());
 
-                    _message.write(channel, context, response, _timeout_ms);
+                    _message.write(channel, context, response);
                 } else {
                     if (null == _callback_on_channel_message) {
                         // ECHO
-                        _message.write(channel, context, request, _timeout_ms);
+                        _message.write(channel, context, request);
                     } else {
                         final SocketMessage response = this.doChannelMessage(channel, context, request);
-                        _message.write(channel, context, response, _timeout_ms);
+                        _message.write(channel, context, response);
                     }
                 }
             } else {

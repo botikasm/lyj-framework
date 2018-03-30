@@ -5,6 +5,7 @@ import org.ly.commons.network.socket.basic.SocketContext;
 import org.ly.commons.network.socket.basic.message.SocketMessage;
 import org.ly.commons.network.socket.basic.message.SocketMessageDispatcher;
 import org.ly.commons.network.socket.basic.message.SocketMessageHandShake;
+import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.RandomUtils;
 
 import java.io.File;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class SocketBasicClient
-        extends SocketLogger{
+        extends SocketLogger {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -34,8 +35,8 @@ public class SocketBasicClient
 
     private String _host;
     private int _port;
-    private boolean _encrypt;
     private int _timeout_ms;
+    private String _charset;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -43,9 +44,9 @@ public class SocketBasicClient
 
     public SocketBasicClient() {
         _uid = RandomUtils.randomUUID();
-        _encrypt = true;
         _port = 5000;
         _timeout_ms = TIMEOUT_MS;
+        _charset = CharEncoding.UTF_8;
 
         _message = new SocketMessageDispatcher("client");
     }
@@ -85,12 +86,12 @@ public class SocketBasicClient
         return this;
     }
 
-    public boolean encrypt() {
-        return _encrypt;
+    public String charset() {
+        return _charset;
     }
 
-    public SocketBasicClient encrypt(final boolean value) {
-        _encrypt = value;
+    public SocketBasicClient charset(final String value) {
+        _charset = value;
         return this;
     }
 
@@ -188,22 +189,15 @@ public class SocketBasicClient
 
         try (AsynchronousSocketChannel socket = this.openSocket(timeout_ms);) {
 
-            final SocketContext context = new SocketContext().port(this.port()).encrypt(this.encrypt());
+            final SocketContext context = new SocketContext()
+                    .port(this.port())
+                    .timeout(timeout_ms)
+                    .charset(this.charset());
 
-            // wait for server public key
-            //final SocketMessage remote_public_key = _message.read(socket, context, timeout_ms);
-
-            /**
-             final ByteBuffer send_buffer = ByteBuffer.wrap(message.bytes());
-             final Future<Integer> futureWriteResult = socket.write(send_buffer);
-             futureWriteResult.get();
-             send_buffer.clear();
-             **/
-
-            _message.write(socket, context, message, timeout_ms);
+            _message.write(socket, context, message);
 
             //Now wait for return message.
-            return _message.read(socket, context, timeout_ms); //SocketUtils.read(socket, TIMEOUT_MS);
+            return _message.read(socket, context); //SocketUtils.read(socket, TIMEOUT_MS);
 
         } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
             this.handleException(e);

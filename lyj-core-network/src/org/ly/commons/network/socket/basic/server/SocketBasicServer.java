@@ -4,6 +4,7 @@ import org.ly.commons.network.socket.basic.SocketContext;
 import org.ly.commons.network.socket.basic.message.SocketMessage;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.cryptograph.SecurityMessageDigester;
+import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.json.JsonItem;
 
 import java.io.IOException;
@@ -35,7 +36,8 @@ public class SocketBasicServer
     // ------------------------------------------------------------------------
 
     private int _port;
-    private boolean _encrypt;
+    private int _timeout_ms;
+    private String _charset;
 
     private AsynchronousServerSocketChannel _listener;
 
@@ -49,7 +51,8 @@ public class SocketBasicServer
 
     public SocketBasicServer() {
         _port = 5000;
-        _encrypt = true;
+        _timeout_ms = 5000;
+        _charset = CharEncoding.UTF_8;
     }
 
     // ------------------------------------------------------------------------
@@ -80,12 +83,21 @@ public class SocketBasicServer
         return _port;
     }
 
-    public boolean encrypt() {
-        return _encrypt;
+    public int timeout() {
+        return _timeout_ms;
     }
 
-    public SocketBasicServer encrypt(final boolean value) {
-        _encrypt = value;
+    public SocketBasicServer timeout(final int value) {
+        _timeout_ms = value;
+        return this;
+    }
+
+    public String charset() {
+        return _charset;
+    }
+
+    public SocketBasicServer charset(final String value) {
+        _charset = value;
         return this;
     }
 
@@ -98,7 +110,10 @@ public class SocketBasicServer
             // Create an AsynchronousServerSocketChannel that will listen on port 5000
             _listener = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(_port));
             _listener.accept(
-                    new SocketContext().port(this.port()).encrypt(this.encrypt()),
+                    new SocketContext()
+                            .port(this.port())
+                            .charset(this.charset())
+                            .timeout(this.timeout()),
                     new SocketBasicServerHandler(_listener)
                             .onChannelOpen(this::handleChannelOpen)
                             .onChannelClose(this::handleChannelClose)

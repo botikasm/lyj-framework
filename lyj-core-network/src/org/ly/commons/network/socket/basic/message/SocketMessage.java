@@ -211,6 +211,16 @@ public class SocketMessage {
         return false;
     }
 
+    /**
+     * If a message has been encrypted, "signature" field is filled with an MD5 hash of public key used to encrypt the message.
+     * Use this method to verify public key validity.
+     * @param public_key  The Public Key to check
+     * @return
+     */
+    public boolean isValidSignature(final String public_key) {
+        return this.signature().equals(MD5.encode(public_key));
+    }
+
     public boolean isHandShake() {
         return _type.equals(MessageType.Handshake);
     }
