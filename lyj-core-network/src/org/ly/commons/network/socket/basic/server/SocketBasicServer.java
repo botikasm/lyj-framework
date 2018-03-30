@@ -1,5 +1,6 @@
 package org.ly.commons.network.socket.basic.server;
 
+import org.ly.commons.network.socket.basic.SocketContext;
 import org.ly.commons.network.socket.basic.message.SocketMessage;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.cryptograph.SecurityMessageDigester;
@@ -12,7 +13,8 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 
 
-public class SocketBasicServer {
+public class SocketBasicServer
+        implements AutoCloseable {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -33,6 +35,7 @@ public class SocketBasicServer {
     // ------------------------------------------------------------------------
 
     private int _port;
+    private boolean _encrypt;
 
     private AsynchronousServerSocketChannel _listener;
 
@@ -46,6 +49,7 @@ public class SocketBasicServer {
 
     public SocketBasicServer() {
         _port = 5000;
+        _encrypt = true;
     }
 
     // ------------------------------------------------------------------------
@@ -76,6 +80,15 @@ public class SocketBasicServer {
         return _port;
     }
 
+    public boolean encrypt() {
+        return _encrypt;
+    }
+
+    public SocketBasicServer encrypt(final boolean value) {
+        _encrypt = value;
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -84,10 +97,12 @@ public class SocketBasicServer {
         try {
             // Create an AsynchronousServerSocketChannel that will listen on port 5000
             _listener = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(_port));
-            _listener.accept(null, new SocketBasicServerHandler(_listener)
-                    .onChannelOpen(this::handleChannelOpen)
-                    .onChannelClose(this::handleChannelClose)
-                    .onChannelMessage(this::handleChannelMessage)
+            _listener.accept(
+                    new SocketContext().port(this.port()).encrypt(this.encrypt()),
+                    new SocketBasicServerHandler(_listener)
+                            .onChannelOpen(this::handleChannelOpen)
+                            .onChannelClose(this::handleChannelClose)
+                            .onChannelMessage(this::handleChannelMessage)
             );
 
         } catch (IOException e) {
@@ -95,6 +110,7 @@ public class SocketBasicServer {
         }
     }
 
+    @Override
     public void close() {
         try {
             if (null != _listener) {
@@ -102,7 +118,7 @@ public class SocketBasicServer {
             }
         } catch (Throwable ignored) {
 
-        }  finally {
+        } finally {
             _listener = null;
         }
     }
@@ -161,12 +177,12 @@ public class SocketBasicServer {
         // ------------------------------------------------------------------------
 
         public ChannelInfo(final AsynchronousSocketChannel channel,
-                           final Object attachment) {
+                           final SocketContext attachment) {
             this(channel, attachment, null);
         }
 
         public ChannelInfo(final AsynchronousSocketChannel channel,
-                           final Object attachment,
+                           final SocketContext attachment,
                            final Exception error) {
             _nonce = channel.hashCode();
             this.init(channel, attachment, error);
@@ -232,7 +248,7 @@ public class SocketBasicServer {
         // ------------------------------------------------------------------------
 
         private void init(final AsynchronousSocketChannel channel,
-                          final Object attachment,
+                          final SocketContext attachment,
                           final Exception error) {
             _error = error;
             try {

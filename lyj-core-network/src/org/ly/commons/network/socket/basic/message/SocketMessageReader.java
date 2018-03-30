@@ -8,7 +8,7 @@ import java.io.*;
  * Read a message and check message integrity.
  */
 public class SocketMessageReader
-        implements AutoCloseable{
+        implements AutoCloseable {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -135,7 +135,8 @@ public class SocketMessageReader
                 final SocketMessage.MessageType type = SocketMessage.decodeType(bytes);
                 if (!SocketMessage.MessageType.Undefined.equals(type)) {
                     // body integrity
-                    if (SocketMessage.decodeBody(bytes).length == length) {
+                    final long body_length = SocketMessage.decodeBody(bytes).length;
+                    if (body_length == length) {
                         // message is closed
                         return SocketMessage.hasEnd(bytes);
                     }

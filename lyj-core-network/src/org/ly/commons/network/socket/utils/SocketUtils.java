@@ -57,11 +57,11 @@ public class SocketUtils {
 
                 return reader.message();
             } catch (ReadPendingException e) {
-                //System.out.println("SocketUtils.read() " + ignored);
+                System.out.println("SocketUtils.read()1 " + e);
             } catch(TimeoutException e){
-                // System.out.println("SocketUtils.read() " + e);
+                 System.out.println("SocketUtils.read()2 " + e);
             } catch (IOException | ExecutionException | InterruptedException e) {
-                
+                System.out.println("SocketUtils.read()3 " + e);
             }
 
         }

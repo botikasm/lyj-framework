@@ -566,6 +566,22 @@ public abstract class CollectionUtils {
         return sb.toString();
     }
 
+    public static String toDelimitedString(final byte[] arr,
+                                           final String delim) {
+        if (arr == null) {
+            return "";
+        }
+
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < arr.length; i++) {
+            if (i > 0) {
+                sb.append(delim);
+            }
+            sb.append(arr[i]);
+        }
+        return sb.toString();
+    }
+
     public static String toDelimitedString(final Object[] arr,
                                            final String delim,
                                            int startIndex, int endIndex) {
@@ -671,6 +687,10 @@ public abstract class CollectionUtils {
      *            be called on each element).
      */
     public static String toCommaDelimitedString(final Object[] arr) {
+        return toDelimitedString(arr, ",");
+    }
+
+    public static String toCommaDelimitedString(final byte[] arr) {
         return toDelimitedString(arr, ",");
     }
 

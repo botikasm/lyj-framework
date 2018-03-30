@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.lang;
 
@@ -846,6 +846,10 @@ public class Base64 {
             }   // end catch
         }
     }   // end decodeToBytes
+
+    public static byte[] decode(byte[] source) {
+        return decode(source, 0, source.length, NO_OPTIONS);
+    }
 
     /**
      * Very low-level access to decoding ASCII characters in

@@ -13,11 +13,12 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
 import static org.junit.Assert.assertTrue;
 
-public class RSAKeyReaderTest {
+public class RSAHelperTest {
 
 
     private static final String KEY_TEXT = "-----BEGIN RSA PRIVATE KEY-----\n" +
@@ -83,6 +84,11 @@ public class RSAKeyReaderTest {
         // try read private key
         System.out.println(RSAHelper.readKeyFile(response[0], true));
         System.out.println(RSAHelper.readKeyFile(response[0], false));
+
+        final String public_key = RSAHelper.readKeyFile(response[1], true);
+        System.out.println("'" + public_key.trim() + "'");
+        System.out.println(public_key.trim().length());
+        final PublicKey key = RSAHelper.readRSAPublicKeyFromText(public_key.trim());
     }
 
 }
