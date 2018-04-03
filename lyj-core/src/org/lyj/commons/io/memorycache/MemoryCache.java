@@ -2,7 +2,12 @@ package org.lyj.commons.io.memorycache;
 
 import java.util.TreeMap;
 
-public class MemoryCache {
+/**
+ * Cache items in memory.
+ * To refresh item status just put the item again in cache with same key, ore invoke wakeUp method.
+ * Both (put again or invoking wakeUp) get same result.
+ */
+public class MemoryCache<T> {
 
 
     // ------------------------------------------------------------------------
@@ -13,7 +18,7 @@ public class MemoryCache {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final TreeMap<String, MemoryCacheItem> _cache;
+    private final TreeMap<String, MemoryCacheItem<T>> _cache;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -42,17 +47,26 @@ public class MemoryCache {
         }
     }
 
-    public MemoryCacheItem put(final String key,
-                               final Object item) {
+    public MemoryCacheItem<T> put(final String key,
+                                  final MemoryCacheItem<T> item) {
         synchronized (_cache) {
             if (!_cache.containsKey(key)) {
                 // insert
-                if (item instanceof MemoryCacheItem) {
-                    _cache.put(key, (MemoryCacheItem) item);
-                } else {
-                    _cache.put(key, new MemoryCacheItem().item(item));
-                }
+                _cache.put(key, item);
+            } else {
+                // update
+                _cache.get(key).wakeUp();
+            }
+            return _cache.get(key);
+        }
+    }
 
+    public MemoryCacheItem<T> put(final String key,
+                                  final T item) {
+        synchronized (_cache) {
+            if (!_cache.containsKey(key)) {
+                // insert
+                _cache.put(key, new MemoryCacheItem<T>().item(item));
             } else {
                 // update
                 _cache.get(key).item(item);
@@ -61,13 +75,13 @@ public class MemoryCache {
         }
     }
 
-    public MemoryCacheItem remove(final String key) {
+    public MemoryCacheItem<T> remove(final String key) {
         synchronized (_cache) {
             return _cache.remove(key);
         }
     }
 
-    public MemoryCacheItem get(final String key) {
+    public MemoryCacheItem<T> get(final String key) {
         synchronized (_cache) {
             return _cache.get(key);
         }
@@ -82,6 +96,15 @@ public class MemoryCache {
     public boolean isExpired(final String key) {
         synchronized (_cache) {
             return !_cache.containsKey(key) || _cache.get(key).expired();
+        }
+    }
+
+    public MemoryCacheItem<T> wakeUp(final String key) {
+        synchronized (_cache) {
+            if (_cache.containsKey(key)) {
+                return _cache.get(key).wakeUp();
+            }
+            return null;
         }
     }
 

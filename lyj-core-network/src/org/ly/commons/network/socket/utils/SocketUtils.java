@@ -1,6 +1,6 @@
 package org.ly.commons.network.socket.utils;
 
-import org.ly.commons.network.socket.basic.message.SocketMessage;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.SocketMessageReader;
 
 import java.io.Closeable;

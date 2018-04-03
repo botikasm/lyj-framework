@@ -1,15 +1,19 @@
 package org.lyj.commons.util;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lyj.TestInitializer;
 
 /**
  * User: angelo.geminiani
  */
 public class SystemUtilsTest {
 
-    public SystemUtilsTest() {
-
+    @BeforeClass
+    public static void setUp() {
+        TestInitializer.init();
     }
+
 
     @Test
     public void testGetOperatingSystem() throws Exception {
@@ -35,6 +39,13 @@ public class SystemUtilsTest {
         String url = "file:///Users/angelogeminiani/Desktop/002629086197.pdf";
 
         SystemUtils.openURL(url);
+
+    }
+
+    @Test
+    public void testOpenFile() throws Exception {
+
+        SystemUtils.selectFile("./sample_file.txt");
 
     }
 

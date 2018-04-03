@@ -1,4 +1,4 @@
-package org.ly.commons.network.socket.basic.message;
+package org.ly.commons.network.socket.basic.message.impl;
 
 public class SocketMessageHandShake
         extends SocketMessage {

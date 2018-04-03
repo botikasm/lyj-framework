@@ -2,6 +2,7 @@ package org.ly.commons.network.socket.basic.message;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.crypto.KeyManager;
 import org.ly.commons.network.socket.utils.SocketUtils;
 import org.lyj.commons.cryptograph.MD5;
@@ -30,9 +31,10 @@ public class SocketMessageDispatcher
 
     private final String _name;
     private final KeyManager _keys;
+    private final SocketMessagePublicKeyCache _encode_key_cache;
 
-    private String _encode_key; // used to encode outbound message
-    private String _decode_key; // used to decode inbound messages
+    private String _encode_key; // [public] used to encode outbound message
+    private String _decode_key; // [private] used to decode inbound messages
 
     private String _encode_signature;// MD5 hash for further _encode_key validation
 
@@ -43,6 +45,7 @@ public class SocketMessageDispatcher
     public SocketMessageDispatcher(final String name) {
         _name = name;
         _keys = new KeyManager(ROOT, name);
+        _encode_key_cache = new SocketMessagePublicKeyCache();
 
         this.init();
     }

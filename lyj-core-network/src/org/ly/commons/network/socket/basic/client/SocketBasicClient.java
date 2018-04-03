@@ -2,9 +2,9 @@ package org.ly.commons.network.socket.basic.client;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.SocketMessage;
 import org.ly.commons.network.socket.basic.message.SocketMessageDispatcher;
-import org.ly.commons.network.socket.basic.message.SocketMessageHandShake;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
@@ -115,7 +115,7 @@ public class SocketBasicClient
 
         final SocketMessage response = this.send(handshake);
         if (response.isHandShake()) {
-            _message.encodeKey(response.signature());
+            _message.encodeKey(new String(response.body(), _charset));
         }
     }
 

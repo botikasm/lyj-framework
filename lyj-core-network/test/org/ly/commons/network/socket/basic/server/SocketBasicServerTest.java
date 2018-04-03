@@ -2,7 +2,7 @@ package org.ly.commons.network.socket.basic.server;
 
 import org.junit.Test;
 import org.ly.commons.network.socket.basic.client.SocketBasicClient;
-import org.ly.commons.network.socket.basic.message.SocketMessage;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.util.RandomUtils;
 
 import static org.junit.Assert.assertNotNull;

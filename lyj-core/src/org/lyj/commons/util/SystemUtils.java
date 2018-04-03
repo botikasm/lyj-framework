@@ -19,13 +19,14 @@
  */
 
 /*
- * 
+ *
  */
 
 package org.lyj.commons.util;
 
 
 import java.awt.*;
+import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.util.ArrayList;
@@ -164,7 +165,7 @@ public abstract class SystemUtils {
     //                      U R L
     // ------------------------------------------------------------------------
 
-    public static void openURL(String url) {
+    public static void openURL(final String url) {
         final String osName = getOperatingSystem();
         try {
             final Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
@@ -195,6 +196,21 @@ public abstract class SystemUtils {
             }
         } catch (Exception e) {
 
+        }
+    }
+
+
+    public static void selectFile(final String path) throws Exception {
+        final File file = new File(PathUtils.getAbsolutePath(path));
+        if (file.exists()) {
+           open(file, true);
+        }
+    }
+
+    public static void openFile(final String path) throws Exception {
+        final File file = new File(PathUtils.getAbsolutePath(path));
+        if (file.exists()) {
+            open(file, false);
         }
     }
 
@@ -266,6 +282,27 @@ public abstract class SystemUtils {
             __runtime = Runtime.getRuntime();
         }
         return __runtime;
+    }
+
+    private static Process open(final File file,
+                                final boolean select_only) throws Exception {
+        final String osName = getOperatingSystem();
+        final String command;
+        if (osName.startsWith("Mac OS")) {
+            // mac
+            command = select_only
+                    ? "open -R " + file.getAbsolutePath()
+                    : "open " + file.getAbsolutePath();
+        } else if (osName.startsWith("Windows")) {
+            // windows
+            command = select_only
+                    ? "explorer.exe /select," + file.getAbsolutePath()
+                    : "explorer.exe," + file.getAbsolutePath();
+        } else {
+            //assume Unix or Linux
+            command = "";
+        }
+        return StringUtils.hasText(command) ? runtime().exec(command) : null;
     }
 
 }

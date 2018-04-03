@@ -1,4 +1,4 @@
-package org.ly.commons.network.socket.basic.message;
+package org.ly.commons.network.socket.basic.message.impl;
 
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.lang.CharEncoding;
@@ -101,6 +101,7 @@ public class SocketMessage {
         final StringBuilder sb = new StringBuilder();
 
         sb.append(this.getClass().getName()).append(" [");
+        sb.append("owner_id=").append(_owner_id).append(", ");
         sb.append("length=").append(_length).append(", ");
         sb.append("type=").append(_type.toString()).append(", ");
         sb.append("hash=").append(this.hash()).append(", ");
@@ -114,6 +115,10 @@ public class SocketMessage {
     // ------------------------------------------------------------------------
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
+
+    public String ownerId() {
+        return _owner_id;
+    }
 
     /**
      * Returns entire message size, headers included.

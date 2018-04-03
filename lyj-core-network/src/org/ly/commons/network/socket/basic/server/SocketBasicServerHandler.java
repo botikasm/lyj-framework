@@ -2,9 +2,9 @@ package org.ly.commons.network.socket.basic.server;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.SocketMessage;
 import org.ly.commons.network.socket.basic.message.SocketMessageDispatcher;
-import org.ly.commons.network.socket.basic.message.SocketMessageHandShake;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -71,13 +71,13 @@ public class SocketBasicServerHandler
 
     @Override
     public void completed(final AsynchronousSocketChannel channel,
-                          final SocketContext context) {
+                          final SocketContext server_context) {
 
-        this.doChannelOpen(channel, context);
+        this.doChannelOpen(channel, server_context);
 
         // listen for nex connection
         if (null != _listener && _listener.isOpen()) {
-            _listener.accept(context, this);
+            _listener.accept(server_context, this);
         }
 
         try {
@@ -85,22 +85,25 @@ public class SocketBasicServerHandler
             // _message.write(channel, context, new SocketMessage(), _time_out);
 
             // wait for client message
-            final SocketMessage request = _message.read(channel, context);
+            final SocketMessage request = _message.read(channel, server_context);
             if (null != request) {
-                if (request.isHandShake()) {
-                    _message.encodeKey(request.signature());
+                // get client id from message
+                final String client_id = request.ownerId();
 
-                    final SocketMessageHandShake response = new SocketMessageHandShake(context.uid());
+                if (request.isHandShake()) {
+                    _message.encodeKey(new String(request.body(), server_context.charset()));
+
+                    final SocketMessageHandShake response = new SocketMessageHandShake(server_context.uid());
                     response.signature(_message.publicKey());
 
-                    _message.write(channel, context, response);
+                    _message.write(channel, server_context, response);
                 } else {
                     if (null == _callback_on_channel_message) {
                         // ECHO
-                        _message.write(channel, context, request);
+                        _message.write(channel, server_context, request);
                     } else {
-                        final SocketMessage response = this.doChannelMessage(channel, context, request);
-                        _message.write(channel, context, response);
+                        final SocketMessage response = this.doChannelMessage(channel, server_context, request);
+                        _message.write(channel, server_context, response);
                     }
                 }
             } else {
@@ -110,7 +113,7 @@ public class SocketBasicServerHandler
 
 
         } catch (Exception e) {
-            this.doChannelClose(channel, context, e);
+            this.doChannelClose(channel, server_context, e);
         }
 
         // this.log(ch, "\t\tEnd of conversation");
@@ -121,7 +124,7 @@ public class SocketBasicServerHandler
                 channel.close();
             }
         } catch (Exception e) {
-            this.doChannelClose(channel, context, e);
+            this.doChannelClose(channel, server_context, e);
         }
 
     }

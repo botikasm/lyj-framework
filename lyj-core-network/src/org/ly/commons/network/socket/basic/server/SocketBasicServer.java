@@ -1,7 +1,7 @@
 package org.ly.commons.network.socket.basic.server;
 
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.SocketMessage;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.cryptograph.SecurityMessageDigester;
 import org.lyj.commons.lang.CharEncoding;

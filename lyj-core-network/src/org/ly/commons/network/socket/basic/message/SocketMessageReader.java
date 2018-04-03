@@ -1,5 +1,6 @@
 package org.ly.commons.network.socket.basic.message;
 
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.util.ByteUtils;
 
 import java.io.*;

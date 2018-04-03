@@ -5,7 +5,7 @@ import org.lyj.commons.util.json.JsonItem;
 /**
  * Wrap a cached item
  */
-public class MemoryCacheItem {
+public class MemoryCacheItem<T> {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -49,8 +49,13 @@ public class MemoryCacheItem {
         return _data.getLong(DURATION);
     }
 
-    public MemoryCacheItem duration(final long value) {
+    public MemoryCacheItem<T> duration(final long value) {
         _data.put(DURATION, value);
+        return this;
+    }
+
+    public MemoryCacheItem<T> wakeUp(){
+        _data.put(TIMESTAMP, System.currentTimeMillis());
         return this;
     }
 
@@ -59,15 +64,15 @@ public class MemoryCacheItem {
         return now - this.timestamp() > this.duration();
     }
 
-    public MemoryCacheItem item(final Object item) {
+    public MemoryCacheItem<T> item(final T item) {
         _data.put(ITEM, item);
         _data.put(TIMESTAMP, System.currentTimeMillis());
 
         return this;
     }
 
-    public Object item() {
-        return _data.get(ITEM);
+    public T item() {
+        return (T)_data.get(ITEM);
     }
 
 
