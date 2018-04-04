@@ -7,7 +7,6 @@ import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.RandomUtils;
-import org.lyj.commons.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +30,7 @@ public class SocketBasicClient
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final SocketMessageDispatcher _message;
+    private final SocketBasicClientDispatcher _message;
     private final String _uid;
 
     private String _host;
@@ -49,7 +48,7 @@ public class SocketBasicClient
         _timeout_ms = TIMEOUT_MS;
         _charset = CharEncoding.UTF_8;
 
-        _message = new SocketMessageDispatcher("client");
+        _message = new SocketBasicClientDispatcher();
     }
 
     // ------------------------------------------------------------------------
@@ -96,9 +95,6 @@ public class SocketBasicClient
         return this;
     }
 
-    public boolean encrypted() {
-        return null != _message && StringUtils.hasText(_message.encodeKey());
-    }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -109,7 +105,7 @@ public class SocketBasicClient
      * Use handshake to activate encryption.
      */
     public void handShake() throws Exception {
-        final String public_key = _message.publicKey();
+        final String public_key = _message.signature();
         final SocketMessageHandShake handshake = new SocketMessageHandShake(_uid);
         handshake.signature(public_key);
 
@@ -165,7 +161,7 @@ public class SocketBasicClient
 
     private SocketMessage newMessage() {
         final SocketMessage message = new SocketMessage(_uid);
-        message.signature(this.uid());
+        message.signature(_message.signature());
 
         return message;
     }

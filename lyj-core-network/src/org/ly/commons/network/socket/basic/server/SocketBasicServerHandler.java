@@ -27,7 +27,7 @@ public class SocketBasicServerHandler
     // ------------------------------------------------------------------------
 
     private final AsynchronousServerSocketChannel _listener;
-    private final SocketMessageDispatcher _message;
+    private final SocketBasicServerDispatcher _message;
 
     private SocketBasicServer.OpenCloseCallback _callback_on_channel_open;
     private SocketBasicServer.OpenCloseCallback _callback_on_channel_close;
@@ -43,7 +43,7 @@ public class SocketBasicServerHandler
         _listener = listener;
         _closed = false;
 
-        _message = new SocketMessageDispatcher("server");
+        _message = new SocketBasicServerDispatcher();
     }
 
     // ------------------------------------------------------------------------
@@ -81,8 +81,6 @@ public class SocketBasicServerHandler
         }
 
         try {
-            // send public key
-            // _message.write(channel, context, new SocketMessage(), _time_out);
 
             // wait for client message
             final SocketMessage request = _message.read(channel, server_context);
@@ -91,19 +89,21 @@ public class SocketBasicServerHandler
                 final String client_id = request.ownerId();
 
                 if (request.isHandShake()) {
-                    _message.encodeKey(new String(request.body(), server_context.charset()));
+                    _message.encodeKey(client_id, new String(request.body(), server_context.charset()));
 
                     final SocketMessageHandShake response = new SocketMessageHandShake(server_context.uid());
-                    response.signature(_message.publicKey());
+                    response.signature(_message.signature());
 
                     _message.write(channel, server_context, response);
                 } else {
                     if (null == _callback_on_channel_message) {
                         // ECHO
-                        _message.write(channel, server_context, request);
+                        final SocketMessage response = new SocketMessage(server_context.uid());
+                        response.body(request.body());
+                        _message.write(channel, server_context, response, client_id);
                     } else {
                         final SocketMessage response = this.doChannelMessage(channel, server_context, request);
-                        _message.write(channel, server_context, response);
+                        _message.write(channel, server_context, response, client_id);
                     }
                 }
             } else {
@@ -169,7 +169,9 @@ public class SocketBasicServerHandler
                                            final SocketContext context,
                                            final SocketMessage request) {
         final SocketMessage response = new SocketMessage(context.uid());
-        response.copySignature(request);
+        // response.copySignature(request);
+        // response.signature(_message.encodeKey(request.ownerId()));
+        response.signature(_message.signature());
         response.body(new byte[0]); // initialize response with empty content
         if (null != _callback_on_channel_message) {
             _callback_on_channel_message.handle(new SocketBasicServer.ChannelInfo(ch, context), request, response);

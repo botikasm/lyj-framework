@@ -30,9 +30,7 @@ public class SocketTest {
 
             // HANDSHAKE
             client_ssl.handShake();
-
-            assertTrue(client_ssl.encrypted());
-            assertFalse(client.encrypted());
+            
 
             int count = 0;
 
@@ -51,6 +49,33 @@ public class SocketTest {
 
             // error if server does not distinguish between clients
             response = client.send("This is a clear message");
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+            
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    @Test
+    public void startTestClear() throws Exception {
+
+        try (final SocketBasicServer server = this.getServer()) {
+
+            SocketBasicClient client = this.getClient(server.port());
+
+            int count = 0;
+
+            SocketMessage response = client.send(count + ": " + RandomUtils.randomAlphanumeric(6));
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
+            count++;
+            response = client.send(count + ": " + "This is a message");
             assertNotNull(response);
             assertTrue(response.isValid());
             System.out.println(response.toString());
@@ -88,7 +113,8 @@ public class SocketTest {
                                 SocketMessage request,
                                 SocketMessage response) {
         // echo
-        response.body("echo: " + new String(request.body()));
+        final String echo = "echo: " + new String(request.body());
+        response.body(echo);
     }
 
     private void channelOpen(SocketBasicServer.ChannelInfo channelInfo) {

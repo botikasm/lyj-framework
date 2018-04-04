@@ -1,5 +1,6 @@
 package org.lyj.commons.io.memorycache;
 
+import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -39,6 +40,12 @@ public class MemoryCache<T> {
 
     public int size() {
         return _cache.size();
+    }
+
+    public Set<String> keys() {
+        synchronized (_cache) {
+            return _cache.keySet();
+        }
     }
 
     public void clear() {
