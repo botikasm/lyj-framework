@@ -130,7 +130,7 @@ public class SocketMessageReader
     private static boolean isComplete(final byte[] bytes) {
         if (SocketMessage.hasStart(bytes)) {
             // length
-            final long length = SocketMessage.decodeLength(bytes);
+            final long length = SocketMessage.decodeBodyLength(bytes);
             if (length > -1) {
                 // type
                 final SocketMessage.MessageType type = SocketMessage.decodeType(bytes);

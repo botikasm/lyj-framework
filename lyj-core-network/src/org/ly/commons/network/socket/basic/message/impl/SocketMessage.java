@@ -48,14 +48,17 @@ public class SocketMessage {
     private static final byte[] MSG_END = ">".getBytes();       // 1 byte
 
     private static final int TYPE_SIZE = 1;
-    private static final int LEN_SIZE = 10;
+    private static final int BODY_LENGHT_SIZE = 10;
+    private static final int HEADER_LENGHT_SIZE = BODY_LENGHT_SIZE;
     private static final int HASH_SIZE = 32;
-    private static final int SIGNATURE_SIZE = 220;
+    private static final int SIGNATURE_SIZE = HASH_SIZE; //220;
     private static final int OWNER_SIZE = HASH_SIZE;
 
     private static final int LEN_POS_START = MSG_START.length;
-    private static final int LEN_POS_END = LEN_POS_START + LEN_SIZE;
-    private static final int TYPE_POS = LEN_POS_END;
+    private static final int LEN_POS_END = LEN_POS_START + BODY_LENGHT_SIZE;
+    private static final int HEADER_LENGHT_POS_START = LEN_POS_END;
+    private static final int HEADER_LENGHT_POS_END = HEADER_LENGHT_POS_START + HEADER_LENGHT_SIZE;
+    private static final int TYPE_POS = HEADER_LENGHT_POS_END;
     private static final int HASH_POS_START = TYPE_POS + 1;
     private static final int HASH_POS_END = HASH_POS_START + HASH_SIZE;
     private static final int SIGNATURE_POS_START = HASH_POS_END;
@@ -66,7 +69,7 @@ public class SocketMessage {
     private static final int BODY_POS_START = OWNER_POS_END;
 
     private static final int HEADERS_SIZE = MSG_START.length + MSG_END.length +
-            TYPE_SIZE + LEN_SIZE + HASH_SIZE + SIGNATURE_SIZE + OWNER_SIZE;
+            TYPE_SIZE + BODY_LENGHT_SIZE + HEADER_LENGHT_SIZE + HASH_SIZE + SIGNATURE_SIZE + OWNER_SIZE;
 
     private static final String UNSIGNED = StringUtils.fillString("", " ", SIGNATURE_SIZE);
 
@@ -75,7 +78,8 @@ public class SocketMessage {
     // ------------------------------------------------------------------------
 
     private String _owner_id;
-    private long _length;
+    private long _body_length;
+    private long _header_length;
     private MessageType _type;
     // hash (calculated with MD5 on body)
     private String _hash;
@@ -102,7 +106,8 @@ public class SocketMessage {
 
         sb.append(this.getClass().getName()).append(" [");
         sb.append("owner_id=").append(_owner_id).append(", ");
-        sb.append("length=").append(_length).append(", ");
+        sb.append("length=").append(_body_length).append(", ");
+        sb.append("header_length=").append(_header_length).append(", ");
         sb.append("type=").append(_type.toString()).append(", ");
         sb.append("hash=").append(this.hash()).append(", ");
         sb.append("signature=").append(StringUtils.leftStr(this.signature().trim(), 15, true)).append(", ");
@@ -132,7 +137,11 @@ public class SocketMessage {
      * No headers are included.
      */
     public long length() {
-        return _length;
+        return _body_length;
+    }
+
+    public long headerLength() {
+        return _header_length;
     }
 
     public MessageType type() {
@@ -153,12 +162,7 @@ public class SocketMessage {
     }
 
     public SocketMessage signature(final String value) {
-        _signature = StringUtils.fillString(StringUtils.leftStr(value, SIGNATURE_SIZE), " ", SIGNATURE_SIZE);
-        return this;
-    }
-
-    public SocketMessage copySignature(final SocketMessage message) {
-        _signature = message.signature();
+        _signature = MD5.encode(value); // StringUtils.fillString(StringUtils.leftStr(value, SIGNATURE_SIZE), " ", SIGNATURE_SIZE);
         return this;
     }
 
@@ -252,7 +256,7 @@ public class SocketMessage {
 
     private void setBody(final byte[] data) {
         _body = data;
-        _length = _body.length;
+        _body_length = _body.length;
         _hash = this.getHashFromBody();
         // set type if not assigned
         if (MessageType.Undefined.equals(_type)) {
@@ -264,8 +268,13 @@ public class SocketMessage {
         return getHashFrom(_body);
     }
 
-    private byte[] encodeLength() {
-        final String s_len = StringUtils.fillString("" + this.length(), " ", LEN_SIZE);
+    private byte[] encodeBodyLength() {
+        final String s_len = StringUtils.fillString("" + this.length(), " ", BODY_LENGHT_SIZE);
+        return s_len.getBytes();
+    }
+
+    private byte[] encodeHeaderLength() {
+        final String s_len = StringUtils.fillString("" + this.headerLength(), " ", HEADER_LENGHT_SIZE);
         return s_len.getBytes();
     }
 
@@ -296,7 +305,9 @@ public class SocketMessage {
             out.write(MSG_START);
 
             // body length  ()
-            out.write(this.encodeLength());
+            out.write(this.encodeBodyLength());
+            // header length  ()
+            out.write(this.encodeHeaderLength());
             // type
             out.write(this.encodeType());
             // hash
@@ -325,14 +336,15 @@ public class SocketMessage {
                 && hasEnd(message)) {
 
             // length
-            final long length = decodeLength(message);
+            final long length = decodeBodyLength(message);
             // type
             _type = decodeType(message);
 
             if (length > -1 && !MessageType.Undefined.equals(_type)) {
                 // message is valid
-                _length = length;
-
+                _body_length = length;
+                _header_length = decodeHeaderLength(message);
+                
                 _signature = decodeSignature(message);
                 _hash = decodeHash(message);
                 _owner_id = decodeOwnerId(message);
@@ -368,10 +380,21 @@ public class SocketMessage {
         return false;
     }
 
-    public static long decodeLength(final byte[] message) {
+    public static long decodeBodyLength(final byte[] message) {
         if (message.length > 0) {
             final byte[] bytes = CollectionUtils.subArray(message, LEN_POS_START, LEN_POS_END);
-            if (bytes.length == LEN_SIZE) {
+            if (bytes.length == BODY_LENGHT_SIZE) {
+                final String text = new String(bytes).trim();
+                return Long.parseLong(text);
+            }
+        }
+        return -1;
+    }
+
+    public static long decodeHeaderLength(final byte[] message) {
+        if (message.length > 0) {
+            final byte[] bytes = CollectionUtils.subArray(message, HEADER_LENGHT_POS_START, HEADER_LENGHT_POS_END);
+            if (bytes.length == HEADER_LENGHT_SIZE) {
                 final String text = new String(bytes).trim();
                 return Long.parseLong(text);
             }

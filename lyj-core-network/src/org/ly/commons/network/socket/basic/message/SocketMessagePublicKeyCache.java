@@ -54,6 +54,9 @@ public class SocketMessagePublicKeyCache
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public String uid() {
+        return _uid;
+    }
 
     @Override
     public synchronized MemoryCacheItem<SocketMessagePublicKeyCacheItem> get(final String key) {

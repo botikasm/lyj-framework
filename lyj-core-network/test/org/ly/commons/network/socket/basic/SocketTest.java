@@ -112,9 +112,14 @@ public class SocketTest {
     private void channelMessage(SocketBasicServer.ChannelInfo channelInfo,
                                 SocketMessage request,
                                 SocketMessage response) {
-        // echo
-        final String echo = "echo: " + new String(request.body());
-        response.body(echo);
+        if(request.type().equals(SocketMessage.MessageType.Binary)){
+             // file
+
+        } else {
+            // echo
+            final String echo = "echo: " + new String(request.body());
+            response.body(echo);
+        }
     }
 
     private void channelOpen(SocketBasicServer.ChannelInfo channelInfo) {

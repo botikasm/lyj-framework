@@ -89,7 +89,9 @@ public class SocketBasicServerHandler
                 final String client_id = request.ownerId();
 
                 if (request.isHandShake()) {
-                    _message.encodeKey(client_id, new String(request.body(), server_context.charset()));
+                    final String encode_key = new String(request.body(), server_context.charset());
+                    
+                    _message.encodeKey(client_id, encode_key);
 
                     final SocketMessageHandShake response = new SocketMessageHandShake(server_context.uid());
                     response.signature(_message.signature());
