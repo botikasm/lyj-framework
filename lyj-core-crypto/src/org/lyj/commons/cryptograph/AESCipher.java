@@ -23,11 +23,9 @@
  */
 package org.lyj.commons.cryptograph;
 
-import org.lyj.commons.lang.Base64;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
-import org.lyj.commons.util.RandomUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -35,18 +33,24 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * Simple DES encoder/decoder
- *
- * Key must be 56 bit (8 byte)
+ * Simple AES encoder/decoder
  *
  * @author angelo.geminiani
  */
-public final class DESEncrypter {
+public final class AESCipher {
+
+    // ------------------------------------------------------------------------
+    //                      f i e l d s
+    // ------------------------------------------------------------------------
 
     private Cipher _ecipher;
     private Cipher _dcipher;
 
-    public DESEncrypter(final String textkey) {
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
+    public AESCipher(final String textkey) {
         try {
             final SecretKey key = this.createKeyFromCleartext(textkey);
             this.init(key);
@@ -54,48 +58,28 @@ public final class DESEncrypter {
         }
     }
 
-    public DESEncrypter() {
+    public AESCipher(final SecretKey key) {
+        this.init(key);
+    }
+
+    public AESCipher() {
         try {
-            final SecretKey key = KeyGenerator.getInstance("DES").generateKey();
+            final KeyGenerator generator = KeyGenerator.getInstance("AES");
+            generator.init(128); // The AES key size in number of bits
+            final SecretKey key = generator.generateKey();
             this.init(key);
         } catch (Throwable t) {
         }
     }
 
-    public DESEncrypter(final SecretKey key) {
-        this.init(key);
-    }
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
 
-    public String encrypt(String str) {
+    public byte[] encrypt(final byte[] data) {
         try {
-            // Encode the string into bytes using utf-8
-            byte[] utf8 = str.getBytes("UTF8");
-
-            return this.encrypt(utf8);
-        } catch (Throwable t) {
-        }
-        return null;
-    }
-
-    public String encrypt(byte[] data) {
-        try {
-            // Encrypt
-            byte[] enc = _ecipher.doFinal(data);
-
-            // Encode bytes to base64 to get a string
-            return Base64.encodeBytes(enc);
-        } catch (Throwable t) {
-        }
-        return null;
-    }
-
-    public byte[] decrypt(final String str) {
-        try {
-            // Decode base64 to get bytes
-            byte[] dec = Base64.decode(str);
-
-            return this.decrypt(dec);
-        } catch (Throwable t) {
+            return _ecipher.doFinal(data);
+        } catch (Throwable ignored) {
         }
         return null;
     }
@@ -122,9 +106,9 @@ public final class DESEncrypter {
 
     private void init(final SecretKey key) {
         try {
-            _ecipher = Cipher.getInstance("DES");
-            _dcipher = Cipher.getInstance("DES");
+            _ecipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
             _ecipher.init(Cipher.ENCRYPT_MODE, key);
+            _dcipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
             _dcipher.init(Cipher.DECRYPT_MODE, key);
         } catch (Throwable t) {
             this.getLogger().log(Level.SEVERE, null, t);
@@ -139,19 +123,7 @@ public final class DESEncrypter {
      */
     private SecretKey createKeyFromCleartext(final String cleartext) {
         final byte[] bytes = cleartext.getBytes();
-        final SecretKeySpec sk = new SecretKeySpec(bytes, "DES");
+        final SecretKeySpec sk = new SecretKeySpec(bytes, "AES");
         return sk;
     }
-
-    // ------------------------------------------------------------------------
-    //                      S T A T I C
-    // ------------------------------------------------------------------------
-
-    /**
-     * Generate 56bit (8 byte) key
-     */
-    public static String generate8ByteKey() {
-        return RandomUtils.randomAscii(8);
-    }
-
 }

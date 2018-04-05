@@ -6,7 +6,11 @@ import org.ly.commons.network.socket.basic.client.SocketBasicClient;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.server.SocketBasicServer;
 import org.lyj.TestInitializer;
+import org.lyj.commons.util.MapBuilder;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.RandomUtils;
+
+import java.io.File;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -47,8 +51,29 @@ public class SocketTest {
             System.out.println(response.toString());
             System.out.println(new String(response.body()));
 
+            // send file clear encoded
+            File file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
+            response = client_ssl.send(file, MapBuilder.createSO()
+                    .put("file_size", file.length())
+                    .put("file_name", file.getName())
+                    .toMap());
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
             // error if server does not distinguish between clients
             response = client.send("This is a clear message");
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
+            // send file clear
+            response = client.send(file, MapBuilder.createSO()
+                    .put("file_size", file.length())
+                    .put("file_name", file.getName())
+                    .toMap());
             assertNotNull(response);
             assertTrue(response.isValid());
             System.out.println(response.toString());
@@ -86,6 +111,32 @@ public class SocketTest {
         }
     }
 
+    @Test
+    public void startTestFileCrypto() throws Exception {
+
+        try (final SocketBasicServer server = this.getServer()) {
+
+            SocketBasicClient client_ssl = this.getClient(server.port());
+            
+            // HANDSHAKE
+            client_ssl.handShake();
+
+            // send file clear encoded
+            File file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
+            SocketMessage response = client_ssl.send(file, MapBuilder.createSO()
+                    .put("file_size", file.length())
+                    .put("file_name", file.getName())
+                    .toMap());
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -112,9 +163,11 @@ public class SocketTest {
     private void channelMessage(SocketBasicServer.ChannelInfo channelInfo,
                                 SocketMessage request,
                                 SocketMessage response) {
-        if(request.type().equals(SocketMessage.MessageType.Binary)){
+        if(request.type().equals(SocketMessage.MessageType.File)){
              // file
-
+            System.out.println("Receiving file: " + request.headers().getString("file_name")
+                    + " (" + request.headers().getString("file_size") + " bytes)");
+             response.body("FILE RECEIVED!");
         } else {
             // echo
             final String echo = "echo: " + new String(request.body());

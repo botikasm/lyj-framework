@@ -31,6 +31,7 @@ public class SocketMessageTest {
 
         final SocketMessage message = new SocketMessage("");
         message.signature("hello");
+        message.headers().put("sample", "Hello header");
         message.body(TEXT);
         final byte[] bytes = message.bytes();
 
@@ -54,7 +55,7 @@ public class SocketMessageTest {
             }
             count++;
         }
-        System.out.println(reader.message().toString());
+        System.out.println("READ FROM BYTES: \n" + reader.message().toString());
         reader.close();
 
         // file reader (on file)
@@ -70,14 +71,14 @@ public class SocketMessageTest {
             }
             count++;
         }
-        System.out.println(reader_on_file.message().toString());
+        System.out.println("READ TO FILE: \n" + reader_on_file.message().toString());
         reader_on_file.close();
 
         // test file upload
         File file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
         SocketMessage file_message = new SocketMessage("");
         file_message.body(file);
-        System.out.println(file_message.toString());
+        System.out.println("FILE MESSAGE: \n" + file_message.toString());
 
         file = new File(PathUtils.getAbsolutePath("./testdb.t"));
         file_message = new SocketMessage("");

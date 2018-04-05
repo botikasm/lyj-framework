@@ -128,23 +128,7 @@ public class SocketMessageReader
     // ------------------------------------------------------------------------
 
     private static boolean isComplete(final byte[] bytes) {
-        if (SocketMessage.hasStart(bytes)) {
-            // length
-            final long length = SocketMessage.decodeBodyLength(bytes);
-            if (length > -1) {
-                // type
-                final SocketMessage.MessageType type = SocketMessage.decodeType(bytes);
-                if (!SocketMessage.MessageType.Undefined.equals(type)) {
-                    // body integrity
-                    final long body_length = SocketMessage.decodeBody(bytes).length;
-                    if (body_length == length) {
-                        // message is closed
-                        return SocketMessage.hasEnd(bytes);
-                    }
-                }
-            }
-        }
-        return false;
+        return SocketMessage.isComplete(bytes);
     }
 
 }

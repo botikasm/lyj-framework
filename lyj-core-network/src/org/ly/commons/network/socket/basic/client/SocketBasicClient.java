@@ -2,7 +2,6 @@ package org.ly.commons.network.socket.basic.client;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.SocketMessageDispatcher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 import org.lyj.commons.lang.CharEncoding;
@@ -13,6 +12,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.StandardSocketOptions;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -116,21 +116,43 @@ public class SocketBasicClient
     }
 
     public SocketMessage send(final String message) throws Exception {
-        return this.write(message, _timeout_ms);
+        return this.write(message, null, _timeout_ms);
+    }
+
+    public SocketMessage send(final String message,
+                              final Map<String, Object> headers) throws Exception {
+        return this.write(message, headers, _timeout_ms);
     }
 
     public SocketMessage send(final String message,
                               final int timeout_ms) throws Exception {
-        return this.write(message, timeout_ms);
+        return this.write(message, null, timeout_ms);
+    }
+
+    public SocketMessage send(final String message,
+                              final Map<String, Object> headers,
+                              final int timeout_ms) throws Exception {
+        return this.write(message, headers, timeout_ms);
     }
 
     public SocketMessage send(final File file) throws Exception {
-        return this.write(file, _timeout_ms);
+        return this.write(file, null, _timeout_ms);
+    }
+
+    public SocketMessage send(final File file,
+                              final Map<String, Object> headers) throws Exception {
+        return this.write(file, headers, _timeout_ms);
     }
 
     public SocketMessage send(final File file,
                               final int timeout_ms) throws Exception {
-        return this.write(file, timeout_ms);
+        return this.write(file, null, timeout_ms);
+    }
+
+    public SocketMessage send(final File file,
+                              final Map<String, Object> headers,
+                              final int timeout_ms) throws Exception {
+        return this.write(file, headers, timeout_ms);
     }
 
     public SocketMessage send(final SocketMessage message) throws Exception {
@@ -167,21 +189,25 @@ public class SocketBasicClient
     }
 
     private SocketMessage write(final String text,
+                                final Map<String, Object> headers,
                                 final int timeout_ms) throws Exception {
 
         // creates message
         final SocketMessage message = this.newMessage();
         message.body(text);
+        message.headers().putAll(headers);
 
         return this.write(message, timeout_ms);
     }
 
     private SocketMessage write(final File file,
+                                final Map<String, Object> headers,
                                 final int timeout_ms) throws Exception {
 
         // creates message
         final SocketMessage message = this.newMessage();
         message.body(file);
+        message.headers().putAll(headers);
 
         return this.write(message, timeout_ms);
     }
