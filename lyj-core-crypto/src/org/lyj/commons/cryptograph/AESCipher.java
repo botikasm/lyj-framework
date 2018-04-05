@@ -19,18 +19,22 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.cryptograph;
 
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
+import org.lyj.commons.util.MapBuilder;
+import org.lyj.commons.util.StringUtils;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 /**
  * Simple AES encoder/decoder
@@ -40,9 +44,21 @@ import javax.crypto.spec.SecretKeySpec;
 public final class AESCipher {
 
     // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    private static final String DEFAULT_PROVIDER = "AES/CBC/PKCS7Padding";
+    private static final String AES = "AES";
+
+    private static final Map<Integer, String> PROVIDERS = MapBuilder.createIS()
+            .put(128, AES)
+            .toMap();
+
+    // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private String _provider;
     private Cipher _ecipher;
     private Cipher _dcipher;
 
@@ -105,10 +121,15 @@ public final class AESCipher {
     }
 
     private void init(final SecretKey key) {
+        final int key_bits = key.getEncoded().length * 8;
+        _provider = PROVIDERS.get(key_bits);
+        if (!StringUtils.hasText(_provider)) {
+            _provider = DEFAULT_PROVIDER;
+        }
         try {
-            _ecipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+            _ecipher = Cipher.getInstance(_provider);
             _ecipher.init(Cipher.ENCRYPT_MODE, key);
-            _dcipher = Cipher.getInstance("AES/CBC/PKCS7Padding");
+            _dcipher = Cipher.getInstance(_provider);
             _dcipher.init(Cipher.DECRYPT_MODE, key);
         } catch (Throwable t) {
             this.getLogger().log(Level.SEVERE, null, t);
@@ -126,4 +147,25 @@ public final class AESCipher {
         final SecretKeySpec sk = new SecretKeySpec(bytes, "AES");
         return sk;
     }
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static SecretKey createKey(final String cleartext) {
+        final byte[] bytes = cleartext.getBytes();
+        return createKey(bytes);
+    }
+
+    public static SecretKey createKey(final byte[] bytes) {
+        final SecretKeySpec sk = new SecretKeySpec(bytes, "AES");
+        return sk;
+    }
+
+    public static SecretKey createKey(final int key_size_bits) throws NoSuchAlgorithmException {
+        final KeyGenerator generator = KeyGenerator.getInstance("AES");
+        generator.init(key_size_bits); //
+        return generator.generateKey();
+    }
+
 }
