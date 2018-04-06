@@ -51,7 +51,7 @@ public class SocketTest {
             System.out.println(response.toString());
             System.out.println(new String(response.body()));
 
-            // send file clear encoded
+            // send file encoded
             File file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
             response = client_ssl.send(file, MapBuilder.createSO()
                     .put("file_size", file.length())
@@ -89,6 +89,8 @@ public class SocketTest {
 
         try (final SocketBasicServer server = this.getServer()) {
 
+            File file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
+
             SocketBasicClient client = this.getClient(server.port());
 
             int count = 0;
@@ -101,6 +103,16 @@ public class SocketTest {
 
             count++;
             response = client.send(count + ": " + "This is a message");
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
+            // send file clear
+            response = client.send(file, MapBuilder.createSO()
+                    .put("file_size", file.length())
+                    .put("file_name", file.getName())
+                    .toMap());
             assertNotNull(response);
             assertTrue(response.isValid());
             System.out.println(response.toString());
@@ -132,6 +144,75 @@ public class SocketTest {
             System.out.println(response.toString());
             System.out.println(new String(response.body()));
 
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    @Test
+    public void startTestFileClear() throws Exception {
+
+        try (final SocketBasicServer server = this.getServer()) {
+
+            SocketBasicClient client = this.getClient(server.port());
+
+            File small_file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
+            System.out.println("SENDING BYTES: " + small_file.length());
+            SocketMessage response = client.send(small_file, MapBuilder.createSO()
+                    .put("file_size", small_file.length())
+                    .put("file_name", small_file.getName())
+                    .toMap());
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
+            File medium_file = new File(PathUtils.getAbsolutePath("./sample_medium_file.txt"));
+            System.out.println("SENDING BYTES: " + medium_file.length());
+            response = client.send(medium_file, MapBuilder.createSO()
+                    .put("file_size", medium_file.length())
+                    .put("file_name", medium_file.getName())
+                    .toMap());
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
+            File large_file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
+            System.out.println("SENDING BYTES: " + large_file.length());
+            response = client.send(large_file, MapBuilder.createSO()
+                    .put("file_size", large_file.length())
+                    .put("file_name", large_file.getName())
+                    .toMap());
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    @Test
+    public void startTestFileClearMultiple() throws Exception {
+
+        try (final SocketBasicServer server = this.getServer()) {
+
+            SocketBasicClient client = this.getClient(server.port());
+
+            File small_file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
+
+            System.out.println("SENDING BYTES: " + small_file.length());
+            for(int i=0;i<100;i++){
+                SocketMessage response = client.send(small_file, MapBuilder.createSO()
+                        .put("file_size", small_file.length())
+                        .put("file_name", small_file.getName())
+                        .toMap());
+                assertNotNull(response);
+                assertTrue(response.isValid());
+                System.out.println(i);
+            }
         } catch (Exception ex) {
             throw ex;
         }

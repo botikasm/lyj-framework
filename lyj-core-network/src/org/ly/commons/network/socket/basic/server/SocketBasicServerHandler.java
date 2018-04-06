@@ -2,7 +2,7 @@ package org.ly.commons.network.socket.basic.server;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.SocketMessageDispatcher;
+import org.ly.commons.network.socket.basic.message.dispatcher.SocketServerDispatcher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 
@@ -27,7 +27,7 @@ public class SocketBasicServerHandler
     // ------------------------------------------------------------------------
 
     private final AsynchronousServerSocketChannel _listener;
-    private final SocketBasicServerDispatcher _message;
+    private final SocketServerDispatcher _message;
 
     private SocketBasicServer.OpenCloseCallback _callback_on_channel_open;
     private SocketBasicServer.OpenCloseCallback _callback_on_channel_close;
@@ -43,7 +43,7 @@ public class SocketBasicServerHandler
         _listener = listener;
         _closed = false;
 
-        _message = new SocketBasicServerDispatcher();
+        _message = new SocketServerDispatcher();
     }
 
     // ------------------------------------------------------------------------
@@ -173,7 +173,7 @@ public class SocketBasicServerHandler
         final SocketMessage response = new SocketMessage(context.uid());
         // response.copySignature(request);
         // response.signature(_message.encodeKey(request.ownerId()));
-        response.signature(_message.signature());
+        // response.signature(_message.signature());
         response.body(new byte[0]); // initialize response with empty content
         if (null != _callback_on_channel_message) {
             _callback_on_channel_message.handle(new SocketBasicServer.ChannelInfo(ch, context), request, response);

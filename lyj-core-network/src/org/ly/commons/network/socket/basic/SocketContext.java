@@ -6,6 +6,13 @@ import org.lyj.commons.lang.CharEncoding;
 public class SocketContext {
 
     // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    public static final int DEFAULT_TIMEOUT = 10 * 1000;
+    public static final int DEFAULT_PORT = 5000;
+
+    // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
@@ -22,8 +29,8 @@ public class SocketContext {
     public SocketContext(final String uid) {
         _uid = uid;
         _charset = CharEncoding.UTF_8;
-        _port = 5000;
-        _timeout_ms = 5000;
+        _port = DEFAULT_PORT;
+        _timeout_ms = DEFAULT_TIMEOUT;
     }
 
     @Override

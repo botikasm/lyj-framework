@@ -20,6 +20,8 @@ public class MixedCipher {
     //                      c o n s t
     // ------------------------------------------------------------------------
 
+    public static final int KEY_SIZE = 128;
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -29,14 +31,14 @@ public class MixedCipher {
     // ------------------------------------------------------------------------
 
     public static Pack encrypt(final File file,
-                        final PublicKey public_key) throws Exception {
+                               final PublicKey public_key) throws Exception {
         final byte[] data = ByteUtils.getBytes(file);
         return encrypt(data, public_key);
     }
 
     public static Pack encrypt(final byte[] data,
-                        final PublicKey public_key) throws Exception {
-        final SecretKey secret = AESCipher.createKey(128);
+                               final PublicKey public_key) throws Exception {
+        final SecretKey secret = AESCipher.createKey(KEY_SIZE);
         final AESCipher cipher = new AESCipher(secret);
         final byte[] encoded_data = cipher.encrypt(data);
         final byte[] encoded_key = RSAHelper.encrypt(secret.getEncoded(), public_key);
@@ -49,7 +51,7 @@ public class MixedCipher {
     }
 
     public static byte[] decrypt(final Pack pack,
-                          final PrivateKey private_key) throws Exception {
+                                 final PrivateKey private_key) throws Exception {
         final SecretKey secret = AESCipher.createKey(RSAHelper.decrypt(pack.encodedKey(), private_key));
         final AESCipher cipher = new AESCipher(secret);
         return cipher.decrypt(pack.encodedData());
@@ -77,8 +79,13 @@ public class MixedCipher {
         //                      c o n s t r u c t o r
         // ------------------------------------------------------------------------
 
-        Pack() {
+        public Pack() {
 
+        }
+
+        public Pack(final byte[] encoded_key, final byte[] encoded_data) {
+            _encoded_key = encoded_key;
+            _encoded_data = encoded_data;
         }
 
         // ------------------------------------------------------------------------

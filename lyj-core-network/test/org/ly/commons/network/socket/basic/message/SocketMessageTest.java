@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.security.Key;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class SocketMessageTest {
@@ -30,7 +31,8 @@ public class SocketMessageTest {
         final String TEXT = "ABv";
 
         final SocketMessage message = new SocketMessage("");
-        message.signature("hello");
+        assertFalse(message.hasSignature());
+        message.signature("hello".getBytes());
         message.headers().put("sample", "Hello header");
         message.body(TEXT);
         final byte[] bytes = message.bytes();

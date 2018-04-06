@@ -17,9 +17,9 @@ public class SocketMessageHandShake
     // ------------------------------------------------------------------------
 
     @Override
-    public SocketMessage signature(String value) {
+    public SocketMessage signature(final byte[] value) {
         super.signature(value);
-        super.body(value.getBytes());
+        super.body(value);
         return this;
     }
 }

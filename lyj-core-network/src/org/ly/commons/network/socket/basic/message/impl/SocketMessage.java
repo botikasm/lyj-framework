@@ -2,6 +2,7 @@ package org.ly.commons.network.socket.basic.message.impl;
 
 import org.ly.commons.network.socket.basic.message.SocketMessageHeader;
 import org.lyj.commons.cryptograph.MD5;
+import org.lyj.commons.cryptograph.mixed.MixedCipher;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.ByteUtils;
 import org.lyj.commons.util.CollectionUtils;
@@ -53,7 +54,7 @@ public class SocketMessage {
     private static final int BODY_LENGHT_SIZE = 10;
     private static final int HEADER_LENGHT_SIZE = BODY_LENGHT_SIZE;
     private static final int HASH_SIZE = 32;
-    private static final int SIGNATURE_SIZE = HASH_SIZE; //220;
+    private static final int SIGNATURE_SIZE = MixedCipher.KEY_SIZE; //128;
     private static final int OWNER_SIZE = HASH_SIZE;
 
     private static final int LEN_POS_START = MSG_START.length;
@@ -74,7 +75,7 @@ public class SocketMessage {
     private static final int HEADERS_SIZE = MSG_START.length + MSG_END.length +
             TYPE_SIZE + BODY_LENGHT_SIZE + HEADER_LENGHT_SIZE + HASH_SIZE + SIGNATURE_SIZE + OWNER_SIZE;
 
-    private static final String UNSIGNED = StringUtils.fillString("", " ", SIGNATURE_SIZE);
+    private static final byte[] UNSIGNED = StringUtils.fillString("", " ", SIGNATURE_SIZE).getBytes();
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -86,7 +87,7 @@ public class SocketMessage {
     private MessageType _type;
     // hash (calculated with MD5 on body)
     private String _hash;
-    private String _signature; // MD5 of passed string
+    private byte[] _signature;
     private SocketMessageHeader _headers;
     private byte[] _body;
 
@@ -115,7 +116,7 @@ public class SocketMessage {
         sb.append("headers_length=").append(this.headerLength()).append(", ");
         sb.append("type=").append(_type.toString()).append(", ");
         sb.append("hash=").append(this.hash()).append(", ");
-        sb.append("signature=").append(StringUtils.leftStr(this.signature().trim(), 15, true)).append(", ");
+        sb.append("signature=").append(StringUtils.leftStr(new String(this.signature()).trim(), 15, true)).append(", ");
         sb.append("headers=").append(StringUtils.leftStr(_headers.toString(), 15, true)).append(", ");
         sb.append("body=").append(new String(CollectionUtils.subArray(_body, 0, 15)) + "...");
         sb.append("]");
@@ -163,12 +164,12 @@ public class SocketMessage {
         return _hash;
     }
 
-    public String signature() {
+    public byte[] signature() {
         return _signature;
     }
 
-    public SocketMessage signature(final String value) {
-        _signature = MD5.encode(value); // StringUtils.fillString(StringUtils.leftStr(value, SIGNATURE_SIZE), " ", SIGNATURE_SIZE);
+    public SocketMessage signature(final byte[] value) {
+        _signature = CollectionUtils.resizeArray(value, SIGNATURE_SIZE); // StringUtils.fillString(StringUtils.leftStr(value, SIGNATURE_SIZE), " ", SIGNATURE_SIZE);
         return this;
     }
 
@@ -216,6 +217,10 @@ public class SocketMessage {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public boolean hasSignature() {
+        return null != _signature && _signature.length > 0 && new String(_signature).trim().length() > 0;
+    }
+
     public byte[] bytes() {
         try {
             return this.encode();
@@ -237,17 +242,6 @@ public class SocketMessage {
         return false;
     }
 
-    /**
-     * If a message has been encrypted, "signature" field is filled with an MD5 hash of public key used to encrypt the message.
-     * Use this method to verify public key validity.
-     *
-     * @param public_key The Public Key to check
-     * @return
-     */
-    public boolean isValidSignature(final String public_key) {
-        return this.signature().equals(MD5.encode(public_key));
-    }
-
     public boolean isHandShake() {
         return _type.equals(MessageType.Handshake);
     }
@@ -260,7 +254,7 @@ public class SocketMessage {
         _headers = new SocketMessageHeader();
         this.body(new byte[0]);
         _type = MessageType.Undefined;
-        if (!StringUtils.hasText(_signature)) {
+        if (null == _signature || _signature.length == 0) {
             this.signature(UNSIGNED);
         }
     }
@@ -307,7 +301,7 @@ public class SocketMessage {
 
     private byte[] encodeSignature() {
         //final String s_signature = StringUtils.leftStr(MD5.encode(_signature), HASH_SIZE);
-        return _signature.getBytes();
+        return _signature;
     }
 
     private byte[] encode() {
@@ -382,12 +376,12 @@ public class SocketMessage {
             // length
             final long body_length = SocketMessage.decodeBodyLength(bytes);
             final long header_length = SocketMessage.decodeHeaderLength(bytes);
-            if (body_length > -1 && header_length>-1) {
+            if (body_length > -1 && header_length > -1) {
                 // type
                 final SocketMessage.MessageType type = SocketMessage.decodeType(bytes);
                 if (!SocketMessage.MessageType.Undefined.equals(type)) {
                     // header integrity
-                    final long real_header_length = SocketMessage.decodeHeaders(bytes, (int)header_length).length;
+                    final long real_header_length = SocketMessage.decodeHeaders(bytes, (int) header_length).length;
                     if (real_header_length == header_length) {
                         // body integrity
                         final long real_body_length = SocketMessage.decodeBody(bytes, HEADERS_POS_START + (int) header_length).length;
@@ -456,11 +450,11 @@ public class SocketMessage {
         return MessageType.Undefined;
     }
 
-    public static String decodeSignature(final byte[] message) {
+    public static byte[] decodeSignature(final byte[] message) {
         if (message.length > 0) {
             final byte[] bytes = CollectionUtils.subArray(message, SIGNATURE_POS_START, SIGNATURE_POS_END);
             if (bytes.length == SIGNATURE_SIZE) {
-                return new String(bytes);
+                return bytes;
             }
         }
         return UNSIGNED;

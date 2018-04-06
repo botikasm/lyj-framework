@@ -1,7 +1,8 @@
 package org.ly.commons.network.socket.utils;
 
-import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
+import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.message.SocketMessageReader;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -15,7 +16,9 @@ import java.util.concurrent.TimeoutException;
 
 public class SocketUtils {
 
-    private static final int BUFFER_SIZE = 4096;
+    private static final int BUFFER_SIZE = 4096*4096*8;
+
+    private static final SocketLogger LOGGER = new SocketLogger();
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -23,6 +26,7 @@ public class SocketUtils {
 
     public static SocketMessage read(final AsynchronousSocketChannel channel,
                                      final int timeout_ms) {
+        long count_total_bytes = 0;
         if (channel.isOpen()) {
             try (final SocketMessageReader reader = new SocketMessageReader();) {
                 // Allocate a byte buffer (4K) to read from the client
@@ -31,6 +35,8 @@ public class SocketUtils {
                 int count_bytes_read = read(channel, byteBuffer, timeout_ms);
                 boolean running = true;
                 while (count_bytes_read != -1 && running && !reader.isComplete()) {
+
+                    count_total_bytes += count_bytes_read;
 
                     // Make sure that we have data to read
                     if (byteBuffer.position() > 2) {
@@ -57,11 +63,11 @@ public class SocketUtils {
 
                 return reader.message();
             } catch (ReadPendingException e) {
-                System.out.println("SocketUtils.read()1 " + e);
-            } catch(TimeoutException e){
-                 System.out.println("SocketUtils.read()2 " + e);
+                LOGGER.error("read#1. Bytes read: " + count_total_bytes, e);
+            } catch (TimeoutException e) {
+                LOGGER.error("read#2. Bytes read: " + count_total_bytes, e.toString());
             } catch (IOException | ExecutionException | InterruptedException e) {
-                System.out.println("SocketUtils.read()3 " + e);
+                LOGGER.error("read#3. Bytes read: " + count_total_bytes, e);
             }
 
         }

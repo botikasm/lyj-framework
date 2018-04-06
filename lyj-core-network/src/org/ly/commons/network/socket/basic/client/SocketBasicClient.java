@@ -2,6 +2,7 @@ package org.ly.commons.network.socket.basic.client;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.message.dispatcher.SocketClientDispatcher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 import org.lyj.commons.lang.CharEncoding;
@@ -23,14 +24,13 @@ public class SocketBasicClient
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
-
-    private final static int TIMEOUT_MS = 5000;
+    
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final SocketBasicClientDispatcher _message;
+    private final SocketClientDispatcher _message;
     private final String _uid;
 
     private String _host;
@@ -44,11 +44,11 @@ public class SocketBasicClient
 
     public SocketBasicClient() {
         _uid = RandomUtils.randomUUID();
-        _port = 5000;
-        _timeout_ms = TIMEOUT_MS;
+        _port = SocketContext.DEFAULT_PORT;
+        _timeout_ms = SocketContext.DEFAULT_TIMEOUT;
         _charset = CharEncoding.UTF_8;
 
-        _message = new SocketBasicClientDispatcher();
+        _message = new SocketClientDispatcher();
     }
 
     // ------------------------------------------------------------------------
@@ -105,7 +105,7 @@ public class SocketBasicClient
      * Use handshake to activate encryption.
      */
     public void handShake() throws Exception {
-        final String public_key = _message.signature();
+        final byte[] public_key = _message.publicKey().getBytes();
         final SocketMessageHandShake handshake = new SocketMessageHandShake(_uid);
         handshake.signature(public_key);
 
@@ -183,7 +183,7 @@ public class SocketBasicClient
 
     private SocketMessage newMessage() {
         final SocketMessage message = new SocketMessage(_uid);
-        message.signature(_message.signature());
+        //message.signature(_message.signature());
 
         return message;
     }

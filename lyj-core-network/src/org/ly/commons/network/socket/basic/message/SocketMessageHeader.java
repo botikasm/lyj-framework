@@ -16,6 +16,8 @@ public class SocketMessageHeader
     // ------------------------------------------------------------------------
 
     private static final String FLD_CHARSET = "charset";
+    private static final String FLD_CHUNK_ID = "chunk_id";
+    private static final String FLD_CHUNK_COUNT = "chunk_count";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -55,6 +57,24 @@ public class SocketMessageHeader
         return this;
     }
 
+    public int chunkId() {
+        return _item.getInt(FLD_CHUNK_ID);
+    }
+
+    public SocketMessageHeader chunkId(final int value) {
+        _item.put(FLD_CHUNK_ID, value);
+        return this;
+    }
+
+    public int chunkCount() {
+        return _item.getInt(FLD_CHUNK_COUNT);
+    }
+
+    public SocketMessageHeader chunkCount(final int value) {
+        _item.put(FLD_CHUNK_COUNT, value);
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -75,15 +95,15 @@ public class SocketMessageHeader
         }
     }
 
-    public void putAll(final Map<String, Object> values){
-       _item.putAll(values);
-    }
-
-    public void putAll(final JSONObject values){
+    public void putAll(final Map<String, Object> values) {
         _item.putAll(values);
     }
 
-    public void putAll(final JsonItem values){
+    public void putAll(final JSONObject values) {
+        _item.putAll(values);
+    }
+
+    public void putAll(final JsonItem values) {
         _item.putAll(values);
     }
 
@@ -130,6 +150,12 @@ public class SocketMessageHeader
     private void init() {
         if (!_item.has(FLD_CHARSET)) {
             _item.put(FLD_CHARSET, CharEncoding.UTF_8);
+        }
+        if (!_item.has(FLD_CHUNK_ID)) {
+            _item.put(FLD_CHUNK_ID, 1);
+        }
+        if (!_item.has(FLD_CHUNK_COUNT)) {
+            _item.put(FLD_CHUNK_COUNT, 1);
         }
     }
 

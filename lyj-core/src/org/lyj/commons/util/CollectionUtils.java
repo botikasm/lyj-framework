@@ -250,6 +250,20 @@ public abstract class CollectionUtils {
         return newArr;
     }
 
+    public static byte[] resizeArray(byte[] array, int newsize) {
+        if (null == array) {
+            return null;
+        }
+        byte[] newArr = new byte[newsize];
+        if (newsize > array.length) {
+            System.arraycopy(array, 0, newArr, 0, array.length);
+        } else {
+            System.arraycopy(array, 0, newArr, 0, newsize);
+        }
+
+        return newArr;
+    }
+
     public static String[] resizeArray(String[] array, int newsize) {
         if (null == array) {
             return null;

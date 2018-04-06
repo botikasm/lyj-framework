@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.util;
 
@@ -37,6 +37,16 @@ import java.nio.file.Paths;
  */
 public class ByteUtils {
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    private static final int MAX_BUFFER_SIZE = Integer.MAX_VALUE - 8;
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+
     public static boolean isByteArray(final Object data) {
         if (data.getClass().isArray()) {
             final Object val = Array.get(data, 0);
@@ -47,12 +57,21 @@ public class ByteUtils {
         return false;
     }
 
-    public static byte[] getBytes(final File file) throws IOException {
-        return Files.readAllBytes(Paths.get(file.getPath()));
+    public static byte[] getBytes(final String fileName) throws IOException {
+        return getBytes(new File(fileName));
     }
 
-    public static byte[] getBytes(final String fileName) throws IOException {
-        return Files.readAllBytes(Paths.get(fileName));
+    public static byte[] getBytes(final File file) throws IOException {
+        if (file.length() < MAX_BUFFER_SIZE) {
+            return Files.readAllBytes(Paths.get(file.getPath()));
+        } else {
+            // large files (Java heap space error risk)
+            try (final FileInputStream fis = new FileInputStream(file);) {
+                return getBytes(fis);
+            } catch (IOException e) {
+                throw e;
+            }
+        }
     }
 
     public static byte[] getBytes(final BufferedImage image) throws IOException {

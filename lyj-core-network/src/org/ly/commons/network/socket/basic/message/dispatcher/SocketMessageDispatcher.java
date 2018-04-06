@@ -1,4 +1,4 @@
-package org.ly.commons.network.socket.basic.message;
+package org.ly.commons.network.socket.basic.message.dispatcher;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
@@ -60,8 +60,8 @@ public abstract class SocketMessageDispatcher
         return this.keys().privateKeyString();
     }
 
-    public String signature() {
-        return this.publicKey();
+    public byte[] signature() {
+        return this.publicKey().getBytes();
     }
 
 

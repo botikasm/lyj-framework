@@ -53,8 +53,8 @@ public class SocketBasicServer
 
     public SocketBasicServer() {
         _uid = "server_".concat(RandomUtils.randomUUID());
-        _port = 5000;
-        _timeout_ms = 5000;
+        _port = SocketContext.DEFAULT_PORT;
+        _timeout_ms = SocketContext.DEFAULT_TIMEOUT;
         _charset = CharEncoding.UTF_8;
     }
 

@@ -1,14 +1,12 @@
-package org.ly.commons.network.socket.basic.client;
+package org.ly.commons.network.socket.basic.message.dispatcher;
 
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.SocketMessageDispatcher;
-import org.ly.commons.network.socket.basic.message.SocketMessagePublicKeyCache;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.util.StringUtils;
 
 import java.nio.channels.AsynchronousSocketChannel;
 
-public class SocketBasicClientDispatcher
+public class SocketClientDispatcher
         extends SocketMessageDispatcher {
 
     // ------------------------------------------------------------------------
@@ -22,11 +20,11 @@ public class SocketBasicClientDispatcher
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public SocketBasicClientDispatcher() {
+    public SocketClientDispatcher() {
         this("client");
     }
 
-    public SocketBasicClientDispatcher(String name) {
+    public SocketClientDispatcher(String name) {
         super(name);
 
         this.init();
@@ -37,15 +35,15 @@ public class SocketBasicClientDispatcher
     // ------------------------------------------------------------------------
 
 
-   public String encodeKey() {
-       return _encode_key;
-   }
+    public String encodeKey() {
+        return _encode_key;
+    }
 
-   public SocketBasicClientDispatcher encodeKey(final String value) {
-       _encode_key = value;
+    public SocketClientDispatcher encodeKey(final String value) {
+        _encode_key = value;
 
-       return this;
-   }
+        return this;
+    }
 
 
     @Override
@@ -56,7 +54,7 @@ public class SocketBasicClientDispatcher
     @Override
     public void decode(final SocketMessage message) throws Exception {
         try {
-            if (!message.isHandShake() && StringUtils.hasText(message.signature().trim())) {
+            if (!message.isHandShake() && message.hasSignature()) {
 
                 final String encode_key = this.getEncodeKey(message.ownerId());
                 if (StringUtils.hasText(encode_key)) {
@@ -75,7 +73,7 @@ public class SocketBasicClientDispatcher
         if (!message.isHandShake()) {
 
             final String encode_key = this.getEncodeKey(owner_id);
-            if (StringUtils.hasText(encode_key) && StringUtils.hasText(message.signature().trim())) {
+            if (StringUtils.hasText(encode_key) && message.hasSignature()) {
 
                 // encrypt the body using a public key
                 message.body(super.encrypt(message.body(), encode_key));
