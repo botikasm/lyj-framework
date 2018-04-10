@@ -1,13 +1,11 @@
-package org.ly.commons.network.socket.basic.message.dispatcher;
+package org.ly.commons.network.socket.basic.message.cipher.impl;
 
-import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.message.cipher.AbstractMessageCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.util.StringUtils;
 
-import java.nio.channels.AsynchronousSocketChannel;
-
-public class SocketClientDispatcher
-        extends SocketMessageDispatcher {
+public class ClientCipher
+        extends AbstractMessageCipher {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -20,11 +18,11 @@ public class SocketClientDispatcher
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public SocketClientDispatcher() {
+    public ClientCipher() {
         this("client");
     }
 
-    public SocketClientDispatcher(String name) {
+    public ClientCipher(String name) {
         super(name);
 
         this.init();
@@ -39,16 +37,10 @@ public class SocketClientDispatcher
         return _encode_key;
     }
 
-    public SocketClientDispatcher encodeKey(final String value) {
+    public ClientCipher encodeKey(final String value) {
         _encode_key = value;
 
         return this;
-    }
-
-
-    @Override
-    public SocketMessage read(AsynchronousSocketChannel socket, SocketContext context) throws Exception {
-        return super.read(socket, context);
     }
 
     @Override

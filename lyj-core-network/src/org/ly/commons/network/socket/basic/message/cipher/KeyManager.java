@@ -1,4 +1,4 @@
-package org.ly.commons.network.socket.crypto;
+package org.ly.commons.network.socket.basic.message.cipher;
 
 import org.lyj.commons.cryptograph.pem.RSAHelper;
 import org.lyj.commons.util.FileUtils;

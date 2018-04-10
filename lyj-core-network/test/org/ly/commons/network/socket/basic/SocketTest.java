@@ -201,22 +201,27 @@ public class SocketTest {
 
             SocketBasicClient client = this.getClient(server.port());
 
-            File small_file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
+            final File large_file = new File(PathUtils.concat(PathUtils.getTemporaryDirectory(), "ARCHIVIO.zip"));
+            final String output_filename = PathUtils.concat(PathUtils.getTemporaryDirectory(), "ARCHIVIO_out.zip");
 
+            File small_file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
             System.out.println("SENDING BYTES: " + small_file.length());
-            for(int i=0;i<100;i++){
+            //for(int i=0;i<1;i++){
                 SocketMessage response = client.send(small_file, MapBuilder.createSO()
                         .put("file_size", small_file.length())
                         .put("file_name", small_file.getName())
                         .toMap());
                 assertNotNull(response);
                 assertTrue(response.isValid());
-                System.out.println(i);
-            }
+                //System.out.println(i);
+            //}
+            
         } catch (Exception ex) {
             throw ex;
         }
     }
+
+
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
@@ -236,7 +241,6 @@ public class SocketTest {
         final SocketBasicClient client = new SocketBasicClient();
         client.host("127.0.0.1");
         client.port(port);
-        client.timeout(50000);
 
         return client;
     }
@@ -244,11 +248,13 @@ public class SocketTest {
     private void channelMessage(SocketBasicServer.ChannelInfo channelInfo,
                                 SocketMessage request,
                                 SocketMessage response) {
-        if(request.type().equals(SocketMessage.MessageType.File)){
-             // file
+        if(request.type().equals(SocketMessage.MessageType.File)) {
+            // file
             System.out.println("Receiving file: " + request.headers().getString("file_name")
                     + " (" + request.headers().getString("file_size") + " bytes)");
-             response.body("FILE RECEIVED!");
+            response.body("FILE RECEIVED!");
+        } else if (request.isChunk()){
+            System.out.println("CHUNKS CANNOT BE HANDLED HERE!");
         } else {
             // echo
             final String echo = "echo: " + new String(request.body());

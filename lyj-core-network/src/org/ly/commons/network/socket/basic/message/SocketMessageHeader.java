@@ -16,8 +16,10 @@ public class SocketMessageHeader
     // ------------------------------------------------------------------------
 
     private static final String FLD_CHARSET = "charset";
-    private static final String FLD_CHUNK_ID = "chunk_id";
+    private static final String FLD_CHUNK_UID = "chunk_uid";
+    private static final String FLD_CHUNK_INDEX = "chunk_index";
     private static final String FLD_CHUNK_COUNT = "chunk_count";
+    private static final String FLD_CHUNK_HEADERS = "chunk_headers";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -44,6 +46,10 @@ public class SocketMessageHeader
         return _item.toString();
     }
 
+    public JSONObject toJson() {
+        return _item.json();
+    }
+
     // ------------------------------------------------------------------------
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
@@ -57,12 +63,21 @@ public class SocketMessageHeader
         return this;
     }
 
-    public int chunkId() {
-        return _item.getInt(FLD_CHUNK_ID);
+    public String chunkUid() {
+        return _item.getString(FLD_CHUNK_UID);
     }
 
-    public SocketMessageHeader chunkId(final int value) {
-        _item.put(FLD_CHUNK_ID, value);
+    public SocketMessageHeader chunkUid(final String value) {
+        _item.put(FLD_CHUNK_UID, value);
+        return this;
+    }
+
+    public int chunkIndex() {
+        return _item.getInt(FLD_CHUNK_INDEX);
+    }
+
+    public SocketMessageHeader chunkIndex(final int value) {
+        _item.put(FLD_CHUNK_INDEX, value);
         return this;
     }
 
@@ -73,6 +88,10 @@ public class SocketMessageHeader
     public SocketMessageHeader chunkCount(final int value) {
         _item.put(FLD_CHUNK_COUNT, value);
         return this;
+    }
+
+    public JsonItem chunkHeaders() {
+        return new JsonItem(_item.getJSONObject(FLD_CHUNK_HEADERS));
     }
 
     // ------------------------------------------------------------------------
@@ -151,8 +170,8 @@ public class SocketMessageHeader
         if (!_item.has(FLD_CHARSET)) {
             _item.put(FLD_CHARSET, CharEncoding.UTF_8);
         }
-        if (!_item.has(FLD_CHUNK_ID)) {
-            _item.put(FLD_CHUNK_ID, 1);
+        if (!_item.has(FLD_CHUNK_INDEX)) {
+            _item.put(FLD_CHUNK_INDEX, 1);
         }
         if (!_item.has(FLD_CHUNK_COUNT)) {
             _item.put(FLD_CHUNK_COUNT, 1);

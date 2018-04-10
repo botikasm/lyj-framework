@@ -2,7 +2,7 @@ package org.ly.commons.network.socket.basic.server;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.dispatcher.SocketServerDispatcher;
+import org.ly.commons.network.socket.basic.message.dispatcher.impl.SocketServerDispatcher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 
@@ -175,6 +175,11 @@ public class SocketBasicServerHandler
         // response.signature(_message.encodeKey(request.ownerId()));
         // response.signature(_message.signature());
         response.body(new byte[0]); // initialize response with empty content
+
+        if(request.isChunk()){
+            System.out.println("CHUNK|||||");
+        }
+
         if (null != _callback_on_channel_message) {
             _callback_on_channel_message.handle(new SocketBasicServer.ChannelInfo(ch, context), request, response);
         }

@@ -18,11 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.io.filetokenizer;
+package org.lyj.commons.tokenizers;
 
 
-public interface IFileTokenizerCallback {
+public interface IProgressCallback {
 
-    public void onProgress(int index, int count, double progress);
+    void onProgress(int index, int count, double progress);
 
 }

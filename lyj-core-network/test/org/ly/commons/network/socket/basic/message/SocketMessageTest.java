@@ -3,7 +3,7 @@ package org.ly.commons.network.socket.basic.message;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
-import org.ly.commons.network.socket.crypto.KeyManager;
+import org.ly.commons.network.socket.basic.message.cipher.KeyManager;
 import org.lyj.TestInitializer;
 import org.lyj.commons.cryptograph.pem.RSAHelper;
 import org.lyj.commons.util.CollectionUtils;

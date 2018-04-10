@@ -18,47 +18,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.io.filetokenizer;
+package org.lyj.commons.tokenizers;
 
+/**
+ * Info descriptor for tokens
+ */
+public class TokenInfo {
 
-public class FileChunkInfo {
-
-    public static final int MAX_CHUNKS = 500;
+    public static final int MAX_CHUNKS = -1;  // no token limits
     public static final long DEFAULT_CHUNK_SIZE = 1024 * 5 * 1000; //5Mb
     public static final int DEFAULT_CHUNK_COUNT = 0;
 
-    private long _fileSize;
-    private long _chunkSize;
-    private int _chunkCount;
-    private int _maxChunks;
-    private long[] _chunkOffsets;
+    private long _total_size;
+    private long _chunk_size;
+    private int _chunk_count;
+    private int _max_chunks;
+    private long[] _chunk_offsets;
 
 
     //-----------------------------------------------
     //             c o n s t r u c t o r
     //-----------------------------------------------
 
-    public FileChunkInfo(long fileSize) throws Exception {
-        this(fileSize, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_COUNT, MAX_CHUNKS);
+    public TokenInfo(long total_size) throws Exception {
+        this(total_size, DEFAULT_CHUNK_SIZE, DEFAULT_CHUNK_COUNT, MAX_CHUNKS);
     }
 
-    public FileChunkInfo(long fileSize, long chunkSize) throws Exception {
-        this(fileSize, chunkSize, DEFAULT_CHUNK_COUNT, MAX_CHUNKS);
+    public TokenInfo(long total_size, long chunk_size) throws Exception {
+        this(total_size, chunk_size, DEFAULT_CHUNK_COUNT, MAX_CHUNKS);
     }
 
-    public FileChunkInfo(long fileSize, long chunkSize, int maxChunks) throws Exception {
-        this(fileSize, chunkSize, DEFAULT_CHUNK_COUNT, maxChunks);
+    public TokenInfo(long total_size, long chunkSize, int maxChunks) throws Exception {
+        this(total_size, chunkSize, DEFAULT_CHUNK_COUNT, maxChunks);
     }
 
-    public FileChunkInfo(long fileSize, int chunkCount) throws Exception {
-        this(fileSize, DEFAULT_CHUNK_SIZE, chunkCount, chunkCount);
+    public TokenInfo(long total_size, int chunkCount) throws Exception {
+        this(total_size, DEFAULT_CHUNK_SIZE, chunkCount, MAX_CHUNKS);
     }
 
-    public FileChunkInfo(long fileSize, long chunkSize, int chunkCount, int maxChunks) throws Exception {
-        _fileSize = fileSize;
-        _chunkSize = chunkSize;
-        _maxChunks = maxChunks;
-        _chunkCount = chunkCount;
+    public TokenInfo(long total_size, long chunkSize, int chunkCount, int maxChunks) throws Exception {
+        _total_size = total_size;
+        _chunk_size = chunkSize;
+        _max_chunks = maxChunks;
+        _chunk_count = chunkCount;
+
         this.recalculate();
     }
 
@@ -68,26 +71,29 @@ public class FileChunkInfo {
 
     /**
      * Size of every chunk
+     *
      * @return Size of chunk
      */
     public long getChunkSize() {
-        return _chunkSize;
+        return _chunk_size;
     }
 
     /**
      * NUmber of Chunks
+     *
      * @return Number of Chunks
      */
     public int getChunkCount() {
-        return _chunkCount;
+        return _chunk_count;
     }
 
     /**
      * Offsets array.
+     *
      * @return Array with offsets
      */
     public long[] getChunkOffsets() {
-        return null != _chunkOffsets ? _chunkOffsets : new long[0];
+        return null != _chunk_offsets ? _chunk_offsets : new long[0];
     }
 
     //-----------------------------------------------
@@ -95,29 +101,29 @@ public class FileChunkInfo {
     //-----------------------------------------------
 
     private void recalculate() throws Exception {
-        if (_chunkSize > 0) {
+        if (_chunk_size > 0) {
             // calculate by chunk size
-            _chunkCount = (int) Math.ceil((double) ((double) _fileSize / (double) _chunkSize));
-            if (_chunkCount > _maxChunks) {
-                _chunkCount = _maxChunks;
-                _chunkSize = (long) Math.ceil((double) ((double) _fileSize / (double) _maxChunks));
+            _chunk_count = (int) Math.ceil((double) ((double) _total_size / (double) _chunk_size));
+            if (_chunk_count > _max_chunks && _max_chunks > 0) {
+                _chunk_count = _max_chunks;
+                _chunk_size = (long) Math.ceil((double) ((double) _total_size / (double) _max_chunks));
             }
-        } else if (_chunkCount > 0) {
+        } else if (_chunk_count > 0) {
             // calculate by chunk count
-            _chunkSize = (long) Math.floor((double) (_fileSize / _chunkCount));
+            _chunk_size = (long) Math.floor((double) (_total_size / _chunk_count));
         }
 
         // verify
-        long check = (_chunkCount * _chunkSize);
-        if (_fileSize > check) {
+        long check = (_chunk_count * _chunk_size);
+        if (_total_size > check) {
             throw new Exception("Invalid or incoherent parameters!");
         }
 
         // generate chunks
-        _chunkOffsets = new long[_chunkCount];
-        for (int i = 0; i < _chunkCount; i++) {
-            long offset = i * _chunkSize;
-            _chunkOffsets[i] = offset;
+        _chunk_offsets = new long[_chunk_count];
+        for (int i = 0; i < _chunk_count; i++) {
+            long offset = i * _chunk_size;
+            _chunk_offsets[i] = offset;
         }
     }
 

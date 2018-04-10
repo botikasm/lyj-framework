@@ -221,6 +221,10 @@ public class SocketMessage {
         return null != _signature && _signature.length > 0 && new String(_signature).trim().length() > 0;
     }
 
+    public boolean isChunk() {
+        return headers().chunkCount() > 1;
+    }
+
     public byte[] bytes() {
         try {
             return this.encode();

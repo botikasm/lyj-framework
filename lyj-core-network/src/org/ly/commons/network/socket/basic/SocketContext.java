@@ -17,6 +17,7 @@ public class SocketContext {
     // ------------------------------------------------------------------------
 
     private String _uid;
+    private String _host;
     private int _port;
     private int _timeout_ms;
     private String _charset;
@@ -39,6 +40,7 @@ public class SocketContext {
 
         response.put("uid", _uid);
         response.put("charset", _charset);
+        response.put("host", _host);
         response.put("port", _port);
         response.put("timeout", _timeout_ms);
 
@@ -51,6 +53,15 @@ public class SocketContext {
 
     public String uid() {
         return _uid;
+    }
+
+    public String host() {
+        return _host;
+    }
+
+    public SocketContext host(final String value) {
+        _host = value;
+        return this;
     }
 
     public int port() {
