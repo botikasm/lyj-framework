@@ -12,7 +12,6 @@ import org.lyj.commons.util.RandomUtils;
 
 import java.io.File;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -34,7 +33,7 @@ public class SocketTest {
 
             // HANDSHAKE
             client_ssl.handShake();
-            
+
 
             int count = 0;
 
@@ -52,7 +51,7 @@ public class SocketTest {
             System.out.println(new String(response.body()));
 
             // send file encoded
-            File file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
+            File file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
             response = client_ssl.send(file, MapBuilder.createSO()
                     .put("file_size", file.length())
                     .put("file_name", file.getName())
@@ -78,7 +77,30 @@ public class SocketTest {
             assertTrue(response.isValid());
             System.out.println(response.toString());
             System.out.println(new String(response.body()));
-            
+
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    @Test
+    public void startTestSSL() throws Exception {
+
+        try (final SocketBasicServer server = this.getServer()) {
+
+            SocketBasicClient client_ssl = this.getClient(server.port());
+
+            // HANDSHAKE
+            client_ssl.handShake();
+
+            int count = 0;
+
+            SocketMessage response = client_ssl.send(count + ": " + "This is a message");
+            assertNotNull(response);
+            assertTrue(response.isValid());
+            System.out.println(response.toString());
+            System.out.println(new String(response.body()));
+
         } catch (Exception ex) {
             throw ex;
         }
@@ -117,7 +139,7 @@ public class SocketTest {
             assertTrue(response.isValid());
             System.out.println(response.toString());
             System.out.println(new String(response.body()));
-            
+
         } catch (Exception ex) {
             throw ex;
         }
@@ -129,7 +151,7 @@ public class SocketTest {
         try (final SocketBasicServer server = this.getServer()) {
 
             SocketBasicClient client_ssl = this.getClient(server.port());
-            
+
             // HANDSHAKE
             client_ssl.handShake();
 
@@ -201,26 +223,27 @@ public class SocketTest {
 
             SocketBasicClient client = this.getClient(server.port());
 
+            client.handShake();
+
             final File large_file = new File(PathUtils.concat(PathUtils.getTemporaryDirectory(), "ARCHIVIO.zip"));
             final String output_filename = PathUtils.concat(PathUtils.getTemporaryDirectory(), "ARCHIVIO_out.zip");
 
             File small_file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
             System.out.println("SENDING BYTES: " + small_file.length());
-            //for(int i=0;i<1;i++){
+            for (int i = 0; i < 1; i++) {
                 SocketMessage response = client.send(small_file, MapBuilder.createSO()
                         .put("file_size", small_file.length())
                         .put("file_name", small_file.getName())
                         .toMap());
                 assertNotNull(response);
                 assertTrue(response.isValid());
-                //System.out.println(i);
-            //}
-            
+                System.out.println("END SENT: " + (i + 1));
+            }
+
         } catch (Exception ex) {
             throw ex;
         }
     }
-
 
 
     // ------------------------------------------------------------------------
@@ -248,13 +271,14 @@ public class SocketTest {
     private void channelMessage(SocketBasicServer.ChannelInfo channelInfo,
                                 SocketMessage request,
                                 SocketMessage response) {
-        if(request.type().equals(SocketMessage.MessageType.File)) {
+        final SocketMessage.MessageType type = request.type();
+        if (type.equals(SocketMessage.MessageType.File)) {
             // file
             System.out.println("Receiving file: " + request.headers().getString("file_name")
                     + " (" + request.headers().getString("file_size") + " bytes)");
             response.body("FILE RECEIVED!");
-        } else if (request.isChunk()){
-            System.out.println("CHUNKS CANNOT BE HANDLED HERE!");
+        } else if (response.isChunk()) {
+            System.out.println("CHUNK: " + response.hashCode() + " " + response.headers());
         } else {
             // echo
             final String echo = "echo: " + new String(request.body());

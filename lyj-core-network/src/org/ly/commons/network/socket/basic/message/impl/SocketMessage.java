@@ -4,7 +4,6 @@ import org.ly.commons.network.socket.basic.message.SocketMessageHeader;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.cryptograph.mixed.MixedCipher;
 import org.lyj.commons.lang.CharEncoding;
-import org.lyj.commons.util.ByteUtils;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.StringUtils;
 
@@ -84,11 +83,11 @@ public class SocketMessage {
     private String _owner_id;
     private long _body_length;
     // private long _header_length;
-    private MessageType _type;
+    private MessageType __type;
     // hash (calculated with MD5 on body)
     private String _hash;
     private byte[] _signature;
-    private SocketMessageHeader _headers;
+    private final SocketMessageHeader _headers;
     private byte[] _body;
 
 
@@ -97,11 +96,13 @@ public class SocketMessage {
     // ------------------------------------------------------------------------
 
     public SocketMessage(final String owner_id) {
+        _headers = new SocketMessageHeader();
         _owner_id = MD5.encode(owner_id);
         this.init();
     }
 
     public SocketMessage(final byte[] message) {
+        _headers = new SocketMessageHeader();
         this.init();
         this.parse(message);
     }
@@ -114,7 +115,7 @@ public class SocketMessage {
         sb.append("owner_id=").append(_owner_id).append(", ");
         sb.append("body_length=").append(_body_length).append(", ");
         sb.append("headers_length=").append(this.headerLength()).append(", ");
-        sb.append("type=").append(_type.toString()).append(", ");
+        sb.append("type=").append(this.type().toString()).append(", ");
         sb.append("hash=").append(this.hash()).append(", ");
         sb.append("signature=").append(StringUtils.leftStr(new String(this.signature()).trim(), 15, true)).append(", ");
         sb.append("headers=").append(StringUtils.leftStr(_headers.toString(), 15, true)).append(", ");
@@ -127,6 +128,15 @@ public class SocketMessage {
     // ------------------------------------------------------------------------
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
+
+    @Override
+    public int hashCode() {
+        int result = 7;
+        result = 31 * result + this.headers().chunkUid().hashCode();
+        result = 31 * result + this.headers().chunkIndex();
+        result = 31 * result + this.headers().chunkCount();
+        return result;
+    }
 
     public String ownerId() {
         return _owner_id;
@@ -143,7 +153,7 @@ public class SocketMessage {
      * Get body message length.
      * No headers are included.
      */
-    public long length() {
+    public long bodyLength() {
         return _body_length;
     }
 
@@ -152,11 +162,12 @@ public class SocketMessage {
     }
 
     public MessageType type() {
-        return _type;
+        return null != __type ? __type : MessageType.Undefined;
     }
 
     public SocketMessage type(final MessageType value) {
-        _type = value;
+        this.setType(value);
+
         return this;
     }
 
@@ -189,7 +200,9 @@ public class SocketMessage {
 
     public SocketMessage body(final String value) {
         if (StringUtils.hasText(value)) {
-            _type = MessageType.Text;
+            if (this.isUndefined()) {
+                this.setType(MessageType.Text);
+            }
             try {
                 this.body(value.getBytes(CharEncoding.UTF_8));
             } catch (Throwable t) {
@@ -202,14 +215,22 @@ public class SocketMessage {
 
     public SocketMessage body(final File file) throws IOException {
         if (null != file) {
-            _type = MessageType.File;
-            this.body(ByteUtils.getBytes(file));
+            this.setType(MessageType.File);
+            this.headers().fileName(file.getAbsolutePath());
+            this.headers().fileSize(file.length());
+            // this.body(ByteUtils.getBytes(file));
+            this.body(file.getName());
         }
         return this;
     }
 
     public SocketMessage body(final byte[] value) {
-        this.setBody(value);
+        return this.body(value, false);
+    }
+
+    public SocketMessage body(final byte[] value,
+                              final boolean append) {
+        this.setBody(value, append);
         return this;
     }
 
@@ -223,6 +244,26 @@ public class SocketMessage {
 
     public boolean isChunk() {
         return headers().chunkCount() > 1;
+    }
+
+    public boolean isFile() {
+        return this.type().equals(MessageType.File);
+    }
+
+    public boolean isBinary() {
+        return this.type().equals(MessageType.Binary);
+    }
+
+    public boolean isText() {
+        return this.type().equals(MessageType.Text);
+    }
+
+    public boolean isUndefined() {
+        return this.type().equals(MessageType.Undefined);
+    }
+
+    public boolean isHandShake() {
+        return this.type().equals(MessageType.Handshake);
     }
 
     public byte[] bytes() {
@@ -246,30 +287,31 @@ public class SocketMessage {
         return false;
     }
 
-    public boolean isHandShake() {
-        return _type.equals(MessageType.Handshake);
-    }
-
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
     private void init() {
-        _headers = new SocketMessageHeader();
         this.body(new byte[0]);
-        _type = MessageType.Undefined;
+        this.setType(MessageType.Undefined);
         if (null == _signature || _signature.length == 0) {
             this.signature(UNSIGNED);
         }
     }
 
-    private void setBody(final byte[] data) {
-        _body = data;
+    private void setType(final MessageType value) {
+        __type = value;
+        this.headers().type(value.getValue());
+    }
+
+    private void setBody(final byte[] data,
+                         final boolean append) {
+        _body = append ? CollectionUtils.merge(_body, data) : data;
         _body_length = _body.length;
         _hash = this.getHashFromBody();
         // set type if not assigned
-        if (MessageType.Undefined.equals(_type)) {
-            _type = MessageType.Binary;
+        if (this.isUndefined()) {
+            this.setType(MessageType.Binary);
         }
     }
 
@@ -278,7 +320,7 @@ public class SocketMessage {
     }
 
     private byte[] encodeBodyLength() {
-        final String s_len = StringUtils.fillString("" + this.length(), " ", BODY_LENGHT_SIZE);
+        final String s_len = StringUtils.fillString("" + this.bodyLength(), " ", BODY_LENGHT_SIZE);
         return s_len.getBytes();
     }
 
@@ -289,7 +331,7 @@ public class SocketMessage {
 
     private byte[] encodeType() {
         final byte[] response = new byte[1];
-        response[0] = _type.getValue();
+        response[0] = this.type().getValue();
 
         return response;
     }
@@ -351,9 +393,9 @@ public class SocketMessage {
             final long header_length = decodeHeaderLength(message);
             final long body_length = decodeBodyLength(message);
             // type
-            _type = decodeType(message);
+            this.setType(decodeType(message));
 
-            if (body_length > -1 && !MessageType.Undefined.equals(_type)) {
+            if (body_length > -1 && !MessageType.Undefined.equals(this.type())) {
                 // message is valid
                 _body_length = body_length;
 
@@ -362,10 +404,10 @@ public class SocketMessage {
                 _owner_id = decodeOwnerId(message);
 
                 // set the header
-                _headers = new SocketMessageHeader(new String(decodeHeaders(message, (int) header_length)));
+                _headers.putAll(new SocketMessageHeader(new String(decodeHeaders(message, (int) header_length))));
 
                 // set the body
-                this.setBody(decodeBody(message, HEADERS_POS_START + (int) header_length));
+                this.setBody(decodeBody(message, HEADERS_POS_START + (int) header_length), false);
 
             }
         }

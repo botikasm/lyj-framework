@@ -17,9 +17,11 @@ public class CollectionUtilsTest {
         byte[] arr1 = new byte[]{1, 2, 3};
         byte[] arr2 = new byte[]{4, 5, 6, 7};
         byte[] arr3 = CollectionUtils.merge(arr1, arr2);
+        byte[] arr4 = CollectionUtils.merge(arr3, new byte[]{9});
         assertTrue(arr3.length == arr1.length + arr2.length);
         assertEquals(arr1[0], arr3[0]);
         assertEquals(arr2[3], arr3[6]);
+        assertEquals(arr4[arr4.length-1], 9);
     }
 
     @Test

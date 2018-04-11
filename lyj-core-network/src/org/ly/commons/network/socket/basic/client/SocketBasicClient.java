@@ -2,21 +2,12 @@ package org.ly.commons.network.socket.basic.client;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.dispatcher.impl.SocketClientDispatcher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
-import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.RandomUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.StandardSocketOptions;
-import java.nio.channels.AsynchronousSocketChannel;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class SocketBasicClient
         extends SocketLogger {
@@ -30,7 +21,7 @@ public class SocketBasicClient
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final SocketClientDispatcher _message;
+    private final SocketBasicClientDispatcher _dispatcher;
     private final String _uid;
 
     private String _host;
@@ -48,7 +39,7 @@ public class SocketBasicClient
         _timeout_ms = SocketContext.DEFAULT_TIMEOUT;
         _charset = CharEncoding.UTF_8;
 
-        _message = new SocketClientDispatcher();
+        _dispatcher = new SocketBasicClientDispatcher();
     }
 
     // ------------------------------------------------------------------------
@@ -95,7 +86,6 @@ public class SocketBasicClient
         return this;
     }
 
-
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -105,63 +95,56 @@ public class SocketBasicClient
      * Use handshake to activate encryption.
      */
     public void handShake() throws Exception {
-        final byte[] public_key = _message.publicKey().getBytes();
-        final SocketMessageHandShake handshake = new SocketMessageHandShake(_uid);
-        handshake.signature(public_key);
-
-        final SocketMessage response = this.send(handshake);
-        if (response.isHandShake()) {
-            _message.encodeKey(new String(response.body(), _charset));
-        }
+        _dispatcher.handShake(this.context());
     }
 
     public SocketMessage send(final String message) throws Exception {
-        return this.write(message, null, this.context(_timeout_ms));
+        return _dispatcher.send(message, null, this.context(_timeout_ms));
     }
 
     public SocketMessage send(final String message,
                               final Map<String, Object> headers) throws Exception {
-        return this.write(message, headers, this.context(_timeout_ms));
+        return _dispatcher.send(message, headers, this.context(_timeout_ms));
     }
 
     public SocketMessage send(final String message,
                               final int timeout_ms) throws Exception {
-        return this.write(message, null, this.context(timeout_ms));
+        return _dispatcher.send(message, null, this.context(timeout_ms));
     }
 
     public SocketMessage send(final String message,
                               final Map<String, Object> headers,
                               final int timeout_ms) throws Exception {
-        return this.write(message, headers, this.context(timeout_ms));
+        return _dispatcher.send(message, headers, this.context(timeout_ms));
     }
 
     public SocketMessage send(final File file) throws Exception {
-        return this.write(file, null, this.context(_timeout_ms));
+        return _dispatcher.send(file, null, this.context(_timeout_ms));
     }
 
     public SocketMessage send(final File file,
                               final Map<String, Object> headers) throws Exception {
-        return this.write(file, headers, this.context(_timeout_ms));
+        return _dispatcher.send(file, headers, this.context(_timeout_ms));
     }
 
     public SocketMessage send(final File file,
                               final int timeout_ms) throws Exception {
-        return this.write(file, null, this.context(timeout_ms));
+        return _dispatcher.send(file, null, this.context(timeout_ms));
     }
 
     public SocketMessage send(final File file,
                               final Map<String, Object> headers,
                               final int timeout_ms) throws Exception {
-        return this.write(file, headers, this.context(timeout_ms));
+        return _dispatcher.send(file, headers, this.context(timeout_ms));
     }
 
     public SocketMessage send(final SocketMessage message) throws Exception {
-        return this.write(message, this.context(_timeout_ms));
+        return _dispatcher.send(message, this.context(_timeout_ms));
     }
 
     public SocketMessage send(final SocketMessage message,
                               final int timeout_ms) throws Exception {
-        return this.write(message, this.context(timeout_ms));
+        return _dispatcher.send(message, this.context(timeout_ms));
     }
 
     // ------------------------------------------------------------------------
@@ -184,71 +167,5 @@ public class SocketBasicClient
                 .charset(this.charset());
     }
 
-    private AsynchronousSocketChannel openSocket(final SocketContext context) throws Exception {
-
-        final AsynchronousSocketChannel client = AsynchronousSocketChannel.open();
-        client.connect(new InetSocketAddress(context.host(), context.port())).get(context.timeout(), TimeUnit.MILLISECONDS);
-
-        //client.setOption(StandardSocketOptions.SO_RCVBUF, 2 * MESSAGE_INPUT_SIZE);
-        //client.setOption(StandardSocketOptions.SO_SNDBUF, 2 * MESSAGE_INPUT_SIZE);
-        //client.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-        client.setOption(StandardSocketOptions.SO_KEEPALIVE, true);
-
-        return client;
-    }
-
-    private SocketMessage newMessage() {
-        final SocketMessage message = new SocketMessage(_uid);
-        //message.signature(_message.signature());
-
-        return message;
-    }
-
-    private SocketMessage write(final String text,
-                                final Map<String, Object> headers,
-                                final SocketContext context) throws Exception {
-
-        // creates message
-        final SocketMessage message = this.newMessage();
-        message.body(text);
-        message.headers().putAll(headers);
-
-        return this.write(message, context);
-    }
-
-    private SocketMessage write(final File file,
-                                final Map<String, Object> headers,
-                                final SocketContext context) throws Exception {
-
-        // creates message
-        final SocketMessage message = this.newMessage();
-        message.body(file);
-        message.headers().putAll(headers);
-
-        return this.write(message, context);
-    }
-
-    private SocketMessage write(final SocketMessage message,
-                                final SocketContext context) throws Exception {
-
-        try ( final AsynchronousSocketChannel socket = this.openSocket(context) ) {
-
-            _message.write(socket, context, message);
-
-            //Now wait for return message.
-            return _message.read(socket, context); //SocketUtils.read(socket, TIMEOUT_MS);
-
-        } catch (InterruptedException | ExecutionException | TimeoutException | IOException e) {
-            this.handleException(e);
-        }
-
-        return null; // no response
-    }
-
-
-    private void handleException(final Exception e) {
-        super.error("handleException", e);
-        throw new RuntimeException(e);
-    }
 
 }

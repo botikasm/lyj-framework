@@ -2,7 +2,9 @@ package org.ly.commons.network.socket.basic.message;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.lang.CharEncoding;
+import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.json.JsonItem;
 
 import java.io.Serializable;
@@ -15,11 +17,16 @@ public class SocketMessageHeader
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final String FLD_CHARSET = "charset";
-    private static final String FLD_CHUNK_UID = "chunk_uid";
-    private static final String FLD_CHUNK_INDEX = "chunk_index";
-    private static final String FLD_CHUNK_COUNT = "chunk_count";
-    private static final String FLD_CHUNK_HEADERS = "chunk_headers";
+    private static final String FLD_TYPE = "_type";
+    private static final String FLD_FILE_NAME = "_file_name";
+    private static final String FLD_FILE_SIZE = "_file_size";
+    private static final String FLD_CHARSET = "_charset";
+    private static final String FLD_HEADERS = "_headers";
+    private static final String FLD_CHUNK_UID = "_chunk_uid";
+    private static final String FLD_CHUNK_INDEX = "_chunk_index";
+    private static final String FLD_CHUNK_COUNT = "_chunk_count";
+
+
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -54,6 +61,16 @@ public class SocketMessageHeader
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
 
+    public byte type() {
+        return _item.getByte(FLD_TYPE, SocketMessage.MessageType.Undefined.getValue());
+    }
+
+    public SocketMessageHeader type(final byte value) {
+        _item.put(FLD_TYPE, value);
+        return this;
+    }
+
+
     public String charset() {
         return _item.getString(FLD_CHARSET);
     }
@@ -63,6 +80,24 @@ public class SocketMessageHeader
         return this;
     }
 
+    public String fileName() {
+        return _item.getString(FLD_FILE_NAME);
+    }
+
+    public SocketMessageHeader fileName(final String value) {
+        _item.put(FLD_FILE_NAME, value);
+        return this;
+    }
+
+    public long fileSize() {
+        return _item.getLong(FLD_FILE_SIZE);
+    }
+
+    public SocketMessageHeader fileSize(final long value) {
+        _item.put(FLD_FILE_SIZE, value);
+        return this;
+    }
+    
     public String chunkUid() {
         return _item.getString(FLD_CHUNK_UID);
     }
@@ -90,8 +125,11 @@ public class SocketMessageHeader
         return this;
     }
 
-    public JsonItem chunkHeaders() {
-        return new JsonItem(_item.getJSONObject(FLD_CHUNK_HEADERS));
+    public JsonItem headers() {
+        if (!_item.has(FLD_HEADERS)) {
+            _item.put(FLD_HEADERS, new JSONObject());
+        }
+        return new JsonItem(_item.getJSONObject(FLD_HEADERS));
     }
 
     // ------------------------------------------------------------------------
@@ -112,6 +150,10 @@ public class SocketMessageHeader
         } catch (Throwable ignored) {
             return this.getBytes();
         }
+    }
+
+    public void putAll(final SocketMessageHeader values) {
+        _item.putAll(values.toJson());
     }
 
     public void putAll(final Map<String, Object> values) {
@@ -175,6 +217,9 @@ public class SocketMessageHeader
         }
         if (!_item.has(FLD_CHUNK_COUNT)) {
             _item.put(FLD_CHUNK_COUNT, 1);
+        }
+        if (!_item.has(FLD_CHUNK_UID)) {
+            _item.put(FLD_CHUNK_UID, RandomUtils.randomUUID(true));
         }
     }
 

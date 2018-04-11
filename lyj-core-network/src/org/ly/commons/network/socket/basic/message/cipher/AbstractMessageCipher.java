@@ -1,6 +1,7 @@
 package org.ly.commons.network.socket.basic.message.cipher;
 
 import org.ly.commons.network.socket.SocketLogger;
+import org.ly.commons.network.socket.basic.message.cipher.impl.ClientCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.cipher.KeyManager;
 import org.lyj.commons.cryptograph.pem.RSAHelper;
@@ -35,6 +36,7 @@ public abstract class AbstractMessageCipher
     public abstract void decode(final SocketMessage message) throws Exception;
 
     public abstract void encode(final SocketMessage message, final String owner_id) throws Exception;
+
 
     // ------------------------------------------------------------------------
     //                      p u b l i c

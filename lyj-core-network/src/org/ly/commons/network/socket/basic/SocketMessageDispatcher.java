@@ -1,12 +1,17 @@
-package org.ly.commons.network.socket.basic.message.dispatcher;
+package org.ly.commons.network.socket.basic;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketContext;
-import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.cipher.KeyManager;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
+import org.ly.commons.network.socket.utils.SocketUtils;
 import org.lyj.commons.cryptograph.pem.RSAHelper;
+import org.lyj.commons.util.StringUtils;
 
+import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public abstract class SocketMessageDispatcher
         extends SocketLogger {
@@ -23,7 +28,6 @@ public abstract class SocketMessageDispatcher
 
     private final String _name;
     private final KeyManager _keys;
-    private final SocketMessageDispatcherChunk _chunks;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -32,7 +36,6 @@ public abstract class SocketMessageDispatcher
     public SocketMessageDispatcher(final String name) {
         _name = name;
         _keys = new KeyManager(ROOT, name);
-        _chunks = new SocketMessageDispatcherChunk(this);
 
         this.init();
     }
@@ -60,7 +63,6 @@ public abstract class SocketMessageDispatcher
     public byte[] signature() {
         return this.publicKey().getBytes();
     }
-
 
 
     public void write(final AsynchronousSocketChannel socket,
@@ -116,9 +118,9 @@ public abstract class SocketMessageDispatcher
     }
 
     private SocketMessage readData(final AsynchronousSocketChannel socket,
-                                  final SocketContext context) throws Exception {
+                                   final SocketContext context) throws Exception {
         // read data
-        /*
+
         final SocketMessage message = SocketUtils.read(socket, context.timeout());
         if (null != message && !message.isHandShake()) {
 
@@ -130,9 +132,8 @@ public abstract class SocketMessageDispatcher
             }
 
         }
-        return message; */
+        return message;
 
-        return _chunks.read(socket, context);
     }
 
     private void writeData(final AsynchronousSocketChannel socket,
@@ -140,7 +141,7 @@ public abstract class SocketMessageDispatcher
                            final SocketMessage message,
                            final String owner_id,
                            final int timeout_ms) throws Exception {
-        /*
+
         if (!message.isHandShake()) {
 
             // encode
@@ -155,8 +156,7 @@ public abstract class SocketMessageDispatcher
         final Future<Integer> futureWriteResult = socket.write(send_buffer);
         futureWriteResult.get(timeout_ms, TimeUnit.MILLISECONDS);
         send_buffer.clear();
-        */
-        _chunks.write(socket, message, owner_id, timeout_ms);
+
     }
 
 

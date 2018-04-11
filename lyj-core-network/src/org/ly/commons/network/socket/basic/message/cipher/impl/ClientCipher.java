@@ -48,7 +48,7 @@ public class ClientCipher
         try {
             if (!message.isHandShake() && message.hasSignature()) {
 
-                final String encode_key = this.getEncodeKey(message.ownerId());
+                final String encode_key = this.encodeKey();
                 if (StringUtils.hasText(encode_key)) {
                     // encrypt the body using a public key
                     message.body(super.decrypt(message.body(), _decode_key));
@@ -64,8 +64,8 @@ public class ClientCipher
     public void encode(final SocketMessage message, final String owner_id) throws Exception {
         if (!message.isHandShake()) {
 
-            final String encode_key = this.getEncodeKey(owner_id);
-            if (StringUtils.hasText(encode_key) && message.hasSignature()) {
+            final String encode_key = this.encodeKey();
+            if ( StringUtils.hasText(encode_key) ) {
 
                 // encrypt the body using a public key
                 message.body(super.encrypt(message.body(), encode_key));
@@ -87,9 +87,5 @@ public class ClientCipher
         _decode_key = super.keys().privateKeyString();
     }
 
-    private String getEncodeKey(final String owner_id) {
-        final String encode_key = _encode_key; // _encode_key_cache.getKey(owner_id);
-        return encode_key;
-    }
 
 }

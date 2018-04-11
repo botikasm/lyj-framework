@@ -4,10 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.lyj.commons.logging.AbstractLogEmitter;
-import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.DateUtils;
-import org.lyj.commons.util.DateWrapper;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
 
 import java.util.*;
 
@@ -222,6 +219,16 @@ public class JsonItem
     public String getString(final String key, final String defaultValue) throws JSONException {
         final String value = this.getString(key);
         return StringUtils.hasText(value) ? value : defaultValue;
+    }
+
+    public byte getByte(final String key) throws JSONException {
+        final String value = this.getString(key);
+        return (byte)ConversionUtils.toInteger(value, 0);
+    }
+
+    public byte getByte(final String key, final byte defVal) throws JSONException {
+        final String value = this.getString(key);
+        return (byte)ConversionUtils.toInteger(value, (int)defVal);
     }
 
     public boolean getBoolean(final String key) throws JSONException {

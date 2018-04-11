@@ -2,20 +2,19 @@ package org.ly.commons.network.socket.basic.message;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.cipher.KeyManager;
+import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.TestInitializer;
 import org.lyj.commons.cryptograph.pem.RSAHelper;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.RandomUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.Key;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class SocketMessageTest {
 
@@ -129,6 +128,20 @@ public class SocketMessageTest {
         reader.close();
     }
 
+    @Test
+    public void messageHashCodeTest() throws Exception {
+        final SocketMessage message = new SocketMessage("");
+        int hashCode = message.hashCode();
+        System.out.println(hashCode);
+
+        message.headers().chunkUid(RandomUtils.randomUUID());
+        hashCode = message.hashCode();
+        System.out.println(hashCode);
+
+        message.headers().chunkIndex(2);
+        hashCode = message.hashCode();
+        System.out.println(hashCode);
+    }
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
