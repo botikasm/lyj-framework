@@ -69,7 +69,7 @@ public class SocketMessage {
     private static final int OWNER_POS_END = OWNER_POS_START + OWNER_SIZE;
 
     private static final int HEADERS_POS_START = OWNER_POS_END;
-    private static final int BODY_POS_START = OWNER_POS_END;
+    // private static final int BODY_POS_START = OWNER_POS_END;
 
     private static final int HEADERS_SIZE = MSG_START.length + MSG_END.length +
             TYPE_SIZE + BODY_LENGHT_SIZE + HEADER_LENGHT_SIZE + HASH_SIZE + SIGNATURE_SIZE + OWNER_SIZE;
@@ -97,7 +97,7 @@ public class SocketMessage {
 
     public SocketMessage(final String owner_id) {
         _headers = new SocketMessageHeader();
-        _owner_id = MD5.encode(owner_id);
+        this.ownerId(owner_id);
         this.init();
     }
 
@@ -140,6 +140,16 @@ public class SocketMessage {
 
     public String ownerId() {
         return _owner_id;
+    }
+
+    public SocketMessage ownerId(final String value) {
+        return this.ownerId(value, true);
+    }
+
+    public SocketMessage ownerId(final String value,
+                                 final boolean encode) {
+        _owner_id = encode ? MD5.encode(value) : value;
+        return this;
     }
 
     /**

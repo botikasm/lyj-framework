@@ -1,8 +1,10 @@
 package org.ly.commons.network.socket.basic.message.cipher.impl;
 
+import org.ly.commons.network.socket.basic.SocketContext;
 import org.ly.commons.network.socket.basic.message.SocketMessagePublicKeyCache;
 import org.ly.commons.network.socket.basic.message.cipher.AbstractMessageCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
+import org.lyj.commons.cryptograph.mixed.MixedCipher;
 import org.lyj.commons.util.StringUtils;
 
 public class ServerCipher
@@ -54,7 +56,10 @@ public class ServerCipher
             final String encode_key = this.getEncodeKey(message.ownerId());
             if (StringUtils.hasText(encode_key)) {
                 // encrypt the body using a public key
-                message.body(super.decrypt(message.body(), _decode_key));
+                // message.body(super.decryptAsym(message.body(), _decode_key));
+
+                //-- mixed encryption --//
+                message.body(super.decryptMix(message.signature(), message.body(), _decode_key));
             }
 
         }
@@ -66,14 +71,19 @@ public class ServerCipher
         if (!message.isHandShake()) {
 
             final String encode_key = this.getEncodeKey(key_index);
-            if (StringUtils.hasText(encode_key) && message.hasSignature()) {
+            if (StringUtils.hasText(encode_key)) {
 
-                // encrypt the body using a public key
-                message.body(super.encrypt(message.body(), encode_key));
-
-                // write public key for encrypted response
-                message.signature(this.signature());
-
+                if (SocketContext.CHUNK_SIZE > 100) {
+                    //-- mixed encryption --//
+                    final MixedCipher.Pack pack = super.encryptMix(message.body(), encode_key);
+                    message.body(pack.encodedData());
+                    message.signature(pack.encodedSecret());
+                } else {
+                    // encrypt the body using a public key
+                    message.body(super.encryptAsym(message.body(), encode_key));
+                    // write public key for encrypted response
+                    message.signature(super.signature());
+                }
             }
 
         }

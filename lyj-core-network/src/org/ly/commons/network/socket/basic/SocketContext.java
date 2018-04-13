@@ -12,6 +12,9 @@ public class SocketContext {
     public static final int DEFAULT_TIMEOUT = 10 * 1000;
     public static final int DEFAULT_PORT = 5000;
 
+    public static final int CHUNK_SIZE = 1000;
+
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------

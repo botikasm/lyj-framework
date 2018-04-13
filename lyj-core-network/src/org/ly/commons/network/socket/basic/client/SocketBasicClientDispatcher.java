@@ -122,14 +122,15 @@ public class SocketBasicClientDispatcher
             // send data with no encryption and no tokenizer
             response.content(sendData(message.bytes(), context));
         } else {
+
             if (message.bodyLength() > super.chunkSize() || message.isFile()) {
                 // tokenize
                 ChunkManager.split(message, super.chunkSize(), (final SocketMessage token_message) -> {
                     // send chunk
                     try {
                         final SocketMessage chunk_response = sendMessage(token_message, context);
-                        if(chunk_response.isChunk()){
-                            if(null==response.content()){
+                        if (chunk_response.isChunk()) {
+                            if (null == response.content()) {
                                 response.content(chunk_response);
                             }
                         } else {
@@ -139,28 +140,15 @@ public class SocketBasicClientDispatcher
                         // error sending token
                     }
                 });
+
+                //Async.maxConcurrent(threads, 5);
+                //Async.joinAll(threads);
             } else {
                 response.content(sendMessage(message, context));
             }
         }
+
         return response.content();
-    }
-
-    private SocketMessage read(final AsynchronousSocketChannel socket,
-                               final SocketContext context) throws Exception {
-        // read data
-        final SocketMessage message = SocketUtils.read(socket, context.timeout());
-        if (null != message && !message.isHandShake()) {
-
-            // decode
-            try {
-                super.cipher().decode(message);
-            } catch (Throwable t) {
-                super.error("decode", t);
-            }
-
-        }
-        return message;
     }
 
     private SocketMessage sendMessage(final SocketMessage message,
@@ -182,9 +170,27 @@ public class SocketBasicClientDispatcher
             futureWriteResult.get(context.timeout(), TimeUnit.MILLISECONDS);
             send_buffer.clear();
 
-            return SocketUtils.read(socket, context.timeout());
+            return this.readData(socket, context);
         }
 
     }
+
+    private SocketMessage readData(final AsynchronousSocketChannel socket,
+                                   final SocketContext context) throws Exception {
+        // read data
+        final SocketMessage message = SocketUtils.read(socket, context.timeout());
+        if (null != message && !message.isHandShake()) {
+
+            // decode
+            try {
+                super.cipher().decode(message);
+            } catch (Throwable t) {
+                super.error("decode", t);
+            }
+
+        }
+        return message;
+    }
+
 
 }

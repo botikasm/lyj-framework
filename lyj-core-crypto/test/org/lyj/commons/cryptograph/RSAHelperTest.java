@@ -16,6 +16,7 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class RSAHelperTest {
@@ -67,8 +68,14 @@ public class RSAHelperTest {
         RSAHelper.writePemFile(key.getPublic(), IRSAConstants.RSA_PUBLIC_KEY, file_public);
         RSAHelper.writePemFile(key.getPrivate(), IRSAConstants.RSA_PRIVATE_KEY, file_private);
 
-        System.out.println(RSAHelper.writePemString(key.getPublic(), IRSAConstants.RSA_PUBLIC_KEY));
-        System.out.println(RSAHelper.writePemString(key.getPrivate(), IRSAConstants.RSA_PRIVATE_KEY));
+        final String string_private =  RSAHelper.writePemString(key.getPrivate(), IRSAConstants.RSA_PRIVATE_KEY);
+        final String string_public =  RSAHelper.writePemString(key.getPublic(), IRSAConstants.RSA_PUBLIC_KEY);
+
+        assertEquals(string_private, RSAHelper.toString(key.getPrivate()));
+        assertEquals(string_public, RSAHelper.toString(key.getPublic()));
+
+        System.out.println(string_private);
+        System.out.println(string_public);
         System.out.println(RSAHelper.writePemString(key.getPrivate(), ""));
     }
 

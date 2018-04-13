@@ -10,6 +10,7 @@ public abstract class AbstractMessageDispatcher
     //                      c o n s t
     // ------------------------------------------------------------------------
 
+    private static final int DEFAULT_CHUNK_SIZE = SocketContext.CHUNK_SIZE; // buffer size
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -25,15 +26,10 @@ public abstract class AbstractMessageDispatcher
 
     public AbstractMessageDispatcher(final AbstractMessageCipher cipher) {
         _cipher = cipher;
-        _chunk_size = 100;
+        _chunk_size = DEFAULT_CHUNK_SIZE;
 
         this.init();
     }
-
-    // ------------------------------------------------------------------------
-    //                      a b s t r a c t
-    // ------------------------------------------------------------------------
-
 
     // ------------------------------------------------------------------------
     //                      p u b l i c

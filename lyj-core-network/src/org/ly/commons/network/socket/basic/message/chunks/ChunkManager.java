@@ -2,6 +2,7 @@ package org.ly.commons.network.socket.basic.message.chunks;
 
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.Delegates;
+import org.lyj.commons.async.Async;
 import org.lyj.commons.tokenizers.files.FileTokenizer;
 import org.lyj.commons.util.RandomUtils;
 
@@ -124,24 +125,55 @@ public class ChunkManager {
         try (final InputStream is = info.input_stream) {
             FileTokenizer.split(is, info.length, chunk_size, (index, count, progress, bytes) -> {
                 try {
-                    final SocketMessage token_message = new SocketMessage(message.ownerId());
-                    // signature for encryption
-                    token_message.signature(message.signature());
-                    // original data
-                    token_message.headers().headers().putAll(message.headers().toJson());
-                    // chunk data
-                    token_message.type(SocketMessage.MessageType.Binary);
-                    token_message.body(bytes);
-                    token_message.headers().chunkUid(uid);
-                    token_message.headers().chunkIndex(index);
-                    token_message.headers().chunkCount(count);
-
+                    final SocketMessage token_message = createToken(message, uid, index, count, bytes);
                     Delegates.invoke(callback, token_message);
                 } catch (Exception e) {
                     // error sending token
                 }
             });
         }
+    }
+
+    public static Thread[] splitAsync(final SocketMessage message,
+                                      final int chunk_size,
+                                      final Delegates.Callback<SocketMessage> callback) throws Exception {
+        final Collection<Thread> response = new ArrayList<>();
+
+        final String uid = RandomUtils.randomUUID(true);
+        final SplitInfo info = getSplitInfo(message);
+        try (final InputStream is = info.input_stream) {
+            FileTokenizer.split(is, info.length, chunk_size, (index, count, progress, bytes) -> {
+                try {
+                    final SocketMessage token_message = createToken(message, uid, index, count, bytes);
+                    response.add(Async.wrap(callback, token_message));
+                } catch (Exception e) {
+                    // error sending token
+                }
+            });
+        }
+
+        return response.toArray(new Thread[0]);
+    }
+
+    private static SocketMessage createToken(final SocketMessage message,
+                                             final String uid,
+                                             final int index,
+                                             final int count,
+                                             final byte[] bytes) {
+        final SocketMessage token_message = new SocketMessage("");
+        token_message.ownerId(message.ownerId(), false); // does not encode
+        // signature for encryption
+        token_message.signature(message.signature());
+        // original data
+        token_message.headers().headers().putAll(message.headers().toJson());
+        // chunk data
+        token_message.type(SocketMessage.MessageType.Binary);
+        token_message.body(bytes);
+        token_message.headers().chunkUid(uid);
+        token_message.headers().chunkIndex(index);
+        token_message.headers().chunkCount(count);
+
+        return token_message;
     }
 
     private static SplitInfo getSplitInfo(final SocketMessage message) throws Exception {

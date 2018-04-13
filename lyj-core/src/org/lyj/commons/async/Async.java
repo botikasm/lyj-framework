@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public abstract class Async {
 
-    public static Thread invoke(final Delegates.VarArgsCallback handler, final Object... args) {
+    public static <T> Thread wrap(final Delegates.Callback<T> handler, final T args) {
         if (null != handler) {
             Thread t = new Thread(new Runnable() {
                 @Override
@@ -45,6 +45,30 @@ public abstract class Async {
             t.setName("invoke-" + t.getName());
             t.setDaemon(true);
             t.setPriority(Thread.NORM_PRIORITY);
+            return t;
+        }
+        return null;
+    }
+
+    public static Thread wrap(final Delegates.VarArgsCallback handler, final Object... args) {
+        if (null != handler) {
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    handler.handle(args);
+                }
+            });
+            t.setName("invoke-" + t.getName());
+            t.setDaemon(true);
+            t.setPriority(Thread.NORM_PRIORITY);
+            return t;
+        }
+        return null;
+    }
+
+    public static Thread invoke(final Delegates.VarArgsCallback handler, final Object... args) {
+        if (null != handler) {
+            final Thread t = wrap(handler, args);
             t.start();
             return t;
         }
@@ -282,5 +306,16 @@ public abstract class Async {
         }
     }
 
+    // --------------------------------------------------------------------
+    //               E M B E D D E D
+    // --------------------------------------------------------------------
+
+    private static class CallbackThread<T> {
+
+        CallbackThread(final Delegates.Callback<T> callback) {
+
+        }
+
+    }
 
 }

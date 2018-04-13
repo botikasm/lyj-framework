@@ -255,6 +255,14 @@ public class RSAHelper
         }
     }
 
+    public static String toString(final PublicKey key) {
+        return writePemString(key, RSA_PUBLIC_KEY);
+    }
+
+    public static String toString(final PrivateKey key) {
+        return writePemString(key, RSA_PRIVATE_KEY);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------

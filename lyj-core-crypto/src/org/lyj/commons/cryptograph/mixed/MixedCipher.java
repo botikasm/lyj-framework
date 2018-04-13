@@ -31,9 +31,19 @@ public class MixedCipher {
     // ------------------------------------------------------------------------
 
     public static Pack encrypt(final File file,
+                               final String public_key) throws Exception {
+        return encrypt(file, RSAHelper.readRSAPublicKeyFromText(public_key));
+    }
+
+    public static Pack encrypt(final File file,
                                final PublicKey public_key) throws Exception {
         final byte[] data = ByteUtils.getBytes(file);
         return encrypt(data, public_key);
+    }
+
+    public static Pack encrypt(final byte[] data,
+                               final String public_key) throws Exception {
+        return encrypt(data, RSAHelper.readRSAPublicKeyFromText(public_key));
     }
 
     public static Pack encrypt(final byte[] data,
@@ -41,18 +51,23 @@ public class MixedCipher {
         final SecretKey secret = AESCipher.createKey(KEY_SIZE);
         final AESCipher cipher = new AESCipher(secret);
         final byte[] encoded_data = cipher.encrypt(data);
-        final byte[] encoded_key = RSAHelper.encrypt(secret.getEncoded(), public_key);
+        final byte[] encoded_secret = RSAHelper.encrypt(secret.getEncoded(), public_key);
 
         final Pack response = new Pack();
         response.encodedData(encoded_data);
-        response.encodedKey(encoded_key);
+        response.encodedSecret(encoded_secret);
 
         return response;
     }
 
     public static byte[] decrypt(final Pack pack,
+                                 final String private_key) throws Exception {
+        return decrypt(pack, RSAHelper.readRSAPrivateKeyFromText(private_key));
+    }
+
+    public static byte[] decrypt(final Pack pack,
                                  final PrivateKey private_key) throws Exception {
-        final SecretKey secret = AESCipher.createKey(RSAHelper.decrypt(pack.encodedKey(), private_key));
+        final SecretKey secret = AESCipher.createKey(RSAHelper.decrypt(pack.encodedSecret(), private_key));
         final AESCipher cipher = new AESCipher(secret);
         return cipher.decrypt(pack.encodedData());
     }
@@ -72,7 +87,7 @@ public class MixedCipher {
         //                      f i e l d s
         // ------------------------------------------------------------------------
 
-        private byte[] _encoded_key;
+        private byte[] _encoded_secret;
         private byte[] _encoded_data;
 
         // ------------------------------------------------------------------------
@@ -83,8 +98,8 @@ public class MixedCipher {
 
         }
 
-        public Pack(final byte[] encoded_key, final byte[] encoded_data) {
-            _encoded_key = encoded_key;
+        public Pack(final byte[] encoded_secret, final byte[] encoded_data) {
+            _encoded_secret = encoded_secret;
             _encoded_data = encoded_data;
         }
 
@@ -92,12 +107,12 @@ public class MixedCipher {
         //                      p u b l i c
         // ------------------------------------------------------------------------
 
-        public byte[] encodedKey() {
-            return _encoded_key;
+        public byte[] encodedSecret() {
+            return _encoded_secret;
         }
 
-        public void encodedKey(final byte[] value) {
-            _encoded_key = value;
+        public void encodedSecret(final byte[] value) {
+            _encoded_secret = value;
         }
 
         public byte[] encodedData() {

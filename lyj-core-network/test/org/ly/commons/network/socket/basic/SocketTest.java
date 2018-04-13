@@ -6,6 +6,7 @@ import org.ly.commons.network.socket.basic.client.SocketBasicClient;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.server.SocketBasicServer;
 import org.lyj.TestInitializer;
+import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.MapBuilder;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.RandomUtils;
@@ -217,16 +218,13 @@ public class SocketTest {
     }
 
     @Test
-    public void startTestFileClearMultiple() throws Exception {
+    public void startTestFileSingle() throws Exception {
 
         try (final SocketBasicServer server = this.getServer()) {
 
             SocketBasicClient client = this.getClient(server.port());
 
             client.handShake();
-
-            final File large_file = new File(PathUtils.concat(PathUtils.getTemporaryDirectory(), "ARCHIVIO.zip"));
-            final String output_filename = PathUtils.concat(PathUtils.getTemporaryDirectory(), "ARCHIVIO_out.zip");
 
             File small_file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
             System.out.println("SENDING BYTES: " + small_file.length());
@@ -238,6 +236,8 @@ public class SocketTest {
                 assertNotNull(response);
                 assertTrue(response.isValid());
                 System.out.println("END SENT: " + (i + 1));
+                System.out.println(response);
+                System.out.println(new String(response.body()));
             }
 
         } catch (Exception ex) {
@@ -271,18 +271,30 @@ public class SocketTest {
     private void channelMessage(SocketBasicServer.ChannelInfo channelInfo,
                                 SocketMessage request,
                                 SocketMessage response) {
-        final SocketMessage.MessageType type = request.type();
-        if (type.equals(SocketMessage.MessageType.File)) {
-            // file
-            System.out.println("Receiving file: " + request.headers().getString("file_name")
-                    + " (" + request.headers().getString("file_size") + " bytes)");
-            response.body("FILE RECEIVED!");
-        } else if (response.isChunk()) {
-            System.out.println("CHUNK: " + response.hashCode() + " " + response.headers());
-        } else {
-            // echo
-            final String echo = "echo: " + new String(request.body());
-            response.body(echo);
+        try {
+            final SocketMessage.MessageType type = request.type();
+            if (type.equals(SocketMessage.MessageType.File)) {
+                // file
+                System.out.println("Receiving file: " + request.headers().getString("file_name")
+                        + " (" + request.headers().getString("file_size") + " bytes)");
+                response.type(SocketMessage.MessageType.Text);
+                final String file_name = request.headers().fileName();
+                if (PathUtils.exists(file_name)) {
+                    final String text = FileUtils.readFileToString(new File(file_name));
+                    response.body(text);
+                } else {
+                    response.body("FILE NOT FOUND: " + file_name);
+                }
+            } else if (response.isChunk()) {
+                final String body = new String(request.body());
+                System.out.println("CHUNK: " + response.hashCode() + " " + response.ownerId() + " " + response.headers());
+            } else {
+                // echo
+                final String echo = "echo: " + new String(request.body());
+                response.body(echo);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
     }
 
