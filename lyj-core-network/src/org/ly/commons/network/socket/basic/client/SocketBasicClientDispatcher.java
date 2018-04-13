@@ -1,7 +1,7 @@
 package org.ly.commons.network.socket.basic.client;
 
 import org.ly.commons.network.socket.basic.AbstractMessageDispatcher;
-import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.SocketSettings;
 import org.ly.commons.network.socket.basic.message.chunks.ChunkManager;
 import org.ly.commons.network.socket.basic.message.cipher.impl.ClientCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
@@ -46,7 +46,7 @@ public class SocketBasicClientDispatcher
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void handShake(final SocketContext context) throws Exception {
+    public void handShake(final SocketSettings context) throws Exception {
         final byte[] public_key = super.cipher().publicKey().getBytes();
         final SocketMessageHandShake handshake = new SocketMessageHandShake(context.uid());
         handshake.signature(public_key);
@@ -59,7 +59,7 @@ public class SocketBasicClientDispatcher
 
     public SocketMessage send(final String text,
                               final Map<String, Object> headers,
-                              final SocketContext context) throws Exception {
+                              final SocketSettings context) throws Exception {
 
         // creates message
         final SocketMessage message = this.newMessage(context);
@@ -71,7 +71,7 @@ public class SocketBasicClientDispatcher
 
     public SocketMessage send(final File file,
                               final Map<String, Object> headers,
-                              final SocketContext context) throws Exception {
+                              final SocketSettings context) throws Exception {
 
         // creates message
         final SocketMessage message = this.newMessage(context);
@@ -82,7 +82,7 @@ public class SocketBasicClientDispatcher
     }
 
     public SocketMessage send(final SocketMessage message,
-                              final SocketContext context) throws Exception {
+                              final SocketSettings context) throws Exception {
         return this.write(message, context);
     }
 
@@ -94,7 +94,7 @@ public class SocketBasicClientDispatcher
 
     }
 
-    private AsynchronousSocketChannel openSocket(final SocketContext context) throws Exception {
+    private AsynchronousSocketChannel openSocket(final SocketSettings context) throws Exception {
         final AsynchronousSocketChannel client = AsynchronousSocketChannel.open();
         client.connect(new InetSocketAddress(context.host(), context.port())).get(context.timeout(), TimeUnit.MILLISECONDS);
 
@@ -106,7 +106,7 @@ public class SocketBasicClientDispatcher
         return client;
     }
 
-    private SocketMessage newMessage(final SocketContext context) {
+    private SocketMessage newMessage(final SocketSettings context) {
         final SocketMessage message = new SocketMessage(context.uid());
         //message.signature(_message.signature());
 
@@ -114,7 +114,7 @@ public class SocketBasicClientDispatcher
     }
 
     private SocketMessage write(final SocketMessage message,
-                                final SocketContext context) throws Exception {
+                                final SocketSettings context) throws Exception {
 
         final ValueObject<SocketMessage> response = new ValueObject<>();
 
@@ -152,7 +152,7 @@ public class SocketBasicClientDispatcher
     }
 
     private SocketMessage sendMessage(final SocketMessage message,
-                                      final SocketContext context) throws Exception {
+                                      final SocketSettings context) throws Exception {
         // encode
         try {
             super.cipher().encode(message, message.ownerId());
@@ -163,7 +163,7 @@ public class SocketBasicClientDispatcher
     }
 
     private SocketMessage sendData(final byte[] data,
-                                   final SocketContext context) throws Exception {
+                                   final SocketSettings context) throws Exception {
         try (final AsynchronousSocketChannel socket = this.openSocket(context)) {
             final ByteBuffer send_buffer = ByteBuffer.wrap(data);
             final Future<Integer> futureWriteResult = socket.write(send_buffer);
@@ -176,7 +176,7 @@ public class SocketBasicClientDispatcher
     }
 
     private SocketMessage readData(final AsynchronousSocketChannel socket,
-                                   final SocketContext context) throws Exception {
+                                   final SocketSettings context) throws Exception {
         // read data
         final SocketMessage message = SocketUtils.read(socket, context.timeout());
         if (null != message && !message.isHandShake()) {

@@ -4,12 +4,12 @@ import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.tokenizers.files.FileTokenizer;
+import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.RandomUtils;
+import org.lyj.commons.util.StringUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 public class ChunkManager {
@@ -76,7 +76,7 @@ public class ChunkManager {
         }
     }
 
-    public SocketMessage compose(final String chunk_uid) {
+    public SocketMessage compose(final String chunk_uid) throws Exception {
         // get sorted chunks
         final SocketMessage[] chunks = this.get(chunk_uid); // sorted list
 
@@ -91,13 +91,22 @@ public class ChunkManager {
             final byte type = response.headers().type();
             // restore original type
             response.type(SocketMessage.MessageType.getEnum(type));
+            final boolean has_temp_file = SocketMessage.MessageType.File.equals(response.type())
+                    || SocketMessage.MessageType.Binary.equals(response.type());
+            final String temp_file_name = has_temp_file ? getTempFileName(response) : "";
+            if (has_temp_file) {
+                response.headers().fileName(temp_file_name);
+                response.body(PathUtils.getFilename(temp_file_name, true));
+            }
             // loop 
             for (final SocketMessage chunk : chunks) {
                 final int index = chunk.headers().chunkIndex();
-                if (SocketMessage.MessageType.File.equals(response.type())
-                        || SocketMessage.MessageType.Binary.equals(response.type())) {
-                    // should create a file
-                    response.body(chunk.body(), true);
+                if (has_temp_file) {
+                    try (final FileOutputStream fos = new FileOutputStream(temp_file_name, true)) {
+                        fos.write(chunk.body());
+                        fos.flush();
+                    }
+                    // response.body(chunk.body(), true);
                 } else {
                     // append bytes to body
                     response.body(chunk.body(), true); // append to body
@@ -112,6 +121,18 @@ public class ChunkManager {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private String getTempFileName(final SocketMessage message) {
+        String response = PathUtils.getTemporaryFile(RandomUtils.randomUUID(true) + ".tmp");
+        if (StringUtils.hasText(message.headers().fileName())) {
+            final String name = PathUtils.getFilename(message.headers().fileName(), true);
+            if (StringUtils.hasText(name)) {
+                response = PathUtils.suggestFileName(PathUtils.getTemporaryFile(name), true);
+            }
+        }
+        FileUtils.tryMkdirs(response);
+        return response;
+    }
 
     // ------------------------------------------------------------------------
     //                      S T A T I C

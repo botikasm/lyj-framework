@@ -3,7 +3,7 @@ package org.ly.commons.network.socket.basic;
 import org.json.JSONObject;
 import org.lyj.commons.lang.CharEncoding;
 
-public class SocketContext {
+public class SocketSettings {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -12,7 +12,8 @@ public class SocketContext {
     public static final int DEFAULT_TIMEOUT = 10 * 1000;
     public static final int DEFAULT_PORT = 5000;
 
-    public static final int CHUNK_SIZE = 1000;
+    // change this parameter to increase chunks buffer
+    public static int CHUNK_SIZE = 1000;
 
 
     // ------------------------------------------------------------------------
@@ -30,7 +31,7 @@ public class SocketContext {
     // ------------------------------------------------------------------------
 
 
-    public SocketContext(final String uid) {
+    public SocketSettings(final String uid) {
         _uid = uid;
         _charset = CharEncoding.UTF_8;
         _port = DEFAULT_PORT;
@@ -62,7 +63,7 @@ public class SocketContext {
         return _host;
     }
 
-    public SocketContext host(final String value) {
+    public SocketSettings host(final String value) {
         _host = value;
         return this;
     }
@@ -71,7 +72,7 @@ public class SocketContext {
         return _port;
     }
 
-    public SocketContext port(final int value) {
+    public SocketSettings port(final int value) {
         _port = value;
         return this;
     }
@@ -80,7 +81,7 @@ public class SocketContext {
         return _timeout_ms;
     }
 
-    public SocketContext timeout(final int value) {
+    public SocketSettings timeout(final int value) {
         _timeout_ms = value;
         return this;
     }
@@ -89,7 +90,7 @@ public class SocketContext {
         return _charset;
     }
 
-    public SocketContext charset(final String value) {
+    public SocketSettings charset(final String value) {
         _charset = value;
         return this;
     }

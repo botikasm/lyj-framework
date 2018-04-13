@@ -10,7 +10,7 @@ public abstract class AbstractMessageDispatcher
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final int DEFAULT_CHUNK_SIZE = SocketContext.CHUNK_SIZE; // buffer size
+    private static final int DEFAULT_CHUNK_SIZE = SocketSettings.CHUNK_SIZE; // buffer size
 
     // ------------------------------------------------------------------------
     //                      f i e l d s

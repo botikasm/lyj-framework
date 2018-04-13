@@ -220,6 +220,8 @@ public class SocketTest {
     @Test
     public void startTestFileSingle() throws Exception {
 
+        SocketSettings.CHUNK_SIZE = 2048;
+
         try (final SocketBasicServer server = this.getServer()) {
 
             SocketBasicClient client = this.getClient(server.port());
@@ -278,15 +280,18 @@ public class SocketTest {
                 System.out.println("Receiving file: " + request.headers().getString("file_name")
                         + " (" + request.headers().getString("file_size") + " bytes)");
                 response.type(SocketMessage.MessageType.Text);
-                final String file_name = request.headers().fileName();
-                if (PathUtils.exists(file_name)) {
-                    final String text = FileUtils.readFileToString(new File(file_name));
+                final String temp_file_name = request.headers().fileName();
+                System.out.println(temp_file_name);
+                if (PathUtils.exists(temp_file_name)) {
+                    final String text = FileUtils.readFileToString(new File(temp_file_name));
                     response.body(text);
+                    FileUtils.delete(temp_file_name);
                 } else {
-                    response.body("FILE NOT FOUND: " + file_name);
+                    response.body("FILE NOT FOUND: " + temp_file_name);
                 }
             } else if (response.isChunk()) {
                 final String body = new String(request.body());
+                final String file_name = PathUtils.getFilename(response.headers().fileName());
                 System.out.println("CHUNK: " + response.hashCode() + " " + response.ownerId() + " " + response.headers());
             } else {
                 // echo

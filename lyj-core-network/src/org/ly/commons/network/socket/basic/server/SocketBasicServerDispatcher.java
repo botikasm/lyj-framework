@@ -1,7 +1,7 @@
 package org.ly.commons.network.socket.basic.server;
 
 import org.ly.commons.network.socket.basic.AbstractMessageDispatcher;
-import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.SocketSettings;
 import org.ly.commons.network.socket.basic.message.cipher.impl.ServerCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.utils.SocketUtils;
@@ -40,14 +40,14 @@ public class SocketBasicServerDispatcher
     // ------------------------------------------------------------------------
 
     public SocketMessage read(final AsynchronousSocketChannel socket,
-                              final SocketContext context) throws Exception {
+                              final SocketSettings context) throws Exception {
         // read data
         return this.readData(socket, context);
 
     }
 
     public void write(final AsynchronousSocketChannel socket,
-                      final SocketContext context,
+                      final SocketSettings context,
                       final SocketMessage message,
                       final String owner_id) throws Exception {
 
@@ -65,7 +65,7 @@ public class SocketBasicServerDispatcher
     }
 
     private SocketMessage readData(final AsynchronousSocketChannel socket,
-                                   final SocketContext context) throws Exception {
+                                   final SocketSettings context) throws Exception {
         // read data
 
         final SocketMessage message = SocketUtils.read(socket, context.timeout());
@@ -84,7 +84,7 @@ public class SocketBasicServerDispatcher
     }
 
     private void writeData(final AsynchronousSocketChannel socket,
-                           final SocketContext context,
+                           final SocketSettings context,
                            final SocketMessage message,
                            final String owner_id,
                            final int timeout_ms) throws Exception {

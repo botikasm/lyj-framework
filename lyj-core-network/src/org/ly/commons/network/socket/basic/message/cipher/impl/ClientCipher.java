@@ -1,6 +1,6 @@
 package org.ly.commons.network.socket.basic.message.cipher.impl;
 
-import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.SocketSettings;
 import org.ly.commons.network.socket.basic.message.cipher.AbstractMessageCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.cryptograph.mixed.MixedCipher;
@@ -53,15 +53,16 @@ public class ClientCipher
                 final String encode_key = this.encodeKey();
                 if (StringUtils.hasText(encode_key)) {
 
-                    // encrypt the body using a public key
-                    // message.body(super.decryptAsym(message.body(), _decode_key));
-
-                    //-- mixed --//
-                    final MixedCipher.Pack pack = new MixedCipher.Pack();
-                    pack.encodedSecret(message.signature());
-                    pack.encodedData(message.body());
-                    message.body(super.decryptMix(pack, _decode_key));
-                    
+                    if(SocketSettings.CHUNK_SIZE>100) {
+                        //-- mixed --//
+                        final MixedCipher.Pack pack = new MixedCipher.Pack();
+                        pack.encodedSecret(message.signature());
+                        pack.encodedData(message.body());
+                        message.body(super.decryptMix(pack, _decode_key));
+                    } else {
+                        // encrypt the body using a public key
+                        message.body(super.decryptAsym(message.body(), _decode_key));
+                    }
                 }
 
             }
@@ -77,7 +78,7 @@ public class ClientCipher
             final String encode_key = this.encodeKey();
             if ( StringUtils.hasText(encode_key) ) {
 
-                if(SocketContext.CHUNK_SIZE>100){
+                if(SocketSettings.CHUNK_SIZE>100){
                     //-- mixed encryption --//
                     final MixedCipher.Pack pack = super.encryptMix(message.body(), encode_key);
                     message.body(pack.encodedData());

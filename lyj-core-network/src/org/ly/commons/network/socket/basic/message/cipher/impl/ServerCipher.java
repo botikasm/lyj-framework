@@ -1,6 +1,6 @@
 package org.ly.commons.network.socket.basic.message.cipher.impl;
 
-import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.SocketSettings;
 import org.ly.commons.network.socket.basic.message.SocketMessagePublicKeyCache;
 import org.ly.commons.network.socket.basic.message.cipher.AbstractMessageCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
@@ -55,11 +55,14 @@ public class ServerCipher
 
             final String encode_key = this.getEncodeKey(message.ownerId());
             if (StringUtils.hasText(encode_key)) {
-                // encrypt the body using a public key
-                // message.body(super.decryptAsym(message.body(), _decode_key));
 
-                //-- mixed encryption --//
-                message.body(super.decryptMix(message.signature(), message.body(), _decode_key));
+                if (SocketSettings.CHUNK_SIZE > 100) {
+                    //-- mixed encryption --//
+                    message.body(super.decryptMix(message.signature(), message.body(), _decode_key));
+                } else {
+                    // encrypt the body using a public key
+                    message.body(super.decryptAsym(message.body(), _decode_key));
+                }
             }
 
         }
@@ -73,7 +76,7 @@ public class ServerCipher
             final String encode_key = this.getEncodeKey(key_index);
             if (StringUtils.hasText(encode_key)) {
 
-                if (SocketContext.CHUNK_SIZE > 100) {
+                if (SocketSettings.CHUNK_SIZE > 100) {
                     //-- mixed encryption --//
                     final MixedCipher.Pack pack = super.encryptMix(message.body(), encode_key);
                     message.body(pack.encodedData());

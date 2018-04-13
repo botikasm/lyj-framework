@@ -1,7 +1,7 @@
 package org.ly.commons.network.socket.basic.client;
 
 import org.ly.commons.network.socket.SocketLogger;
-import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.SocketSettings;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.RandomUtils;
@@ -35,8 +35,8 @@ public class SocketBasicClient
 
     public SocketBasicClient() {
         _uid = RandomUtils.randomUUID();
-        _port = SocketContext.DEFAULT_PORT;
-        _timeout_ms = SocketContext.DEFAULT_TIMEOUT;
+        _port = SocketSettings.DEFAULT_PORT;
+        _timeout_ms = SocketSettings.DEFAULT_TIMEOUT;
         _charset = CharEncoding.UTF_8;
 
         _dispatcher = new SocketBasicClientDispatcher();
@@ -151,16 +151,16 @@ public class SocketBasicClient
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private SocketContext context() {
-        return new SocketContext(_uid)
+    private SocketSettings context() {
+        return new SocketSettings(_uid)
                 .host(this.host())
                 .port(this.port())
                 .timeout(this.timeout())
                 .charset(this.charset());
     }
 
-    private SocketContext context(final int timeout) {
-        return new SocketContext(_uid)
+    private SocketSettings context(final int timeout) {
+        return new SocketSettings(_uid)
                 .host(this.host())
                 .port(this.port())
                 .timeout(timeout)

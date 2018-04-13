@@ -1,7 +1,7 @@
 package org.ly.commons.network.socket.basic.server;
 
 import org.ly.commons.network.socket.SocketLogger;
-import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.SocketSettings;
 import org.ly.commons.network.socket.basic.message.chunks.ChunkManager;
 import org.ly.commons.network.socket.basic.message.cipher.impl.ServerCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
 
 public class SocketBasicServerHandler
         extends SocketLogger
-        implements CompletionHandler<AsynchronousSocketChannel, SocketContext> {
+        implements CompletionHandler<AsynchronousSocketChannel, SocketSettings> {
 
 
     // ------------------------------------------------------------------------
@@ -74,7 +74,7 @@ public class SocketBasicServerHandler
 
     @Override
     public void completed(final AsynchronousSocketChannel channel,
-                          final SocketContext server_context) {
+                          final SocketSettings server_context) {
 
         this.doChannelOpen(channel, server_context);
 
@@ -135,7 +135,7 @@ public class SocketBasicServerHandler
     }
 
     @Override
-    public void failed(final Throwable exc, final SocketContext attachment) {
+    public void failed(final Throwable exc, final SocketSettings attachment) {
         // System.out.println("FAILED: " + exc + ". "  );
     }
 
@@ -144,14 +144,14 @@ public class SocketBasicServerHandler
     // ------------------------------------------------------------------------
 
     private void doChannelOpen(final AsynchronousSocketChannel ch,
-                               final SocketContext attachment) {
+                               final SocketSettings attachment) {
         if (null != _callback_on_channel_open) {
             _callback_on_channel_open.handle(new SocketBasicServer.ChannelInfo(ch, attachment));
         }
     }
 
     private void doChannelClose(final AsynchronousSocketChannel ch,
-                                final SocketContext attachment,
+                                final SocketSettings attachment,
                                 final Exception ex) {
         if (null != ex) {
             if (ex instanceof TimeoutException) {
@@ -171,8 +171,8 @@ public class SocketBasicServerHandler
     }
 
     private SocketMessage doChannelMessage(final AsynchronousSocketChannel ch,
-                                           final SocketContext context,
-                                           final SocketMessage request) {
+                                           final SocketSettings context,
+                                           final SocketMessage request) throws Exception {
         // new message
         final SocketMessage response = new SocketMessage(context.uid());
         response.body(new byte[0]); // initialize response with empty content

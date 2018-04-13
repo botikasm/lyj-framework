@@ -1,6 +1,6 @@
 package org.ly.commons.network.socket.basic.server;
 
-import org.ly.commons.network.socket.basic.SocketContext;
+import org.ly.commons.network.socket.basic.SocketSettings;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.cryptograph.SecurityMessageDigester;
@@ -53,8 +53,8 @@ public class SocketBasicServer
 
     public SocketBasicServer() {
         _uid = "server_".concat(RandomUtils.randomUUID());
-        _port = SocketContext.DEFAULT_PORT;
-        _timeout_ms = SocketContext.DEFAULT_TIMEOUT;
+        _port = SocketSettings.DEFAULT_PORT;
+        _timeout_ms = SocketSettings.DEFAULT_TIMEOUT;
         _charset = CharEncoding.UTF_8;
     }
 
@@ -113,7 +113,7 @@ public class SocketBasicServer
             // Create an AsynchronousServerSocketChannel that will listen on port 5000
             _listener = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(_port));
             _listener.accept(
-                    new SocketContext(_uid)
+                    new SocketSettings(_uid)
                             .port(this.port())
                             .charset(this.charset())
                             .timeout(this.timeout()),
@@ -195,12 +195,12 @@ public class SocketBasicServer
         // ------------------------------------------------------------------------
 
         public ChannelInfo(final AsynchronousSocketChannel channel,
-                           final SocketContext attachment) {
+                           final SocketSettings attachment) {
             this(channel, attachment, null);
         }
 
         public ChannelInfo(final AsynchronousSocketChannel channel,
-                           final SocketContext attachment,
+                           final SocketSettings attachment,
                            final Exception error) {
             _nonce = channel.hashCode();
             this.init(channel, attachment, error);
@@ -266,7 +266,7 @@ public class SocketBasicServer
         // ------------------------------------------------------------------------
 
         private void init(final AsynchronousSocketChannel channel,
-                          final SocketContext attachment,
+                          final SocketSettings attachment,
                           final Exception error) {
             _error = error;
             try {
