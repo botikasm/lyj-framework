@@ -8,6 +8,7 @@ import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 import org.ly.commons.network.socket.utils.SocketUtils;
 import org.lyj.commons.lang.ValueObject;
+import org.lyj.commons.util.StringUtils;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -83,6 +84,9 @@ public class SocketBasicClientDispatcher
 
     public SocketMessage send(final SocketMessage message,
                               final SocketSettings context) throws Exception {
+        if (!StringUtils.hasText(message.ownerId())) {
+            message.ownerId(context.uid());
+        }
         return this.write(message, context);
     }
 

@@ -1,21 +1,24 @@
 package org.ly.commons.network.socket.basic.server;
 
+import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketSettings;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
+import org.lyj.commons.async.Async;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.cryptograph.SecurityMessageDigester;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.json.JsonItem;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
+import java.util.concurrent.ExecutorService;
 
 
 public class SocketBasicServer
+        extends SocketLogger
         implements AutoCloseable {
 
     // ------------------------------------------------------------------------
@@ -37,6 +40,7 @@ public class SocketBasicServer
     // ------------------------------------------------------------------------
 
     private final String _uid;
+    private ExecutorService _service_alive;
     private int _port;
     private int _timeout_ms;
     private String _charset;
@@ -123,8 +127,9 @@ public class SocketBasicServer
                             .onChannelMessage(this::handleChannelMessage)
             );
 
-        } catch (IOException e) {
-            System.out.println("ERROR: " + e.toString());
+            _service_alive = Async.serviceAlive();
+        } catch (Exception e) {
+            super.error("open", e);
         }
     }
 
@@ -138,6 +143,15 @@ public class SocketBasicServer
 
         } finally {
             _listener = null;
+        }
+        try {
+            if (null != _service_alive) {
+                _service_alive.shutdown();
+            }
+        } catch (Throwable ignored) {
+
+        } finally {
+            _service_alive = null;
         }
     }
 

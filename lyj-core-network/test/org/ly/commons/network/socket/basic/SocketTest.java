@@ -284,7 +284,7 @@ public class SocketTest {
                 System.out.println(temp_file_name);
                 if (PathUtils.exists(temp_file_name)) {
                     final String text = FileUtils.readFileToString(new File(temp_file_name));
-                    response.body(text);
+                    // response.body(text);
                     FileUtils.delete(temp_file_name);
                 } else {
                     response.body("FILE NOT FOUND: " + temp_file_name);

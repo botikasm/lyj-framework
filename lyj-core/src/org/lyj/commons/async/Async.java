@@ -28,11 +28,35 @@ import org.lyj.commons.util.MathUtils;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Utility class to run async methods
  */
 public abstract class Async {
+
+
+    /**
+     * Create an executor service useful to wait for an undefined termination.
+     */
+    public static ExecutorService serviceAlive() {
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
+        Thread t = new Thread(() -> {
+            try {
+                while (!executor.isShutdown()) {
+                    Thread.sleep(100);
+                }
+            } catch (Throwable ignored) {
+                // ignored
+            }
+        });
+        t.setName("invoke-" + t.getName());
+        t.setDaemon(true);
+        t.setPriority(Thread.MIN_PRIORITY);
+        executor.submit(t);
+        return executor;
+    }
 
     public static <T> Thread wrap(final Delegates.Callback<T> handler, final T args) {
         if (null != handler) {
