@@ -63,12 +63,18 @@ public class Registry {
     // ------------------------------------------------------------------------
 
     public void start() {
-        this.startRegistryThread();
+        this.interrupt();
+        _registryThread = this.startRegistryThread(this);
     }
 
     public void interrupt() {
-        if (null != _registryThread) {
-            _registryThread.interrupt();
+        try {
+            if (null != _registryThread) {
+                _registryThread.interrupt();
+            }
+        } catch (Throwable ignored) {
+
+        } finally {
             _registryThread = null;
         }
     }
@@ -94,14 +100,18 @@ public class Registry {
     }
 
     public long getCheck() {
-        return _settings.optLong(CHECK_MS);
+        synchronized (_settings) {
+            return _settings.optLong(CHECK_MS);
+        }
     }
 
     public void setCheck(final long value) {
-        _settings.putSilent(CHECK_MS, value);
-        try {
-            this.saveSettings();
-        } catch (Throwable ignored) {
+        synchronized (_settings) {
+            try {
+                _settings.putSilent(CHECK_MS, value);
+                this.saveSettings();
+            } catch (Throwable ignored) {
+            }
         }
     }
 
@@ -224,33 +234,38 @@ public class Registry {
         return null != JsonWrapper.remove(items, key);
     }
 
-    private void startRegistryThread() {
+    private Thread startRegistryThread(final Registry registry) {
         // creates thread that check for expired items
-        _registryThread = new Thread(new Runnable() {
+        final Thread t = new Thread(new Runnable() {
             boolean _interrupted = false;
 
             @Override
             public void run() {
                 while (!_interrupted) {
                     try {
-                        final long sleep = getCheck();
-                        Thread.sleep(sleep);
+
                         //-- check registry items --//
-                        if (removeExpired() > 0) {
+                        if (registry.removeExpired() > 0) {
                             try {
-                                save();
+                                registry.save();
                             } catch (Throwable ignored) {
                             }
                         }
+
+                        final long sleep = registry.getCheck();
+                        Thread.sleep(sleep);
+
                     } catch (InterruptedException ignored) {
                         _interrupted = true;
                     }
                 }
             }
         });
-        _registryThread.setDaemon(true);
-        _registryThread.setPriority(Thread.NORM_PRIORITY);
-        _registryThread.start();
+        t.setDaemon(true);
+        t.setPriority(Thread.NORM_PRIORITY);
+        t.start();
+
+        return t;
     }
 
 

@@ -4,6 +4,7 @@ import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.util.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  *
@@ -14,6 +15,8 @@ public class CacheFiles
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
+
+    public static final int DEFAULT_DETAIL = 3; // detail 0=yyyy/MM/dd, 1=yyyy/, 2=yyyy/MM, 3=yyyy/MM/dd, 4=yyyy/MM/dd/hh, 5=yyyy/MM/dd/hh/mm, 6=yyyy/MM/dd/hh/mm/ss/
 
     public static final long ONE_MINUTE = DateUtils.ONE_MINUTE_MS;
     public static final long ONE_HOUR = DateUtils.ONE_HOUR_MS;
@@ -26,6 +29,7 @@ public class CacheFiles
     // ------------------------------------------------------------------------
 
     private String _encoding;
+    private int _path_detail = DEFAULT_DETAIL;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -34,7 +38,7 @@ public class CacheFiles
     public CacheFiles(final String root,
                       final long duration,
                       final String encoding) {
-        super(root, duration, duration);
+        super(root, duration, (long) (duration * 0.5));
         _encoding = encoding;
     }
 
@@ -60,6 +64,15 @@ public class CacheFiles
         return this;
     }
 
+    public int pathDetail() {
+        return _path_detail;
+    }
+
+    public CacheFiles pathDetail(final int value) {
+        _path_detail = value;
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -77,19 +90,36 @@ public class CacheFiles
                     final String content,
                     final long duration) {
         try {
-            if(!this.has(key)){
+            if (!this.has(key)) {
                 final String target = this.path(key.concat(".txt"));
 
-                FileUtils.tryMkdirs(target);
-                FileUtils.writeStringToFile(new File(target), content, _encoding);
-
-                super.registry().addItem(key, target, duration);
-                super.registry().save();
+                this.put(key, target, content.getBytes(_encoding), duration);
             } else {
-               this.update(key, duration);
+                this.update(key, duration);
             }
         } catch (Throwable t) {
-            super.logger().error("putContent", t);
+            super.logger().error("put#String", t);
+        }
+    }
+
+    public void put(final String key,
+                    final byte[] content) {
+        this.put(key, content, super.duration());
+    }
+
+    public void put(final String key,
+                    final byte[] content,
+                    final long duration) {
+        try {
+            if (!this.has(key)) {
+                final String target = this.path(key.concat(".dat"));
+
+                this.put(key, target, content, duration);
+            } else {
+                this.update(key, duration);
+            }
+        } catch (Throwable t) {
+            super.logger().error("put#Bytes", t);
         }
     }
 
@@ -129,12 +159,26 @@ public class CacheFiles
     // ------------------------------------------------------------------------
 
     private String path(final String rel_path) {
-        final String time_path = PathUtils.concat(super.root(), PathUtils.getDateTimePath(3)); // yyyy/MM/dd
+        final String time_path = PathUtils.concat(super.root(), PathUtils.getDateTimePath(_path_detail)); // yyyy/MM/dd
         if (StringUtils.hasText(rel_path)) {
             return PathUtils.concat(time_path, rel_path);
         } else {
             return time_path;
         }
+    }
+
+    private void put(final String key,
+                     final String target,
+                     final byte[] content,
+                     final long duration) throws Exception {
+        FileUtils.tryMkdirs(target);
+        try (final FileOutputStream fos = new FileOutputStream(target)) {
+            fos.write(content);
+            fos.flush();
+        }
+
+        super.registry().addItem(key, target, duration);
+        super.registry().save();
     }
 
 }

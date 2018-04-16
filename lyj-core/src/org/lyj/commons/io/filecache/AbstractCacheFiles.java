@@ -33,6 +33,7 @@ public abstract class AbstractCacheFiles
     private long _duration;
     private long _check_interval;
     private boolean _debugMode;
+    private boolean _started;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -43,8 +44,8 @@ public abstract class AbstractCacheFiles
     }
 
     public AbstractCacheFiles(final String root,
-                              final long duration,
-                              final long check_interval) {
+                              final long duration_ms,
+                              final long check_interval_ms) {
 
         _root = PathUtils.getAbsolutePath(root);
         _path_data = PathUtils.concat(_root, REGISTRY_DATA);
@@ -55,8 +56,8 @@ public abstract class AbstractCacheFiles
 
         _debugMode = false;
 
-        _duration = duration;
-        _check_interval = check_interval;
+        _duration = duration_ms;
+        _check_interval = check_interval_ms;
 
         //-- ensure temp dir exists --//
         FileUtils.tryMkdirs(_root);
@@ -65,6 +66,8 @@ public abstract class AbstractCacheFiles
         _registry = new Registry(_path_settings, _path_data);
         _registry.setCheck(_check_interval);
         _registry.trySave();
+
+        _started = false;
 
         this.open();
     }
@@ -81,6 +84,10 @@ public abstract class AbstractCacheFiles
     // ------------------------------------------------------------------------
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
+
+    public boolean isRunning() {
+        return _started;
+    }
 
     public String root() {
         return _root;
@@ -155,6 +162,7 @@ public abstract class AbstractCacheFiles
         //-- reset registry--//
         try {
             _registry.clear();
+            _registry.setCheck(_check_interval);
             _registry.save();
         } catch (Throwable ignored) {
         }
@@ -220,19 +228,26 @@ public abstract class AbstractCacheFiles
 
 
     private void startThreads() {
-        try {
-            _registry.start();
-            this.debug("Started Registry");
-        } catch (Throwable t) {
-            this.logger().log(Level.SEVERE, null, t);
+        if (!_started) {
+            _started = true;
+            try {
+                _registry.start();
+                this.debug("Started Registry");
+            } catch (Throwable t) {
+                this.logger().log(Level.SEVERE, null, t);
+            }
         }
     }
 
     private void stopThreads() {
-        try {
-            _registry.interrupt();
-        } catch (Throwable ignored) {
+        if (_started) {
+            _started = false;
+            try {
+                _registry.interrupt();
+            } catch (Throwable ignored) {
+            }
         }
+
     }
 
 

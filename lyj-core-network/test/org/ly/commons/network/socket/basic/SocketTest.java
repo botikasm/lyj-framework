@@ -6,10 +6,7 @@ import org.ly.commons.network.socket.basic.client.SocketBasicClient;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.server.SocketBasicServer;
 import org.lyj.TestInitializer;
-import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.MapBuilder;
-import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.RandomUtils;
+import org.lyj.commons.util.*;
 
 import java.io.File;
 
@@ -220,7 +217,7 @@ public class SocketTest {
     @Test
     public void startTestFileSingle() throws Exception {
 
-        SocketSettings.CHUNK_SIZE = 2048;
+        SocketSettings.CHUNK_SIZE = 10000;
 
         try (final SocketBasicServer server = this.getServer()) {
 
@@ -228,7 +225,10 @@ public class SocketTest {
 
             client.handShake();
 
-            File small_file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
+            // File small_file = new File(PathUtils.getAbsolutePath("./sample_small_file.txt"));
+            File small_file = new File(PathUtils.getAbsolutePath("./sample_medium_file.txt"));
+            // File small_file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
+
             System.out.println("SENDING BYTES: " + small_file.length());
             for (int i = 0; i < 1; i++) {
                 SocketMessage response = client.send(small_file, MapBuilder.createSO()
@@ -239,12 +239,17 @@ public class SocketTest {
                 assertTrue(response.isValid());
                 System.out.println("END SENT: " + (i + 1));
                 System.out.println(response);
-                System.out.println(new String(response.body()));
+                System.out.println("RESPONSE BODY: " + new String(response.body()));
             }
 
+            // wait cache is invalidated
+            Thread.sleep(60*2*1000);
+            
         } catch (Exception ex) {
             throw ex;
         }
+
+
     }
 
 
@@ -281,9 +286,10 @@ public class SocketTest {
                         + " (" + request.headers().getString("file_size") + " bytes)");
                 response.type(SocketMessage.MessageType.Text);
                 final String temp_file_name = request.headers().fileName();
-                System.out.println(temp_file_name);
+                System.out.println("RECEIVED FILE NAME: " + temp_file_name);
                 if (PathUtils.exists(temp_file_name)) {
                     final String text = FileUtils.readFileToString(new File(temp_file_name));
+                    System.out.println("RECEIVED CONTENT: " + StringUtils.leftStr(text, 50, true));
                     // response.body(text);
                     FileUtils.delete(temp_file_name);
                 } else {

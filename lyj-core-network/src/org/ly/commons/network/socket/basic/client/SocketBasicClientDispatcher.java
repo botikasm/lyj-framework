@@ -129,7 +129,7 @@ public class SocketBasicClientDispatcher
 
             if (message.bodyLength() > super.chunkSize() || message.isFile()) {
                 // tokenize
-                ChunkManager.split(message, super.chunkSize(), (final SocketMessage token_message) -> {
+                ChunkManager.instance().split(message, super.chunkSize(), (final SocketMessage token_message) -> {
                     // send chunk
                     try {
                         final SocketMessage chunk_response = sendMessage(token_message, context);

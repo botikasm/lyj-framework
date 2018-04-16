@@ -51,13 +51,13 @@ public class CacheWatchDog
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public CacheWatchDog(final String root) throws IOException {
+    public CacheWatchDog(final String root) {
         super(root);
         _countErrors = 0;
     }
 
     public CacheWatchDog(final String root,
-                         final long duration) throws IOException {
+                         final long duration) {
         super(root, duration, duration);
         _countErrors = 0;
     }
@@ -81,16 +81,17 @@ public class CacheWatchDog
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void close() {
-        super.close();
-
-        this.stopObserver();
-    }
-
     @Override
     public void open() {
         super.open();
         this.startObserver();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+
+        this.stopObserver();
     }
 
     // ------------------------------------------------------------------------

@@ -42,11 +42,11 @@ public class SocketBasicServerHandler
     // ------------------------------------------------------------------------
 
     public SocketBasicServerHandler(final AsynchronousServerSocketChannel listener) {
+        _chunks = ChunkManager.instance();
         _listener = listener;
         _closed = false;
 
         _dispatcher = new SocketBasicServerDispatcher();
-        _chunks = new ChunkManager();
     }
 
     // ------------------------------------------------------------------------

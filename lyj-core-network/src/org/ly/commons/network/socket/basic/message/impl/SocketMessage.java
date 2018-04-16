@@ -26,6 +26,7 @@ public class SocketMessage {
         Binary((byte) 0),
         Text((byte) 1),
         File((byte) 2),
+        Chunk((byte) 97),
         Handshake((byte) 98),
         Undefined((byte) 99);
 
@@ -52,9 +53,9 @@ public class SocketMessage {
     private static final int TYPE_SIZE = 1;
     private static final int BODY_LENGHT_SIZE = 10;
     private static final int HEADER_LENGHT_SIZE = BODY_LENGHT_SIZE;
-    private static final int HASH_SIZE = 32;
+    private static final int HASH_SIZE = 32; // MD5
     private static final int SIGNATURE_SIZE = MixedCipher.KEY_SIZE; //128;
-    private static final int OWNER_SIZE = HASH_SIZE;
+    private static final int OWNER_SIZE = 32; // MD5
 
     private static final int LEN_POS_START = MSG_START.length;
     private static final int LEN_POS_END = LEN_POS_START + BODY_LENGHT_SIZE;
@@ -253,7 +254,7 @@ public class SocketMessage {
     }
 
     public boolean isChunk() {
-        return headers().chunkCount() > 1;
+        return headers().chunkCount() > 1 || this.type().equals(MessageType.Chunk);
     }
 
     public boolean isFile() {
@@ -554,6 +555,7 @@ public class SocketMessage {
     }
 
     private static String getHashFrom(final byte[] value) {
+        // return SecurityMessageDigester.encodeSHA_256(value, new byte[1]);
         return StringUtils.leftStr(MD5.encode(value), HASH_SIZE);
     }
 

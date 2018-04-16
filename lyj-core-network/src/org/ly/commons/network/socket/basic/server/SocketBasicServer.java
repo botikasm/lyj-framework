@@ -2,6 +2,7 @@ package org.ly.commons.network.socket.basic.server;
 
 import org.ly.commons.network.socket.SocketLogger;
 import org.ly.commons.network.socket.basic.SocketSettings;
+import org.ly.commons.network.socket.basic.message.chunks.ChunkManager;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.cryptograph.MD5;
@@ -114,6 +115,8 @@ public class SocketBasicServer
 
     public void open() {
         try {
+            // cretes chunk manager
+            ChunkManager.instance().open();
             // Create an AsynchronousServerSocketChannel that will listen on port 5000
             _listener = AsynchronousServerSocketChannel.open().bind(new InetSocketAddress(_port));
             _listener.accept(
@@ -135,6 +138,11 @@ public class SocketBasicServer
 
     @Override
     public void close() {
+        try {
+            ChunkManager.instance().close();
+        } catch (Throwable ignored) {
+
+        }
         try {
             if (null != _listener) {
                 _listener.close();

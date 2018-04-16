@@ -115,7 +115,9 @@ public class RegistryItem {
 
     public boolean expired() {
         final long now = System.currentTimeMillis();
-        return now - this.timestamp() > this.duration();
+        final long life = now - this.timestamp();
+        final long duration = this.duration();
+        return life > duration;
     }
 
     public boolean isDir() {

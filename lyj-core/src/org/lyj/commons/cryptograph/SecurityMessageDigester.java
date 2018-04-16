@@ -136,13 +136,17 @@ public final class SecurityMessageDigester
     }
 
     public static String encodeSHA_256(final String value, final String secret) {
+        return encodeSHA_256(value.getBytes(), secret.getBytes());
+    }
+
+    public static String encodeSHA_256(final byte[] value, final byte[] secret) {
         String result;
         try {
-            final Mac hmacSHA512 = Mac.getInstance("HmacSHA256");
-            final SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
-            hmacSHA512.init(secretKeySpec);
+            final Mac hmacSHA256 = Mac.getInstance("HmacSHA256");
+            final SecretKeySpec secretKeySpec = new SecretKeySpec(secret, "HmacSHA256");
+            hmacSHA256.init(secretKeySpec);
 
-            byte[] digest = hmacSHA512.doFinal(value.getBytes());
+            byte[] digest = hmacSHA256.doFinal(value);
             BigInteger hash = new BigInteger(1, digest);
             result = hash.toString(16);
             if ((result.length() % 2) != 0) {

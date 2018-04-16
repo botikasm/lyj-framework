@@ -19,18 +19,28 @@ public class ChunkManager {
     // ------------------------------------------------------------------------
 
     private final Map<String, ChunkList> _chunks;
+    private final ChunkCache _chunk_cache;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public ChunkManager() {
+    private ChunkManager() {
         _chunks = Collections.synchronizedMap(new HashMap<>());
+        _chunk_cache = new ChunkCache();
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public void open() {
+        _chunk_cache.open();
+    }
+
+    public void close() {
+        _chunk_cache.close();
+    }
 
     /**
      * Add message to internal list and returns TRUE if the list is complete
@@ -42,7 +52,7 @@ public class ChunkManager {
         synchronized (_chunks) {
             final String key = message.headers().chunkUid();
             if (!_chunks.containsKey(key)) {
-                _chunks.put(key, new ChunkList());
+                _chunks.put(key, new ChunkList(_chunk_cache));
             }
             _chunks.get(key).add(message);
 
@@ -103,7 +113,13 @@ public class ChunkManager {
                 final int index = chunk.headers().chunkIndex();
                 if (has_temp_file) {
                     try (final FileOutputStream fos = new FileOutputStream(temp_file_name, true)) {
-                        fos.write(chunk.body());
+
+                        // get bytes
+                        final String cache_key = new String(chunk.body());
+                        final byte[] bytes = _chunk_cache.getBytes(cache_key);
+
+                        // append data to file
+                        fos.write(bytes);
                         fos.flush();
                     }
                     // response.body(chunk.body(), true);
@@ -118,29 +134,9 @@ public class ChunkManager {
         return null;
     }
 
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-
-    private String getTempFileName(final SocketMessage message) {
-        String response = PathUtils.getTemporaryFile(RandomUtils.randomUUID(true) + ".tmp");
-        if (StringUtils.hasText(message.headers().fileName())) {
-            final String name = PathUtils.getFilename(message.headers().fileName(), true);
-            if (StringUtils.hasText(name)) {
-                response = PathUtils.suggestFileName(PathUtils.getTemporaryFile(name), true);
-            }
-        }
-        FileUtils.tryMkdirs(response);
-        return response;
-    }
-
-    // ------------------------------------------------------------------------
-    //                      S T A T I C
-    // ------------------------------------------------------------------------
-
-    public static void split(final SocketMessage message,
-                             final int chunk_size,
-                             final Delegates.Callback<SocketMessage> callback) throws Exception {
+    public void split(final SocketMessage message,
+                      final int chunk_size,
+                      final Delegates.Callback<SocketMessage> callback) throws Exception {
         final String uid = RandomUtils.randomUUID(true);
         final SplitInfo info = getSplitInfo(message);
         try (final InputStream is = info.input_stream) {
@@ -155,9 +151,9 @@ public class ChunkManager {
         }
     }
 
-    public static Thread[] splitAsync(final SocketMessage message,
-                                      final int chunk_size,
-                                      final Delegates.Callback<SocketMessage> callback) throws Exception {
+    public Thread[] splitAsync(final SocketMessage message,
+                               final int chunk_size,
+                               final Delegates.Callback<SocketMessage> callback) throws Exception {
         final Collection<Thread> response = new ArrayList<>();
 
         final String uid = RandomUtils.randomUUID(true);
@@ -176,11 +172,27 @@ public class ChunkManager {
         return response.toArray(new Thread[0]);
     }
 
-    private static SocketMessage createToken(final SocketMessage message,
-                                             final String uid,
-                                             final int index,
-                                             final int count,
-                                             final byte[] bytes) {
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private String getTempFileName(final SocketMessage message) {
+        String response = PathUtils.getTemporaryFile(RandomUtils.randomUUID(true) + ".tmp");
+        if (StringUtils.hasText(message.headers().fileName())) {
+            final String name = PathUtils.getFilename(message.headers().fileName(), true);
+            if (StringUtils.hasText(name)) {
+                response = PathUtils.suggestFileName(PathUtils.getTemporaryFile(name), true);
+            }
+        }
+        FileUtils.tryMkdirs(response);
+        return response;
+    }
+
+    private SocketMessage createToken(final SocketMessage message,
+                                      final String uid,
+                                      final int index,
+                                      final int count,
+                                      final byte[] bytes) {
         final SocketMessage token_message = new SocketMessage("");
         token_message.ownerId(message.ownerId(), false); // does not encode
         // signature for encryption
@@ -188,16 +200,18 @@ public class ChunkManager {
         // original data
         token_message.headers().headers().putAll(message.headers().toJson());
         // chunk data
-        token_message.type(SocketMessage.MessageType.Binary);
-        token_message.body(bytes);
+        token_message.type(SocketMessage.MessageType.Chunk);
         token_message.headers().chunkUid(uid);
         token_message.headers().chunkIndex(index);
         token_message.headers().chunkCount(count);
 
+        // write body
+        token_message.body(bytes);
+
         return token_message;
     }
 
-    private static SplitInfo getSplitInfo(final SocketMessage message) throws Exception {
+    private SplitInfo getSplitInfo(final SocketMessage message) throws Exception {
         final SplitInfo info = new SplitInfo();
         if (message.type().equals(SocketMessage.MessageType.File)) {
             final File file = new File(message.headers().fileName());
@@ -210,6 +224,21 @@ public class ChunkManager {
         return info;
     }
 
+
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    private static ChunkManager __instance;
+
+    public static ChunkManager instance() {
+        if (null == __instance) {
+            __instance = new ChunkManager();
+        }
+        return __instance;
+    }
+
+
     // ------------------------------------------------------------------------
     //                      E M B E D D E D
     // ------------------------------------------------------------------------
@@ -220,13 +249,16 @@ public class ChunkManager {
         //                      f i e l d s
         // ------------------------------------------------------------------------
 
+        private final ChunkCache _chunk_cache;
         private final Set<SocketMessage> _data;
+
 
         // ------------------------------------------------------------------------
         //                      c o n s t r u c t o r
         // ------------------------------------------------------------------------
 
-        public ChunkList() {
+        public ChunkList(final ChunkCache chunk_cache) {
+            _chunk_cache = chunk_cache;
             _data = new HashSet<>();
         }
 
@@ -235,7 +267,20 @@ public class ChunkManager {
         // ------------------------------------------------------------------------
 
         public void add(final SocketMessage message) {
-            _data.add(message);
+            if (_chunk_cache.isRunning()) {
+
+                // add bytes to file cache to avoid memory problems
+                final String key = message.headers().chunkUid() +
+                        "_" + message.headers().chunkIndex() +
+                        "_" + message.headers().chunkCount();
+                _chunk_cache.put(key, message.body());
+
+                // change message body adding key
+                message.body(key);
+
+                // add message to internal store
+                _data.add(message);
+            }
         }
 
         public boolean isComplete() {
@@ -246,6 +291,9 @@ public class ChunkManager {
             return false;
         }
 
+        /**
+         * Returns sorted array
+         */
         public SocketMessage[] toArray() {
             final List<SocketMessage> list = new ArrayList<>(_data);
             list.sort(new Comparator<SocketMessage>() {
