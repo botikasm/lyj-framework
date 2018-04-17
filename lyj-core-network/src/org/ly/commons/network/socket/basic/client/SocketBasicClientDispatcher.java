@@ -192,6 +192,11 @@ public class SocketBasicClientDispatcher
                 super.error("decode", t);
             }
 
+            // is this message a chunk or a chunk request?
+            if(message.isChunk()){
+
+            }
+
         }
         return message;
     }
