@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.util;
 
@@ -28,8 +28,8 @@ import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
 
 import java.io.*;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +104,7 @@ public abstract class FileUtils {
         }
     }
 
-    public static void delete(final String path) throws IOException{
+    public static void delete(final String path) throws IOException {
         delete(new File(path));
     }
 
@@ -127,6 +127,24 @@ public abstract class FileUtils {
 
         //call delete to delete files and empty directory
         file.delete();
+    }
+
+    public static boolean tryDelete(final String path) {
+        try {
+            delete(new File(path));
+            return true;
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    public static boolean tryDelete(final File file) {
+        try {
+            delete(file);
+            return true;
+        } catch (Throwable ignored) {
+            return false;
+        }
     }
 
     public static boolean exists(final String fileName) {

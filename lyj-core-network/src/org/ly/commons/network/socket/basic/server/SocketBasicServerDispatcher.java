@@ -2,6 +2,7 @@ package org.ly.commons.network.socket.basic.server;
 
 import org.ly.commons.network.socket.basic.AbstractMessageDispatcher;
 import org.ly.commons.network.socket.basic.SocketSettings;
+import org.ly.commons.network.socket.basic.message.chunks.ChunkManager;
 import org.ly.commons.network.socket.basic.message.cipher.impl.ServerCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.utils.SocketUtils;
@@ -51,9 +52,17 @@ public class SocketBasicServerDispatcher
                       final SocketMessage message,
                       final String owner_id) throws Exception {
 
-        // write data
-        this.writeData(socket, context, message, owner_id, context.timeout());
+        if (message.bodyLength() > super.chunkSize() || message.isFile()) {
 
+            // tokenize data into cache
+            final SocketMessage download_message = ChunkManager.instance().splitToCache(message, super.chunkSize());
+
+            // write download message data
+            this.writeData(socket, context, download_message, owner_id, context.timeout());
+        } else {
+            // write data
+            this.writeData(socket, context, message, owner_id, context.timeout());
+        }
     }
 
     // ------------------------------------------------------------------------

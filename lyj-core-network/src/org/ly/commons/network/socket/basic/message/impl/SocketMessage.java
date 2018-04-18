@@ -26,6 +26,8 @@ public class SocketMessage {
         Binary((byte) 0),
         Text((byte) 1),
         File((byte) 2),
+        Download((byte) 3),
+
         Chunk((byte) 97),
         Handshake((byte) 98),
         Undefined((byte) 99);
@@ -267,6 +269,10 @@ public class SocketMessage {
 
     public boolean isText() {
         return this.type().equals(MessageType.Text);
+    }
+
+    public boolean isDownload() {
+        return this.type().equals(MessageType.Download);
     }
 
     public boolean isUndefined() {

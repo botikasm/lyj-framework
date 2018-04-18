@@ -8,6 +8,7 @@ import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
 import org.ly.commons.network.socket.utils.SocketUtils;
 import org.lyj.commons.lang.ValueObject;
+import org.lyj.commons.tokenizers.TokenInfo;
 import org.lyj.commons.util.StringUtils;
 
 import java.io.File;
@@ -26,6 +27,7 @@ public class SocketBasicClientDispatcher
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
+    private final ChunkManager _chunks;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -34,8 +36,9 @@ public class SocketBasicClientDispatcher
     public SocketBasicClientDispatcher() {
         super(new ClientCipher());
 
-        this.init();
+        _chunks = ChunkManager.instance();
 
+        this.init();
     }
 
     // ------------------------------------------------------------------------
@@ -192,9 +195,42 @@ public class SocketBasicClientDispatcher
                 super.error("decode", t);
             }
 
-            // is this message a chunk or a chunk request?
-            if(message.isChunk()){
+            // is this message a download response?
+            if (message.isDownload()) {
 
+                // compose a download message
+                final String file_name = message.headers().fileName(); // is this a real file or cache?
+                final SocketMessage.MessageType type = StringUtils.hasText(file_name)
+                        ? SocketMessage.MessageType.File
+                        : SocketMessage.MessageType.Text;
+                final String uid = message.headers().chunkUid();
+                final long total_size = message.headers().fileSize();
+                final TokenInfo ti = new TokenInfo(total_size, (long)super.chunkSize());
+                final long chunk_count = ti.getChunkCount();
+
+                for (int i = 0; i < chunk_count; i++) {
+                    final int index = i + 1;
+
+                    final SocketMessage download_request = this.newMessage(context);
+                    download_request.type(SocketMessage.MessageType.Download);
+                    download_request.body(uid);
+                    download_request.headers().fileName(file_name);
+                    download_request.headers().fileSize(total_size);
+                    download_request.headers().type(type.getValue());
+                    download_request.headers().chunkUid(uid);
+                    download_request.headers().chunkIndex(index);
+                    download_request.headers().chunkCount((int) chunk_count);
+                    download_request.headers().chunkLength(super.chunkSize());
+                    download_request.headers().chunkOffset(ti.getChunkOffsets()[i]);
+
+                    final SocketMessage download_response = this.sendMessage(download_request, context);
+                    if (null != download_response) {
+                        if (_chunks.add(download_response)) {
+                            // composed response
+                            return _chunks.compose(uid);
+                        }
+                    }
+                }
             }
 
         }

@@ -165,10 +165,23 @@ public class Registry {
         }
     }
 
-    public boolean removeItem(final String path) {
+    public boolean removeItem(final RegistryItem item) {
+        synchronized (_data) {
+            final String key = item.uid();
+            return this.removeItemByKey(key, true);
+        }
+    }
+
+    public boolean removeItem(final String key) {
+        synchronized (_data) {
+            return this.removeItemByKey(key, true);
+        }
+    }
+
+    public boolean removeItemByPath(final String path) {
         synchronized (_data) {
             final String key = RegistryItem.getId(path);
-            return this.removeItemByKey(key);
+            return this.removeItemByKey(key, false);
         }
     }
 
@@ -229,9 +242,19 @@ public class Registry {
         }
     }
 
-    private boolean removeItemByKey(final String key) {
+    private boolean removeItemByKey(final String key,
+                                    final boolean remove_resource) {
         final JSONObject items = _data.optJSONObject(ITEMS);
-        return null != JsonWrapper.remove(items, key);
+        if (null != items) {
+            final Object item = JsonWrapper.remove(items, key);
+            if (remove_resource) {
+                final String path = new RegistryItem((JSONObject) item).path();
+                FileUtils.tryDelete(path);
+            }
+
+            return null != item;
+        }
+        return false;
     }
 
     private Thread startRegistryThread(final Registry registry) {

@@ -35,6 +35,7 @@ import java.io.File;
 /**
  *
  */
+@Deprecated
 public class JsonDB {
 
     public static final String CHARSET = CharEncoding.UTF_8;

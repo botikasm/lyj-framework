@@ -6,7 +6,10 @@ import org.ly.commons.network.socket.basic.message.chunks.ChunkManager;
 import org.ly.commons.network.socket.basic.message.cipher.impl.ServerCipher;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessageHandShake;
+import org.lyj.commons.util.ByteUtils;
+import org.lyj.commons.util.StringUtils;
 
+import java.io.File;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -180,13 +183,12 @@ public class SocketBasicServerHandler
         // chunked request?
         final SocketMessage full_request;
         if (request.isChunk()) {
-            if (_chunks.add(request)) {
-                // composed response
-                full_request = _chunks.compose(request.headers().chunkUid());
+            if (request.isDownload()) {
+                // DOWNLOAD
+                full_request = this.download(request, response);
             } else {
-                full_request = request;
-                // add same headers to response
-                response.headers().putAll(request.headers().toJson());
+                // UPLOAD
+                full_request = this.upload(request, response);
             }
         } else {
             full_request = request;
@@ -196,6 +198,46 @@ public class SocketBasicServerHandler
         if (null != _callback_on_channel_message) {
             _callback_on_channel_message.handle(new SocketBasicServer.ChannelInfo(ch, context), full_request, response);
         }
+
+        return response;
+    }
+
+    private SocketMessage upload(final SocketMessage request, final SocketMessage response) throws Exception {
+        final SocketMessage full_request;
+        if (_chunks.add(request)) {
+            // composed response
+            full_request = _chunks.compose(request.headers().chunkUid());
+        } else {
+            full_request = request;
+            // add same headers to response
+            response.headers().putAll(request.headers().toJson());
+        }
+        return full_request;
+    }
+
+    private SocketMessage download(final SocketMessage request,
+                                   final SocketMessage response) throws Exception {
+        // copy response headers
+        response.type(SocketMessage.MessageType.Chunk);
+        response.headers().putAll(request.headers());
+
+        final byte[] bytes;
+        if (StringUtils.hasText(request.headers().fileName())) {
+            // read file
+            final String uid = request.headers().chunkUid();
+            final String file_name = request.headers().fileName();
+            final int offset = (int) request.headers().chunkOffset();
+            final int size = request.headers().chunkLength();
+            bytes = uid.equalsIgnoreCase(file_name) ? _chunks.getBytes(uid, offset, size) : ByteUtils.getBytes(new File(file_name), offset, size);
+            response.headers().type(SocketMessage.MessageType.File.getValue());
+        } else {
+            // get from cache
+            final String key = ChunkManager.buildKey(request);
+            bytes = _chunks.getBytes(key);
+        }
+
+
+        response.body(bytes);
 
         return response;
     }

@@ -24,8 +24,6 @@ import org.lyj.commons.io.FileObserver;
 import org.lyj.commons.io.IFileObserverListener;
 import org.lyj.commons.util.FormatUtils;
 
-import java.io.IOException;
-
 /**
  * Repository with expiration time for its content.
  * Expired files are removed
@@ -143,7 +141,7 @@ public class CacheWatchDog
                     sevent = "DELETE";
                     if (!super.pathData().equalsIgnoreCase(path)
                             && !super.pathSettings().equalsIgnoreCase(path)) {
-                        super.registryRemoveItem(path);
+                        super.registryRemoveItemByPath(path);
                         super.debug(FormatUtils.format("Action '{0}' on '{1}'", sevent, path));
                     } else {
                         super.registryClear();

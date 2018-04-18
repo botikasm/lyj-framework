@@ -3,6 +3,8 @@ package org.ly.commons.network.socket.basic.message.chunks;
 import org.lyj.commons.io.filecache.CacheFiles;
 import org.lyj.commons.util.PathUtils;
 
+import java.io.InputStream;
+
 /**
  * FS cache to store temp chunks
  */
@@ -14,7 +16,7 @@ public class ChunkCache
     // ------------------------------------------------------------------------
 
     private static final String CHUNK_CACHE_ROOT = "./tmp_chunks";
-    private static final int DURATION_MS = 60 * 1000; // 1 minutes
+    private static final int DURATION_MS = 60 * 10 * 1000; // 10 minutes
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -59,6 +61,17 @@ public class ChunkCache
     public void put(final String key,
                     final byte[] content) {
         super.put(key, content);
+    }
+
+    @Override
+    public void put(final String key,
+                    final InputStream content) {
+        super.put(key, content);
+    }
+
+    @Override
+    public boolean remove(final String key) {
+        return super.remove(key);
     }
 
     // ------------------------------------------------------------------------

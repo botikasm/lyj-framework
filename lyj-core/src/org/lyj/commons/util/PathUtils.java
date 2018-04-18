@@ -166,11 +166,11 @@ public abstract class PathUtils
      * is stripped (i.e. "myfile").
      *
      * @param path
-     * @param includeextension
+     * @param include_extension
      * @return
      */
     public static String getFilename(final String path,
-                                     final boolean includeextension) {
+                                     final boolean include_extension) {
         if (path == null) {
             return null;
         }
@@ -179,8 +179,25 @@ public abstract class PathUtils
         final String filename = separatorIndex != -1
                 ? unix_path.substring(separatorIndex + 1)
                 : unix_path;
-        if (!includeextension) {
+        if (!include_extension) {
             return stripFilenameExtension(filename);
+        } else {
+            return filename;
+        }
+    }
+
+    public static String getFilename(final String path,
+                                     final String def_extension) {
+        if (path == null) {
+            return null;
+        }
+        final String unix_path = toUnixPath(path);
+        final int separatorIndex = unix_path.lastIndexOf(FOLDER_SEPARATOR);
+        final String filename = separatorIndex != -1
+                ? unix_path.substring(separatorIndex + 1)
+                : unix_path;
+        if (!filename.contains(".")) {
+            return filename.concat(def_extension);
         } else {
             return filename;
         }

@@ -198,14 +198,21 @@ public abstract class AbstractCacheFiles
         return _registry;
     }
 
-    protected void registryAddItem(final String path, final long duration) throws IOException {
+    protected void registryAddItem(final String path,
+                                   final long duration) throws IOException {
         if (_registry.addItem(path, duration)) {
             _registry.save();
         }
     }
 
-    protected void registryRemoveItem(final String path) throws IOException {
-        if (_registry.removeItem(path)) {
+    protected void registryRemoveItem(final String key) throws IOException {
+        if (_registry.removeItem(key)) {
+            _registry.save();
+        }
+    }
+
+    protected void registryRemoveItemByPath(final String path) throws IOException {
+        if (_registry.removeItemByPath(path)) {
             _registry.save();
         }
     }

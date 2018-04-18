@@ -42,6 +42,7 @@ public class ByteUtils {
     // ------------------------------------------------------------------------
 
     private static final int MAX_BUFFER_SIZE = Integer.MAX_VALUE - 8;
+    private static final int DEFAULT_BUFFER_SIZE = 10240;
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -74,6 +75,17 @@ public class ByteUtils {
         }
     }
 
+    public static byte[] getBytes(final File file,
+                                  final int skip,
+                                  final int len) throws IOException {
+        // large files (Java heap space error risk)
+        try (final FileInputStream fis = new FileInputStream(file);) {
+            return getBytes(fis, DEFAULT_BUFFER_SIZE, skip, len);
+        } catch (IOException e) {
+            throw e;
+        }
+    }
+
     public static byte[] getBytes(final BufferedImage image) throws IOException {
         return getBytes(image, "jpg");
     }
@@ -88,23 +100,23 @@ public class ByteUtils {
     }
 
     public static byte[] getBytes(final InputStream is) throws IOException {
-        return getBytes(is, 1024);
+        return getBytes(is, DEFAULT_BUFFER_SIZE);
     }
 
     public static byte[] getBytes(final InputStream is, final int bufferSize) throws IOException {
-        final ByteArrayOutputStream out = new ByteArrayOutputStream(bufferSize);
-        try {
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream(bufferSize);) {
             byte[] buffer = new byte[bufferSize];
             int len;
 
             while ((len = is.read(buffer)) >= 0) {
                 out.write(buffer, 0, len);
             }
-        } finally {
-            out.close();
+
+            out.flush();
+            return out.toByteArray();
         }
-        return out.toByteArray();
     }
+
 
     public static void read(final InputStream is, final int bufferSize,
                             final Delegates.Callback<byte[]> callback) throws IOException {
@@ -120,7 +132,7 @@ public class ByteUtils {
     }
 
     public static byte[] optBytes(final InputStream is) {
-        return optBytes(is, 1024);
+        return optBytes(is, DEFAULT_BUFFER_SIZE);
     }
 
     public static byte[] optBytes(final InputStream is, final int bufferSize) {
@@ -190,5 +202,27 @@ public class ByteUtils {
         return null;
     }
 
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private static byte[] getBytes(final InputStream is,
+                                   final int bufferSize,
+                                   final int skip,
+                                   final int len) throws IOException {
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream(bufferSize);) {
+            byte[] buffer = new byte[bufferSize];
+
+            is.skip(skip);
+
+            int len_read = is.read(buffer, 0, len);
+            if (len_read >= 0) {
+                out.write(buffer, 0, len_read);
+            }
+
+            out.flush();
+            return out.toByteArray();
+        }
+    }
 
 }

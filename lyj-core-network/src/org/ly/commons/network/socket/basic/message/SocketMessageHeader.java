@@ -25,7 +25,8 @@ public class SocketMessageHeader
     private static final String FLD_CHUNK_UID = "_chunk_uid";
     private static final String FLD_CHUNK_INDEX = "_chunk_index";
     private static final String FLD_CHUNK_COUNT = "_chunk_count";
-
+    private static final String FLD_CHUNK_OFFSET = "_chunk_offset";
+    private static final String FLD_CHUNK_LENGTH = "_chunk_length";
 
 
     // ------------------------------------------------------------------------
@@ -122,6 +123,24 @@ public class SocketMessageHeader
 
     public SocketMessageHeader chunkCount(final int value) {
         _item.put(FLD_CHUNK_COUNT, value);
+        return this;
+    }
+
+    public long chunkOffset() {
+        return _item.getLong(FLD_CHUNK_OFFSET);
+    }
+
+    public SocketMessageHeader chunkOffset(final long value) {
+        _item.put(FLD_CHUNK_OFFSET, value);
+        return this;
+    }
+
+    public int chunkLength() {
+        return _item.getInt(FLD_CHUNK_LENGTH);
+    }
+
+    public SocketMessageHeader chunkLength(final int value) {
+        _item.put(FLD_CHUNK_LENGTH, value);
         return this;
     }
 

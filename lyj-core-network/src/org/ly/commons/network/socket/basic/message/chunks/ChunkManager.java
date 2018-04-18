@@ -3,6 +3,7 @@ package org.ly.commons.network.socket.basic.message.chunks;
 import org.ly.commons.network.socket.basic.message.impl.SocketMessage;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
+import org.lyj.commons.tokenizers.TokenInfo;
 import org.lyj.commons.tokenizers.files.FileTokenizer;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
@@ -50,15 +51,16 @@ public class ChunkManager {
      */
     public boolean add(final SocketMessage message) {
         synchronized (_chunks) {
-            final String key = message.headers().chunkUid();
-            if (!_chunks.containsKey(key)) {
-                _chunks.put(key, new ChunkList(_chunk_cache));
+            final String chunk_uid = message.headers().chunkUid();
+            if (!_chunks.containsKey(chunk_uid)) {
+                _chunks.put(chunk_uid, new ChunkList(_chunk_cache));
             }
-            _chunks.get(key).add(message);
+            _chunks.get(chunk_uid).add(message);
 
-            return _chunks.get(key).isComplete();
+            return _chunks.get(chunk_uid).isComplete();
         }
     }
+
 
     public SocketMessage[] get(final String chunk_uid) {
         synchronized (_chunks) {
@@ -67,6 +69,14 @@ public class ChunkManager {
             }
             return new SocketMessage[0];
         }
+    }
+
+    public byte[] getBytes(final String cache_key) {
+        return _chunk_cache.getBytes(cache_key);
+    }
+
+    public byte[] getBytes(final String cache_key, final int skip, final int len) {
+        return _chunk_cache.getBytes(cache_key, skip, len);
     }
 
     public boolean isComplete(final String chunk_uid) {
@@ -87,6 +97,11 @@ public class ChunkManager {
     }
 
     public SocketMessage compose(final String chunk_uid) throws Exception {
+        return compose(chunk_uid, true);
+    }
+
+    public SocketMessage compose(final String chunk_uid,
+                                 final boolean remove_chunks) throws Exception {
         // get sorted chunks
         final SocketMessage[] chunks = this.get(chunk_uid); // sorted list
 
@@ -97,6 +112,7 @@ public class ChunkManager {
         if (chunks.length > 0) {
             final SocketMessage response = new SocketMessage(chunks[0].ownerId());
             // restore original headers
+            response.headers().putAll(chunks[0].headers());
             response.headers().putAll(chunks[0].headers().headers());
             final byte type = response.headers().type();
             // restore original type
@@ -114,9 +130,9 @@ public class ChunkManager {
                 if (has_temp_file) {
                     try (final FileOutputStream fos = new FileOutputStream(temp_file_name, true)) {
 
-                        // get bytes
+                        // get bytes from cache
                         final String cache_key = new String(chunk.body());
-                        final byte[] bytes = _chunk_cache.getBytes(cache_key);
+                        final byte[] bytes = _chunk_cache.getBytes(cache_key, remove_chunks);
 
                         // append data to file
                         fos.write(bytes);
@@ -125,7 +141,9 @@ public class ChunkManager {
                     // response.body(chunk.body(), true);
                 } else {
                     // append bytes to body
-                    response.body(chunk.body(), true); // append to body
+                    final String cache_key = new String(chunk.body());
+                    final byte[] bytes = _chunk_cache.getBytes(cache_key, remove_chunks);
+                    response.body(bytes, true); // append to body
                 }
             }
 
@@ -172,6 +190,33 @@ public class ChunkManager {
         return response.toArray(new Thread[0]);
     }
 
+    public SocketMessage splitToCache(final SocketMessage message,
+                                      final int chunk_size) throws Exception {
+
+        final String uid = RandomUtils.randomUUID(true);
+        final SplitInfo info = getSplitInfo(message);
+
+        final TokenInfo ti = new TokenInfo((long) info.length, (long) chunk_size);
+
+        if (!message.isFile()) {
+            // remove filename if any
+            message.headers().fileName(uid);
+
+            // save content to cache for later download
+            try (final InputStream is = info.input_stream) {
+                _chunk_cache.put(uid, is);
+            }
+        }
+
+        message.type(SocketMessage.MessageType.Download);
+        message.body(uid);
+        message.headers().chunkUid(uid);
+        message.headers().chunkCount(ti.getChunkCount());
+        message.headers().fileSize(info.length);
+
+        return message;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -179,7 +224,7 @@ public class ChunkManager {
     private String getTempFileName(final SocketMessage message) {
         String response = PathUtils.getTemporaryFile(RandomUtils.randomUUID(true) + ".tmp");
         if (StringUtils.hasText(message.headers().fileName())) {
-            final String name = PathUtils.getFilename(message.headers().fileName(), true);
+            final String name = PathUtils.getFilename(message.headers().fileName(), ".tmp");
             if (StringUtils.hasText(name)) {
                 response = PathUtils.suggestFileName(PathUtils.getTemporaryFile(name), true);
             }
@@ -216,7 +261,7 @@ public class ChunkManager {
         if (message.type().equals(SocketMessage.MessageType.File)) {
             final File file = new File(message.headers().fileName());
             info.input_stream = new FileInputStream(file);
-            info.length = message.headers().fileSize();
+            info.length = message.headers().fileSize() > 0 ? message.headers().fileSize() : file.length();
         } else {
             info.input_stream = new ByteArrayInputStream(message.body());
             info.length = message.bodyLength();
@@ -238,6 +283,16 @@ public class ChunkManager {
         return __instance;
     }
 
+    public static String buildKey(final SocketMessage message) {
+        return buildKey(message.headers().chunkUid(),
+                message.headers().chunkIndex(),
+                message.headers().chunkCount());
+    }
+
+    public static String buildKey(final String uid, final int index, final int count) {
+        return uid + "_" + index + "_" + count;
+    }
+
 
     // ------------------------------------------------------------------------
     //                      E M B E D D E D
@@ -250,7 +305,7 @@ public class ChunkManager {
         // ------------------------------------------------------------------------
 
         private final ChunkCache _chunk_cache;
-        private final Set<SocketMessage> _data;
+        private final List<SocketMessage> _data;
 
 
         // ------------------------------------------------------------------------
@@ -259,7 +314,7 @@ public class ChunkManager {
 
         public ChunkList(final ChunkCache chunk_cache) {
             _chunk_cache = chunk_cache;
-            _data = new HashSet<>();
+            _data = new ArrayList<>();
         }
 
         // ------------------------------------------------------------------------
@@ -270,9 +325,7 @@ public class ChunkManager {
             if (_chunk_cache.isRunning()) {
 
                 // add bytes to file cache to avoid memory problems
-                final String key = message.headers().chunkUid() +
-                        "_" + message.headers().chunkIndex() +
-                        "_" + message.headers().chunkCount();
+                final String key = ChunkManager.buildKey(message);
                 _chunk_cache.put(key, message.body());
 
                 // change message body adding key

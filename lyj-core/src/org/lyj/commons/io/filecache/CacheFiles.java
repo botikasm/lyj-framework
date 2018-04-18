@@ -1,10 +1,12 @@
 package org.lyj.commons.io.filecache;
 
 import org.lyj.commons.lang.CharEncoding;
+import org.lyj.commons.lang.Counter;
 import org.lyj.commons.util.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 
 /**
  *
@@ -123,10 +125,39 @@ public class CacheFiles
         }
     }
 
-    public void update(final String key, final long duration_ms) {
-        if (this.registry().has(key)) {
+    public void put(final String key,
+                    final InputStream content) {
+        this.put(key, content, super.duration());
+    }
+
+    public void put(final String key,
+                    final InputStream content,
+                    final long duration) {
+        try {
+            if (!this.has(key)) {
+                final String target = this.path(key.concat(".dat"));
+
+                this.put(key, target, content, duration);
+            } else {
+                this.update(key, duration);
+            }
+        } catch (Throwable t) {
+            super.logger().error("put#Bytes", t);
+        }
+    }
+
+    public void update(final String key,
+                       final long duration_ms) {
+        if (this.registry().has(key) && duration_ms > 0) {
             this.registry().get(key).duration(duration_ms);
         }
+    }
+
+    public boolean remove(final String key) {
+        if (this.registry().has(key)) {
+            return this.registry().removeItem(key);
+        }
+        return false;
     }
 
     public String getString(final String key) {
@@ -140,12 +171,36 @@ public class CacheFiles
     }
 
     public byte[] getBytes(final String key) {
+        return this.getBytes(key, false);
+    }
+
+    public byte[] getBytes(final String key,
+                           final boolean remove_item) {
+        byte[] response = new byte[0];
         try {
             if (super.registry().has(key)) {
                 final String target = super.registry().get(key).path();
                 final File file = new File(target);
                 if (file.exists()) {
-                    return ByteUtils.getBytes(file);
+                    response = ByteUtils.getBytes(file);
+                }
+                if (remove_item) {
+                    super.registryRemoveItem(key);
+                }
+            }
+        } catch (Throwable ignored) {
+
+        }
+        return response;
+    }
+
+    public byte[] getBytes(final String key, final int skip, final int len) {
+        try {
+            if (super.registry().has(key)) {
+                final String target = super.registry().get(key).path();
+                final File file = new File(target);
+                if (file.exists()) {
+                    return ByteUtils.getBytes(file, skip, len);
                 }
             }
         } catch (Throwable ignored) {
@@ -177,7 +232,29 @@ public class CacheFiles
             fos.flush();
         }
 
-        super.registry().addItem(key, target, duration);
+        final long dynamic_duration = duration > 0 ? duration : content.length * 5;
+        super.registry().addItem(key, target, dynamic_duration);
+        super.registry().save();
+    }
+
+    private void put(final String key,
+                     final String target,
+                     final InputStream content,
+                     final long duration) throws Exception {
+        FileUtils.tryMkdirs(target);
+        final Counter count = new Counter(0);
+        try (final FileOutputStream fos = new FileOutputStream(target)) {
+            ByteUtils.read(content, 1024, (bytes) -> {
+                try {
+                    fos.write(bytes);
+                    count.inc(bytes.length);
+                } catch (Throwable ignored) {
+                }
+            });
+            fos.flush();
+        }
+        final long dynamic_duration = duration > 0 ? duration : count.value() * 5;
+        super.registry().addItem(key, target, dynamic_duration);
         super.registry().save();
     }
 

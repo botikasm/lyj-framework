@@ -95,15 +95,15 @@ public class FileTokenizer {
     }
 
     public static void split(final InputStream is,
-                             final long length,
-                             final long chunk_size,
-                             final IProgressTokenCallback progress_callback) throws Exception {
+                                  final long length,
+                                  final long chunk_size,
+                                  final IProgressTokenCallback progress_callback) throws Exception {
         split(is, new TokenInfo(length, chunk_size), progress_callback);
     }
 
     public static void split(final InputStream is,
-                             final TokenInfo token_info,
-                             final IProgressTokenCallback progress_callback) throws Exception {
+                                  final TokenInfo token_info,
+                                  final IProgressTokenCallback progress_callback) throws Exception {
         splitData(is, token_info, progress_callback);
     }
 
@@ -160,8 +160,8 @@ public class FileTokenizer {
     }
 
     private static void splitData(final InputStream is,
-                                  final TokenInfo token_info,
-                                  final IProgressTokenCallback progress_callback) throws Exception {
+                                       final TokenInfo token_info,
+                                       final IProgressTokenCallback progress_callback) throws Exception {
         final int chunk_count = token_info.getChunkCount();
         final long chunk_size = token_info.getChunkSize();
 
