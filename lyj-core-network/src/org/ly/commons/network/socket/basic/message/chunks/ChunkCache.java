@@ -1,6 +1,6 @@
 package org.ly.commons.network.socket.basic.message.chunks;
 
-import org.lyj.commons.io.filecache.CacheFiles;
+import org.lyj.commons.io.cache.filecache.CacheFiles;
 import org.lyj.commons.util.PathUtils;
 
 import java.io.InputStream;

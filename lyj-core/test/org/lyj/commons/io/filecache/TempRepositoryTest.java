@@ -3,6 +3,7 @@ package org.lyj.commons.io.filecache;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lyj.TestInitializer;
+import org.lyj.commons.io.cache.filecache.CacheWatchDog;
 
 /**
  *

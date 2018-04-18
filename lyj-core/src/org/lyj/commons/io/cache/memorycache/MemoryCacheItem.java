@@ -1,4 +1,4 @@
-package org.lyj.commons.io.memorycache;
+package org.lyj.commons.io.cache.memorycache;
 
 import org.lyj.commons.util.json.JsonItem;
 

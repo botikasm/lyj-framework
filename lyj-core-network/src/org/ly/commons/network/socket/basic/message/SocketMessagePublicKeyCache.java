@@ -2,8 +2,8 @@ package org.ly.commons.network.socket.basic.message;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lyj.commons.io.memorycache.MemoryCache;
-import org.lyj.commons.io.memorycache.MemoryCacheItem;
+import org.lyj.commons.io.cache.memorycache.MemoryCache;
+import org.lyj.commons.io.cache.memorycache.MemoryCacheItem;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.Set;

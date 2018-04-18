@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.io.filecache;
+package org.lyj.commons.io.cache.filecache;
 
 import org.lyj.commons.io.FileObserver;
 import org.lyj.commons.io.IFileObserverListener;
@@ -56,7 +56,7 @@ public class CacheWatchDog
 
     public CacheWatchDog(final String root,
                          final long duration) {
-        super(root, duration, duration);
+        super(root, duration, duration, Mode.Memory);
         _countErrors = 0;
     }
 

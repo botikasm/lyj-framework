@@ -1,4 +1,4 @@
-package org.lyj.commons.io.memorycache;
+package org.lyj.commons.io.cache.memorycache;
 
 import java.util.Set;
 import java.util.TreeMap;

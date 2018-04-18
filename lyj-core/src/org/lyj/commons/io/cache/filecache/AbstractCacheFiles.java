@@ -1,7 +1,9 @@
 
-package org.lyj.commons.io.filecache;
+package org.lyj.commons.io.cache.filecache;
 
-import org.lyj.commons.io.filecache.registry.Registry;
+import org.lyj.commons.io.cache.filecache.registry.IRegistry;
+import org.lyj.commons.io.cache.filecache.registry.file.FileRegistry;
+import org.lyj.commons.io.cache.filecache.registry.memory.MemoryRegistry;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.LoggingRepository;
@@ -18,6 +20,29 @@ import java.io.IOException;
 public abstract class AbstractCacheFiles
         extends AbstractLogEmitter {
 
+    public enum Mode {
+
+        File((byte) 0),
+        Memory((byte) 1);
+
+        private final byte _value;
+
+        private Mode(byte value) {
+            _value = value;
+        }
+
+        public byte getValue() {
+            return _value;
+        }
+
+        public static Mode getEnum(byte value) {
+            for (Mode v : values())
+                if (v.getValue() == value) return v;
+            throw new IllegalArgumentException();
+        }
+    }
+
+
     private static final String REGISTRY_LOG = "_registry.log";
     private static final String REGISTRY_SETTINGS = "_registry_settings.json";
     private static final String REGISTRY_DATA = "_registry_data.json";
@@ -28,8 +53,9 @@ public abstract class AbstractCacheFiles
     private final String _path_data;
     private final String _path_settings;
     private final String _path_log;
-    private final Registry _registry;
+    private final IRegistry _registry; // the registry
 
+    private Mode _mode;
     private long _duration;
     private long _check_interval;
     private boolean _debugMode;
@@ -40,13 +66,15 @@ public abstract class AbstractCacheFiles
     // ------------------------------------------------------------------------
 
     public AbstractCacheFiles(final String root) {
-        this(root, ONE_MINUTE, ONE_MINUTE);
+        this(root, ONE_MINUTE, ONE_MINUTE, Mode.Memory);
     }
 
     public AbstractCacheFiles(final String root,
                               final long duration_ms,
-                              final long check_interval_ms) {
+                              final long check_interval_ms,
+                              final Mode mode) {
 
+        _mode = mode;
         _root = PathUtils.getAbsolutePath(root);
         _path_data = PathUtils.concat(_root, REGISTRY_DATA);
         _path_settings = PathUtils.concat(_root, REGISTRY_SETTINGS);
@@ -63,7 +91,7 @@ public abstract class AbstractCacheFiles
         FileUtils.tryMkdirs(_root);
 
         //-- load file registry (creates if any) --//
-        _registry = new Registry(_path_settings, _path_data);
+        _registry = _mode.equals(Mode.File) ? new FileRegistry(_path_settings, _path_data) : new MemoryRegistry(_path_settings, _path_data);
         _registry.setCheck(_check_interval);
         _registry.trySave();
 
@@ -194,24 +222,24 @@ public abstract class AbstractCacheFiles
         }
     }
 
-    protected Registry registry() {
+    protected IRegistry registry() {
         return _registry;
     }
 
     protected void registryAddItem(final String path,
-                                   final long duration) throws IOException {
+                                   final long duration) throws Exception {
         if (_registry.addItem(path, duration)) {
             _registry.save();
         }
     }
 
-    protected void registryRemoveItem(final String key) throws IOException {
+    protected void registryRemoveItem(final String key) throws Exception {
         if (_registry.removeItem(key)) {
             _registry.save();
         }
     }
 
-    protected void registryRemoveItemByPath(final String path) throws IOException {
+    protected void registryRemoveItemByPath(final String path) throws Exception {
         if (_registry.removeItemByPath(path)) {
             _registry.save();
         }

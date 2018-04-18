@@ -121,8 +121,27 @@ public class FileDBCollection {
         return this.write(item, false, true);
     }
 
+    public FileDBEntity remove(final String key) throws Exception {
+        return this.removeByKey(key);
+    }
+
     public void forEach(final Delegates.FunctionArg<FileDBEntity, Boolean> callback) {
         this.read(callback);
+    }
+
+    public FileDBEntity get(final Delegates.FunctionArg<FileDBEntity, Boolean> callback) {
+        final ValueObject<FileDBEntity> response = new ValueObject<>();
+        if (null != callback) {
+            this.read((entity) -> {
+                if (callback.call(entity)) {
+                    response.content(entity);
+                    return true; // exit loop
+                } else {
+                    return false; // continue loop
+                }
+            });
+        }
+        return response.content();
     }
 
     // ------------------------------------------------------------------------
@@ -191,11 +210,13 @@ public class FileDBCollection {
                 Locker.instance().lock(_file_path);
 
                 if (!entity.has(KEY)) {
-                    // just append
-                    entity.put(KEY, GUID.create());
-                    this.addFieldNames(entity);
-                    this.append(entity);
-                    response = entity;
+                    if (!remove) {
+                        // just append
+                        entity.put(KEY, GUID.create());
+                        this.addFieldNames(entity);
+                        this.append(entity);
+                        response = entity;
+                    }
                 } else {
                     final File inputFile = new File(_file_path);
                     final File tempFile = new File(_file_path + ".tmp");
@@ -215,6 +236,7 @@ public class FileDBCollection {
                                 // ALREADY EXISTS
                                 if (remove) {
                                     _row_count.inc(-1);
+                                    response = row;
                                     continue;
                                 } else if (upsert) {
                                     // UPSERT ITEM
@@ -248,6 +270,55 @@ public class FileDBCollection {
                             }
                         }
                     }
+                }
+
+            } finally {
+                Locker.instance().unlock(_file_path);
+            }
+            return response;
+        }
+    }
+
+    private FileDBEntity removeByKey(final String key) throws Exception {
+        synchronized (_row_count) {
+            FileDBEntity response = null;
+            try {
+                Locker.instance().lock(_file_path);
+
+                final File inputFile = new File(_file_path);
+                final File tempFile = new File(_file_path + ".tmp");
+
+                final BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+                final BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+                String line;
+                long index = 0;
+
+                while ((line = reader.readLine()) != null) {
+                    // trim newline when comparing with lineToRemove
+                    final String trimmed_line = line.trim();
+                    if (StringUtils.isJSONObject(trimmed_line)) {
+                        final FileDBEntity row = new FileDBEntity(index, trimmed_line);
+                        if (row.key().equals(key)) {
+
+                            _row_count.inc(-1);
+                            response = row;
+                            continue;
+
+                        } else {
+                            writer.write(this.prepareRowToWrite(row));
+                        }
+
+                        index++;
+                    }
+                }
+
+                writer.flush();
+                writer.close();
+                reader.close();
+
+                if (inputFile.delete()) {
+                    boolean successful = tempFile.renameTo(new File(_file_path));
                 }
 
             } finally {

@@ -18,12 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.io.filecache.registry;
+package org.lyj.commons.io.cache.filecache.registry.file;
 
-import org.json.JSONObject;
 import org.lyj.commons.cryptograph.MD5;
+import org.lyj.commons.io.cache.filecache.registry.IRegistryItem;
+import org.lyj.commons.io.db.filedb.FileDBEntity;
 import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.PathUtils;
 
 import java.io.File;
@@ -31,7 +31,9 @@ import java.io.File;
 /**
  *
  */
-public class RegistryItem {
+public class FileRegistryItem
+        extends FileDBEntity
+        implements IRegistryItem {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -48,39 +50,28 @@ public class RegistryItem {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final JsonWrapper _data;
-
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public RegistryItem() {
-        _data = new JsonWrapper(new JSONObject());
-        this.duration(DEFAULT_LIFE);
+    public FileRegistryItem() {
+        this.init();
     }
 
 
-    public RegistryItem(final JSONObject item) {
-        _data = new JsonWrapper(item);
-    }
-
-    @Override
-    public String toString() {
-        return _data.toString();
+    public FileRegistryItem(final Object item) {
+        super(item);
+        this.init();
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public JSONObject json() {
-        return _data.getJSONObject();
-    }
-
-    public RegistryItem path(final String path) {
-        _data.putSilent(PATH, PathUtils.toUnixPath(path));
-        _data.putSilent(TIMESTAMP, System.currentTimeMillis());
-        if (!_data.has(UID)) {
+    public FileRegistryItem path(final String path) {
+        super.put(PATH, PathUtils.toUnixPath(path));
+        super.put(TIMESTAMP, System.currentTimeMillis());
+        if (!super.has(UID)) {
             this.uid(getId(this.path()));
         }
 
@@ -88,28 +79,28 @@ public class RegistryItem {
     }
 
     public String path() {
-        return _data.optString(PATH);
+        return super.getString(PATH);
     }
 
     public String uid() {
-        return _data.optString(UID);
+        return super.getString(UID);
     }
 
-    public RegistryItem uid(final String value) {
-        _data.putSilent(UID, value);
+    public FileRegistryItem uid(final String value) {
+        super.put(UID, value);
         return this;
     }
 
     public long timestamp() {
-        return _data.optLong(TIMESTAMP);
+        return super.getLong(TIMESTAMP);
     }
 
     public long duration() {
-        return _data.optLong(DURATION);
+        return super.getLong(DURATION);
     }
 
-    public RegistryItem duration(final long value) {
-        _data.putSilent(DURATION, value);
+    public FileRegistryItem duration(final long value) {
+        super.put(DURATION, value);
         return this;
     }
 
@@ -135,6 +126,12 @@ public class RegistryItem {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private void init() {
+        if (!super.has(DURATION)) {
+            super.put(DURATION, DEFAULT_LIFE);
+        }
+    }
 
     // --------------------------------------------------------------------
     //               S T A T I C

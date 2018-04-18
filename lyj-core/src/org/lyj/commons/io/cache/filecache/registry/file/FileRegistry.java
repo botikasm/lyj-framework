@@ -18,45 +18,79 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.lyj.commons.io.filecache.registry;
+package org.lyj.commons.io.cache.filecache.registry.file;
 
-import org.json.JSONObject;
 import org.lyj.Lyj;
+import org.lyj.commons.io.cache.filecache.registry.IRegistry;
+import org.lyj.commons.io.cache.filecache.registry.IRegistryItem;
+import org.lyj.commons.io.db.filedb.FileDB;
+import org.lyj.commons.io.db.filedb.FileDBCollection;
+import org.lyj.commons.io.db.filedb.FileDBEntity;
 import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  *
  */
-public class Registry {
+public class FileRegistry
+        implements IRegistry {
 
     private static final long DEFAULT_LIFE = 60 * 1000; // 1 minute
 
     private static final String CHECK_MS = "check_ms";
-    private static final String ITEMS = "items";
 
     private final String _path_settings;
     private final String _path_data;
-    private final JsonWrapper _data;
+
     private final JsonWrapper _settings;
     private Thread _registryThread;
+
+    private FileDB _db;
+    private FileDBCollection _collection;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public Registry(final String path_settings,
-                    final String path_data) {
+    public FileRegistry(final String path_settings,
+                        final String path_data) {
         _path_settings = path_settings;
         _path_data = path_data;
 
-        _data = new JsonWrapper(this.loadData(_path_data));
         _settings = new JsonWrapper(this.loadSettings(_path_settings));
     }
+
+    // ------------------------------------------------------------------------
+    //                      s e t t i n g s
+    // ------------------------------------------------------------------------
+
+    public void reloadSettings() {
+        _settings.parse(this.loadSettings(_path_settings));
+    }
+
+    public long getCheck() {
+        synchronized (_settings) {
+            return _settings.optLong(CHECK_MS);
+        }
+    }
+
+    public void setCheck(final long value) {
+        synchronized (_settings) {
+            try {
+                _settings.putSilent(CHECK_MS, value);
+                this.saveSettings();
+            } catch (Throwable ignored) {
+            }
+        }
+    }
+
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -64,6 +98,7 @@ public class Registry {
 
     public void start() {
         this.interrupt();
+        this.initDB();
         _registryThread = this.startRegistryThread(this);
     }
 
@@ -90,38 +125,16 @@ public class Registry {
 
     public void clear() {
         this.reloadSettings();
-        synchronized (_data) {
-            _data.putSilent(ITEMS, new JSONObject());
-        }
-    }
-
-    public void reloadSettings() {
-        _settings.parse(this.loadSettings(_path_settings));
-    }
-
-    public long getCheck() {
-        synchronized (_settings) {
-            return _settings.optLong(CHECK_MS);
-        }
-    }
-
-    public void setCheck(final long value) {
-        synchronized (_settings) {
-            try {
-                _settings.putSilent(CHECK_MS, value);
-                this.saveSettings();
-            } catch (Throwable ignored) {
-            }
-        }
+        this.resetDB();
     }
 
     public void save() throws IOException {
-        this.saveData();
+
     }
 
     public boolean trySave() {
         try {
-            this.saveData();
+
             return true;
         } catch (Throwable ignored) {
             return false;
@@ -129,83 +142,92 @@ public class Registry {
     }
 
     public boolean has(final String key) {
-        synchronized (_data) {
-            final JSONObject items = _data.optJSONObject(ITEMS);
-            return null != items && items.has(key);
+        if (null != _collection) {
+            return _collection.exists(key);
         }
+        return false;
     }
 
-    public RegistryItem get(final String key) {
-        synchronized (_data) {
-            final JSONObject items = _data.optJSONObject(ITEMS);
-            return null != items && items.has(key)
-                    ? new RegistryItem(items.getJSONObject(key))
-                    : null;
+    public FileRegistryItem get(final String key) {
+        if (null != _collection) {
+            return new FileRegistryItem(_collection.get(key));
         }
+        return null;
     }
 
     public boolean addItem(final String path,
-                           final long duration) {
-        final String key = RegistryItem.getId(path);
+                           final long duration) throws Exception {
+        final String key = FileRegistryItem.getId(path);
         return this.addItem(key, path, duration);
     }
 
     public boolean addItem(final String key,
                            final String path,
-                           final long duration) {
-        synchronized (_data) {
-            final JSONObject items = _data.optJSONObject(ITEMS);
-            if (null != items && !items.has(key)) {
-                JsonWrapper.put(items, key,
-                        (new RegistryItem()).uid(key).path(path).duration(duration).json());
-                _data.putOpt(ITEMS, items);
-                return true;
-            }
-            return false;
+                           final long duration) throws Exception {
+
+        if (null != _collection) {
+            final FileRegistryItem item = new FileRegistryItem();
+            item.key(key);
+            item.uid(key);
+            item.path(path);
+            item.duration(duration);
+
+            _collection.upsert(item);
         }
+
+        return false;
     }
 
-    public boolean removeItem(final RegistryItem item) {
-        synchronized (_data) {
-            final String key = item.uid();
-            return this.removeItemByKey(key, true);
-        }
+    public boolean removeItem(final IRegistryItem item) throws Exception {
+        final String key = item.uid();
+        return this.removeItemByKey(key, true);
     }
 
-    public boolean removeItem(final String key) {
-        synchronized (_data) {
-            return this.removeItemByKey(key, true);
-        }
+    public boolean removeItem(final String key) throws Exception {
+        return this.removeItemByKey(key, true);
     }
 
-    public boolean removeItemByPath(final String path) {
-        synchronized (_data) {
-            final String key = RegistryItem.getId(path);
-            return this.removeItemByKey(key, false);
-        }
+    public boolean removeItemByPath(final String path) throws Exception {
+        return this.removeItemByPath(path, true);
     }
 
-    public int removeExpired() {
-        synchronized (_data) {
-            int count = 0;
-            final JsonWrapper items = new JsonWrapper(_data.optJSONObject(ITEMS));
-            final Set<String> keys = items.keys();
-            for (final String key : keys) {
-                final RegistryItem item = new RegistryItem(items.optJSONObject(key));
+    public int removeExpired() throws Exception {
+        final Set<String> expired = new HashSet<>();
+        if (null != _collection) {
+            _collection.forEach((entity) -> {
+                final FileRegistryItem item = new FileRegistryItem(entity);
                 if (item.expired() && item.isFileOrEmptyDir()) {
-                    items.remove(key);
-                    // remove file
-                    this.removeFile(item.path());
-                    count++;
+                    expired.add(item.key());
                 }
+                return false;
+            });
+
+            // remove expired items
+            for (final String key : expired) {
+                this.removeItem(key);
             }
-            return count;
         }
+        return expired.size();
     }
 
     // --------------------------------------------------------------------
     //               p r i v a t e
     // --------------------------------------------------------------------
+
+    private void initDB() {
+        // init database
+        final String db_root = PathUtils.getParent(_path_data);
+        final String collection_name = PathUtils.getFilename(_path_data, false);
+        _db = new FileDB(db_root, "registry");
+        _collection = _db.collection(collection_name);
+    }
+
+    private void resetDB() {
+        if (null != _db) {
+            FileUtils.tryDelete(_db.dbPath());
+        }
+        this.initDB();
+    }
 
     private String loadData(final String fileName) {
         try {
@@ -223,12 +245,6 @@ public class Registry {
         }
     }
 
-    private void saveData() throws IOException {
-        FileUtils.writeStringToFile(new File(_path_data),
-                _data.toString(1),
-                Lyj.getCharset());
-    }
-
     private void saveSettings() throws IOException {
         FileUtils.writeStringToFile(new File(_path_settings),
                 _settings.toString(1),
@@ -243,21 +259,41 @@ public class Registry {
     }
 
     private boolean removeItemByKey(final String key,
-                                    final boolean remove_resource) {
-        final JSONObject items = _data.optJSONObject(ITEMS);
-        if (null != items) {
-            final Object item = JsonWrapper.remove(items, key);
-            if (remove_resource) {
-                final String path = new RegistryItem((JSONObject) item).path();
-                FileUtils.tryDelete(path);
+                                    final boolean remove_resource) throws Exception {
+        if (null != _collection) {
+            final FileDBEntity entity = _collection.remove(key);
+            if (null != entity) {
+                final FileRegistryItem item = new FileRegistryItem(entity);
+                if (remove_resource) {
+                    final String path = item.path();
+                    if (StringUtils.hasText(path)) {
+                        FileUtils.tryDelete(path);
+                    }
+                }
+                return true;
             }
 
-            return null != item;
         }
         return false;
     }
 
-    private Thread startRegistryThread(final Registry registry) {
+    private boolean removeItemByPath(final String path,
+                                     final boolean remove_resource) throws Exception {
+        if (null != _collection) {
+            final FileDBEntity entity = _collection.get((db_entity) -> (new FileRegistryItem(db_entity)).path().equalsIgnoreCase(path));
+            if (null != entity) {
+                if (remove_resource) {
+                    if (StringUtils.hasText(path)) {
+                        FileUtils.tryDelete(path);
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Thread startRegistryThread(final IRegistry registry) {
         // creates thread that check for expired items
         final Thread t = new Thread(new Runnable() {
             boolean _interrupted = false;
@@ -278,7 +314,7 @@ public class Registry {
                         final long sleep = registry.getCheck();
                         Thread.sleep(sleep);
 
-                    } catch (InterruptedException ignored) {
+                    } catch (Exception ignored) {
                         _interrupted = true;
                     }
                 }

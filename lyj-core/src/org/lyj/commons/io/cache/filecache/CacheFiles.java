@@ -1,4 +1,4 @@
-package org.lyj.commons.io.filecache;
+package org.lyj.commons.io.cache.filecache;
 
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.lang.Counter;
@@ -40,7 +40,7 @@ public class CacheFiles
     public CacheFiles(final String root,
                       final long duration,
                       final String encoding) {
-        super(root, duration, (long) (duration * 0.5));
+        super(root, duration, (long) (duration * 0.5), Mode.Memory);
         _encoding = encoding;
     }
 
@@ -154,8 +154,12 @@ public class CacheFiles
     }
 
     public boolean remove(final String key) {
-        if (this.registry().has(key)) {
-            return this.registry().removeItem(key);
+        try {
+            if (this.registry().has(key)) {
+                return this.registry().removeItem(key);
+            }
+        } catch (Throwable t) {
+            super.logger().error("remove", t);
         }
         return false;
     }
