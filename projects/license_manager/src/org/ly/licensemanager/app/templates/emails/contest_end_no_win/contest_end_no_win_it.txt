@@ -1,0 +1,11 @@
+IL TORNEO '*|CONTEST_TITLE|*' E' APPENA TERMINATO
+---------------------------------------------------
+
+*|USER_NAME|*, '*|CONTEST_TITLE|*' è appena terminato e tu sei in #*|CONTEST_POS|* posizione con *|CONTEST_SCORE|*  Punti.
+
+Ma il divertimento non finisce certo qui.
+Preparati per le prossime sfide allenandoti in Sala Giochi.
+
+---------------------------------------------------
+
+Lo Staff di Funny Gain

@@ -1,0 +1,10 @@
+THE TOURNAMENT '*|CONTEST_TITLE|*' IS OVER
+---------------------------------------------------
+
+*|USER_NAME|*, '*|CONTEST_TITLE|*' is over and you are in #*|CONTEST_POS|* position with *|CONTEST_SCORE|*  Points.
+
+
+
+---------------------------------------------------
+
+Lo Staff di Funny Gain

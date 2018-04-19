@@ -1,0 +1,13 @@
+CONFERMA INDIRIZZO EMAIL!
+-------------------------------
+
+Devi confermare questo indirizzo: "*|EMAIL|*"
+
+Per confermare l'indirizzo copia il link seguente nel browser e premi invio:
+
+*|LINK|*
+
+
+-------------------------------
+
+Lo Staff Funny Gain.

@@ -1,0 +1,16 @@
+Ciao *|USER_NAME|*,
+hai appena mandato un invito a *|EMAIL|*.
+
+Quando il tuo amico si registrerà con la mail *|EMAIL|*,
+ti verranno accreditati 1000 Funny Coins.
+
+
+** Iscriviti alla newsletter o seguici su Facebook
+------------------------------------------------------------
+
+http://www.funnygain.com
+https://www.facebook.com/funnygain
+
+------------------------------------------------------------
+Questa email ti è stata inviata da
+Funny Gain S.r.l. · Strada Rovereta, 6 · San Marino 47891 · San Marino

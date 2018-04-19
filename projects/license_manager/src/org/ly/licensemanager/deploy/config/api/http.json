@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "port": 4001,
+  "use_ssl": true,
+  "404": "",
+  "host": "https://localhost:4001"
+}
