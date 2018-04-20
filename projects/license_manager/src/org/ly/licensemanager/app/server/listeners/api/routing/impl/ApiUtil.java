@@ -1,6 +1,7 @@
 package org.ly.licensemanager.app.server.listeners.api.routing.impl;
 
 
+import org.json.JSONObject;
 import org.ly.licensemanager.IConstants;
 import org.ly.licensemanager.app.server.listeners.api.routing.ApiHelper;
 import org.lyj.commons.cryptograph.MD5;
@@ -15,7 +16,10 @@ public class ApiUtil {
     }
 
     public static void version(final HttpServerContext context) {
-        context.writeJson("{\"app\":\"" + IConstants.APP_VERSION + "\"}");
+        final JSONObject item = new JSONObject();
+        item.put("app_version", IConstants.APP_VERSION);
+        item.put("app_name", IConstants.APP_NAME);
+        context.writeJson(item);
     }
 
     public static void md5(final HttpServerContext context) {
