@@ -18,6 +18,9 @@ public class ConfigHelper {
     private static final String API_ENABLED = "api.http.enabled";
     private static final String API_HOST = "api.http.host";
     private static final String API_USE_SSL = "api.http.use_ssl";
+    private static final String API_NOTIFY_TO = "api.http.notify_to";
+
+    private static final String MAIL_SMTP = "mail.smtp";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -59,6 +62,18 @@ public class ConfigHelper {
 
     public boolean apiUseSSL() {
         return _configuration.getBoolean(API_USE_SSL, true);
+    }
+
+    public String[] apiNotifyTo() {
+        return _configuration.getStringArray(API_NOTIFY_TO);
+    }
+
+    // ------------------------------------------------------------------------
+    //                      m a i l
+    // ------------------------------------------------------------------------
+
+    public ConfigMailSmtp mailStmp() {
+        return new ConfigMailSmtp(_configuration.getJSONObject(MAIL_SMTP));
     }
 
     // ------------------------------------------------------------------------

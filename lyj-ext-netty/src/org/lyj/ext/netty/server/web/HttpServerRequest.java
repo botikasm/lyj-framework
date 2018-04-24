@@ -22,7 +22,7 @@ public class HttpServerRequest {
     private final HttpServerRequestContext _context;
     private final HttpServerConfig _config;
     private final CacheController _cache;
-
+    private final Map<String, String> _headers;
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -32,11 +32,18 @@ public class HttpServerRequest {
         _config = _context.config();
 
         _cache = new CacheController(_config);
+        _headers = new HashMap<>();
+
+        this.init(context);
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public Map<String, String> headers() {
+        return _headers;
+    }
 
     public HttpServerConfig config() {
         return _config;
@@ -215,6 +222,23 @@ public class HttpServerRequest {
 
     public boolean isModifiedSince(final File file) {
         return _cache.isModifiedSince(_context.nativeHttpRequest(), file);
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private void init(final HttpServerRequestContext context) {
+        try {
+            if (null != context) {
+                final Set<String> names = context.headerNames();
+                for (final String name : names) {
+                    _headers.put(name, context.headerValue(name));
+                }
+            }
+        } catch (Throwable ignored) {
+            // ignored
+        }
     }
 
 

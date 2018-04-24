@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "connection": {
+    "host": "smtp.funnygain.com",
+    "port": "587",
+    "is_tls": true,
+    "is_ssl": false,
+    "username": "support@funnygain.com",
+    "password": "Hkj<t!1f5s"
+  },
+  "info": {
+    "admin_addresses": [
+      "angelo.geminiani@funnygain.com"
+    ],
+    "from": "Funny Gain<support@funnygain.com>",
+    "reply_to": "Funny Gain<support@funnygain.com>"
+  }
+}

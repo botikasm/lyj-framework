@@ -93,13 +93,33 @@ public class HttpServerContext
         return _params;
     }
 
-    public Map<String, String> headers() {
+    public Map<String, String> responseHeaders() {
         return _response.headers();
     }
 
+    public Map<String, String> requestHeaders() {
+        return _request.headers();
+    }
+
+
     public String getLang() {
-        final String langCode = this.headers().get(ACCEPT_LANGUAGE);
-        return null != langCode ? LocaleUtils.getLanguage(langCode) : LocaleUtils.getCurrent().getLanguage();
+        String langCode = "";
+        final String accept_language = this.requestHeaders().get(ACCEPT_LANGUAGE);
+        if(StringUtils.hasText(accept_language)){
+           final String[] tokens = StringUtils.split(accept_language, ",");
+           if(tokens.length>0){
+               langCode = CollectionUtils.get(StringUtils.split(tokens[0], ";"), 0);
+           }
+        }
+
+        if(!StringUtils.hasText(langCode)){
+            langCode = this.getParam("lang");
+        }
+        if(!StringUtils.hasText(langCode)){
+            langCode = this.getParam("locale");
+        }
+        
+        return StringUtils.hasText(langCode) ? LocaleUtils.getLanguage(langCode) : LocaleUtils.getCurrent().getLanguage();
     }
 
     public HttpServerResponse response() {

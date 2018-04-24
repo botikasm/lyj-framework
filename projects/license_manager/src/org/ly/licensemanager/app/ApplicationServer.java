@@ -1,6 +1,7 @@
 package org.ly.licensemanager.app;
 
 import org.ly.licensemanager.IConstants;
+import org.ly.licensemanager.app.controllers.license.LicenseController;
 import org.ly.licensemanager.app.server.listeners.api.ApiServer;
 import org.ly.licensemanager.deploy.config.ConfigHelper;
 import org.lyj.commons.logging.Logger;
@@ -80,6 +81,8 @@ public class ApplicationServer {
 
             if (!_test_mode) {
 
+                // start license manager
+                LicenseController.instance().refresh();
 
                 final boolean api_enabled = ConfigHelper.instance().apiEnabled();
                 this.getLogger().info("APP SERVER: API SERVER IS " + (api_enabled ? "ENABLED" : "DISABLED"));
@@ -125,7 +128,9 @@ public class ApplicationServer {
         sb.append("\t").append("ROOT: ").append(PathUtils.getAbsolutePath("")).append("\n");
         sb.append("\t").append("API PORT: ").append(config.apiEnabled() ? config.apiPort() : "Not Enabled").append("\n");
         sb.append("\t").append("API HOST: ").append(config.apiEnabled() ? config.apiHost() : "Not Enabled").append("\n");
-
+        sb.append("\t").append("API TEST: ").append(config.apiEnabled()
+                ? config.apiHost() + "/api/version"
+                : "Not Enabled").append("\n");
         sb.append("**************************************");
 
         this.getLogger().info(sb.toString());

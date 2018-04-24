@@ -14,8 +14,7 @@ public class TemplatesEmail
 
     private static final String NAME = "emails_i18n";
 
-    public static final String TPL_FAIL_BUY = "emails/fail_buy";
-    public static final String TPL_INVOICE_EMITTED = "emails/invoice_emitted";
+    public static final String TPL_LICENSE_REQUEST = "emails/license_request";
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r

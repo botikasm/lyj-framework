@@ -2,6 +2,7 @@ package org.ly.licensemanager.app.controllers.license.registry;
 
 import org.lyj.commons.util.DateUtils;
 import org.lyj.commons.util.DateWrapper;
+import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.MathUtils;
 import org.lyj.commons.util.json.JsonItem;
 
@@ -18,6 +19,10 @@ public class LicenseItem
     private static final String FLD_TIMESTAMP = "timestamp";
     private static final String FLD_DURATION_DAYS = "duration_days";
     private static final String FLD_ENABLED = "enabled";
+    private static final String FLD_EMAIL = "email";
+    private static final String FLD_NAME = "name";
+    private static final String FLD_LANG = "lang";
+    private static final String FLD_FMT_EXPIRATION = "fmt_expiration";
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -50,6 +55,33 @@ public class LicenseItem
         return this;
     }
 
+    public String lang() {
+        return super.getString(FLD_LANG);
+    }
+
+    public LicenseItem lang(final String value) {
+        super.put(FLD_LANG, value);
+        return this;
+    }
+
+    public String email() {
+        return super.getString(FLD_EMAIL);
+    }
+
+    public LicenseItem email(final String value) {
+        super.put(FLD_EMAIL, value);
+        return this;
+    }
+
+    public String name() {
+        return super.getString(FLD_NAME);
+    }
+
+    public LicenseItem name(final String value) {
+        super.put(FLD_NAME, value);
+        return this;
+    }
+
     public int durationDays() {
         return super.getInt(FLD_DURATION_DAYS);
     }
@@ -75,6 +107,8 @@ public class LicenseItem
     public void postpone(final int days) {
         final int duration = this.durationDays();
         this.durationDays(duration + days);
+
+        this.recalculate();
     }
 
     public void expirationDate(final String date) {
@@ -99,11 +133,10 @@ public class LicenseItem
 
     public boolean expired() {
         try {
-            final long timestamp = this.timestamp();
             final long now = System.currentTimeMillis();
-            final long duration_ms = DateUtils.ONE_DAY_MS * this.durationDays();
+            final long expiration_time = this.expirationTime();
 
-            return timestamp + duration_ms < now;
+            return expiration_time < now;
         } catch (Throwable ignored) {
             // ignored
         }
@@ -121,7 +154,23 @@ public class LicenseItem
         if (!super.has(FLD_ENABLED)) {
             super.put(FLD_ENABLED, true);
         }
+
+        this.recalculate();
     }
 
+    private long durationMs() {
+        return DateUtils.ONE_DAY_MS * this.durationDays();
+    }
 
+    private long expirationTime() {
+        final long timestamp = this.timestamp();
+        final long duration_ms = this.durationMs();
+
+        return timestamp + duration_ms;
+    }
+
+    private void recalculate(){
+        final String fmt_date = FormatUtils.formatDate(new Date(this.expirationTime()));
+        super.put(FLD_FMT_EXPIRATION, fmt_date);
+    }
 }

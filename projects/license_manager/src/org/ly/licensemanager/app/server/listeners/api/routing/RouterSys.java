@@ -62,8 +62,15 @@ public class RouterSys
         super.post(PATH_API_UTIL.concat("/md5")).handler(ApiUtil::md5);
 
         //-- license --//
-        super.get(PATH_API_LICENSE.concat("/register/:app_token")).handler(_api_license::register);
-
+        super.get(PATH_API_LICENSE.concat("/form_register/:app_token")).handler(_api_license::form_register);
+        super.get(PATH_API_LICENSE.concat("/form_register/:app_token/:uid")).handler(_api_license::form_register);
+        super.get(PATH_API_LICENSE.concat("/register/:app_token/:uid/:email/:name")).handler(_api_license::register);
+        super.post(PATH_API_LICENSE.concat("/register")).handler(_api_license::register);
+        super.get(PATH_API_LICENSE.concat("/validate/:app_token/:uid/:format")).handler(_api_license::validate);
+        super.get(PATH_API_LICENSE.concat("/get/:app_token/:uid")).handler(_api_license::get);
+        super.get(PATH_API_LICENSE.concat("/enable/:app_token/:uid")).handler(_api_license::enable);
+        super.get(PATH_API_LICENSE.concat("/disable/:app_token/:uid")).handler(_api_license::disable);
+        super.get(PATH_API_LICENSE.concat("/postpone/:app_token/:uid/:postpone_days")).handler(_api_license::postpone);
     }
 
     // ------------------------------------------------------------------------

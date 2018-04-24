@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>License Registration</title>
+
+    <style>
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            background: #9c27b0;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .container {
+            width: 400px;
+            height: 500px;
+            background: #fff;
+            margin: 20px auto;
+            border-radius: 4px;
+            text-align: center;
+            position: relative;
+            -moz-box-shadow: 0px 0px 28px rgba(0, 0, 0, .3);
+            -webkit-box-shadow: 0px 0px 28px rgba(0, 0, 0, .3);
+            box-shadow: 0px 0px 28px rgba(0, 0, 0, .3);
+            overflow: hidden;
+        }
+
+
+
+        .one, .two {
+            display: block;
+            height: 500px;
+            width: 400px;
+            margin: 0px auto;
+            position: absolute;
+            -webkit-transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 600ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .one {
+            top: 0;
+            background: #fff;
+            margin-top: 20px;
+        }
+
+        .two {
+            top: 500px;
+            background: #ffc107;
+        }
+
+        .two h3 {
+            color: #fff;
+            padding-top: 240px;
+        }
+
+        .container .logo {
+            width: 40%;
+            height: 30px;
+            display: block;
+            margin: 10px auto;
+        }
+
+        .container .logo img {
+            max-height: 32px;
+        }
+
+        .one .heading {
+            color: #607d8b;
+            text-transform: none;
+            font-size: 20px;
+            fonr-weight: 900;
+            margin-top: 20px;
+        }
+
+        .container p {
+            font-size: 12px;
+            color: #b7b7b7;
+            font-weight: lighter;
+            text-transform: none;
+            margin: auto 15px;
+        }
+
+        input[type='text'] {
+            width: 85%;
+            height: 60px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding-bottom: -80px;
+            border: none;
+            border-bottom: 3px solid #ffc107;
+            overflow: auto;
+            position: relative;
+        }
+
+        input[type='text']:active:focus,
+        input[type='text']:focus,
+        input[type='text']:hover {
+            outline: none;
+            font-size: 20px;
+        }
+
+        input[type='text']:focus::-webkit-input-placeholder,
+        input[type='text']:active:focus::-webkit-input-placeholder {
+            font-size: 12px;
+            display: block;
+            -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
+        }
+
+        ::-webkit-placeholder {
+            font-size: 14px;
+            color: #b7b7b7;
+            text-transform: none;
+            -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+            -webkit-transition: all .3s ease-in-out;
+            transition: all .3s ease-in-out;
+        }
+
+        ::placeholder {
+            font-size: 14px;
+            color: #b7b7b7;
+            text-transform: none;
+            -webkit-transform: translateY(0px);
+            transform: translateY(0px);
+            -webkit-transition: all .3s ease-in-out;
+            transition: all .3s ease-in-out;
+        }
+
+        .one .btn {
+            width: 85%;
+            background: #ffc107;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #fff;
+            text-transform: none;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .one .btn:active:focus,
+        .one .btn:focus,
+        .one .btn:hover {
+            outline: none;
+        }
+
+        .one .btn:hover {
+            cursor: pointer;
+        }
+
+        .close {
+            position: relative;
+            top: 0;
+            left: 0;
+            display: block;
+            cursor: pointer;
+        }
+
+        .close:before {
+            content: "";
+            position: absolute;
+            top: -240px;
+            right: 50px;
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: #fff;
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+
+        .close:after {
+            content: "";
+            position: absolute;
+            top: -240px;
+            right: 50px;
+            display: block;
+            width: 22px;
+            height: 3px;
+            background: #fff;
+            -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
+    </style>
+
+</head>
+<body>
+<div>
+
+    <!-- body -->
+    <section class="container">
+        <section id="one" class="one">
+            <div class="logo">
+                <img src="data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMiA1MTI7IiB4bWw6c3BhY2U9InByZXNlcnZlIiB3aWR0aD0iNTEycHgiIGhlaWdodD0iNTEycHgiPgo8Zz4KCTxwYXRoIHN0eWxlPSJmaWxsOiMyMzUwODc7IiBkPSJNNTEyLDE4MC45NjZoLTE3LjY1NXYtNzkuNDQ4SDQ3Ni42OVY4My44NjJoMjYuNDgzYzQuODczLDAsOC44MjgsMy45NTUsOC44MjgsOC44MjhWMTgwLjk2NnoiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiMyMzUwODc7IiBkPSJNNDIzLjcyNCw4My44NjJ2LTguODI4YzAtMTQuNjI3LDExLjg1NS0yNi40ODMsMjYuNDgzLTI2LjQ4M2wwLDAgICBjMTQuNjI3LDAsMjYuNDgzLDExLjg1NSwyNi40ODMsMjYuNDgzdjguODI4SDQyMy43MjR6Ii8+Cgk8cGF0aCBzdHlsZT0iZmlsbDojMjM1MDg3OyIgZD0iTTQ0OC42ODksNDUzLjEwMmwxLjUxOCwxLjUxOGwxLjUxOC0xLjUxOGMxNS45ODctMTUuOTg3LDI0Ljk2NC0zNy42NjcsMjQuOTY0LTYwLjI3NWgtNTIuOTY2ICAgQzQyMy43MjQsNDE1LjQzNSw0MzIuNzAyLDQzNy4xMTYsNDQ4LjY4OSw0NTMuMTAyeiIvPgo8L2c+CjxyZWN0IHg9IjQyMy43MjQiIHk9IjgzLjg2MiIgc3R5bGU9ImZpbGw6IzREQjVGRjsiIHdpZHRoPSI1Mi45NjYiIGhlaWdodD0iMzA4Ljk2NiIvPgo8cmVjdCB5PSI0LjQxNCIgc3R5bGU9ImZpbGw6I0I3RTVGRjsiIHdpZHRoPSIzODguNDE0IiBoZWlnaHQ9IjUwMy4xNzIiLz4KPGc+Cgk8cGF0aCBzdHlsZT0iZmlsbDojNkI3NzhBOyIgZD0iTTM1My4xMDMsMjQyLjc1OUgzNS4zMWMtNC44NzMsMC04LjgyOC0zLjk1NS04LjgyOC04LjgyOGMwLTQuODczLDMuOTU1LTguODI4LDguODI4LTguODI4aDMxNy43OTMgICBjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOEMzNjEuOTMxLDIzOC44MDQsMzU3Ljk3NiwyNDIuNzU5LDM1My4xMDMsMjQyLjc1OXoiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM2Qjc3OEE7IiBkPSJNMzUzLjEwMywyNzguMDY5aC01Mi45NjZjLTQuODczLDAtOC44MjgtMy45NTUtOC44MjgtOC44MjhjMC00Ljg3MywzLjk1NS04LjgyOCw4LjgyOC04LjgyOGg1Mi45NjYgICBjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOEMzNjEuOTMxLDI3NC4xMTQsMzU3Ljk3NiwyNzguMDY5LDM1My4xMDMsMjc4LjA2OXoiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM2Qjc3OEE7IiBkPSJNMzUzLjEwMywzMTMuMzc5SDE5NC4yMDdjLTQuODczLDAtOC44MjgtMy45NTUtOC44MjgtOC44MjhzMy45NTUtOC44MjgsOC44MjgtOC44MjhoMTU4Ljg5NyAgIGM0Ljg3MywwLDguODI4LDMuOTU1LDguODI4LDguODI4UzM1Ny45NzYsMzEzLjM3OSwzNTMuMTAzLDMxMy4zNzl6Ii8+Cgk8cGF0aCBzdHlsZT0iZmlsbDojNkI3NzhBOyIgZD0iTTM1My4xMDMsMzQ4LjY5aC0zNS4zMWMtNC44NzMsMC04LjgyOC0zLjk1NS04LjgyOC04LjgyOGMwLTQuODczLDMuOTU1LTguODI4LDguODI4LTguODI4aDM1LjMxICAgYzQuODczLDAsOC44MjgsMy45NTUsOC44MjgsOC44MjhDMzYxLjkzMSwzNDQuNzM1LDM1Ny45NzYsMzQ4LjY5LDM1My4xMDMsMzQ4LjY5eiIvPgoJPHBhdGggc3R5bGU9ImZpbGw6IzZCNzc4QTsiIGQ9Ik0yODIuNDgzLDM0OC42OUgxMTQuNzU5Yy00Ljg3MywwLTguODI4LTMuOTU1LTguODI4LTguODI4YzAtNC44NzMsMy45NTUtOC44MjgsOC44MjgtOC44MjhoMTY3LjcyNCAgIGM0Ljg3MywwLDguODI4LDMuOTU1LDguODI4LDguODI4QzI5MS4zMSwzNDQuNzM1LDI4Ny4zNTYsMzQ4LjY5LDI4Mi40ODMsMzQ4LjY5eiIvPgoJPHBhdGggc3R5bGU9ImZpbGw6IzZCNzc4QTsiIGQ9Ik0yMjkuNTE3LDM4NEgzNS4zMWMtNC44NzMsMC04LjgyOC0zLjk1NS04LjgyOC04LjgyOGMwLTQuODczLDMuOTU1LTguODI4LDguODI4LTguODI4aDE5NC4yMDcgICBjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOEMyMzguMzQ1LDM4MC4wNDUsMjM0LjM5LDM4NCwyMjkuNTE3LDM4NHoiLz4KPC9nPgo8cGF0aCBzdHlsZT0iZmlsbDojODk5NEEzOyIgZD0iTTIzOC4zNDUsMTAxLjUxN2gtODguMjc2Yy00Ljg3MywwLTguODI4LTMuOTU1LTguODI4LTguODI4YzAtNC44NzMsMy45NTUtOC44MjgsOC44MjgtOC44MjhoODguMjc2ICBjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOEMyNDcuMTcyLDk3LjU2MiwyNDMuMjE4LDEwMS41MTcsMjM4LjM0NSwxMDEuNTE3eiIvPgo8Zz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM2Qjc3OEE7IiBkPSJNMTIzLjU4NiwyMDcuNDQ4SDcwLjYyMWMtNC44NzMsMC04LjgyOC0zLjk1NS04LjgyOC04LjgyOGMwLTQuODczLDMuOTU1LTguODI4LDguODI4LTguODI4aDUyLjk2NiAgIGM0Ljg3MywwLDguODI4LDMuOTU1LDguODI4LDguODI4QzEzMi40MTQsMjAzLjQ5NCwxMjguNDU5LDIwNy40NDgsMTIzLjU4NiwyMDcuNDQ4eiIvPgoJPHBhdGggc3R5bGU9ImZpbGw6IzZCNzc4QTsiIGQ9Ik0zNTMuMTAzLDIwNy40NDhIMTU4Ljg5N2MtNC44NzMsMC04LjgyOC0zLjk1NS04LjgyOC04LjgyOGMwLTQuODczLDMuOTU1LTguODI4LDguODI4LTguODI4ICAgaDE5NC4yMDdjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOEMzNjEuOTMxLDIwMy40OTQsMzU3Ljk3NiwyMDcuNDQ4LDM1My4xMDMsMjA3LjQ0OHoiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM2Qjc3OEE7IiBkPSJNMjY0LjgyOCwyNzguMDY5SDM1LjMxYy00Ljg3MywwLTguODI4LTMuOTU1LTguODI4LTguODI4YzAtNC44NzMsMy45NTUtOC44MjgsOC44MjgtOC44MjhoMjI5LjUxNyAgIGM0Ljg3MywwLDguODI4LDMuOTU1LDguODI4LDguODI4QzI3My42NTUsMjc0LjExNCwyNjkuNywyNzguMDY5LDI2NC44MjgsMjc4LjA2OXoiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM2Qjc3OEE7IiBkPSJNMTU4Ljg5NywzMTMuMzc5SDM1LjMxYy00Ljg3MywwLTguODI4LTMuOTU1LTguODI4LTguODI4czMuOTU1LTguODI4LDguODI4LTguODI4aDEyMy41ODYgICBjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOFMxNjMuNzY5LDMxMy4zNzksMTU4Ljg5NywzMTMuMzc5eiIvPgoJPHBhdGggc3R5bGU9ImZpbGw6IzZCNzc4QTsiIGQ9Ik03OS40NDgsMzQ4LjY5SDM1LjMxYy00Ljg3MywwLTguODI4LTMuOTU1LTguODI4LTguODI4YzAtNC44NzMsMy45NTUtOC44MjgsOC44MjgtOC44MjhoNDQuMTM4ICAgYzQuODczLDAsOC44MjgsMy45NTUsOC44MjgsOC44MjhDODguMjc2LDM0NC43MzUsODQuMzIxLDM0OC42OSw3OS40NDgsMzQ4LjY5eiIvPgo8L2c+CjxnPgoJPHBhdGggc3R5bGU9ImZpbGw6Izg5OTRBMzsiIGQ9Ik0yNzMuNjU1LDY2LjIwN0gxMTQuNzU5Yy00Ljg3MywwLTguODI4LTMuOTU1LTguODI4LTguODI4czMuOTU1LTguODI4LDguODI4LTguODI4aDE1OC44OTcgICBjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOFMyNzguNTI4LDY2LjIwNywyNzMuNjU1LDY2LjIwN3oiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM4OTk0QTM7IiBkPSJNMzUzLjEwMywxNTQuNDgzSDI0Ny4xNzJjLTQuODczLDAtOC44MjgtMy45NTUtOC44MjgtOC44MjhjMC00Ljg3MywzLjk1NS04LjgyOCw4LjgyOC04LjgyOCAgIGgxMDUuOTMxYzQuODczLDAsOC44MjgsMy45NTUsOC44MjgsOC44MjhDMzYxLjkzMSwxNTAuNTI4LDM1Ny45NzYsMTU0LjQ4MywzNTMuMTAzLDE1NC40ODN6Ii8+CjwvZz4KPHBhdGggc3R5bGU9ImZpbGw6Izk5QzhFMDsiIGQ9Ik0zNDkuMDYsMjI1LjEwM2g0LjA0M2M0Ljg3MywwLDguODI4LDMuOTU1LDguODI4LDguODI4YzAsNC44NzMtMy45NTUsOC44MjgtOC44MjgsOC44MjhoLTE1Ljg5ICBjLTQuMjExLDUuOTg1LTguNTU0LDExLjg3My0xMy4wMTIsMTcuNjU1aDI4LjkwMmM0Ljg3MywwLDguODI4LDMuOTU1LDguODI4LDguODI4YzAsNC44NzMtMy45NTUsOC44MjgtOC44MjgsOC44MjhoLTQzLjI1NSAgYy01LjEyOSw2LjAyLTEwLjM5OSwxMS45MDgtMTUuODI4LDE3LjY1NWg1OS4wODNjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOHMtMy45NTUsOC44MjgtOC44MjgsOC44MjhoLTc2LjU1MyAgYy02LjMyOSw2LjA2NS0xMi44MjYsMTEuOTQ0LTE5LjQ4MiwxNy42NTVoMjUuNDE1YzQuODczLDAsOC44MjgsMy45NTUsOC44MjgsOC44MjhjMCw0Ljg3My0zLjk1NSw4LjgyOC04LjgyOCw4LjgyOGgtNDcuMTgzICBjLTguMDY4LDYuMTQ0LTE2LjM0LDEyLjAzMi0yNC44MDYsMTcuNjU1aDE5LjAyM2M0Ljg3MywwLDguODI4LDMuOTU1LDguODI4LDguODI4YzAsNC44NzMtMy45NTUsOC44MjgtOC44MjgsOC44MjhoLTQ3Ljg1NCAgQzEyNS43MzEsNDE1LjczNSw2My45MjEsNDM1LjczOCwwLDQ0Mi43OTJ2NjQuNzk0aDM4OC40MTR2LTM1OC40QzM3Ny42LDE3NS42MjUsMzY0LjQyOSwyMDEuMDMxLDM0OS4wNiwyMjUuMTAzeiBNMzUzLjEwMywzNDguNjkgIGgtMzUuMzFjLTQuODczLDAtOC44MjgtMy45NTUtOC44MjgtOC44MjhjMC00Ljg3MywzLjk1NS04LjgyOCw4LjgyOC04LjgyOGgzNS4zMWM0Ljg3MywwLDguODI4LDMuOTU1LDguODI4LDguODI4ICBDMzYxLjkzMSwzNDQuNzM1LDM1Ny45NzYsMzQ4LjY5LDM1My4xMDMsMzQ4LjY5eiIvPgo8Zz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM1MzVCNkQ7IiBkPSJNMzUzLjEwMywyNDIuNzU5YzQuODczLDAsOC44MjgtMy45NTUsOC44MjgtOC44MjhjMC00Ljg3My0zLjk1NS04LjgyOC04LjgyOC04LjgyOGgtNC4wNDMgICBjLTMuODE0LDUuOTc2LTcuNzUxLDExLjg1NS0xMS44MiwxNy42NTVIMzUzLjEwM3oiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM1MzVCNkQ7IiBkPSJNMzUzLjEwMywyNzguMDY5YzQuODczLDAsOC44MjgtMy45NTUsOC44MjgtOC44MjhjMC00Ljg3My0zLjk1NS04LjgyOC04LjgyOC04LjgyOGgtMjguODc1ICAgYy00LjY0Myw2LjAwMy05LjQxOSwxMS44OTEtMTQuMzM2LDE3LjY1NUgzNTMuMTAzeiIvPgoJPHBhdGggc3R5bGU9ImZpbGw6IzUzNUI2RDsiIGQ9Ik0yNzYuNTUxLDMxMy4zNzloNzYuNTUzYzQuODczLDAsOC44MjgtMy45NTUsOC44MjgtOC44MjhzLTMuOTU1LTguODI4LTguODI4LTguODI4aC01OS4wMzkgICBDMjg4LjM4LDMwMS43NjIsMjgyLjU0NSwzMDcuNjUsMjc2LjU1MSwzMTMuMzc5eiIvPgoJPHBhdGggc3R5bGU9ImZpbGw6IzUzNUI2RDsiIGQ9Ik0zNTMuMTAzLDMzMS4wMzRoLTM1LjMxYy00Ljg3MywwLTguODI4LDMuOTU1LTguODI4LDguODI4YzAsNC44NzMsMy45NTUsOC44MjgsOC44MjgsOC44MjhoMzUuMzEgICBjNC44NzMsMCw4LjgyOC0zLjk1NSw4LjgyOC04LjgyOEMzNjEuOTMxLDMzNC45ODksMzU3Ljk3NiwzMzEuMDM0LDM1My4xMDMsMzMxLjAzNHoiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiM1MzVCNkQ7IiBkPSJNMjgyLjQ4MywzNDguNjljNC44NzMsMCw4LjgyOC0zLjk1NSw4LjgyOC04LjgyOGMwLTQuODczLTMuOTU1LTguODI4LTguODI4LTguODI4aC0yNS40MTUgICBjLTcuMDYyLDYuMDgyLTE0LjMxOCwxMS45OTctMjEuNzY5LDE3LjY1NUgyODIuNDgzeiIvPgoJPHBhdGggc3R5bGU9ImZpbGw6IzUzNUI2RDsiIGQ9Ik0yMjkuNTE3LDM4NGM0Ljg3MywwLDguODI4LTMuOTU1LDguODI4LTguODI4YzAtNC44NzMtMy45NTUtOC44MjgtOC44MjgtOC44MjhoLTE5LjAyMyAgIGMtOS4zNzUsNi4yMzItMTkuMDA2LDEyLjA4NS0yOC44MzEsMTcuNjU1SDIyOS41MTd6Ii8+CjwvZz4KPHBhdGggc3R5bGU9ImZpbGw6IzE2Mzc2ODsiIGQ9Ik00MjYuNjczLDQxNC42OTRjMy44MjIsMTQuNTIxLDExLjQxNCwyNy43NzIsMjIuMDE2LDM4LjQwOWwxLjUxOCwxLjUxOGwxLjUxOC0xLjUxOCAgYzE1Ljk4Ny0xNS45ODcsMjQuOTY0LTM3LjY2NywyNC45NjQtNjAuMjc1aC0yNi45MzNDNDQyLjg1NCw0MDAuOTE0LDQzNS4xMjEsNDA4LjI0MSw0MjYuNjczLDQxNC42OTR6Ii8+CjxwYXRoIHN0eWxlPSJmaWxsOiMzNTk2RDg7IiBkPSJNNDQ5Ljc1NywzOTIuODI4aDI2LjkzM3YtNDYuNzg2QzQ3MC42MjUsMzYzLjE0LDQ2MS40OTcsMzc4Ljk5NSw0NDkuNzU3LDM5Mi44Mjh6Ii8+CjxnPgoJPHBhdGggc3R5bGU9ImZpbGw6IzE2Mzc2ODsiIGQ9Ik00NzYuNjksNzUuMDM0YzAuMDQ0LTE0LjU4My0xMS43NDEtMjYuNDM5LTI2LjMyNC0yNi40ODNjLTguMzI0LTAuMDI2LTE2LjE3MiwzLjg3NS0yMS4xNzcsMTAuNTMxICAgYzE3LjI0LDIuOTQ4LDMzLjUyNyw5Ljk4NCw0Ny41MDEsMjAuNTE1Vjc1LjAzNHoiLz4KCTxwYXRoIHN0eWxlPSJmaWxsOiMxNjM3Njg7IiBkPSJNNTAwLjQwMSw4My44NjJINDc2LjY5djE3LjY1NWg3LjE0MUM0ODcuOTI3LDk0LjQzOCw0OTMuNTk0LDg4LjM5OSw1MDAuNDAxLDgzLjg2MnoiLz4KPC9nPgo8cGF0aCBzdHlsZT0iZmlsbDojODk5NEEzOyIgZD0iTTM0NC4yNzYsNDU0LjYyMUgyMjAuNjljLTQuODczLDAtOC44MjgtMy45NTUtOC44MjgtOC44MjhjMC00Ljg3MywzLjk1NS04LjgyOCw4LjgyOC04LjgyOGgxMjMuNTg2ICBjNC44NzMsMCw4LjgyOCwzLjk1NSw4LjgyOCw4LjgyOEMzNTMuMTAzLDQ1MC42NjYsMzQ5LjE0OSw0NTQuNjIxLDM0NC4yNzYsNDU0LjYyMXoiLz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==" />
+            </div>
+            <h2 class="heading">
+                please send us a registration request
+            </h2>
+            <p> you will receive an email with payment info
+            </p>
+            <form id="form">
+                <input type="hidden" name="app_token" value="*|APP_TOKEN|*">
+                <input id="fld_uid" type="text" name="uid" value="*|UID|*" placeholder="Insert Account Number">
+                <input id="fld_name" type="text" name="name" placeholder="enter your name">
+                <input id="fld_email" type='text' name="email" placeholder="enter your email"><br/>
+                <button class="btn" role="button">
+                    Send Request
+                </button>
+            </form>
+        </section>
+        <section id="two" class="two">
+            <h3>
+                Thank you.<br>
+                As soon as possible you will receive an email with payment info.
+            </h3>
+            <div class="close">
+            </div>
+        </section>
+    </section>
+
+    <!-- footer -->
+    <footer>
+        <h2></h2>
+    </footer>
+</div>
+
+<script
+        src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+<script>
+    $(function () {
+
+        var $form = $('#form');
+        var $one = $('#one');
+        var $two = $('#two');
+        var $close = $('.two .close');
+
+        $form.on('submit', function (e) {
+            e.preventDefault();
+
+            submit(function (success) {
+                if (success) {
+                    animate_hide($one);
+                }
+            });
+
+            return false;
+        });
+
+        $close.on('click', function (e) {
+            e.preventDefault();
+
+            animate_two();
+
+            return false;
+        });
+
+        function animate_hide() {
+            $one.animate({
+                top: '-500px'
+            }, 500);
+            $two.animate({
+                top: '0px'
+            }, 500);
+        }
+
+        function animate_show() {
+            $one.animate({
+                top: '-500px'
+            }, 500);
+
+            $two.animate({
+                top: '0px'
+            }, 500);
+        }
+
+    });
+
+    function submit(callback) {
+        try {
+            var url = "*|FORM_ACTION|*"; // the script where you handle the form input.
+            var fld_email = $('#fld_email').val();
+            var fld_name = $('#fld_name').val();
+            var fld_uid = $('#fld_uid').val();
+
+            if (!!fld_email && !!fld_name && !!fld_uid) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: $("#form").serialize(), // serializes the form's elements.
+                    success: function (data) {
+                        if (!!data) {
+                            if (!!data.error) {
+                                console.error(data.error);
+                                callback(false);
+                            } else {
+                                console.log('data submitted');
+                                callback(true);
+                            }
+
+                        } else {
+                            console.log('no response');
+                        }
+                    },
+                    error: function (data) {
+                        console.log('An error occurred.');
+                        console.log(data);
+                        callback(false);
+                    }
+                });
+            } else {
+                console.error('Missing required data: "email", "name"');
+                callback(false);
+            }
+
+        } catch (err) {
+            console.error('submit', err);
+            callback(false);
+        }
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Class-Path: jsoup-1.8.3.jar jsoup-1.8.3-javadoc.jar jsoup-1.8.3-source
+ s.jar slf4j-api-1.7.21.jar slf4j-nop-1.7.21.jar javax.mail.jar csspar
+ ser-0.9.18.jar cssparser-0.9.18-javadoc.jar cssparser-0.9.18-sources.
+ jar javassist-3.21.0-GA.jar reactive-streams-1.0.0.jar netty-reactive
+ -streams-1.0.8.jar async-http-client-2.1.0-alpha2.jar async-http-clie
+ nt-netty-utils-2.1.0-alpha2.jar sac.jar netty-all-4.1.9.Final.jar
+Main-Class: org.ly.licensemanager.Launcher
+

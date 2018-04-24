@@ -3,5 +3,6 @@
   "port": 4001,
   "use_ssl": true,
   "404": "",
-  "host": "https://localhost:4001"
+  "host": "https://localhost:4001",
+  "notify_to":["angelo.geminiani@gmail.com", "zerograssi@gmail.com"]
 }

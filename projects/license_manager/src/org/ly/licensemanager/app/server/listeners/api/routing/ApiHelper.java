@@ -48,6 +48,10 @@ public abstract class ApiHelper {
         }
     }
 
+    public static String lang(final HttpServerContext context){
+        return context.getLang();
+    }
+
     public static String getParamToken(final HttpServerContext context) {
         return getParam(context, PARAM_APP_TOKEN);
     }

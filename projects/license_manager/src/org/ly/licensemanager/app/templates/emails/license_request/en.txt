@@ -1,0 +1,10 @@
+LICENSE REQUEST:
+
+uid: *|UID|*
+name: *|NAME|*
+email: *|EMAIL|*
+
+Show Online: *|URL_SHOW|*
+Enable: *|URL_ENABLE|*
+Postpone 30 Days: *|URL_POSTPONE_30|*
+Postopone 1 Year: *|URL_POSTPONE_365|*

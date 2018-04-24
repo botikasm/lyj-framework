@@ -48,7 +48,8 @@ public class TokenController
             if (_token_responses.containsKey(token)) {
                 return _token_responses.get(token);
             } else {
-                final boolean exists = token.equals(IConstants.APP_TOKEN_API);
+                final boolean exists = token.equals(IConstants.APP_TOKEN_COINMULE_API)
+                        || token.equals(IConstants.APP_TOKEN_CATCHUP_API);
                 synchronized (_token_responses) {
                     _token_responses.put(token, exists);
                 }

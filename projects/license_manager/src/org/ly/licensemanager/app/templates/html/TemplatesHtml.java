@@ -14,6 +14,9 @@ public class TemplatesHtml
 
     private static final String NAME = "html_i18n";
 
+    public static final String TPL_SUBMIT_REGISTRATION = "html/registration_submit";
+    public static final String TPL_CONFIRM_REGISTRATION = "html/registration_confirm";
+
     public static final String TPL_EMAIL_CONFIRMED = "html/email_confirmed";
     public static final String TPL_INVOICE = "html/invoice";
     public static final String TPL_SOCIAL_SHARE = "html/social_share";

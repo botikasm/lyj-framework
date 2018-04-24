@@ -1,0 +1,1 @@
+java -Dfile.encoding=UTF8 -Xms512m -Xmx2g -jar c:\\license_manager\license_manager.jar -w USERHOME/license_manager
