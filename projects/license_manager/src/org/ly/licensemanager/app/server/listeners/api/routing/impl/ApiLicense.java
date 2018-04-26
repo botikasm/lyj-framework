@@ -204,6 +204,9 @@ public class ApiLicense
         });
     }
 
+    /**
+     *  https://localhost:4001/api/license/enable/coinmule_lm18/UID
+     */
     public void enable(final HttpServerContext context) {
         final String token = super.getParamToken(context);
 
