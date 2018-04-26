@@ -152,7 +152,7 @@ public class LicenseItem
             super.put(FLD_TIMESTAMP, System.currentTimeMillis());
         }
         if (!super.has(FLD_ENABLED)) {
-            super.put(FLD_ENABLED, true);
+            super.put(FLD_ENABLED, false);
         }
 
         this.recalculate();

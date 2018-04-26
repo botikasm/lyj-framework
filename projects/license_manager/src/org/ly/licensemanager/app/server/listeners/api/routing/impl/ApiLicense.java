@@ -153,7 +153,7 @@ public class ApiLicense
 
                         // get or create a registry (Registry should be a valid auth_token)
                         final LicenseRegistry registry = LicenseController.instance().registry(token);
-                        final boolean response = registry.exists(this.clean(uid));
+                        final boolean response = registry.isValidLicense(this.clean(uid));
 
                         if ("json".equalsIgnoreCase(format)) {
                             super.writeJSON(context, response);
