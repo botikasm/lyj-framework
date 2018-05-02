@@ -8,6 +8,8 @@ import java.util.Map;
  */
 public interface IDatabase {
 
+    boolean drop();
+
     String name();
 
     String[] collectionNames();

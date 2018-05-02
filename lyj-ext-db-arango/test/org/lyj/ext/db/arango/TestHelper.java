@@ -26,7 +26,7 @@ public class TestHelper {
         IDatabaseConnection connection = ArnConnector.instance().connection("sample");
 
         IDatabase db = connection.database("test");
-
+              
         return db.collection(coll_name, String.class);
     }
 

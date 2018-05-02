@@ -45,6 +45,13 @@ public class ArnDatabase
         return super.name();
     }
 
+    public boolean drop() {
+        if (null != _db_connection) {
+            return this.db().drop();
+        }
+        return false;
+    }
+
     public String[] collectionNames() {
         if (null != _db_connection) {
             final Set<String> result = new HashSet<>();

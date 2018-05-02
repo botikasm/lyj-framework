@@ -3,7 +3,6 @@ package org.lyj.ext.db.arango;
 import com.arangodb.ArangoDB;
 import org.lyj.ext.db.AbstractDatabaseConnection;
 import org.lyj.ext.db.IDatabase;
-import org.lyj.ext.db.arango.serialization.ArangoJsonItemSerializer;
 import org.lyj.ext.db.configuration.DatabaseConfiguration;
 import org.lyj.ext.db.configuration.DatabaseConfigurationCredential;
 import org.lyj.ext.db.configuration.DatabaseConfigurationHost;
