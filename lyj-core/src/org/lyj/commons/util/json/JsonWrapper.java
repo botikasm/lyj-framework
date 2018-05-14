@@ -29,6 +29,7 @@ import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.*;
 import org.lyj.commons.util.converters.MapConverter;
 
+import java.io.StringReader;
 import java.util.*;
 
 /**
@@ -304,7 +305,7 @@ public final class JsonWrapper implements Cloneable {
     public int deepInteger(final String path, final int def) {
         try {
             final Object result = this.deep(path);
-            if(null!=result){
+            if (null != result) {
                 if (result instanceof Integer) {
                     return Integer.parseInt(result.toString());
                 } else {
@@ -813,6 +814,14 @@ public final class JsonWrapper implements Cloneable {
     //               S T A T I C  -  P A R S E R
     // ------------------------------------------------------------------------
 
+    public static JSONObject parse(final Properties props) {
+        final Map<String, Object> map = new HashMap<>();
+        props.forEach((key, value) -> {
+            map.put(key.toString(), value);
+        });
+        return parse(map);
+    }
+
     public static JSONObject parse(final Map<String, ?> map) {
         final JSONObject result = new JSONObject();
         try {
@@ -895,6 +904,26 @@ public final class JsonWrapper implements Cloneable {
     public static List<JSONObject> parseList(final String jsonArray) {
         final JSONArray array = JsonWrapper.wrap(jsonArray).getJSONArray();
         return toListOfJSONObject(array);
+    }
+
+    public static JSONObject propertiesToJSONObject(final Object object) throws JSONException {
+        if (null != object) {
+            if (object instanceof Properties) {
+                return parse(((Properties) object));
+            } else if (object instanceof JSONObject) {
+                return (JSONObject) object;
+            } else {
+                final String content = object.toString();
+                final Properties props = new Properties();
+                try (final StringReader reader = new StringReader(content)) {
+                    props.load(reader);
+                    return parse(props);
+                } catch (Throwable ignored) {
+                    // ignored
+                }
+            }
+        }
+        return new JSONObject();
     }
 
     public static JSONObject toJSONObject(final Object object) throws JSONException {

@@ -3,6 +3,7 @@ package org.lyj.commons.util.json;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.*;
 
@@ -328,6 +329,7 @@ public class JsonItem
         return null;
     }
 
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -335,5 +337,6 @@ public class JsonItem
     private boolean isPath(final String key) {
         return key.contains(".");
     }
+
 
 }
