@@ -293,7 +293,6 @@ public abstract class CollectionUtils {
     }
 
 
-
     /**
      * Append the given String to the given String array, returning a new array
      * consisting of the input array contents plus the given String.
@@ -1862,7 +1861,7 @@ public abstract class CollectionUtils {
     }
 
     public static <T> T get(T[] array, int index) {
-        if (array.length < index + 1) {
+        if (index < 0 || array.length < index + 1) {
             return null;
         }
         return array[index];
@@ -1870,7 +1869,7 @@ public abstract class CollectionUtils {
 
     public static <T> T get(final T[] array, final int index,
                             final T defaultValue) {
-        if (null == array || array.length < index + 1) {
+        if (null == array || index < 0 || array.length < index + 1) {
             return defaultValue;
         }
         final T result = array[index];

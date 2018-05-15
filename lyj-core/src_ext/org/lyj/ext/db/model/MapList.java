@@ -2,6 +2,7 @@ package org.lyj.ext.db.model;
 
 import org.lyj.commons.util.converters.MapConverter;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -20,7 +21,7 @@ public class MapList
     }
 
     public MapList(final Collection<Object> items) {
-        super(items);
+        super(null != items ? items : new ArrayList<>());
     }
 
     // ------------------------------------------------------------------------
