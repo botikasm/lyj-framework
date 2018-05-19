@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.logging;
 
@@ -91,6 +91,13 @@ public final class LoggingRepository
     // ------------------------------------------------------------------------
     //                      public
     // ------------------------------------------------------------------------
+
+    public Map<String, String> pathMap() {
+        synchronized (_custom_paths) {
+            final Map<String, String> response = new HashMap<>(_custom_paths);
+            return response;
+        }
+    }
 
     /**
      * Set default file path

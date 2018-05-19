@@ -1421,6 +1421,18 @@ public abstract class CollectionUtils {
         return result.toArray(new Object[result.size()]);
     }
 
+    public static JSONArray merge(JSONArray... arrays) {
+        final JSONArray result = new JSONArray();
+        if (null != arrays && arrays.length > 0) {
+            for (JSONArray array : arrays) {
+                if (null != array) {
+                    CollectionUtils.forEach(array, result::put);
+                }
+            }
+        }
+        return result;
+    }
+
     public static byte[] merge(byte[]... arrays) {
         if (null != arrays && arrays.length > 0) {
             // total lenght and lenghts

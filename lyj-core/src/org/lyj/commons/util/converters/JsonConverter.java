@@ -5,8 +5,8 @@ import org.json.JSONObject;
 import org.lyj.commons.lang.Base64;
 import org.lyj.commons.util.BeanUtils;
 import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonItem;
 
 import java.util.Collection;
 import java.util.Map;
@@ -103,6 +103,17 @@ public abstract class JsonConverter {
         return null; // not compatible
     }
 
+    public static JSONArray toArray(final Object value) {
+        final Object compatible = toJsonCompatible(value);
+        if (compatible instanceof JSONArray) {
+            return (JSONArray) compatible;
+        } else {
+            final JSONArray array = new JSONArray();
+            array.put(compatible);
+            return array;
+        }
+    }
+
     public static JSONArray toArray(final Object[] values) {
         return fromObjectArray(values);
     }
@@ -137,7 +148,7 @@ public abstract class JsonConverter {
                 return new JSONObject(value);
             } catch (Throwable ignored) {
                 // may be a map
-                return toObject(CollectionUtils.stringToMap(value.substring(1, value.length()-1)));
+                return toObject(CollectionUtils.stringToMap(value.substring(1, value.length() - 1)));
             }
         }
         return result;
