@@ -51,6 +51,30 @@ public class ApiLicense
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public void redirect_form_register(final HttpServerContext context) {
+        final String root = context.rootUrl();
+        final String url = PathUtils.concat(root, "/api/license/form_register/" + IConstants.APP_TOKEN_COINMULE_API);
+        context.writeRedirect(url);
+    }
+
+    public void form_register_iframe(final HttpServerContext context) {
+
+        final String root = context.rootUrl();
+
+        try {
+            final String response = Templates.instance().getTemplateHTML(context.getLang(),
+                    TemplatesHtml.TPL_SUBMIT_REGISTRATION_IFRAME, MapBuilder.createSS()
+                            .put("ROOT", root)
+                            .toMap());
+
+            // return html response
+            super.writeHTML(context, response);
+        } catch (Throwable t) {
+            super.writeError(context, t, "form_register_iframe");
+        }
+
+    }
+
     /**
      * https://localhost:4001/api/license/form_register/coinmule_lm18
      * https://api.conversacon.com:4001/api/license/form_register/coinmule_lm18
@@ -205,7 +229,7 @@ public class ApiLicense
     }
 
     /**
-     *  https://localhost:4001/api/license/enable/coinmule_lm18/UID
+     * https://localhost:4001/api/license/enable/coinmule_lm18/UID
      */
     public void enable(final HttpServerContext context) {
         final String token = super.getParamToken(context);

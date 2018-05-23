@@ -282,6 +282,7 @@ public class MimeTypeUtils {
         map.put(".wav", "audio/x-wav");
         map.put(".wcm", "application/vnd.ms-works");
         map.put(".wdb", "application/vnd.ms-works");
+        map.put(".webp", "image/png");
         map.put(".wks", "application/vnd.ms-works");
         map.put(".wmf", "application/x-msmetafile");
         map.put(".woff", "application/font-woff");     // FONT

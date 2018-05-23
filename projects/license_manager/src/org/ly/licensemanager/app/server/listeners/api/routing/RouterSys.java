@@ -53,6 +53,9 @@ public class RouterSys
 
     private void init() {
 
+        // root
+        super.get("/").handler(_api_license::form_register_iframe);
+
         super.all(PATH_API.concat("/version")).handler(ApiUtil::version);
 
         //-- util --//

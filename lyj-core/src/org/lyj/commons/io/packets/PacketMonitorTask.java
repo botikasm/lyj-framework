@@ -104,14 +104,16 @@ public class PacketMonitorTask
                     // get consistent files
                     final List<File> files = this.getFiles();
                     for (final File packet : files) {
-                        // process valid packet
-                        _controller.process(packet, (packet_files) -> {
-                            // returns list of unzipped files
-                            Delegates.invoke(_callback,
-                                    packet,         // packet file
-                                    packet_files    // packet content
-                            );
-                        });
+                        if (null != packet) {
+                            // process valid packet
+                            _controller.process(packet, (packet_files) -> {
+                                // returns list of unzipped files
+                                Delegates.invoke(_callback,
+                                        packet,         // packet file
+                                        packet_files    // packet content
+                                );
+                            });
+                        }
                     }
                 }
             } catch (Throwable t) {
@@ -127,12 +129,17 @@ public class PacketMonitorTask
 
     private List<File> getFiles() {
         final List<File> response = new LinkedList<>();
-        final List<File> files = new LinkedList<>();
-        FileUtils.listFiles(files, new File(_path_root), "*.*", "", -1);
-        for (final File file : files) {
-            if (this.isReady(file)) {
-                response.add(file);
+        try {
+            final List<File> files = new LinkedList<>();
+            FileUtils.listFiles(files, new File(_path_root), "*.*", "", -1);
+            for (final File file : files) {
+                if (this.isReady(file)) {
+                    response.add(file);
+                }
             }
+        } catch (Exception error) {
+            super.error("getFiles", error);
+            throw error;
         }
         return response;
     }

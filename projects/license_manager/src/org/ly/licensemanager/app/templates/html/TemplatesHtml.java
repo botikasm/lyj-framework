@@ -14,6 +14,7 @@ public class TemplatesHtml
 
     private static final String NAME = "html_i18n";
 
+    public static final String TPL_SUBMIT_REGISTRATION_IFRAME = "html/registration_submit_iframe";
     public static final String TPL_SUBMIT_REGISTRATION = "html/registration_submit";
     public static final String TPL_CONFIRM_REGISTRATION = "html/registration_confirm";
 
