@@ -9,6 +9,7 @@ import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Multipart;
 import javax.mail.Part;
+import javax.mail.internet.MimeMultipart;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -170,13 +171,14 @@ public class MailMessageBody
 
             super.put(FLD_MESSAGE_NUMBER, message.getMessageNumber());
 
+            final Object content = message.getContent();
             // body
             if (isText(message)) {
                 // TEXT
-                super.put(FLD_BODY_TEXT, (String) message.getContent());
+                super.put(FLD_BODY_TEXT, (String) content);
             } else if (isMultipart(message)) {
                 // multipart
-                this.parse((Multipart) message.getContent());
+                this.parse((Multipart) content);
             } else {
                 super.info("init", "Unhandled message type: " + message);
             }
@@ -190,34 +192,48 @@ public class MailMessageBody
     private void parse(final Multipart message) {
         try {
 
-            final int count = message.getCount();
-            for (int i = 0; i < count; i++) {
-                final BodyPart item = message.getBodyPart(i);
-                final Object content = item.getContent();
-                if (isText(item)) {
-                    // simple text
-                    super.put(FLD_BODY_TEXT, this.text() + content);
-                } else if (isHTML(item)) {
-                    // HTML
-                    super.put(FLD_BODY_HTML, this.html() + content);
-                } else if (isNested(item)) {
-                    // children
-                    System.out.println("NESTED: " + item.getContent().getClass());
-                } else if (isInlineImage(item)) {
-                    // children
-                    System.out.println("IMAGE: " + item.getContent().getClass());
-                } else if (isMultipart(item)) {
-                    // body
-                    this.parse((Multipart) content);
-                } else if (isAttachment(item)) {
-                    // attachment
-                    this.parseAttachment(item);
-                } else {
-                    super.info("parse", "Unhandled message type: " + message);
+            final int count = this.countParts(message);
+            if(count>0){
+                for (int i = 0; i < count; i++) {
+                    final BodyPart item = message.getBodyPart(i);
+                    final Object content = item.getContent();
+                    if (isText(item)) {
+                        // simple text
+                        super.put(FLD_BODY_TEXT, this.text() + content);
+                    } else if (isHTML(item)) {
+                        // HTML
+                        super.put(FLD_BODY_HTML, this.html() + content);
+                    } else if (isNested(item)) {
+                        // children
+                        System.out.println("NESTED: " + item.getContent().getClass());
+                    } else if (isInlineImage(item)) {
+                        // children
+                        System.out.println("IMAGE: " + item.getContent().getClass());
+                    } else if (isMultipart(item)) {
+                        // body
+                        this.parse((Multipart) content);
+                    } else if (isAttachment(item)) {
+                        // attachment
+                        this.parseAttachment(item);
+                    } else {
+                        super.info("parse", "Unhandled message type: " + message);
+                    }
                 }
+            } else {
+                // ANTIVIRUS CAUSED AN EXCEPTION
+                super.error("parse", "THIS MACHINE HAS AN ANTIVIRUS THAT INTERFERE WITH MAIL PARSER");
             }
         } catch (Throwable t) {
             super.put(FLD_PARSE_ERROR, ExceptionUtils.getRealMessage(t)); // error
+        }
+    }
+
+    private int countParts(final Multipart message) {
+        try {
+            return message.getCount();
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return 0;
         }
     }
 

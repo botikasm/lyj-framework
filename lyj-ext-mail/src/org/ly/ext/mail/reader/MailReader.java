@@ -206,23 +206,33 @@ public class MailReader
             //create the POP3 store object and connect with the pop server
             final Store store = this.getStore();
 
-            //create the folder object and open it
-            final Folder emailFolder = store.getFolder("INBOX");
-            emailFolder.open(_remove_after_read ? Folder.READ_WRITE : Folder.READ_ONLY);
+            try {
+                //create the folder object and open it
+                final Folder emailFolder = store.getFolder("INBOX");
 
-            // retrieve the messages from the folder in an array and print it
-            final Message[] messages = emailFolder.getMessages();
+                try {
+                    emailFolder.open(_remove_after_read ? Folder.READ_WRITE : Folder.READ_ONLY);
 
-            for (int i = 0; i < messages.length; i++) {
-                list.add(new MailMessage(this, messages[i]));
-                if (_remove_after_read) {
-                    this.deleteMessage(messages[i]);
+                    // retrieve the messages from the folder in an array and print it
+                    final Message[] messages = emailFolder.getMessages();
+
+                    for (int i = 0; i < messages.length; i++) {
+                        final Message native_message = messages[i];
+                        list.add(new MailMessage(this, native_message));
+                        if (_remove_after_read) {
+                            this.deleteMessage(messages[i]);
+                        }
+                    }
+                }finally{
+                    //close the store and folder objects
+                    if (emailFolder.isOpen()) {
+                        emailFolder.close(_remove_after_read);
+                    }
                 }
-            }
 
-            //close the store and folder objects
-            emailFolder.close(_remove_after_read);
-            store.close();
+            } finally {
+                store.close();
+            }
 
         } catch (Exception e) {
             // handle error outside
