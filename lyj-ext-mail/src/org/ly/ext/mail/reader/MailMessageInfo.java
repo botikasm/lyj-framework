@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * FROM, TO, SUBJECT
  */
-public class MailMessageHeader
+public class MailMessageInfo
         extends JsonItem {
 
 
     // ------------------------------------------------------------------------
-    //                      f i e l d s
+    //                      c o n s t
     // ------------------------------------------------------------------------
 
     private static final String FLD_PARSE_ERROR = "parse_error";
@@ -38,7 +38,7 @@ public class MailMessageHeader
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public MailMessageHeader(final MailReader reader, final Message m) {
+    public MailMessageInfo(final MailReader reader, final Message m) {
         super();
         _reader = reader;
 
@@ -57,7 +57,7 @@ public class MailMessageHeader
         return super.getJSONArray(FLD_FROM);
     }
 
-    public MailMessageHeader from(final JSONArray value) {
+    public MailMessageInfo from(final JSONArray value) {
         super.put(FLD_FROM, value);
         return this;
     }
@@ -66,7 +66,7 @@ public class MailMessageHeader
         return super.getJSONArray(FLD_TO);
     }
 
-    public MailMessageHeader to(final JSONArray value) {
+    public MailMessageInfo to(final JSONArray value) {
         super.put(FLD_TO, value);
         return this;
     }
@@ -75,7 +75,7 @@ public class MailMessageHeader
         return super.getString(FLD_SUBJECT);
     }
 
-    public MailMessageHeader subject(final String value) {
+    public MailMessageInfo subject(final String value) {
         super.put(FLD_SUBJECT, value);
         return this;
     }

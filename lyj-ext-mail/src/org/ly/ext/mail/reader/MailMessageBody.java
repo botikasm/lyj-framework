@@ -232,7 +232,7 @@ public class MailMessageBody
         try {
             return message.getCount();
         } catch (Throwable t) {
-            t.printStackTrace();
+            super.error("countParts", ExceptionUtils.getCause(t));
             return 0;
         }
     }

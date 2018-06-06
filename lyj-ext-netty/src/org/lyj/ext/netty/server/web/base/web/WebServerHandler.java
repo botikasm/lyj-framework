@@ -62,11 +62,12 @@ public class WebServerHandler
     }
 
     @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+    public void exceptionCaught(final ChannelHandlerContext ctx,
+                                final Throwable cause) {
         if(cause instanceof NotSslRecordException){
             // request is not SSL
         } else {
-            this.logger().error(FormatUtils.format("[%s.%s]: %s", this.getClass().getName(), "exceptionCaught", cause.toString()));
+            this.logger().debug(FormatUtils.format("[%s.%s]: %s", this.getClass().getName(), "exceptionCaught", cause.toString()));
         }
         if (ctx.channel().isActive()) {
             ResponseUtil.sendError(ctx, INTERNAL_SERVER_ERROR);

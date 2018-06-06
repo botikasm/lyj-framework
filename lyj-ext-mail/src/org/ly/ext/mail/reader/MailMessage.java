@@ -19,7 +19,8 @@ public class MailMessage
     // ------------------------------------------------------------------------
 
     private final MailReader _reader;
-    private final MailMessageHeader _header;
+    private final MailMessageInfo _info;
+    private final MailMessageHeaders _headers;
     private final MailMessageBody _body;
     private final int _id;
 
@@ -31,13 +32,14 @@ public class MailMessage
                        final Message raw_message) {
         _reader = reader;
         _id = raw_message.getMessageNumber();
-        _header = new MailMessageHeader(reader, raw_message);
+        _info = new MailMessageInfo(reader, raw_message);
+        _headers = new MailMessageHeaders(raw_message);
         _body = new MailMessageBody(reader, raw_message);
     }
 
     @Override
     public String toString() {
-        final JSONObject obj = new JSONObject(_header.toString());
+        final JSONObject obj = new JSONObject(_info.toString());
         JsonWrapper.extend(obj, _body.json());
 
         return obj.toString();
@@ -52,11 +54,11 @@ public class MailMessage
     }
 
     public boolean isReady() {
-        return !StringUtils.hasText(_header.error()) && !StringUtils.hasText(_body.error());
+        return !StringUtils.hasText(_info.error()) && !StringUtils.hasText(_body.error());
     }
 
-    public MailMessageHeader header() {
-        return _header;
+    public MailMessageInfo info() {
+        return _info;
     }
 
     public MailMessageBody body() {
