@@ -1613,6 +1613,17 @@ public abstract class CollectionUtils {
         return collection;
     }
 
+    public static JSONArray addAll(final JSONArray collection,
+                                   final JSONArray items) {
+        CollectionUtils.forEach(items, (item) -> {
+            if (null != item) {
+                collection.put(item);
+            }
+        });
+        return collection;
+    }
+
+
     public static <T> Set<List<T>> cartesianProduct(
             final Collection<Collection<T>> sets) {
         if (sets.size() < 2) {
