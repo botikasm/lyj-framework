@@ -2,6 +2,7 @@ package org.lyj.ext.netty.server.websocket.impl;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.ssl.NotSslRecordException;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -63,8 +64,12 @@ public class WebSocketServerHandler
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+        if(cause instanceof NotSslRecordException){
+            // request is not SSL
+        } else {
+            _logger.debug(FormatUtils.format("[%s.%s]: %s", this.getClass().getName(), "exceptionCaught", cause.toString()));
+        }
         ctx.close();
-        _logger.error(FormatUtils.format("SOCKET ERROR: %s", cause));
     }
 
     // --------------------------------------------------------------------
