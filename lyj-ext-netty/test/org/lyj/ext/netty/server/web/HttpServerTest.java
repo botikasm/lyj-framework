@@ -3,7 +3,6 @@ package org.lyj.ext.netty.server.web;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lyj.Lyj;
-import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.TestInitializer;
 import org.lyj.ext.netty.server.web.handlers.impl.RequestInspectorHandler;
 import org.lyj.ext.netty.server.web.handlers.impl.ResourceHandler;
@@ -60,6 +59,7 @@ public class HttpServerTest {
         routing.get("/version/*").handler(this::sampleHandler);
         routing.get("/params/:user_id/:user_name").handler(this::sampleHandler);
         routing.post("/params/:user_id/:user_name").handler(this::sampleHandler);
+        routing.post("/upload/*").handler(this::upload);
 
         System.out.println("To test REST handler try: " + server.config().uri("version"));
 
@@ -89,4 +89,10 @@ public class HttpServerTest {
         }
     }
 
+    private void upload(final HttpServerContext context) {
+        final HttpParams params = context.params();
+        System.out.println("PARAMS: " + params.toQueryString());
+
+        context.write("THIS IS PLAIN TEXT");
+    }
 }
