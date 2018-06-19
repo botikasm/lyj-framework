@@ -3,6 +3,7 @@ package org.lyj.ext.netty.server.web.handlers.impl;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.multipart.*;
+import org.lyj.commons.Delegates;
 import org.lyj.commons.util.*;
 import org.lyj.ext.netty.server.web.*;
 import org.lyj.ext.netty.server.web.controllers.routing.RouteUrl;
@@ -23,8 +24,6 @@ public class UploadHandler
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static final String PARAM_FILE_NAME = "file_name";
-    private static final String PARAM_DIRECTORY = "directory";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -32,9 +31,11 @@ public class UploadHandler
 
     private final HttpDataFactory _factory; // Disk if size exceed
     private final String _root;
+
     private HttpPostRequestDecoder _decoder;
     private RouteUrl _route;
     private boolean _reading_chunks;
+    private Delegates.Callback<FileInfo> _callback;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -63,6 +64,7 @@ public class UploadHandler
     public void close() {
         if (null != _decoder) {
             _decoder.cleanFiles();
+            this.reset();
         }
     }
 
@@ -104,6 +106,10 @@ public class UploadHandler
         } else {
             response.handled(false);
         }
+    }
+
+    public void onFileUpload(final Delegates.Callback<FileInfo> callback) {
+        _callback = callback;
     }
 
     // ------------------------------------------------------------------------
@@ -179,8 +185,12 @@ public class UploadHandler
                 FileUpload fileUpload = (FileUpload) data;
                 if (fileUpload.isCompleted()) {
 
-                    final Map<String, String> file_data = this.write(context.params(), fileUpload);
-                    context.writeJson(file_data);
+                    final FileInfo file_info = this.write(context.params().initialize(), fileUpload);
+                    context.writeJson(file_info);
+
+                    if (null != _callback) {
+                        Delegates.invoke(_callback, file_info);
+                    }
 
                 } else {
                     //responseContent.append("\tFile to be continued but should not!\r\n");
@@ -189,55 +199,65 @@ public class UploadHandler
         }
     }
 
-    private Map<String, String> write(final HttpParams http_params,
-                                      final FileUpload fileUpload) throws Exception {
+    private FileInfo write(final HttpParams http_params,
+                           final FileUpload fileUpload) throws Exception {
         try {
 
             // fileUpload.isInMemory();// tells if the file is in Memory or on File
             // fileUpload.renameTo(dest); // enable to move into another File dest
             // decoder.removeFileUploadFromClean(fileUpload); //remove the File of to delete file
-            final Map<String, String> params = this.validateParams(http_params, fileUpload);
-            final String file_name = params.get(PARAM_FILE_NAME);
-            final String directory = params.get(PARAM_DIRECTORY);
-            final String content_type = fileUpload.getContentType();
-            final long lenght = fileUpload.length();
+            final Params params = this.validateParams(http_params, fileUpload);
+            final String file_name = params.fileName();
+            final String directory = params.directory();
 
-            final String local_relative = PathUtils.concat(directory, file_name);
+            final String local_relative = PathUtils.concat(directory, PathUtils.isFile(file_name) ? file_name : file_name.concat(".upload"));
             final String local_full = PathUtils.concat(_root, local_relative);
             final String download_url = PathUtils.concat(config().downloadRoot(), local_relative);
+            final String content_type = fileUpload.getContentType();
+            final long content_length = fileUpload.length();
 
             // move file to destination
-            FileUtils.mkdirs(local_full);
-            fileUpload.renameTo(new File(local_full));
+            final FileInfo response = new FileInfo();
+            if (content_length > 0) {
+                FileUtils.mkdirs(local_full);
+                fileUpload.renameTo(new File(local_full));
+                // paths on server
+                response.localeRoot(_root);
+                response.localeRelative(local_relative);
+                response.localeAbsolute(local_full);
 
-            return MapBuilder.create(String.class, String.class)
-                    // paths on server
-                    .put("local_root", _root)
-                    .put("local_relative", local_relative)
-                    .put("local_full", local_full)
-                    // paths from web
-                    .put("download_url", download_url)
-                    .toMap();
+            }
 
+            // other patameters
+            response.contentType(content_type);
+            response.contentLength(content_length + "");
+
+            // all custom params returned to request sender
+            response.putAll(params.getCustom());
+
+            return response;
         } catch (Exception err) {
             throw err;
         }
     }
 
-    private Map<String, String> validateParams(final HttpParams params,
-                                               final FileUpload fileUpload) {
-        final Map<String, String> response = new HashMap<>();
-        response.put(PARAM_DIRECTORY, params.containsKey(PARAM_DIRECTORY) ? params.getString(PARAM_DIRECTORY) : "generic");
-        response.put(PARAM_FILE_NAME, params.containsKey(PARAM_FILE_NAME) ? params.getString(PARAM_FILE_NAME) : "");
+    private Params validateParams(final HttpParams params,
+                                  final FileUpload fileUpload) {
+        final Params response = new Params(params);
+
         try {
-            if (!fileUpload.isInMemory() && !StringUtils.hasText(response.get(PARAM_FILE_NAME))) {
-                response.put(PARAM_FILE_NAME, fileUpload.getFile().getName());
+            if (!fileUpload.isInMemory() && !StringUtils.hasText(response.fileName())) {
+                final String file_name = fileUpload.getFilename(); // fileUpload.getFile().getName();
+                final String ext = PathUtils.getFilenameExtension(file_name, true);
+                response.fileName(StringUtils.hasText(ext)
+                        ? file_name
+                        : file_name.concat(".upload"));
             }
         } catch (Throwable t) {
         }
         // file name is required
-        if (!StringUtils.hasText(response.get(PARAM_FILE_NAME))) {
-            response.put(PARAM_FILE_NAME, RandomUtils.randomUUID() + ".jpg");
+        if (!StringUtils.hasText(response.fileName())) {
+            response.fileName(RandomUtils.randomUUID() + ".jpg");
         }
 
         return response;
@@ -251,5 +271,142 @@ public class UploadHandler
         return new UploadHandler(config);
     }
 
+    // ------------------------------------------------------------------------
+    //                      E M B E D D E D
+    // ------------------------------------------------------------------------
 
+    /**
+     * Url or form parameters
+     */
+    private static class Params
+            extends HashMap<String, String> {
+
+
+        // ------------------------------------------------------------------------
+        //                      c o n s t
+        // ------------------------------------------------------------------------
+
+        private static final String PARAM_FILE_NAME = "file_name";
+        private static final String PARAM_DIRECTORY = "directory";
+
+        // ------------------------------------------------------------------------
+        //                      c o n s t r u c t o r
+        // ------------------------------------------------------------------------
+
+        public Params() {
+            super();
+            this.init();
+        }
+
+        public Params(final HttpParams params) {
+            super();
+            this.init(params);
+        }
+
+        // ------------------------------------------------------------------------
+        //                      p u b l i c
+        // ------------------------------------------------------------------------
+
+        public String directory() {
+            return super.get(PARAM_DIRECTORY);
+        }
+
+        public String fileName() {
+            return super.get(PARAM_FILE_NAME);
+        }
+
+        public void fileName(final String value) {
+            super.put(PARAM_FILE_NAME, value);
+        }
+
+        public Map<String, String> getCustom() {
+            final Map<String, String> response = new HashMap<>();
+            super.forEach((key, value) -> {
+                if (!key.equalsIgnoreCase(PARAM_FILE_NAME) && !key.equalsIgnoreCase(PARAM_DIRECTORY)) {
+                    response.put(key, value);
+                }
+            });
+            return response;
+        }
+
+        // ------------------------------------------------------------------------
+        //                      p r i v a t e
+        // ------------------------------------------------------------------------
+
+        private void init(final HttpParams params) {
+            params.toMap().forEach((key, value) -> {
+                super.put(key, value.toString());
+            });
+            this.init();
+        }
+
+        private void init() {
+            if (!super.containsKey(PARAM_DIRECTORY)) {
+                super.put(PARAM_DIRECTORY, "generic");
+            }
+            if (!super.containsKey(PARAM_FILE_NAME)) {
+                super.put(PARAM_FILE_NAME, "");
+            }
+        }
+
+    }
+
+    /**
+     * Wrap response information about file uploaded from a request
+     */
+    public static class FileInfo extends HashMap<String, String> {
+
+        private static final String FLD_LOCALE_ROOT = "local_root";
+        private static final String FLD_LOCALE_RELATIVE = "local_relative";
+        private static final String FLD_LOCALE_ABSOLUTE = "local_full";
+        private static final String FLD_CONTENT_TYPE = "content_type";
+        private static final String FLD_CONTENT_LENGTH = "content_length";
+
+        public String localeRoot() {
+            return super.get(FLD_LOCALE_ROOT);
+        }
+
+        public FileInfo localeRoot(final String value) {
+            super.put(FLD_LOCALE_ROOT, value);
+            return this;
+        }
+
+        public String localeRelative() {
+            return super.get(FLD_LOCALE_RELATIVE);
+        }
+
+        public FileInfo localeRelative(final String value) {
+            super.put(FLD_LOCALE_RELATIVE, value);
+            return this;
+        }
+
+        public String localeAbsolute() {
+            return super.get(FLD_LOCALE_ABSOLUTE);
+        }
+
+        public FileInfo localeAbsolute(final String value) {
+            super.put(FLD_LOCALE_ABSOLUTE, value);
+            return this;
+        }
+
+        public String contentType() {
+            return super.get(FLD_CONTENT_TYPE);
+        }
+
+        public FileInfo contentType(final String value) {
+            super.put(FLD_CONTENT_TYPE, value);
+            return this;
+        }
+
+        public long contentLength() {
+            return ConversionUtils.toLong(super.get(FLD_CONTENT_LENGTH), 0L);
+        }
+
+        public FileInfo contentLength(final String value) {
+            super.put(FLD_CONTENT_LENGTH, value);
+            return this;
+        }
+
+
+    }
 }

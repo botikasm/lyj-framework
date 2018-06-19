@@ -6,8 +6,8 @@ import org.json.JSONObject;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
-import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.ext.db.mongo.connection.LyjMongoConnection;
 import org.lyj.ext.db.mongo.schema.LyjMongoSchemas;
 

@@ -1,8 +1,8 @@
 package org.lyj.gui.application.config;
 
 import org.lyj.Lyj;
-import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.gui.application.app.utils.Size;
 
 /**

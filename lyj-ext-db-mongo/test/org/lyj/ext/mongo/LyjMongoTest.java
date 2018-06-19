@@ -7,8 +7,8 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.junit.Assert;
 import org.junit.Test;
-import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.util.ArrayList;
 import java.util.Collection;

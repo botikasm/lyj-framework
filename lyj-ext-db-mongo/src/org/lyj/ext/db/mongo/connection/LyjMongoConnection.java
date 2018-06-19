@@ -11,9 +11,11 @@ import org.json.JSONObject;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
-import org.lyj.commons.util.*;
-import org.lyj.ext.db.IDatabase;
-import org.lyj.ext.db.IDatabaseConnection;
+import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.ExceptionUtils;
+import org.lyj.commons.util.FormatUtils;
+import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -207,7 +209,7 @@ public class LyjMongoConnection {
                     names.forEach((Block<String>) s -> {
                         _database_names.add(s);
                     });
-                }catch(Throwable t){
+                } catch (Throwable t) {
                     if (!this.manageException("listDatabaseNames", t)) {
                         // GRAVE ERROR
                         _status = STATUS_ERROR;
@@ -222,8 +224,8 @@ public class LyjMongoConnection {
     }
 
     public <T> void getCollection(final String databaseName,
-                              final String collectionName,
-                              final Delegates.SingleResultCallback<com.mongodb.async.client.MongoCollection<T>> callback) {
+                                  final String collectionName,
+                                  final Delegates.SingleResultCallback<com.mongodb.async.client.MongoCollection<T>> callback) {
         if (_enabled) {
             this.getDatabase(databaseName, (err, db) -> {
                 if (null == err) {
@@ -249,7 +251,7 @@ public class LyjMongoConnection {
     }
 
     public <T> MongoCollection<T> getCollection(final String databaseName,
-                                         final String collectionName) throws Exception {
+                                                final String collectionName) throws Exception {
         final MongoDatabase database = getDatabase(databaseName);
         if (null != database) {
             final MongoCollection collection = database.getCollection(collectionName);
@@ -271,7 +273,7 @@ public class LyjMongoConnection {
         return LoggingUtils.getLogger(this);
     }
 
-    private void fillCredentials(final JSONObject[] configCredentials, final List<MongoCredential> out){
+    private void fillCredentials(final JSONObject[] configCredentials, final List<MongoCredential> out) {
         for (JSONObject item : configCredentials) {
             JsonWrapper wrap = new JsonWrapper(item);
             String auth = wrap.getString(AUTH);
@@ -408,7 +410,6 @@ public class LyjMongoConnection {
         }
         return managed;
     }
-
 
 
 }

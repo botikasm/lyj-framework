@@ -23,7 +23,7 @@ public class MapBuilder<K, V> {
         _map = new LinkedHashMap<>();
     }
 
-    public MapBuilder(final Map<K,V> data) {
+    public MapBuilder(final Map<K, V> data) {
         _map = new LinkedHashMap<>(data);
     }
 
@@ -44,7 +44,7 @@ public class MapBuilder<K, V> {
         return new JSONObject(_map);
     }
 
-    public boolean has(final K key){
+    public boolean has(final K key) {
         return _map.containsKey(key);
     }
 
@@ -54,6 +54,11 @@ public class MapBuilder<K, V> {
 
     public MapBuilder<K, V> put(final K key, final V value) {
         _map.put(key, value);
+        return this;
+    }
+
+    public MapBuilder<K, V> putAll(final Map<K, V> map) {
+        _map.putAll(map);
         return this;
     }
 
@@ -121,7 +126,7 @@ public class MapBuilder<K, V> {
         return new MapBuilder<K, V>();
     }
 
-    public static <K, V> MapBuilder<K, V> create(final Map<K,V> data) {
+    public static <K, V> MapBuilder<K, V> create(final Map<K, V> data) {
         return new MapBuilder<K, V>(data);
     }
 

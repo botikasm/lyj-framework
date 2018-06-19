@@ -4,9 +4,9 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.network.http.client.HttpClient;
-import org.lyj.commons.util.JsonWrapper;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.config.network.ConfigNetwork;
 import org.lyj.gui.application.app.utils.PlatformUtils;
 

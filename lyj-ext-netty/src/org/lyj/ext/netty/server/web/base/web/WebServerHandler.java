@@ -82,6 +82,7 @@ public class WebServerHandler
     @Override
     public void handlerRemoved(final ChannelHandlerContext ctx) throws Exception {
         // connection removed
+
     }
 
     // ------------------------------------------------------------------------

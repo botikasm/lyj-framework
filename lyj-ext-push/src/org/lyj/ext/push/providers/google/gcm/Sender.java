@@ -27,7 +27,7 @@ import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
-import org.lyj.commons.util.JsonWrapper;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.BufferedReader;
 import java.io.Closeable;

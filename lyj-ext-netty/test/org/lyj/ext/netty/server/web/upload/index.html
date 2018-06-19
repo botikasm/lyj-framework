@@ -18,12 +18,15 @@
     </div>
 
     <div class="upload_form_cont">
-        <form id="upload_form" enctype="multipart/form-data" method="post"
+
+        <form id="upload_form"
+              enctype="multipart/form-data"
+              method="post"
               action="http://localhost:4000/upload">
 
             <div>
                 <div><label for="image_file">Please select image file</label></div>
-                <div><input type="file" name="image_file" id="image_file" onchange="fileSelected();"/></div>
+                <div><input type="file" name="file_uploaded_now" app_token="iuhdiu87w23ruh897dfyc2w3r" id="image_file" onchange="fileSelected();"/></div>
                 <input type="hidden" name="app_token" value="iuhdiu87w23ruh897dfyc2w3r">
             </div>
             <div>
