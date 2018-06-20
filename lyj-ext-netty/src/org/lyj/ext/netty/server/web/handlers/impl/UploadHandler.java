@@ -35,7 +35,7 @@ public class UploadHandler
     private HttpPostRequestDecoder _decoder;
     private RouteUrl _route;
     private boolean _reading_chunks;
-    private Delegates.Callback<FileInfo> _callback;
+    private Delegates.FunctionArg<FileInfo, String> _callback;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -108,7 +108,7 @@ public class UploadHandler
         }
     }
 
-    public void onFileUpload(final Delegates.Callback<FileInfo> callback) {
+    public void onFileUpload(final Delegates.FunctionArg<FileInfo, String> callback) {
         _callback = callback;
     }
 
@@ -186,11 +186,15 @@ public class UploadHandler
                 if (fileUpload.isCompleted()) {
 
                     final FileInfo file_info = this.write(context.params().initialize(), fileUpload);
-                    context.writeJson(file_info);
-
                     if (null != _callback) {
-                        Delegates.invoke(_callback, file_info);
+                        try {
+                            final String error_message = Delegates.invoke(_callback, file_info);
+                            file_info.errorMessage(error_message);
+                        } catch (Throwable t) {
+                            file_info.errorMessage(ExceptionUtils.getRealMessage(t));
+                        }
                     }
+                    context.writeJson(file_info);
 
                 } else {
                     //responseContent.append("\tFile to be continued but should not!\r\n");
@@ -361,6 +365,7 @@ public class UploadHandler
         private static final String FLD_LOCALE_ABSOLUTE = "local_full";
         private static final String FLD_CONTENT_TYPE = "content_type";
         private static final String FLD_CONTENT_LENGTH = "content_length";
+        private static final String FLD_ERROR_MESSAGE = "error_message";
 
         public String localeRoot() {
             return super.get(FLD_LOCALE_ROOT);
@@ -407,6 +412,13 @@ public class UploadHandler
             return this;
         }
 
+        public String errorMessage() {
+            return super.get(FLD_ERROR_MESSAGE);
+        }
 
+        public FileInfo errorMessage(final String value) {
+            super.put(FLD_ERROR_MESSAGE, value);
+            return this;
+        }
     }
 }

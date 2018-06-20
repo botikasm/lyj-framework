@@ -68,7 +68,8 @@ public class HttpServerUploadTest {
         }
     }
 
-    private void onUpload(final UploadHandler.FileInfo fileInfo) {
+    private String onUpload(final UploadHandler.FileInfo fileInfo) {
         System.out.println("UPLOADED: " + fileInfo.toString());
+        return ""; // no error
     }
 }
