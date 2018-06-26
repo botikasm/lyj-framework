@@ -5,7 +5,7 @@ source MIT license as described below.
 
 The MIT License
 -------------------
-Copyright © 2015 - 2016 Gian Angelo Geminiani (angeo.geminiani@gmail.com)
+Copyright © 2015 - 2018 Gian Angelo Geminiani (angelo.geminiani@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this 
 software and associated documentation files (the "Software"), to deal in the Software 
