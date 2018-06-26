@@ -1,14 +1,14 @@
-# README #
+# README
 
 lyj is a Java 8 library created to build both client side and server side applications.
 
-### Why lyj ###
+### Why lyj
 
 * Quick summary
 * Version
 * [Support](https://plus.google.com/u/0/+GianAngeloGeminiani)
 
-#### Quick Summary ####
+#### Quick Summary
 lyj is a light-weight java library (lyj-core) with some extensions and modules (projects).
 
 Most important project is [DesktopGap](https://bitbucket.org/angelogeminiani/lyj/src/827bc77cf709fbfa3e0ac62d96ec57768f8c5551/projects/desktopgap/?at=master), that allow java developers to write awesome applications with an HTML gui.
@@ -44,14 +44,14 @@ For example, this simple script (json syntax) in Automator produce a web request
   }
 }
 ```
-#### Current Version ####
+#### Current Version
 Current version is BETA 0.1.3
 
 We are not ready for production and have a lack of documentation.
 
 If you want contribute to libraries or documentation, you are welcome ([Write Me](https://plus.google.com/u/0/+GianAngeloGeminiani))
 
-# TEAM #
+# TEAM
 
 **Gian Angelo Geminiani** (Project Administrator) -
 Profile: [LinkedIn](https://www.linkedin.com/in/angelogeminiani/)
@@ -65,7 +65,7 @@ Profile: [LinkedIn](https://www.linkedin.com/in/davide-brunetti-10487ba7/)
 **Antonio Di Pinto** (Contributor) - 
 Profile: [LinkedIn](https://www.linkedin.com/in/antoniodipinto/)
 
-# SPECIAL MENTION #
+# SPECIAL MENTION
 
 ![Jetbrains](https://bitbucket.org/angelogeminiani/lyj/raw/master/jetbrains.png)
 
