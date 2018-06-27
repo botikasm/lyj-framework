@@ -129,6 +129,32 @@ public class CloudFS
         }
     }
 
+    public File get(final String file_id) throws IOException {
+        synchronized (_disks) {
+            if (!_disks.isEmpty()) {
+                for (final CloudDisk disk : _disks) {
+                    if (disk.contains(file_id)) {
+                        return disk.get(file_id);
+                    }
+                }
+            }
+            return null;
+        }
+    }
+
+    public boolean remove(final String file_id) throws IOException {
+        synchronized (_disks) {
+            if (!_disks.isEmpty()) {
+                for (final CloudDisk disk : _disks) {
+                    if (disk.contains(file_id)) {
+                        return disk.remove(file_id);
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -257,6 +283,22 @@ public class CloudFS
             return this.store(file, true);
         }
 
+        public File get(final String file_id) {
+            return this.contains(file_id) ? new File(file_id) : null;
+        }
+
+        public boolean remove(final String file_id) {
+            if (this.contains(file_id)) {
+                FileUtils.delete(new File(file_id));
+                return true;
+            }
+            return false;
+        }
+
+        public boolean contains(final String file_id) {
+            return PathUtils.exists(file_id); // file_id is a path or unique address
+        }
+
         // ------------------------------------------------------------------------
         //                      p r i v a t e
         // ------------------------------------------------------------------------
@@ -300,7 +342,9 @@ public class CloudFS
             }
         }
 
-        private static void copy(final File in, final File out, final boolean move) throws IOException {
+        private static void copy(final File in,
+                                 final File out,
+                                 final boolean move) throws IOException {
             FileUtils.copy(in, out);
             if (move) {
                 FileUtils.delete(in);
