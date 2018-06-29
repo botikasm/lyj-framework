@@ -1,5 +1,6 @@
 package org.lyj.ext.netty.client.websocket;
 
+import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lyj.commons.async.Async;
@@ -7,6 +8,7 @@ import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.TestInitializer;
 import org.lyj.ext.netty.server.websocket.WebSocketServer;
 import org.lyj.ext.netty.server.websocket.impl.sessions.SessionClientController;
+import org.lyj.ext.netty.server.websocket.impl.sessions.SessionMessage;
 
 /**
  *
@@ -26,11 +28,25 @@ public class HttpWebSocketClientTest {
         this.runServer(8083);
 
         final WebSocketClient client = new WebSocketClient(URL);
-        client.open();
+
+
+
+        client.open()
+                .onReceivePong(this::onPong)
+                .onReceiveText(this::onText)
+                .ping()
+                .send("hello");
+
+
+        Thread.sleep(2000);
+
+        client.close();
 
         // wait before exit
-        Thread.sleep(200000);
+        // Thread.sleep(200000);
     }
+
+
 
 
     // ------------------------------------------------------------------------
@@ -62,6 +78,26 @@ public class HttpWebSocketClientTest {
 
             System.out.println("Session: " + session_id + ". DATA: " + data);
 
+            System.out.println("Address: " + SessionClientController.instance().addressOf(session_id));
+
+            SessionClientController.instance().open(session_id).write(data);
+
+            SessionClientController.instance().open(session_id).write("PUSHED");
+
+
+        }
+    }
+
+    private void onPong() {
+        System.out.println("CLIENT: pong");
+    }
+
+    private void onText(final String text) {
+        if(StringUtils.isJSONObject(text)){
+            SessionMessage message = new SessionMessage(text);
+            System.out.println("CLIENT: " + message.asText());
+        } else {
+            System.out.println("CLIENT: " + text);
         }
     }
 

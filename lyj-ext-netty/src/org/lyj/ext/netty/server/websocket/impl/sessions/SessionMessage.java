@@ -2,7 +2,10 @@ package org.lyj.ext.netty.server.websocket.impl.sessions;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lyj.commons.util.*;
+import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.ExceptionUtils;
+import org.lyj.commons.util.RandomUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.commons.util.json.JsonItem;
 
@@ -36,8 +39,12 @@ public class SessionMessage
 
     public SessionMessage(final String session_id) {
         super();
-        this.sessionId(session_id);
-        this.id(RandomUtils.randomUUID(true));
+        if (StringUtils.isJSONObject(session_id)) {
+            super.putAll(new JsonItem(session_id));
+        } else {
+            this.sessionId(session_id);
+            this.id(RandomUtils.randomUUID(true));
+        }
     }
 
     // --------------------------------------------------------------------
