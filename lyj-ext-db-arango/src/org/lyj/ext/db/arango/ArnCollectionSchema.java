@@ -2,6 +2,7 @@ package org.lyj.ext.db.arango;
 
 import com.arangodb.ArangoCollection;
 import com.arangodb.ArangoDatabase;
+import com.arangodb.entity.IndexEntity;
 import com.arangodb.model.GeoIndexOptions;
 import com.arangodb.model.HashIndexOptions;
 import org.lyj.commons.util.CollectionUtils;
@@ -43,7 +44,7 @@ public class ArnCollectionSchema
         try {
             final HashIndexOptions options = new HashIndexOptions();
             options.unique(unique);
-            _collection.createHashIndex(Arrays.asList(fields), options);
+            _collection.ensureHashIndex(Arrays.asList(fields), options);
         } catch (Throwable ignored) {
 
         }
@@ -72,7 +73,7 @@ public class ArnCollectionSchema
         try {
             final GeoIndexOptions options = new GeoIndexOptions();
             options.geoJson(geoJson);
-            _collection.createGeoIndex(Arrays.asList(fields), options);
+            _collection.ensureGeoIndex(Arrays.asList(fields), options);
         } catch (Throwable ignored) {
 
         }

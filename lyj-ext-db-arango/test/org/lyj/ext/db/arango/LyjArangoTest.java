@@ -33,7 +33,7 @@ public class LyjArangoTest {
 
     @Test
     public void test() {
-        final ArangoDB arangoDB = new ArangoDB.Builder().host("localhost").port(8529).user("root").password("!qaz2WSX098").build();
+        final ArangoDB arangoDB = new ArangoDB.Builder().host("localhost",8529).user("root").password("!qaz2WSX098").build();
 
         // create database
         final String dbName = "mydb";

@@ -13,14 +13,11 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.1.11" />
+          <root url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.5.2" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES>
-          <root url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.1.11" />
-        </SOURCES>
-        <jarDirectory url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.1.11" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.1.11" recursive="false" type="SOURCES" />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/arangodb-java-driver-4.5.2" recursive="false" />
       </library>
     </orderEntry>
   </component>
