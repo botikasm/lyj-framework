@@ -1615,14 +1615,29 @@ public abstract class CollectionUtils {
 
     public static JSONArray addAll(final JSONArray collection,
                                    final JSONArray items) {
-        CollectionUtils.forEach(items, (item) -> {
-            if (null != item) {
-                collection.put(item);
-            }
-        });
-        return collection;
+        return addAll(collection, items, false);
     }
 
+    public static JSONArray addAll(final JSONArray collection,
+                                   final JSONArray items,
+                                   final boolean deep) {
+        if(null!=items){
+            CollectionUtils.forEach(items, (value) -> {
+                try {
+                    if (null != value) {
+                        if (value instanceof JSONArray && deep) {
+                            addAll(collection, (JSONArray) value, deep);
+                        } else {
+                            collection.put(value);
+                        }
+                    }
+                } catch (Throwable ignored) {
+                    // ignored
+                }
+            });
+        }
+        return collection;
+    }
 
     public static <T> Set<List<T>> cartesianProduct(
             final Collection<Collection<T>> sets) {

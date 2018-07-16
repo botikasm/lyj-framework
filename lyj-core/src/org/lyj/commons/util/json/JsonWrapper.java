@@ -1180,7 +1180,8 @@ public final class JsonWrapper implements Cloneable {
      */
     public static JSONArray extend(final JSONArray target,
                                    final JSONArray source,
-                                   final boolean overwrite, final Object nullValue) {
+                                   final boolean overwrite,
+                                   final Object nullValue) {
         try {
             if (null != target && null != source && target.length() == source.length()) {
                 for (int i = 0; i < source.length(); i++) {
