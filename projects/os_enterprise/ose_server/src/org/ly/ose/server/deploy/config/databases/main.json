@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "autocreate": true,
+  "hosts": [
+    {
+      "path": "",
+      "host": "127.0.0.1",
+      "port": 8529
+    }
+  ],
+  "credentials": [
+    {
+      "type": "standard",
+      "database": "*",
+      "username": "root",
+      "password": "!qaz2WSX098"
+    }
+  ]
+}

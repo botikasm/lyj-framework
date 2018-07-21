@@ -210,17 +210,25 @@ public abstract class FileDeployer {
      */
     public void deploy(final String targetFolder,
                        final boolean children) {
-        //-- get resources and start deploy --//
-        final List<FileItem> resources = this.loadResources(_startFolder);
+        try {
+            //-- get resources and start deploy --//
+            final List<FileItem> resources = this.loadResources(_startFolder);
 
-        this.logStart();
+            this.logStart();
 
-        for (final FileItem item : resources) {
-            final String message = this.deploy(targetFolder, item, children);
-            if (StringUtils.hasText(message)) {
-                this.logInfo(message);
+            for (final FileItem item : resources) {
+                final String message = this.deploy(targetFolder, item, children);
+                if (StringUtils.hasText(message)) {
+                    this.logInfo(message);
+                }
             }
+        } finally {
+            this.finish();
         }
+    }
+
+    public void finish() {
+       // do nothing. override this method to implement a finalization task after deploy
     }
 
     // ------------------------------------------------------------------------

@@ -19,9 +19,10 @@ import org.lyj.commons.Delegates;
 import org.lyj.ext.netty.client.websocket.impl.WebSocketClientHandler;
 
 import javax.net.ssl.SSLException;
+import java.io.Closeable;
 import java.net.URI;
 
-public class WebSocketClient {
+public class WebSocketClient implements Closeable {
 
     private String _end_point;
     private URI _uri;
@@ -42,6 +43,10 @@ public class WebSocketClient {
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public String endPoint() {
+        return _end_point;
+    }
 
     public String scheme() {
         return _scheme;

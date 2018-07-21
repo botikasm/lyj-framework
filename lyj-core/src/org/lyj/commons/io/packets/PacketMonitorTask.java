@@ -91,6 +91,13 @@ public class PacketMonitorTask
         return _controller.isValidPacket(file);
     }
 
+    /**
+     * Force execution
+     */
+    public void force(){
+        this.handle(null);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -118,7 +125,7 @@ public class PacketMonitorTask
                 }
             } catch (Throwable t) {
                 super.error("handle", t);
-                if (_stop_on_error) {
+                if (_stop_on_error && null!=interruptor) {
                     interruptor.stop();
                 }
             } finally {

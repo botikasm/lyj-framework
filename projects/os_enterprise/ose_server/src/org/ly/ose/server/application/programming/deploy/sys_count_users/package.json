@@ -1,0 +1,8 @@
+{
+  "type": "program",
+  "namespace": "system",
+  "name": "utils",
+  "description": "Utility Functions",
+  "version": "1.0.1",
+  "author": "Gian Angelo Geminiani"
+}

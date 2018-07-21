@@ -166,13 +166,18 @@ public abstract class FileUtils {
             final File[] files = dir.listFiles();
             if (null != files && files.length > 0) {
                 if (!excludeHidden) {
-                    return true;
+                    return false; // not empty
                 }
+                // hidden files does not count
+                int count = 0;
                 for (final File file : files) {
                     if (!file.isHidden()) {
-                        return true;
+                        count++;
                     }
                 }
+                return count == 0;
+            } else {
+                return true; // empty
             }
         }
         return false;

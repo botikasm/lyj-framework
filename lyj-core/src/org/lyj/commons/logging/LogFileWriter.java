@@ -39,7 +39,7 @@ public class LogFileWriter {
             FileUtils.mkdirs(file_name);
 
             // check id and archive files
-            final int id = item.getId();
+            final int id = nextId(file_name);
             if (id == 1) {
                 // should archive?
                 if (create_archive) {
@@ -51,7 +51,7 @@ public class LogFileWriter {
                 // rotate if file size exceed the limit
                 final long file_size = FileUtils.getSize(file_name);
                 if (file_size >= max_size) {
-                   this.rotate(file_name);
+                    this.rotate(file_name);
                 }
             }
 
@@ -119,7 +119,7 @@ public class LogFileWriter {
             }
 
             // rotate file saving last with a progressive name
-            final String new_name = PathUtils.concat(root, name.concat("_").concat((last+1) + "").concat(ext));
+            final String new_name = PathUtils.concat(root, name.concat("_").concat((last + 1) + "").concat(ext));
             FileUtils.copy(new File(file_name), new File(new_name));
 
             // remove current for new content
@@ -131,6 +131,8 @@ public class LogFileWriter {
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
+    private static final Map<String, Integer> _logger_ids = MapBuilder.createSI().toMap();
+
     private static LogFileWriter __instance;
 
     public static synchronized LogFileWriter instance() {
@@ -138,6 +140,16 @@ public class LogFileWriter {
             __instance = new LogFileWriter();
         }
         return __instance;
+    }
+
+    private static int nextId(final String file_name) {
+        final String key = MD5.encode(file_name);
+        if (!_logger_ids.containsKey(key)) {
+            _logger_ids.put(key, 0);
+        }
+        int value = _logger_ids.get(key) + 1;
+        _logger_ids.put(key, value);
+        return value;
     }
 
 }

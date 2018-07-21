@@ -19,19 +19,18 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.logging;
 
 import org.lyj.IConstants;
-import org.lyj.commons.util.DateUtils;
-import org.lyj.commons.util.ExceptionUtils;
-import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.cryptograph.MD5;
+import org.lyj.commons.util.*;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author angelo.geminiani
@@ -39,13 +38,20 @@ import java.util.Locale;
 public final class LogItem
         implements Serializable {
 
-    private static int COUNT = 0;
+    // ------------------------------------------------------------------------
+    //                      f i e l d s
+    // ------------------------------------------------------------------------
+
     private final String _loggerName;
     private int _id;
     private Date _date;
     private Level _level;
     private Throwable _exception;
     private String _message;
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
 
     public LogItem() {
         this(null, Level.INFO, null, null);
@@ -59,10 +65,12 @@ public final class LogItem
         this(null, Level.INFO, null, message);
     }
 
-    public LogItem(final String loggername, final Level level,
-                   final Throwable exception, final String message) {
+    public LogItem(final String loggername,
+                   final Level level,
+                   final Throwable exception,
+                   final String message) {
         _loggerName = loggername;
-        _id = ++COUNT;
+        _id = nextId(_loggerName);
         _level = level;
         _exception = exception;
         _message = message;
@@ -95,6 +103,10 @@ public final class LogItem
         }
         return result.toString();
     }
+
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
 
     public int getId() {
         return _id;
@@ -144,5 +156,14 @@ public final class LogItem
         return ExceptionUtils.getRealMessage(_exception);
     }
 
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    private static int _COUNT = 0;
+
+    private static int nextId(final String logger) {
+        return ++_COUNT;
+    }
 
 }

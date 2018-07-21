@@ -146,4 +146,8 @@ public class MapBuilder<K, V> {
         return new MapBuilder<Integer, String>();
     }
 
+    public static MapBuilder<String, Integer> createSI() {
+        return new MapBuilder<String, Integer>();
+    }
+
 }

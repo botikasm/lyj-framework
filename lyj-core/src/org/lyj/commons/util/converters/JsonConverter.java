@@ -148,10 +148,25 @@ public abstract class JsonConverter {
                 return new JSONObject(value);
             } catch (Throwable ignored) {
                 // may be a map
-                return toObject(CollectionUtils.stringToMap(value.substring(1, value.length() - 1)));
+                return  toObject(CollectionUtils.stringToMap(value.substring(1, value.length() - 1)));
             }
+        } else {
+            result.put("value", value);
         }
         return result;
+    }
+
+    public static JSONObject toObject(final Object value) {
+        final Object compatible = toJsonCompatible(value);
+        if (compatible instanceof JSONObject) {
+            return (JSONObject) value;
+        } else if (compatible instanceof String) {
+            return toObject((String) value);
+        } else {
+            final JSONObject result = new JSONObject();
+            result.put("value", value);
+            return result;
+        }
     }
 
     // ------------------------------------------------------------------------
