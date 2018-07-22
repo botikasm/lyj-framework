@@ -1,18 +1,26 @@
-package org.ly.ose.server.application.persistence;
+package org.ly.ose.commons.model;
 
 import org.json.JSONObject;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.ext.db.arango.serialization.ArangoMapDocument;
+import org.lyj.ext.db.model.MapDocument;
 
 /**
  *
  */
 public class BaseModel
-        extends ArangoMapDocument {
+        extends MapDocument {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
+
+    protected static final String FLD_KEY = "_key";
+    protected static final String FLD_REV = "_rev";
+
+    // ------------------------------------------------------------------------
+    //                      f i e l d s
+    // ------------------------------------------------------------------------
+
 
     public static final String FLD_COLLECTION = "collection";
 
@@ -22,12 +30,34 @@ public class BaseModel
 
     public BaseModel() {
         super();
-        this.checkId();
+        this.init();
     }
 
     public BaseModel(final Object item) {
         super(item);
-        this.checkId();
+        this.init();
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r o p e r t i e s
+    // ------------------------------------------------------------------------
+
+    public String key() {
+        return this.getString(FLD_KEY);
+    }
+
+    public BaseModel key(final String value) {
+        this.put(FLD_KEY, value);
+        return this;
+    }
+
+    public String revision() {
+        return this.getString(FLD_REV);
+    }
+
+    public BaseModel revision(final String value) {
+        this.put(FLD_REV, value);
+        return this;
     }
 
     // ------------------------------------------------------------------------
@@ -53,7 +83,7 @@ public class BaseModel
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void checkId() {
+    private void init() {
         if (!StringUtils.hasText(this.key())) {
             this.key(uuid());
         }
@@ -63,9 +93,9 @@ public class BaseModel
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
-    public static ArangoMapDocument clone(final Object item) {
+    public static BaseModel clone(final Object item) {
         if (null != item) {
-            final ArangoMapDocument new_item = new ArangoMapDocument(item);
+            final BaseModel new_item = new BaseModel(item);
             // reset some fields
             new_item.put(FLD_KEY, uuid());
 

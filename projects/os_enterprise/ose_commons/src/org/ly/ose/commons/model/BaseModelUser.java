@@ -1,7 +1,7 @@
-package org.ly.ose.server.application.persistence;
+package org.ly.ose.commons.model;
 
 import org.json.JSONObject;
-import org.ly.ose.server.IConstants;
+import org.ly.ose.commons.IConstants;
 import org.lyj.commons.util.DateUtils;
 import org.lyj.commons.util.DateWrapper;
 import org.lyj.commons.util.LocaleUtils;

@@ -1,4 +1,4 @@
-package org.ly.ose.server.application.persistence;
+package org.ly.ose.commons.model;
 
 import org.lyj.commons.i18n.ILocalizable;
 import org.lyj.commons.util.StringUtils;
