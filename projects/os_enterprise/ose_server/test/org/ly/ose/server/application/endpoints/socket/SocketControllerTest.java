@@ -3,6 +3,8 @@ package org.ly.ose.server.application.endpoints.socket;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ly.ose.commons.model.messaging.OSERequest;
+import org.ly.ose.commons.model.messaging.OSEResponse;
+import org.ly.ose.commons.model.messaging.payloads.OSEPayloadProgram;
 import org.ly.ose.server.IConstants;
 import org.ly.ose.server.TestInitializer;
 import org.lyj.ext.netty.client.websocket.WebSocketClient;
@@ -31,8 +33,10 @@ public class SocketControllerTest {
             request.uid("channel_" + channel.hashCode());
             request.lang(IConstants.DEF_LANG);
             request.type(OSERequest.TYPE_PROGRAM);
-            request.payload().put("namespace", "system.utils");
-            request.payload().put("function", "version");
+
+            final OSEPayloadProgram payload = new OSEPayloadProgram(request.payload());
+            payload.namespace("system.utils");
+            payload.function("version");
 
             channel.send(request.toString());
             channel.onReceiveText(this::onReceive);
@@ -50,6 +54,10 @@ public class SocketControllerTest {
 
     private void onReceive(final String text) {
         System.out.println("Socket Response: " + text);
+        final OSEResponse response = new OSEResponse(text);
+        if(response.hasPayload()){
+            System.out.println("response: " + response.payload());
+        }
     }
 
 

@@ -83,6 +83,9 @@ public class OSERequest
         return this;
     }
 
+    /**
+     * Returns channel, the session ID required to send a callback to request sender
+     */
     public String channel() {
         return super.getString(FLD_CHANNEL);
     }
@@ -104,6 +107,9 @@ public class OSERequest
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public boolean hasPayload(){
+        return super.has(FLD_PAYLOAD);
+    }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e

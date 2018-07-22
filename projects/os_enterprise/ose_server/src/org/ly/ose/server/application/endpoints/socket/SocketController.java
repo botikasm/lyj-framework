@@ -53,7 +53,10 @@ public class SocketController
                 final OSEResponse response = MessageManager.instance().handle(request);
                 response.uid(_server.config().uri());
 
-                sendResponse(response.request().channel(), response);
+                // send only if response has a payload
+                if(response.hasPayload()){
+                    sendResponse(response.request().channel(), response);
+                }
             }
 
         } catch (Throwable t) {
