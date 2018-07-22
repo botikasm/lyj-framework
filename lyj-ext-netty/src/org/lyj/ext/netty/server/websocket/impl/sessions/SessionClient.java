@@ -14,9 +14,9 @@ import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.ext.netty.server.web.HttpServerConfig;
 
 import java.util.LinkedList;
@@ -96,12 +96,18 @@ public class SessionClient {
     }
 
     public void write(final Object data) {
-        if (StringUtils.hasText(_uid) && !_channel_group.isEmpty()) {
+        if (StringUtils.hasText(_uid)) {
 
             final SessionMessage message = SessionMessage.create(_uid);
             message.data(data);
 
-            final WebSocketFrame frame = new TextWebSocketFrame(message.toString());
+            this.writeRaw(message);
+        }
+    }
+
+    public void writeRaw(final Object raw_message) {
+        if (!_channel_group.isEmpty()) {
+            final WebSocketFrame frame = new TextWebSocketFrame(raw_message.toString());
             _channel_group.writeAndFlush(frame);
         }
     }

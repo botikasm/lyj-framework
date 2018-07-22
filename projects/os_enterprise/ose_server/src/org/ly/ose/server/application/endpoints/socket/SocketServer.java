@@ -18,11 +18,14 @@ public class SocketServer
 
     private static final boolean USE_SSL = ConfigHelper.instance().socketUseSSL();
 
+    private SocketController _controller;
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     public SocketServer() {
+        _controller = new SocketController(this);
         this.init();
     }
 
@@ -65,7 +68,7 @@ public class SocketServer
 
             // handle socket request
             Async.invoke((args) -> {
-                SocketController.instance().notifyRequest((String) args[0], args[1]);
+                _controller.notifyRequest((String) args[0], args[1]);
             }, session_id, data);
 
         }

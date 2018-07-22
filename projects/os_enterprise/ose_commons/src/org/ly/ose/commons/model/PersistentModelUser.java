@@ -10,8 +10,8 @@ import org.lyj.commons.util.StringUtils;
 /**
  * Base user
  */
-public class BaseModelUser
-        extends BaseModel {
+public class PersistentModelUser
+        extends PersistentModel {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -49,12 +49,12 @@ public class BaseModelUser
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public BaseModelUser() {
+    public PersistentModelUser() {
         super();
         this.initDefaults();
     }
 
-    public BaseModelUser(final Object item) {
+    public PersistentModelUser(final Object item) {
         super(item);
         this.initDefaults();
     }
@@ -69,7 +69,7 @@ public class BaseModelUser
         return super.getString(FLD_COMPANY_UID);
     }
 
-    public BaseModelUser companyUid(final String value) {
+    public PersistentModelUser companyUid(final String value) {
         super.put(FLD_COMPANY_UID, value);
         return this;
     }
@@ -78,7 +78,7 @@ public class BaseModelUser
         return super.getBoolean(FLD_IS_ENABLED);
     }
 
-    public BaseModelUser isEnabled(final boolean value) {
+    public PersistentModelUser isEnabled(final boolean value) {
         super.put(FLD_IS_ENABLED, value);
         return this;
     }
@@ -87,7 +87,7 @@ public class BaseModelUser
         return super.getLong(FLD_TIMESTAMP_LAST_EMAIL_VALIDATE);
     }
 
-    public BaseModelUser timestampLastEmalValidate(final long value) {
+    public PersistentModelUser timestampLastEmalValidate(final long value) {
         if (value > 0) {
             super.put(FLD_TIMESTAMP_LAST_EMAIL_VALIDATE, value);
         }
@@ -98,7 +98,7 @@ public class BaseModelUser
         return super.getLong(FLD_TIMESTAMP_LAST_PASSWORD_CHANGE);
     }
 
-    public BaseModelUser timestampLastPasswordChange(final long value) {
+    public PersistentModelUser timestampLastPasswordChange(final long value) {
         if (value > 0) {
             super.put(FLD_TIMESTAMP_LAST_PASSWORD_CHANGE, value);
         }
@@ -109,7 +109,7 @@ public class BaseModelUser
         return super.getLong(FLD_LAST_ACCESS_DATE);
     }
 
-    public BaseModelUser lastAccessDate(final long value) {
+    public PersistentModelUser lastAccessDate(final long value) {
         if (value > 0) {
             super.put(FLD_LAST_ACCESS_DATE, value);
             final DateWrapper date = new DateWrapper(value);
@@ -123,7 +123,7 @@ public class BaseModelUser
         return super.getString(FLD_LAST_ACCESS_DATE_FMT);
     }
 
-    public BaseModelUser lastAccessDateFmt(final String value) {
+    public PersistentModelUser lastAccessDateFmt(final String value) {
         super.put(FLD_LAST_ACCESS_DATE_FMT, value);
         return this;
     }
@@ -132,7 +132,7 @@ public class BaseModelUser
         return super.getString(FLD_USERNAME);
     }
 
-    public BaseModelUser username(final String value) {
+    public PersistentModelUser username(final String value) {
         super.put(FLD_USERNAME, value);
         return this;
     }
@@ -141,7 +141,7 @@ public class BaseModelUser
         return super.getString(FLD_PASSWORD);
     }
 
-    public BaseModelUser password(final String value) {
+    public PersistentModelUser password(final String value) {
         super.put(FLD_PASSWORD, value);
         return this;
     }
@@ -150,7 +150,7 @@ public class BaseModelUser
         return super.getString(FLD_FIRST_NAME);
     }
 
-    public BaseModelUser firstName(final String value) {
+    public PersistentModelUser firstName(final String value) {
         super.put(FLD_FIRST_NAME, value);
         return this;
     }
@@ -159,7 +159,7 @@ public class BaseModelUser
         return super.getString(FLD_LAST_NAME);
     }
 
-    public BaseModelUser lastName(final String value) {
+    public PersistentModelUser lastName(final String value) {
         super.put(FLD_LAST_NAME, value);
         return this;
     }
@@ -168,7 +168,7 @@ public class BaseModelUser
         return super.getString(FLD_PROFILE_PIC);
     }
 
-    public BaseModelUser profilePic(final String value) {
+    public PersistentModelUser profilePic(final String value) {
         super.put(FLD_PROFILE_PIC, value);
         return this;
     }
@@ -187,7 +187,7 @@ public class BaseModelUser
         return result;
     }
 
-    public BaseModelUser locale(final String value) {
+    public PersistentModelUser locale(final String value) {
         super.putNotEmpty(FLD_LOCALE, value);
         super.putNotEmpty(FLD_LANG, getLanguage(value));
         super.putNotEmpty(FLD_COUNTRY, getCountry(value));
@@ -198,7 +198,7 @@ public class BaseModelUser
         return super.getString(FLD_LANG);
     }
 
-    public BaseModelUser lang(final String value) {
+    public PersistentModelUser lang(final String value) {
         super.putNotEmpty(FLD_LANG, value);
         return this;
     }
@@ -207,7 +207,7 @@ public class BaseModelUser
         return super.getString(FLD_COUNTRY);
     }
 
-    public BaseModelUser country(final String value) {
+    public PersistentModelUser country(final String value) {
         super.putNotEmpty(FLD_COUNTRY, value);
         return this;
     }
@@ -216,7 +216,7 @@ public class BaseModelUser
         return super.getString(FLD_TIMEZONE);
     }
 
-    public BaseModelUser timezone(final String value) {
+    public PersistentModelUser timezone(final String value) {
         super.put(FLD_TIMEZONE, value);
         return this;
     }
@@ -225,7 +225,7 @@ public class BaseModelUser
         return IConstants.GENDER_MAP.get(super.getString(FLD_GENDER, IConstants.GENDER_MALE));
     }
 
-    public BaseModelUser gender(final String value) {
+    public PersistentModelUser gender(final String value) {
         super.put(FLD_GENDER, IConstants.GENDER_MAP.get(value));
         return this;
     }
@@ -238,7 +238,7 @@ public class BaseModelUser
         return super.getString(FLD_EMAIL);
     }
 
-    public BaseModelUser email(final String value) {
+    public PersistentModelUser email(final String value) {
         super.put(FLD_EMAIL, value);
         return this;
     }
@@ -247,7 +247,7 @@ public class BaseModelUser
         return super.getString(FLD_MOBILE);
     }
 
-    public BaseModelUser mobile(final String value) {
+    public PersistentModelUser mobile(final String value) {
         super.put(FLD_MOBILE, value);
         return this;
     }
@@ -256,7 +256,7 @@ public class BaseModelUser
         return super.getString(FLD_PHONE);
     }
 
-    public BaseModelUser phone(final String value) {
+    public PersistentModelUser phone(final String value) {
         super.put(FLD_PHONE, value);
         return this;
     }

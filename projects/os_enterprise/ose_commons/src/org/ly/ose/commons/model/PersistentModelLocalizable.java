@@ -7,8 +7,8 @@ import org.lyj.ext.db.model.MapDocument;
 /**
  *
  */
-public class BaseModelLocalizable
-        extends BaseModel
+public class PersistentModelLocalizable
+        extends PersistentModel
         implements ILocalizable {
 
     // ------------------------------------------------------------------------
@@ -21,11 +21,11 @@ public class BaseModelLocalizable
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public BaseModelLocalizable() {
+    public PersistentModelLocalizable() {
         super();
     }
 
-    public BaseModelLocalizable(final Object item) {
+    public PersistentModelLocalizable(final Object item) {
         super(item);
     }
 

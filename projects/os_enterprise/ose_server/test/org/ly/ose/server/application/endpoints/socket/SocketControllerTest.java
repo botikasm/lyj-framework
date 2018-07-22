@@ -2,6 +2,8 @@ package org.ly.ose.server.application.endpoints.socket;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.ly.ose.commons.model.messaging.OSERequest;
+import org.ly.ose.server.IConstants;
 import org.ly.ose.server.TestInitializer;
 import org.lyj.ext.netty.client.websocket.WebSocketClient;
 
@@ -25,12 +27,21 @@ public class SocketControllerTest {
             final WebSocketClient.Channel channel = client.open();
             System.out.println("------> endpoint reached: " + client.endPoint());
 
-            channel.send("hello");
+            final OSERequest request = new OSERequest();
+            request.uid("channel_" + channel.hashCode());
+            request.lang(IConstants.DEF_LANG);
+            request.type(OSERequest.TYPE_PROGRAM);
+            request.payload().put("namespace", "system.utils");
+            request.payload().put("function", "version");
+
+            channel.send(request.toString());
             channel.onReceiveText(this::onReceive);
+
+            // wait few seconds for execution
+            Thread.sleep(sleep);
         }
 
-        // wait few seconds for execution
-        Thread.sleep(sleep);
+
     }
 
     // ------------------------------------------------------------------------
