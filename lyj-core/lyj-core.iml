@@ -7,10 +7,6 @@
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src_lib" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src_ext" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/src/org/lyj/commons/io/db/jdbm" />
-      <excludeFolder url="file://$MODULE_DIR$/src_lib/net" />
-      <excludeFolder url="file://$MODULE_DIR$/test/org/lyj/commons/io/jdbm" />
-      <excludeFolder url="file://$MODULE_DIR$/test/org/lyj/commons/io/jsondb" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
