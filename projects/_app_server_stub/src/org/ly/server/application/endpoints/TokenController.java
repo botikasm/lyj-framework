@@ -1,7 +1,7 @@
 package org.ly.server.application.endpoints;
 
 
-import org.ly.server.IConstant;
+import org.ly.server.IConstants;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.AbstractLogEmitter;
 
@@ -49,8 +49,8 @@ public class TokenController
             if (_token_responses.containsKey(token)) {
                 return _token_responses.get(token);
             } else {
-                final boolean exists = token.equals(IConstant.APP_TOKEN_CLIENT_API)
-                        || token.equals(IConstant.APP_TOKEN);
+                final boolean exists = token.equals(IConstants.APP_TOKEN_CLIENT_API)
+                        || token.equals(IConstants.APP_TOKEN);
                 synchronized (_token_responses) {
                     _token_responses.put(token, exists);
                 }

@@ -1,4 +1,4 @@
-package org.ly.server;
+package org.ly.ose.commons;
 
 import org.lyj.commons.util.MapBuilder;
 import org.lyj.commons.util.PathUtils;
@@ -6,26 +6,15 @@ import org.lyj.commons.util.PathUtils;
 import java.util.Locale;
 import java.util.Map;
 
-public interface IConstant {
+public interface IConstants {
 
-    // localization
     Locale LOCALE = Locale.ENGLISH;
     String DEF_LANG = org.lyj.IConstants.DEF_LANG;
-
-    // file system
     String ROOT = PathUtils.getAbsolutePath("");
     String ROOT_FILES = PathUtils.combine(ROOT, "files");
 
-
-    String APP_NAME = "Sample Server Node";
-    String APP_VERSION = "1.0.1";
-
     String APP_TOKEN_CLIENT_API = "iuhdiu87w23ruh897dfyc2w3r";
     String APP_TOKEN = "io8dcfvjkkleaqwhjtuyqwuyeio";
-
-    String DB_GLOBAL = "ose_server";
-    String DB_CUSTOM_PREFIX = "ose_server_";
-    String DB_CONFIGURATION_PATH = "databases.main";
 
     String GENDER_MALE = "m";
     String GENDER_FEMALE = "f";

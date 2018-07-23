@@ -1,6 +1,6 @@
 package org.ly.server.application;
 
-import org.ly.server.IConstant;
+import org.ly.server.IConstants;
 import org.ly.server.application.endpoints.api.ApiServer;
 import org.ly.server.application.endpoints.socket.SocketServer;
 import org.ly.server.application.endpoints.web.WebServer;
@@ -23,7 +23,7 @@ public class Application {
     //                      C O N S T
     // ------------------------------------------------------------------------
 
-    public static final String VERSION = IConstant.APP_VERSION;
+    public static final String VERSION = IConstants.APP_VERSION;
 
 
     // ------------------------------------------------------------------------
@@ -42,7 +42,7 @@ public class Application {
 
     public Application(final boolean test_mode) {
 
-        LocaleUtils.setCurrent(IConstant.LOCALE);
+        LocaleUtils.setCurrent(IConstants.LOCALE);
 
         _test_mode = test_mode;
 
@@ -165,7 +165,7 @@ public class Application {
         final StringBuilder sb = new StringBuilder();
         sb.append("CONFIGURATION:\n");
         sb.append("**************************************").append("\n");
-        sb.append("\t").append("VERSION: ").append(IConstant.APP_VERSION).append("\n");
+        sb.append("\t").append("VERSION: ").append(IConstants.APP_VERSION).append("\n");
         // sb.append("\t").append("DB SCHEMA: ").append(IConstants.DB_VERSION).append("\n");
         sb.append("\t").append("ROOT: ").append(PathUtils.getAbsolutePath("")).append("\n");
         sb.append("\t").append("API PORT: ").append(config.apiEnabled() ? config.apiPort() : "Not Enabled").append("\n");
@@ -177,8 +177,8 @@ public class Application {
 
         // logs
         sb.append("\t").append("LOGS: ").append("\n");
-        sb.append("\t\t").append(config.apiHost()).append("/api/util/log/" + IConstant.APP_TOKEN_CLIENT_API + "/lyj.log").append("\n");
-        sb.append("\t\t").append(config.apiHost()).append("/api/util/log/" + IConstant.APP_TOKEN_CLIENT_API + "/").append(PackageImporter.LOGGER_NAME).append("\n");
+        sb.append("\t\t").append(config.apiHost()).append("/api/util/log/" + IConstants.APP_TOKEN_CLIENT_API + "/lyj.log").append("\n");
+        sb.append("\t\t").append(config.apiHost()).append("/api/util/log/" + IConstants.APP_TOKEN_CLIENT_API + "/").append(PackageImporter.LOGGER_NAME).append("\n");
 
         sb.append("**************************************");
 

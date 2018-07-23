@@ -1,6 +1,6 @@
 package org.ly.server.application.importer;
 
-import org.ly.server.IConstant;
+import org.ly.server.IConstants;
 import org.ly.server.application.importer.impl.ProgramImporter;
 import org.lyj.commons.io.packets.PacketMonitorTask;
 import org.lyj.commons.logging.AbstractLogEmitter;
@@ -25,7 +25,7 @@ public class PackageImporter
 
     public static final String LOGGER_NAME = "importer.log";
 
-    private static final String ROOT = PathUtils.combine(IConstant.ROOT_FILES, "install");
+    private static final String ROOT = PathUtils.combine(IConstants.ROOT_FILES, "install");
 
     // ------------------------------------------------------------------------
     //                     f i e l d s
