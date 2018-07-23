@@ -13,7 +13,7 @@
       "type": "standard",
       "database": "*",
       "username": "root",
-      "password": "!qaz2WSX098"
+      "password": "my-secure-password"
     }
   ]
 }
