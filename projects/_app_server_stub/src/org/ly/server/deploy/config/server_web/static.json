@@ -1,0 +1,10 @@
+{
+  "upload": {
+    "path": "/var/www/http/static/funnygain/",
+    "path_test": "/Users/angelogeminiani/www/static/app/",
+    "thumb": {
+      "width": 300,
+      "height": 300
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "port": 4000,
+  "use_ssl": true,
+  "404": "",
+  "host": "https://api.domain.com:4000"
+}
