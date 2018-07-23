@@ -1,7 +1,7 @@
 package org.ly.server.application.model;
 
 import org.json.JSONObject;
-import org.ly.server.IConstants;
+import org.ly.server.IConstant;
 import org.lyj.commons.util.DateUtils;
 import org.lyj.commons.util.DateWrapper;
 import org.lyj.commons.util.LocaleUtils;
@@ -222,16 +222,16 @@ public class PersistentModelUser
     }
 
     public String gender() {
-        return IConstants.GENDER_MAP.get(super.getString(FLD_GENDER, IConstants.GENDER_MALE));
+        return IConstant.GENDER_MAP.get(super.getString(FLD_GENDER, IConstant.GENDER_MALE));
     }
 
     public PersistentModelUser gender(final String value) {
-        super.put(FLD_GENDER, IConstants.GENDER_MAP.get(value));
+        super.put(FLD_GENDER, IConstant.GENDER_MAP.get(value));
         return this;
     }
 
     public String genderCode() {
-        return IConstants.GENDER_MAP.get(this.gender());
+        return IConstant.GENDER_MAP.get(this.gender());
     }
 
     public String email() {
@@ -330,7 +330,7 @@ public class PersistentModelUser
 
     private static String getLanguage(final String locale) {
         final String lang = LocaleUtils.getLanguage(locale);
-        return StringUtils.hasText(lang) ? lang : IConstants.DEF_LANG;
+        return StringUtils.hasText(lang) ? lang : IConstant.DEF_LANG;
     }
 
     private static String getCountry(final String locale) {

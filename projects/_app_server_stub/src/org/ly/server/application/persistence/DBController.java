@@ -1,8 +1,7 @@
 package org.ly.server.application.persistence;
 
 import org.json.JSONObject;
-import org.ly.server.IConstants;
-import org.ly.server.IConstants;
+import org.ly.server.IConstant;
 import org.lyj.Lyj;
 import org.lyj.commons.io.jsonrepository.JsonRepository;
 import org.lyj.commons.logging.AbstractLogEmitter;
@@ -24,10 +23,10 @@ public class DBController
 
     private static final String CONNECTION = "CONNECTION";
 
-    private static final String DB_GLOBAL = IConstants.DB_GLOBAL; // global database
-    private static final String DB_CUSTOM_PREFIX = IConstants.DB_CUSTOM_PREFIX;
+    private static final String DB_GLOBAL = IConstant.DB_GLOBAL; // global database
+    private static final String DB_CUSTOM_PREFIX = IConstant.DB_CUSTOM_PREFIX;
 
-    private static final String DB_CONFIGURATION_PATH = IConstants.DB_CONFIGURATION_PATH;
+    private static final String DB_CONFIGURATION_PATH = IConstant.DB_CONFIGURATION_PATH;
 
     // ------------------------------------------------------------------------
     //                      f i e l d s

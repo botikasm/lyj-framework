@@ -2,9 +2,8 @@ package org.ly.server.application.endpoints.api.routing.impl;
 
 
 import org.json.JSONObject;
-import org.ly.server.IConstants;
+import org.ly.server.IConstant;
 import org.ly.server.application.endpoints.api.ApiHelper;
-import org.ly.server.IConstants;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.logging.LoggingRepository;
 import org.lyj.commons.util.FileUtils;
@@ -25,8 +24,8 @@ public class ApiUtil {
 
     public static void version(final HttpServerContext context) {
         final JSONObject item = new JSONObject();
-        item.put("version", IConstants.APP_VERSION);
-        item.put("name", IConstants.APP_NAME);
+        item.put("version", IConstant.APP_VERSION);
+        item.put("name", IConstant.APP_NAME);
         context.writeJson(item);
     }
 
