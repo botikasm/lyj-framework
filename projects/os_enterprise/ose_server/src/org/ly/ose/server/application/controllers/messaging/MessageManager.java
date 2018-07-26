@@ -5,6 +5,8 @@ import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.commons.model.messaging.OSEResponse;
 import org.ly.ose.commons.model.messaging.payloads.OSEPayloadProgram;
 import org.ly.ose.server.application.programming.OSEProgram;
+import org.ly.ose.server.application.programming.OSEProgramInfo;
+import org.ly.ose.server.application.programming.OSEProgramSessions;
 import org.ly.ose.server.application.programming.ProgramsManager;
 import org.lyj.commons.util.ExceptionUtils;
 import org.lyj.commons.util.StringUtils;
@@ -41,9 +43,11 @@ public class MessageManager {
         response.lang(request.lang());
         response.type(request.type());
         try {
+            // choose handler for each message type supported
             if (TYPE_PROGRAM.equalsIgnoreCase(request.type())) {
                 this.handleRequestProgram(response);
             } else {
+                // unsupported message type
                 response.error("Unhandled request type: " + request.type() + ". value=" + request.toString());
             }
         } catch (Throwable t) {
@@ -61,16 +65,40 @@ public class MessageManager {
         final OSEPayloadProgram payload = new OSEPayloadProgram(response.request().payload());
         if (StringUtils.hasText(payload.namespace())
                 && StringUtils.hasText(payload.function())) {
+
             final String namespace = payload.namespace();
             final String function = payload.function();
+            final long session_timeout = payload.sessionTimeout();
+            final String client_session_id = response.request().channel();
 
-            // invoke new program (no session) TODO: add sessions for programs
-            final OSEProgram program = ProgramsManager.instance().getNew(namespace);
-            final Object init_response = program.open();
+            final OSEProgram program;
+            if (StringUtils.hasText(client_session_id)) {
+                if (OSEProgramSessions.instance().containsKey(client_session_id)) {
+                    program = OSEProgramSessions.instance().get(client_session_id);
+                } else {
+                    // new program
+                    program = ProgramsManager.instance().getNew(namespace);
+                    // add some advanced info to program
+                    program.info().data().put(OSEProgramInfo.FLD_SESSION_ID, client_session_id);
+
+                    // add program to session manager and initialize
+                    OSEProgramSessions.instance().put(client_session_id, program, session_timeout);
+                }
+
+            } else {
+                program = ProgramsManager.instance().getNew(namespace);
+            }
+
+            // call required function
             final Object result = program.callMember(function);
             final JSONArray json_result = Converter.toJsonArray(result);
             response.payload(json_result);
-            
+
+            // close program if not in session
+            if (!StringUtils.hasText(client_session_id)
+                    || !OSEProgramSessions.instance().containsKey(client_session_id)) {
+                program.close();
+            }
         } else {
             // invalid request, missing some parameters
             throw new Exception("Malformer payload. Missing 'namespace' or 'function' fields");

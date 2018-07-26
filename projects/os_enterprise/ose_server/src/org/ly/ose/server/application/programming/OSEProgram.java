@@ -1,6 +1,8 @@
 package org.ly.ose.server.application.programming;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
+import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.ScriptController;
@@ -10,6 +12,10 @@ import org.lyj.ext.script.utils.Converter;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Program wrapper.
+ * Use this class to invoke methods from the program.
+ */
 public class OSEProgram {
 
     // ------------------------------------------------------------------------
@@ -18,7 +24,9 @@ public class OSEProgram {
 
     private static final String SCRIPT_PREFIX = "$";
 
-    private static final String ON_INIT = "init";
+    private static final String ON_INIT = "_init";
+    private static final String ON_EXPIRE = "_expire"; // session expired
+    private static final String ON_LOOP = "_loop";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -29,6 +37,7 @@ public class OSEProgram {
     private final String _uid;
     private OSEProgramLogger _logger;
     private final Program _program;
+    private final Loop _loop_ticker;
 
     private ScriptObjectMirror _script;
     private Object _init_response;
@@ -41,8 +50,18 @@ public class OSEProgram {
         _program_info = program_info;
         _root = program_info.installationRoot();
         _uid = program_info.uid();
+
         _logger = new OSEProgramLogger(_uid);
+
         _program = ScriptController.instance().create(_logger).root(_root);
+
+        _loop_ticker = new Loop();
+        _loop_ticker.runInterval(program_info.loopInterval());
+    }
+
+    @Override
+    public String toString() {
+        return _program_info.toString();
     }
 
     // ------------------------------------------------------------------------
@@ -53,21 +72,28 @@ public class OSEProgram {
         return _uid;
     }
 
+    public OSEProgramInfo info() {
+        return _program_info;
+    }
 
     public Object open() {
         if (null == _script) {
             if (this.createScriptObject()) {
                 // ready for onInit method
-                final Object init_response = this.callMember(ON_INIT);
+                final Object init_response = this.onInit();
                 if (null != init_response) {
                     _init_response = Converter.toJsonCompatible(init_response);
                 }
+
+                // start loop ticker
+                _loop_ticker.start(this::onTick);
             }
         }
         return _init_response;
     }
 
     public void close() {
+        _loop_ticker.interrupt(); // stop loop ticker
         _program.close();
         _script = null;
     }
@@ -85,26 +111,53 @@ public class OSEProgram {
 
     public Object callMember(final String scriptName,
                              final Object... args) {
-        Object script_response = null;
+        synchronized (this) {
+            Object script_response = null;
 
-        if (this.hasMember(scriptName)) {
-            script_response = _script.callMember(scriptName, args);
-        } else {
-            _logger.warn(FormatUtils.format("Missing handler. Required at least '%s'", scriptName));
+            if (this.hasMember(scriptName)) {
+                script_response = _script.callMember(scriptName, args);
+            } else {
+                _logger.warn(FormatUtils.format("Missing handler. Required at least '%s'", scriptName));
+            }
+            return script_response;
         }
-        return script_response;
     }
 
-    public Map<String, Object> getContextMap() {
+    public Map<String, Object> getContext() {
         if (null != _program) {
             return _program.context();
         }
         return new HashMap<>();
     }
 
-    public Object getContextObject(final String key) {
+    public Object getContextValue(final String key) {
         if (null != _program) {
             return _program.context().get(key);
+        }
+        return null;
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p a c k a g e
+    // ------------------------------------------------------------------------
+
+    Object onInit() {
+        if (this.hasMember(ON_INIT)) {
+            return this.callMember(ON_INIT, this);
+        }
+        return null;
+    }
+
+    Object onExpire() {
+        if (this.hasMember(ON_EXPIRE)) {
+            return this.callMember(ON_EXPIRE, this);
+        }
+        return null;
+    }
+
+    Object onLoop() {
+        if (this.hasMember(ON_LOOP)) {
+            return this.callMember(ON_LOOP, this);
         }
         return null;
     }
@@ -116,7 +169,7 @@ public class OSEProgram {
     private void init() {
 
         // extend program with custom context
-        //_program.context().put(ensureScriptPrefix(BotPlugin.NAME), new BotPlugin(_bot));
+        _program.context().put(ensureScriptPrefix(Tool_db.NAME), new Tool_db(this));
 
     }
 
@@ -134,6 +187,16 @@ public class OSEProgram {
             _logger.error("OSEProgram.createScriptObject", t);
         }
         return false;
+    }
+
+    private void onTick(final Loop.LoopInterruptor interruptor) {
+        synchronized (this) {
+            try {
+                this.onLoop();
+            } catch (Throwable ignored) {
+                // ignored
+            }
+        }
     }
 
     // ------------------------------------------------------------------------

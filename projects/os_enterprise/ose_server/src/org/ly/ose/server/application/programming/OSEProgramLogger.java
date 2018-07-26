@@ -5,6 +5,10 @@ import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.program.ProgramLogger;
 
+/**
+ * Runtime javascript logger tool.
+ * This logger is invoked from "console.error..".
+ */
 public class OSEProgramLogger
         extends ProgramLogger {
 
@@ -40,10 +44,11 @@ public class OSEProgramLogger
             } else {
                 //BotLoggingController.instance(bot_id).debug("javascript", message);
             }
-            LoggingUtils.getLogger(this).log(level, "TODO(hadle logging in programs): " + message);
+            LoggingUtils.getLogger(this).log(level, "TODO(handle logging in programs): " + message);
         } else {
             LoggingUtils.getLogger(this).log(level, "THIS MESSAGE SHOULD BE LOGGED INTO LOGGER REPO: " + message);
         }
+        // TODO: implement a better javascript logger to trace and debug programs workflow
     }
 
 

@@ -1,13 +1,24 @@
 package org.ly.ose.server.application.programming;
 
 import org.json.JSONObject;
+import org.ly.ose.server.IConstants;
 import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Program descriptor
+ */
 public class OSEProgramInfo {
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    // custom data fields
+    public static final String FLD_SESSION_ID = "session_id";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -18,10 +29,14 @@ public class OSEProgramInfo {
     private String _description;
     private String _version;
     private String _author;
+    private int _session_timeout;
+    private int _loop_interval;
 
     private String _installation_root;
 
     private final Map<File, String> _files;
+
+    private final Map<String, Object> _custom_data;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -29,6 +44,8 @@ public class OSEProgramInfo {
 
     public OSEProgramInfo() {
         _files = new HashMap<>();
+        _custom_data = new HashMap<>();
+        this.init();
     }
 
     @Override
@@ -47,6 +64,8 @@ public class OSEProgramInfo {
         sb.put("version", _version);
         sb.put("description", _description);
         sb.put("author", _author);
+        sb.put("session_timeout", _session_timeout);
+        sb.put("loop_interval", _loop_interval);
         sb.put("files", _files.size());
         return sb;
     }
@@ -61,6 +80,10 @@ public class OSEProgramInfo {
 
     public Map<File, String> files() {
         return _files;
+    }
+
+    public Map<String, Object> data() {
+        return _custom_data;
     }
 
     public String namespace() {
@@ -117,10 +140,31 @@ public class OSEProgramInfo {
         return this;
     }
 
+    public int loopInterval() {
+        return _loop_interval;
+    }
+
+    public OSEProgramInfo loopInterval(final int value) {
+        _loop_interval = value;
+        return this;
+    }
+
+    public int sessionTimeout() {
+        return _session_timeout;
+    }
+
+    public OSEProgramInfo sessionTimeout(final int value) {
+        _session_timeout = value;
+        return this;
+    }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    private void init() {
+        this.loopInterval(IConstants.LOOP_INTERVAL_MS);
+        this.sessionTimeout(IConstants.SESSION_TIMEOUT_MS);
+    }
 
 }

@@ -53,6 +53,8 @@ public class ProgramImporter
         info.version(config.getString("version"));
         info.author(config.getString("author"));
         info.namespace(config.getString("namespace"));
+        info.loopInterval(config.getInt("loop_interval"));      // interval for main loop
+        info.sessionTimeout(config.getInt("session_timeout"));  // session duration
 
         // add files
         for (final File file : super.files()) {

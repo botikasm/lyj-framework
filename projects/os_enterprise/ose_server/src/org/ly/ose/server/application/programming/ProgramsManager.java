@@ -75,9 +75,11 @@ public class ProgramsManager
 
     private void init() {
         this.clean();
+        OSEProgramSessions.instance().start();
     }
 
     private void finish() {
+        OSEProgramSessions.instance().stop();
         if (!_programs.isEmpty()) {
             _programs.forEach((key, value) -> {
                 try {

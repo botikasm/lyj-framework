@@ -14,7 +14,10 @@ public interface IConstants
 
     String DB_GLOBAL = "ose_server";
     String DB_CUSTOM_PREFIX = "ose_server_";
+    String DB_PROGRAM_PREFIX = "ose_program_";
     String DB_CONFIGURATION_PATH = "databases.main";
 
-
+    // programs constants
+    int SESSION_TIMEOUT_MS = 30 * 1000; // 30 seconds
+    int LOOP_INTERVAL_MS = 1 * 1000; // 30 seconds
 }

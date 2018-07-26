@@ -11,7 +11,7 @@ import org.lyj.ext.netty.client.websocket.WebSocketClient;
 
 public class SocketControllerTest {
 
-    private static final long sleep = 10 * 1000;
+    private static final long sleep = 60 * 1000;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -37,6 +37,7 @@ public class SocketControllerTest {
             final OSEPayloadProgram payload = new OSEPayloadProgram(request.payload());
             payload.namespace("system.utils");
             payload.function("version");
+            payload.sessionTimeout(-1); // uses system timeout
 
             channel.send(request.toString());
             channel.onReceiveText(this::onReceive);

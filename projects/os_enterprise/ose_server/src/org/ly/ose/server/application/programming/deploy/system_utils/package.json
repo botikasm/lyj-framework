@@ -4,5 +4,8 @@
   "name": "utils",
   "description": "Utility Functions",
   "version": "1.0.1",
-  "author": "Gian Angelo Geminiani"
+  "author": "Gian Angelo Geminiani",
+  "session_timeout": 30000,
+  "loop_interval": 2000
+
 }

@@ -13,14 +13,19 @@ ly.new(function () {
     //              c o n s t
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    //              f i e l d s
+    // ------------------------------------------------------------------------
+
+    var _count = 0;
 
     // ------------------------------------------------------------------------
     //                      onInit (run once when program is initialized)
     // ------------------------------------------------------------------------
 
-    this.init = function (request) {
+    this._init = function (program) {
         try {
-            console.log("onInit: ", "REQUEST: " + request);
+            console.log("_init: ", "PROGRAM: " + program);
 
             // no return expected
             return {
@@ -33,15 +38,24 @@ ly.new(function () {
         }
     };
 
+    this._expire = function (program) {
+        console.log("_expire: ", "PROGRAM: " + program);
+    };
+
+    this._loop = function (program) {
+        _count++;
+        console.log("_loop: ", "COUNT", _count, "PROGRAM: " + program);
+    };
+
     // ------------------------------------------------------------------------
     //                 exposed functions
     // ------------------------------------------------------------------------
 
-    this.version = function(){
+    this.version = function () {
         return _FUNCTIONS.version();
     };
 
-    this.echo = function(value){
+    this.echo = function (value) {
         return _FUNCTIONS.echo(value);
     };
 
