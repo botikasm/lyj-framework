@@ -21,8 +21,9 @@ public class ProgramsManager
 
     private static final String ROOT = PathUtils.getAbsolutePath("ose_programs");
 
-    private static final String[] PROTECTED_NAMESPACES = new String[]{"system"};
-    private static final String[] TEXT_FILES = new String[]{"txt", "json", "js", "html", "properties"};
+    private static final String[] PROTECTED_NAMESPACES = IConstants.PROTECTED_NAMESPACES;
+    private static final String[] TEXT_FILES = IConstants.TEXT_FILES;
+
     // ------------------------------------------------------------------------
     //                     f i e l d s
     // ------------------------------------------------------------------------
@@ -54,6 +55,10 @@ public class ProgramsManager
             // ready to install this program
             this.installProgram(program_info);
         }
+    }
+
+    public boolean contains(final String class_name) {
+        return _programs.containsKey(class_name);
     }
 
     /**
@@ -103,7 +108,7 @@ public class ProgramsManager
         }
     }
 
-    private boolean isProtected(final String namespace) {
+    private static boolean isProtected(final String namespace) {
         for (final String path : PROTECTED_NAMESPACES) {
             final String dir = PathUtils.concat(ROOT, path);
             if (PathUtils.pathMatch(namespace, dir)

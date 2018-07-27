@@ -18,25 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.ly.ose.server.application.programming.deploy;
+package org.ly.ose.server.application.programming.deploy_test;
 
 
-import org.ly.ose.server.application.importer.PackageImporter;
+import org.ly.ose.server.application.programming.deploy.ProgramsDeployer;
 import org.ly.ose.server.loggers.MainLogger;
 import org.lyj.commons.io.repository.deploy.FileDeployer;
-import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.RandomUtils;
-import org.lyj.commons.util.ZipUtils;
 
-import java.io.File;
-
-public class ProgramsDeployer
+public class ProgramsTestDeployer
         extends FileDeployer {
 
     private MainLogger _logger;
 
-    public ProgramsDeployer(final String targetFolder, final boolean silent) {
+    public ProgramsTestDeployer(final String targetFolder, final boolean silent) {
         super("", targetFolder,
                 silent, false, false, false);
 
@@ -66,35 +60,11 @@ public class ProgramsDeployer
         _logger.info("finish", "CREATE PACKAGES FROM: " + this.getTargetFolder());
 
         try {
-            moveToInstall(this.getTargetFolder());
-        }catch (Throwable t){
-          _logger.error("finish", t);
+            ProgramsDeployer.moveToInstall(this.getTargetFolder());
+        } catch (Throwable t) {
+            _logger.error("finish", t);
         }
 
         _logger.info("finish", "CREATED PACKAGES FROM: " + this.getTargetFolder());
-    }
-
-    public static void moveToInstall(final String target_folder) throws Exception{
-        final File[] dirs = FileUtils.listDirs(target_folder);
-        if (dirs.length > 0) {
-            for (final File dir : dirs) {
-                final String tmp = PathUtils.getTemporaryFile(RandomUtils.randomUUID(true) + ".zip");
-                try {
-                    // creates package
-                    ZipUtils.zipDir(tmp, dir, false);
-
-                    // move package
-                    PackageImporter.instance().put(new File(tmp));
-
-                    // remove dir
-                    FileUtils.tryDelete(dir);
-                } finally {
-                    FileUtils.tryDelete(tmp);
-                }
-
-            }
-        }
-
-        FileUtils.tryDelete(target_folder);
     }
 }

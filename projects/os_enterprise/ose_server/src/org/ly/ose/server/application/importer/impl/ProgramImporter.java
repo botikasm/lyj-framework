@@ -2,6 +2,7 @@ package org.ly.ose.server.application.importer.impl;
 
 import org.ly.ose.server.application.importer.AbstractImporter;
 import org.ly.ose.server.application.importer.ImportConfig;
+import org.ly.ose.server.application.programming.IConstants;
 import org.ly.ose.server.application.programming.OSEProgramInfo;
 import org.ly.ose.server.application.programming.ProgramsManager;
 import org.lyj.commons.util.CollectionUtils;
@@ -19,7 +20,7 @@ public class ProgramImporter
 
     public static final String TYPE = "program";
 
-    private static final String[] VALID_EXTENSIONS = {"js", "json", "properties"};
+    private static final String[] VALID_EXTENSIONS = IConstants.VALID_EXTENSIONS;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r

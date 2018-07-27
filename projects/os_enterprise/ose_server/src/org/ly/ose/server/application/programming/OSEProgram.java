@@ -1,8 +1,10 @@
 package org.ly.ose.server.application.programming;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
 import org.lyj.commons.async.future.Loop;
+import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.ScriptController;
@@ -11,6 +13,7 @@ import org.lyj.ext.script.utils.Converter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Program wrapper.
@@ -39,7 +42,7 @@ public class OSEProgram {
     private final Program _program;
     private final Loop _loop_ticker;
 
-    private ScriptObjectMirror _script;
+    private ScriptObjectMirror _script_object;
     private Object _init_response;
 
     // ------------------------------------------------------------------------
@@ -57,6 +60,8 @@ public class OSEProgram {
 
         _loop_ticker = new Loop();
         _loop_ticker.runInterval(program_info.loopInterval());
+
+        this.init();
     }
 
     @Override
@@ -77,7 +82,7 @@ public class OSEProgram {
     }
 
     public Object open() {
-        if (null == _script) {
+        if (null == _script_object) {
             if (this.createScriptObject()) {
                 // ready for onInit method
                 final Object init_response = this.onInit();
@@ -94,8 +99,11 @@ public class OSEProgram {
 
     public void close() {
         _loop_ticker.interrupt(); // stop loop ticker
-        _program.close();
-        _script = null;
+        if (null != _program) {
+            this.finish();
+            _program.close();
+        }
+        _script_object = null;
     }
 
     public String script() {
@@ -106,7 +114,7 @@ public class OSEProgram {
     }
 
     public boolean hasMember(final String memberName) {
-        return null != _script && _script.hasMember(memberName);
+        return null != _script_object && _script_object.hasMember(memberName);
     }
 
     public Object callMember(final String scriptName,
@@ -115,7 +123,7 @@ public class OSEProgram {
             Object script_response = null;
 
             if (this.hasMember(scriptName)) {
-                script_response = _script.callMember(scriptName, args);
+                script_response = _script_object.callMember(scriptName, args);
             } else {
                 _logger.warn(FormatUtils.format("Missing handler. Required at least '%s'", scriptName));
             }
@@ -173,12 +181,30 @@ public class OSEProgram {
 
     }
 
+    private void finish() {
+        try {
+            final Set<String> keys = _program.context().keySet();
+            for (final String key : keys) {
+                try {
+                    final Object item = _program.context().get(key);
+                    if (item instanceof OSEProgramTool) {
+                        ((OSEProgramTool) item).close();
+                    }
+                } catch (Throwable ignored) {
+
+                }
+            }
+        } catch (Throwable ignored) {
+
+        }
+    }
+
     private boolean createScriptObject() {
         // launch
         try {
             final Object script = _program.run();
             if (script instanceof ScriptObjectMirror) {
-                _script = (ScriptObjectMirror) script;
+                _script_object = (ScriptObjectMirror) script;
                 return true;
             } else {
                 _logger.error("OSEProgram.createScriptObject", new Exception("Program is malformed. It should return a valid program instance."));
@@ -203,6 +229,18 @@ public class OSEProgram {
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
+    public static boolean isProtected(final String namespace) {
+        if (StringUtils.hasText(namespace)) {
+            final String[] tokens = StringUtils.split(namespace, "._", true);
+            return CollectionUtils.contains(IConstants.PROTECTED_NAMESPACES, tokens[0]);
+        }
+        return false;
+    }
+
+    // ------------------------------------------------------------------------
+    //                      S I N G L E T O N
+    // ------------------------------------------------------------------------
+
     public static String ensureScriptPrefix(final String name) {
         if (StringUtils.hasText(name)) {
             if (!name.startsWith(SCRIPT_PREFIX)) {
@@ -211,5 +249,6 @@ public class OSEProgram {
         }
         return name;
     }
+
 
 }
