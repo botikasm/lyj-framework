@@ -9,6 +9,7 @@ ly.new(function () {
 
     var _FUNCTIONS = require('/scripts/functions');
     var _DATABASE = require('/scripts/database');
+    var _SESSION = require('/scripts/session');
 
     // ------------------------------------------------------------------------
     //              c o n s t
@@ -56,6 +57,8 @@ ly.new(function () {
         return _DATABASE;
     };
 
-
+    this.session = function () {
+        return _SESSION;
+    };
 
 });

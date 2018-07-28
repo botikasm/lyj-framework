@@ -1,21 +1,16 @@
-package org.ly.ose.commons.model;
+package org.ly.ose.server.application.persistence;
 
-import org.json.JSONObject;
-import org.lyj.commons.util.StringUtils;
-import org.lyj.ext.db.model.MapDocument;
+import org.lyj.ext.db.arango.serialization.ArangoMapDocument;
 
 /**
  *
  */
 public class PersistentModel
-        extends BaseModel {
+        extends ArangoMapDocument {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
-
-    protected static final String FLD_REV = "_rev";
-
 
     public static final String FLD_COLLECTION = "collection";
 
@@ -35,14 +30,6 @@ public class PersistentModel
     //                      p r o p e r t i e s
     // ------------------------------------------------------------------------
 
-    public String revision() {
-        return this.getString(FLD_REV);
-    }
-
-    public PersistentModel revision(final String value) {
-        this.put(FLD_REV, value);
-        return this;
-    }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c

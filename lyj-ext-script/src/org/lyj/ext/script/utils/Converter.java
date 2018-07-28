@@ -154,7 +154,12 @@ public class Converter {
     }
 
     public static Object toJsonCompatible(final Object value) {
-        Object result = JsonConverter.toJsonCompatible(value);
+        Object result;
+        if(value instanceof ScriptObjectMirror){
+            result = JavascriptConverter.toJSON((ScriptObjectMirror) value);
+        } else {
+            result = JsonConverter.toJsonCompatible(value);
+        }
 
         if (null == result) {
             // try convert other types

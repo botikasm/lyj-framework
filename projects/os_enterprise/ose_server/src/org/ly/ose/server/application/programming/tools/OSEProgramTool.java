@@ -43,6 +43,10 @@ public abstract class OSEProgramTool {
         return _info;
     }
 
+    public boolean hasSession() {
+        return StringUtils.hasText(StringUtils.toString(_info.data().get(OSEProgramInfo.FLD_SESSION_ID)));
+    }
+
     public String sessionId() {
         return StringUtils.toString(_info.data().get(OSEProgramInfo.FLD_SESSION_ID));
     }
@@ -53,6 +57,10 @@ public abstract class OSEProgramTool {
 
     protected OSEProgram program() {
         return _program;
+    }
+
+    protected OSEProgramTool tool(final String name) {
+        return _program.getContextTool(name);
     }
 
     // ------------------------------------------------------------------------

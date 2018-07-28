@@ -3,7 +3,8 @@ package org.ly.ose.server.application.programming;
 /**
  * Program constants
  */
-public interface IConstants extends org.ly.ose.server.IConstants {
+public interface IConstants
+        extends org.ly.ose.server.IConstants {
 
     String[] PROTECTED_NAMESPACES = new String[]{"system"};
 

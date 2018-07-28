@@ -1,4 +1,4 @@
-package org.ly.ose.commons.model;
+package org.ly.ose.server.application.persistence;
 
 import org.json.JSONObject;
 import org.ly.ose.commons.IConstants;

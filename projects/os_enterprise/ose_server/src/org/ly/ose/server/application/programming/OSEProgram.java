@@ -3,6 +3,8 @@ package org.ly.ose.server.application.programming;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
+import org.ly.ose.server.application.programming.tools.persistence.Tool_session;
+import org.ly.ose.server.application.programming.tools.utils.Tool_rnd;
 import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -145,6 +147,13 @@ public class OSEProgram {
         return null;
     }
 
+    public OSEProgramTool getContextTool(final String name) {
+        if (null != _program) {
+            return (OSEProgramTool) _program.context().get(ensureScriptPrefix(name));
+        }
+        return null;
+    }
+
     // ------------------------------------------------------------------------
     //                      p a c k a g e
     // ------------------------------------------------------------------------
@@ -178,6 +187,8 @@ public class OSEProgram {
 
         // extend program with custom context
         _program.context().put(ensureScriptPrefix(Tool_db.NAME), new Tool_db(this));
+        _program.context().put(ensureScriptPrefix(Tool_rnd.NAME), new Tool_rnd(this));
+        _program.context().put(ensureScriptPrefix(Tool_session.NAME), new Tool_session(this));
 
     }
 
