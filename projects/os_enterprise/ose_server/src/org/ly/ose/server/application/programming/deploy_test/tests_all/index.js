@@ -61,4 +61,13 @@ ly.new(function () {
         return _SESSION;
     };
 
+    // ------------------------------------------------------------------------
+    //                 direct access
+    // ------------------------------------------------------------------------
+
+    this.database_findEqualAsc = function () {
+        return _DATABASE.findEqualAsc();
+    };
+
+
 });

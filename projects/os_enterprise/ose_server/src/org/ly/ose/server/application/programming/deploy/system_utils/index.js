@@ -25,7 +25,7 @@ ly.new(function () {
 
     this._init = function (program) {
         try {
-            console.log("_init: ", "PROGRAM: " + program);
+            //console.log("_init: ", "PROGRAM: " + program);
 
             // no return expected
             return {
@@ -39,12 +39,12 @@ ly.new(function () {
     };
 
     this._expire = function (program) {
-        console.log("_expire: ", "PROGRAM: " + program);
+        //console.log("_expire: ", "PROGRAM: " + program);
     };
 
     this._loop = function (program) {
         _count++;
-        console.log("_loop: ", "COUNT", _count, "PROGRAM: " + program);
+        //console.log("_loop: ", "COUNT", _count, "PROGRAM: " + program);
     };
 
     // ------------------------------------------------------------------------

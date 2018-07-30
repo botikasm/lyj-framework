@@ -8,6 +8,7 @@ public class OSEPayloadProgram extends OSEPayload {
 
     private static final String FLD_NAMESPACE = "namespace";
     private static final String FLD_FUNCTION = "function";
+    private static final String FLD_PARAMS = "params";
     private static final String FLD_SESSION_TIMEOUT = "session_timeout";
 
     // ------------------------------------------------------------------------

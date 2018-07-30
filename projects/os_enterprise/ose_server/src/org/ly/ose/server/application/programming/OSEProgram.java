@@ -116,7 +116,7 @@ public class OSEProgram {
     }
 
     public boolean hasMember(final String memberName) {
-        return null != _script_object && _script_object.hasMember(memberName);
+        return hasMember(_script_object, memberName);
     }
 
     public Object callMember(final String scriptName,
@@ -125,7 +125,7 @@ public class OSEProgram {
             Object script_response = null;
 
             if (this.hasMember(scriptName)) {
-                script_response = _script_object.callMember(scriptName, args);
+                script_response = callMember(_script_object, scriptName, args);
             } else {
                 _logger.warn(FormatUtils.format("Missing handler. Required at least '%s'", scriptName));
             }
@@ -261,5 +261,53 @@ public class OSEProgram {
         return name;
     }
 
+    public static boolean hasMember(final ScriptObjectMirror script,
+                                    final String scriptName) {
+        if (null != script && StringUtils.hasText(scriptName)) {
+            try {
+                if (scriptName.contains(".")) {
+                    final String[] tokens = StringUtils.split(scriptName, ".");
+                    ScriptObjectMirror tmp = null;
+                    for (int i = 0; i < tokens.length; i++) {
+                        final boolean latest = i == tokens.length - 1;
+                        final String method = tokens[i];
+                        if (latest) {
+                            return null != tmp && tmp.hasMember(method);
+                        } else {
+                            tmp = (ScriptObjectMirror) script.callMember(method);
+                        }
+                    }
+                } else {
+                    return script.hasMember(scriptName);
+                }
+            } catch (Throwable ignored) {
+                // ignored
+            }
+        }
+        return false;
+    }
+
+    public static Object callMember(final ScriptObjectMirror script,
+                                    final String scriptName,
+                                    final Object... args) {
+        if (null != script && StringUtils.hasText(scriptName)) {
+            if (scriptName.contains(".")) {
+                final String[] tokens = StringUtils.split(scriptName, ".");
+                ScriptObjectMirror tmp = null;
+                for (int i = 0; i < tokens.length; i++) {
+                    final boolean latest = i == tokens.length - 1;
+                    final String method = tokens[i];
+                    if (latest) {
+                        return null != tmp ? tmp.callMember(method, args) : null;
+                    } else {
+                        tmp = (ScriptObjectMirror) script.callMember(method);
+                    }
+                }
+            } else {
+                return script.callMember(scriptName, args);
+            }
+        }
+        return null;
+    }
 
 }
