@@ -5,6 +5,7 @@ import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.commons.model.messaging.OSEResponse;
 import org.ly.ose.commons.model.messaging.payloads.OSEPayloadProgram;
 import org.ly.ose.server.IConstants;
+import org.ly.ose.server.Launcher;
 import org.ly.ose.server.application.controllers.messaging.MessageManager;
 import org.ly.ose.server.application.endpoints.api.ApiHelper;
 import org.lyj.commons.util.StringUtils;
@@ -32,6 +33,7 @@ public class ApiProgram {
 
         // invoke handler
         final OSEResponse response = MessageManager.instance().handle(request);
+        response.uid(Launcher.configApi().uri());
 
         ApiHelper.writeJSON(context, response.json());
     }

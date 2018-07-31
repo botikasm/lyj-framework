@@ -12,6 +12,7 @@ import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.LocaleUtils;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.ext.netty.server.web.HttpServerConfig;
 
 /**
  * Application Server
@@ -72,6 +73,18 @@ public class Application {
     public void stop() {
         this.getLogger().info("APP SERVER: FINALIZING...");
         this.finish();
+    }
+
+    public HttpServerConfig configApi() {
+        return null != _api_server ? _api_server.config() : null;
+    }
+
+    public HttpServerConfig configWeb() {
+        return null != _web_server ? _web_server.config() : null;
+    }
+
+    public HttpServerConfig configSocket() {
+        return null != _socket_server ? _socket_server.config() : null;
     }
 
     // ------------------------------------------------------------------------

@@ -15,6 +15,15 @@ import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.ext.netty.client.websocket.WebSocketClient;
 
+/**
+ * SOCKET TEST
+ *
+ * Note:
+ * You can test methods using WEB API endpoints.
+ * Sample GET:
+ * https://localhost:4000/api/program/invoke/iuhdiu87w23ruh897dfyc2w3r/it/session_12234/system.utils/count/null
+ *
+ */
 public class SocketControllerTest {
 
     private static final long sleep = 20 * 1000;

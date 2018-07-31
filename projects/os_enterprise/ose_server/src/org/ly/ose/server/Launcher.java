@@ -9,6 +9,7 @@ import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.LoggingRepository;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.ext.netty.server.web.HttpServerConfig;
 import org.lyj.launcher.LyjLauncher;
 
 /**
@@ -110,4 +111,26 @@ public class Launcher
     public static boolean isDebug() {
         return _instance._debug_mode;
     }
+
+    public static HttpServerConfig configWeb() {
+        if (null != _instance && null != _instance._app_server) {
+            return _instance._app_server.configWeb();
+        }
+        return new HttpServerConfig();
+    }
+
+    public static HttpServerConfig configApi() {
+        if (null != _instance && null != _instance._app_server) {
+            return _instance._app_server.configApi();
+        }
+        return new HttpServerConfig();
+    }
+
+    public static HttpServerConfig configSocket() {
+        if (null != _instance && null != _instance._app_server) {
+            return _instance._app_server.configSocket();
+        }
+        return new HttpServerConfig();
+    }
+
 }
