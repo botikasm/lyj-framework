@@ -72,9 +72,10 @@ public class SocketControllerTest {
             request.type(OSERequest.TYPE_PROGRAM);
 
             final OSEPayloadProgram payload = new OSEPayloadProgram(request.payload());
+            payload.appToken(IConstants.APP_TOKEN);
             payload.namespace("tests.all");
             payload.function("database.findEqualAsc");
-            payload.params();
+            payload.params().add("param_passed_from_test");
             payload.sessionTimeout(-1); // uses system timeout
 
             channel.send(request.toString());
@@ -94,13 +95,15 @@ public class SocketControllerTest {
     private void onReceive(final String text) {
         System.out.println("Socket Response: " + text);
         final OSEResponse response = new OSEResponse(text);
-        if(response.hasPayload()){
+        if (response.hasPayload()) {
             final JSONArray array = response.payload();
             System.out.println("RESPONSE:");
-            CollectionUtils.forEach(array, (item)->{
+            CollectionUtils.forEach(array, (item) -> {
                 System.out.println("\t" + item.toString());
             });
 
+        } else if (response.hasError()) {
+            System.out.println("ERROR:" + response.error());
         }
     }
 

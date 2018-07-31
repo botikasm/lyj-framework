@@ -13,8 +13,14 @@ public interface IConstants {
     String ROOT = PathUtils.getAbsolutePath("");
     String ROOT_FILES = PathUtils.combine(ROOT, "files");
 
+    String STR_NULL = "null";
+
     String APP_TOKEN_CLIENT_API = "iuhdiu87w23ruh897dfyc2w3r";
     String APP_TOKEN = "io8dcfvjkkleaqwhjtuyqwuyeio";
+
+    String TYPE_PROGRAM = "program";
+    String TYPE_SERVICE = "service";
+    String TYPE_ERROR = "error";
 
     String GENDER_MALE = "m";
     String GENDER_FEMALE = "f";

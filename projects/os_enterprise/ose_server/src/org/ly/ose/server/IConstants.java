@@ -19,4 +19,9 @@ public interface IConstants
     // programs constants
     int SESSION_TIMEOUT_MS = 30 * 1000; // 30 seconds
     int LOOP_INTERVAL_MS = 1 * 1000; // 30 seconds
+
+    String CHANNEL_API = "api";
+    String CHANNEL_SOCKET = "socket";
+    String CHANNEL_FACEBOOK = "facebook";
+
 }

@@ -57,13 +57,13 @@ public class OSEProgramSessions {
     }
 
     public void put(final String key,
-                    final OSEProgram program) {
+                    final OSEProgram program) throws Exception {
         this.put(key, program, SESSION_TIMEOUT_MS);
     }
 
     public void put(final String key,
                     final OSEProgram program,
-                    final long duration_ms) {
+                    final long duration_ms) throws Exception {
         synchronized (_cache) {
             if (!_cache.containsKey(key)) {
                 // init program
@@ -100,7 +100,7 @@ public class OSEProgramSessions {
         }
     }
 
-    private void sessionInitialize(final OSEProgram program) {
+    private void sessionInitialize(final OSEProgram program) throws Exception {
         if (null != program) {
             final Object init_response = program.open();
             // TODO: do I need to do something with this response?
@@ -108,7 +108,7 @@ public class OSEProgramSessions {
     }
 
 
-    private void sessionExpired(final OSEProgram program) {
+    private void sessionExpired(final OSEProgram program) throws Exception {
         if (null != program) {
             final Object expire_response = program.onExpire();
             program.close();

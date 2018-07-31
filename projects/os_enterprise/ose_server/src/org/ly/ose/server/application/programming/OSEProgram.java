@@ -1,9 +1,12 @@
 package org.ly.ose.server.application.programming;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
+import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_session;
+import org.ly.ose.server.application.programming.tools.request.Tool_request;
 import org.ly.ose.server.application.programming.tools.utils.Tool_rnd;
 import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.util.CollectionUtils;
@@ -83,7 +86,7 @@ public class OSEProgram {
         return _program_info;
     }
 
-    public Object open() {
+    public Object open() throws Exception  {
         if (null == _script_object) {
             if (this.createScriptObject()) {
                 // ready for onInit method
@@ -120,14 +123,14 @@ public class OSEProgram {
     }
 
     public Object callMember(final String scriptName,
-                             final Object... args) {
+                             final Object... args) throws Exception {
         synchronized (this) {
             Object script_response = null;
 
             if (this.hasMember(scriptName)) {
                 script_response = callMember(_script_object, scriptName, args);
             } else {
-                _logger.warn(FormatUtils.format("Missing handler. Required at least '%s'", scriptName));
+                throw new Exception(FormatUtils.format("Missing method or handler. You invoked '%s', but I didn't find a script member with this name.", scriptName));
             }
             return script_response;
         }
@@ -147,6 +150,14 @@ public class OSEProgram {
         return null;
     }
 
+    public Object setContextValue(final String key,
+                                  final Object value) {
+        if (null != _program) {
+            return _program.context().put(key, value);
+        }
+        return null;
+    }
+
     public OSEProgramTool getContextTool(final String name) {
         if (null != _program) {
             return (OSEProgramTool) _program.context().get(ensureScriptPrefix(name));
@@ -154,25 +165,41 @@ public class OSEProgram {
         return null;
     }
 
+    public void request(final OSERequest request) {
+        if (null != _program) {
+            final Set<String> keys = _program.context().keySet();
+            for (final String key : keys) {
+                try {
+                    final Object item = _program.context().get(key);
+                    if (item instanceof OSEProgramToolRequest) {
+                        ((OSEProgramToolRequest) item).set_native_request_value(request);
+                    }
+                } catch (Throwable ignored) {
+
+                }
+            }
+        }
+    }
+
     // ------------------------------------------------------------------------
     //                      p a c k a g e
     // ------------------------------------------------------------------------
 
-    Object onInit() {
+    Object onInit() throws Exception {
         if (this.hasMember(ON_INIT)) {
             return this.callMember(ON_INIT, this);
         }
         return null;
     }
 
-    Object onExpire() {
+    Object onExpire() throws Exception {
         if (this.hasMember(ON_EXPIRE)) {
             return this.callMember(ON_EXPIRE, this);
         }
         return null;
     }
 
-    Object onLoop() {
+    Object onLoop() throws Exception {
         if (this.hasMember(ON_LOOP)) {
             return this.callMember(ON_LOOP, this);
         }
@@ -190,7 +217,10 @@ public class OSEProgram {
         _program.context().put(ensureScriptPrefix(Tool_rnd.NAME), new Tool_rnd(this));
         _program.context().put(ensureScriptPrefix(Tool_session.NAME), new Tool_session(this));
 
+        // request tools
+        _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this));
     }
+
 
     private void finish() {
         try {
@@ -291,6 +321,7 @@ public class OSEProgram {
                                     final String scriptName,
                                     final Object... args) {
         if (null != script && StringUtils.hasText(scriptName)) {
+
             if (scriptName.contains(".")) {
                 final String[] tokens = StringUtils.split(scriptName, ".");
                 ScriptObjectMirror tmp = null;

@@ -11,6 +11,7 @@ import org.lyj.ext.netty.server.web.HttpServerContext;
 import org.lyj.ext.script.utils.Converter;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,6 +48,10 @@ public abstract class ApiHelper {
         } else {
             Delegates.invoke(callback, new Exception("Missing Token"), false);
         }
+    }
+
+    public static Map<String, Object> getParams(final HttpServerContext context) {
+        return new HashMap<>(context.params().initialize());
     }
 
     public static String getParamToken(final HttpServerContext context) {

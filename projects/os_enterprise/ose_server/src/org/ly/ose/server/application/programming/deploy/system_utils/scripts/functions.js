@@ -21,6 +21,8 @@ module.exports = (function () {
     //              f i e l d s
     // ------------------------------------------------------------------------
 
+    var _counter = 0;
+
     // ------------------------------------------------------------------------
     //              i n s t a n c e
     // ------------------------------------------------------------------------
@@ -43,6 +45,16 @@ module.exports = (function () {
     instance.echo = function (value) {
         try {
             return value;
+        } catch (err) {
+            console.error(FILE + '#echo', err);
+            return err;
+        }
+    };
+
+    instance.count = function () {
+        try {
+            _counter++;
+            return _counter;
         } catch (err) {
             console.error(FILE + '#echo', err);
             return err;

@@ -4,10 +4,10 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.lang.Base64;
-import org.lyj.commons.util.json.JsonItem;
-import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.converters.JsonConverter;
+import org.lyj.commons.util.json.JsonItem;
+import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.ext.script.program.engines.javascript.utils.JavascriptConverter;
 
 import java.util.Collection;
@@ -112,17 +112,19 @@ public class Converter {
      * @return JSONArray
      */
     public static JSONArray toJsonArray(final Object value) {
-        final Object json = toJson(value);
-        if (null != json) {
-            if (json instanceof JSONArray) {
-                return (JSONArray) json;
-            } else if (value instanceof ScriptObjectMirror) {
-                // recursive
-                return toJsonArray(JavascriptConverter.toJSON((ScriptObjectMirror) value));
-            } else {
-                final JSONArray result = new JSONArray();
-                result.put(json);
-                return result;
+        if (null != value) {
+            final Object json = toJson(value);
+            if (null != json) {
+                if (json instanceof JSONArray) {
+                    return (JSONArray) json;
+                } else if (value instanceof ScriptObjectMirror) {
+                    // recursive
+                    return toJsonArray(JavascriptConverter.toJSON((ScriptObjectMirror) value));
+                } else {
+                    final JSONArray result = new JSONArray();
+                    result.put(json);
+                    return result;
+                }
             }
         }
         return new JSONArray();
@@ -155,7 +157,7 @@ public class Converter {
 
     public static Object toJsonCompatible(final Object value) {
         Object result;
-        if(value instanceof ScriptObjectMirror){
+        if (value instanceof ScriptObjectMirror) {
             result = JavascriptConverter.toJSON((ScriptObjectMirror) value);
         } else {
             result = JsonConverter.toJsonCompatible(value);

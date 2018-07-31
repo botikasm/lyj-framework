@@ -1,6 +1,7 @@
 package org.ly.ose.server.application.endpoints.api.routing;
 
 
+import org.ly.ose.server.application.endpoints.api.routing.impl.ApiProgram;
 import org.ly.ose.server.application.endpoints.api.routing.impl.ApiUtil;
 import org.ly.ose.server.deploy.config.ConfigHelper;
 import org.lyj.commons.util.PathUtils;
@@ -23,7 +24,7 @@ public class RouterSys
     private static final String PATH_API = "/api";
 
     private static final String PATH_API_UTIL = PATH_API.concat("/util");
-
+    private static final String PATH_API_PROGRAM = PATH_API.concat("/program");
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -58,7 +59,10 @@ public class RouterSys
         super.post(PATH_API_UTIL.concat("/md5")).handler(ApiUtil::md5);
         super.get(PATH_API_UTIL.concat("/log/:app_token/:name")).handler(ApiUtil::log);
 
-
+        //-- program --//
+        super.post(PATH_API_PROGRAM.concat("/invoke")).handler(ApiProgram::invoke);
+        // https://localhost:4000/api/program/invoke/iuhdiu87w23ruh897dfyc2w3r/it/session_12234/system.utils/count/null
+        super.get(PATH_API_PROGRAM.concat("/invoke/:app_token/:lang/:client_id/:namespace/:function/:params")).handler(ApiProgram::invoke);
     }
 
     // ------------------------------------------------------------------------

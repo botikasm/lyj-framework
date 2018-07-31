@@ -59,5 +59,8 @@ ly.new(function () {
         return _FUNCTIONS.echo(value);
     };
 
+    this.count = function () {
+        return _FUNCTIONS.count();
+    };
 
 });

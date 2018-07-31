@@ -12,4 +12,6 @@ public interface IConstants
 
     String[] VALID_EXTENSIONS = {"js", "json", "properties"};
 
+
+
 }

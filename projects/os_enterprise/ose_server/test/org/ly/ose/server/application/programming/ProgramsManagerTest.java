@@ -32,7 +32,7 @@ public class ProgramsManagerTest {
     // ------------------------------------------------------------------------
 
     @Test
-    public void getNew() {
+    public void getNew() throws Exception {
         final OSEProgram program = this.get("system.utils");
 
         Object response = program.callMember("version");
@@ -48,7 +48,7 @@ public class ProgramsManagerTest {
     }
 
     @Test
-    public void runTests() {
+    public void runTests() throws Exception {
         final OSEProgram program = this.get("tests.all");
 
         //-- database --//
@@ -64,7 +64,7 @@ public class ProgramsManagerTest {
     //                     p r i v a t e
     // ------------------------------------------------------------------------
 
-    private OSEProgram get(final String class_name) {
+    private OSEProgram get(final String class_name) throws Exception{
         final OSEProgram program = ProgramsManager.instance().getNew(class_name);
         assertNotNull(program);
 
@@ -74,7 +74,7 @@ public class ProgramsManagerTest {
         return program;
     }
 
-    private void test_database(final OSEProgram program) {
+    private void test_database(final OSEProgram program) throws Exception{
         ScriptObjectMirror database = (ScriptObjectMirror) program.callMember("database");
 
         // upsert
@@ -105,7 +105,7 @@ public class ProgramsManagerTest {
         System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
     }
 
-    private void test_session(final OSEProgram program) {
+    private void test_session(final OSEProgram program) throws Exception{
         ScriptObjectMirror session = (ScriptObjectMirror) program.callMember("session");
 
         String method = "id";

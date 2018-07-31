@@ -1,6 +1,8 @@
 package org.ly.ose.commons.model.messaging;
 
+import org.ly.ose.commons.IConstants;
 import org.ly.ose.commons.model.BaseModel;
+import org.lyj.commons.util.StringUtils;
 
 import java.util.Map;
 
@@ -19,13 +21,15 @@ public class OSERequest
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    public static final String TYPE_PROGRAM = "program"; // request a program to execute (run custom program on server)
-    public static final String TYPE_SERVICE = "service"; // request a service to execute (usually access to database)
+    public static final String TYPE_PROGRAM = IConstants.TYPE_PROGRAM; // request a program to execute (run custom program on server)
+    public static final String TYPE_SERVICE = IConstants.TYPE_SERVICE; // request a service to execute (usually access to database)
+    public static final String TYPE_ERROR = IConstants.TYPE_ERROR;
 
     private static final String FLD_UID = "uid"; // unique client ID
     private static final String FLD_LANG = "lang";
     private static final String FLD_TYPE = "type";
-    private static final String FLD_CHANNEL = "channel"; // session ID on server (usually websocket has a channel/session_id for responses)
+    private static final String FLD_SOURCE = "source"; // api, socket, facebook, telegram....
+    private static final String FLD_CLIENT_ID = "client_id"; // session ID on server (usually websocket has a channel/session_id for responses)
     private static final String FLD_ADDRESS = "address"; // client address (usually added from server)
 
     private static final String FLD_SENDER = "sender"; // (object) further sender details
@@ -74,6 +78,15 @@ public class OSERequest
         return this;
     }
 
+    public String source() {
+        return super.getString(FLD_SOURCE);
+    }
+
+    public OSERequest source(final String value) {
+        super.put(FLD_SOURCE, value);
+        return this;
+    }
+
     public String address() {
         return super.getString(FLD_ADDRESS);
     }
@@ -86,12 +99,15 @@ public class OSERequest
     /**
      * Returns channel, the session ID required to send a callback to request sender
      */
-    public String channel() {
-        return super.getString(FLD_CHANNEL);
+    public String clientId() {
+        if (StringUtils.hasText((String) this.payload().get(FLD_CLIENT_ID))) {
+            return (String) this.payload().get(FLD_CLIENT_ID);
+        }
+        return super.getString(FLD_CLIENT_ID);
     }
 
-    public OSERequest channel(final String value) {
-        super.put(FLD_CHANNEL, value);
+    public OSERequest clientId(final String value) {
+        super.put(FLD_CLIENT_ID, value);
         return this;
     }
 
@@ -107,7 +123,7 @@ public class OSERequest
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public boolean hasPayload(){
+    public boolean hasPayload() {
         return super.has(FLD_PAYLOAD);
     }
 

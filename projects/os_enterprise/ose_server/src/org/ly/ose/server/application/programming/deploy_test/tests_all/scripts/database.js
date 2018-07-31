@@ -75,13 +75,16 @@ module.exports = (function () {
         }
     };
 
-    instance.findEqualAsc = function () {
+    instance.findEqualAsc = function (param) {
         try {
             var items = addItems(20);
 
             var args = {
                 rnd:1
             };
+
+            // log a parameter, just for testing pompous
+            console.log(FILE + '#findEqualAsc', "PARAM: '" + param + "'");
 
             return $db.collection(COLLECTION).findEqualAsc(args, ['timestamp'], 0, 3);
         } catch (err) {

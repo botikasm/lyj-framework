@@ -3,6 +3,7 @@ package org.ly.ose.server.application.endpoints.socket;
 
 import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.commons.model.messaging.OSEResponse;
+import org.ly.ose.server.IConstants;
 import org.ly.ose.server.application.controllers.messaging.MessageManager;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.StringUtils;
@@ -42,10 +43,12 @@ public class SocketController
 
             // only messages witha client uid are valid messages
             if (StringUtils.hasText(request.uid())) {
-                // set responde channel id (session_id)
+                // set source channel
+                request.source(IConstants.CHANNEL_SOCKET);
+                // set response channel id (session_id)
+                request.clientId(session_id);
                 // and address
-                request.channel(session_id)
-                        .address(SessionClientController.instance().addressOf(session_id));
+                request.address(SessionClientController.instance().addressOf(session_id));
 
                 // ready to process message
                 // if message has a response, it's immediately dispatched
@@ -54,8 +57,8 @@ public class SocketController
                 response.uid(_server.config().uri());
 
                 // send only if response has a payload
-                if(response.hasPayload()){
-                    sendResponse(response.request().channel(), response);
+                if (response.hasPayload() || response.hasError()) {
+                    sendResponse(request.clientId(), response);
                 }
             }
 

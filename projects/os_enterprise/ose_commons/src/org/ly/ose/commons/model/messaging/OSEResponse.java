@@ -1,9 +1,9 @@
 package org.ly.ose.commons.model.messaging;
 
 import org.json.JSONArray;
+import org.ly.ose.commons.IConstants;
 import org.ly.ose.commons.model.BaseModel;
 import org.lyj.commons.util.StringUtils;
-import org.lyj.commons.util.converters.JsonConverter;
 
 import java.util.Map;
 
@@ -24,8 +24,8 @@ public class OSEResponse
     private static final String FLD_TYPE = "type";
     private static final String FLD_ERROR = "error";
 
-    private static final String FLD_REQUEST = "request";
 
+    private static final String FLD_CLIENT_ID = "client_id";
     private static final String FLD_SENDER = "sender"; // (object) further sender details
     private static final String FLD_PAYLOAD = "payload"; // (object) further data attached to message
 
@@ -72,12 +72,12 @@ public class OSEResponse
         return this;
     }
 
-    public OSERequest request() {
-        return new OSERequest(super.getMap(FLD_REQUEST));
+    public String clientId() {
+        return super.getString(FLD_CLIENT_ID);
     }
 
-    public OSEResponse request(final OSERequest value) {
-        super.put(FLD_REQUEST, value);
+    public OSEResponse clientId(final String value) {
+        super.put(FLD_CLIENT_ID, value);
         return this;
     }
 
@@ -87,6 +87,8 @@ public class OSEResponse
 
     public OSEResponse error(final String value) {
         super.put(FLD_ERROR, value);
+        // change type
+        this.type(IConstants.TYPE_ERROR);
         return this;
     }
 
