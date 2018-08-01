@@ -59,7 +59,7 @@ public class OSEProgram {
         _root = program_info.installationRoot();
         _uid = program_info.uid();
 
-        _logger = new OSEProgramLogger(_uid);
+        _logger = new OSEProgramLogger(this);
 
         _program = ScriptController.instance().create(_logger).root(_root);
 

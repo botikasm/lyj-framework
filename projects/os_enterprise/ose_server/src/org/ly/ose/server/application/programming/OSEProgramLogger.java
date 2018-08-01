@@ -16,14 +16,14 @@ public class OSEProgramLogger
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final String _program_id;
+    private final OSEProgram _program;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public OSEProgramLogger(final String program_id) {
-        _program_id = program_id;
+    public OSEProgramLogger(final OSEProgram program) {
+        _program = program;
     }
 
     // ------------------------------------------------------------------------
@@ -33,6 +33,7 @@ public class OSEProgramLogger
     protected void handle(final Level level,
                           final Object... values) {
         final String message = StringUtils.toString(values, "\t");
+        final String _program_id = null!=_program?_program.uid():"";
 
         if (StringUtils.hasText(_program_id)) {
             if (Level.SEVERE.equals(level)) {

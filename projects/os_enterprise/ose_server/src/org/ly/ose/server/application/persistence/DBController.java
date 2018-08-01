@@ -25,6 +25,7 @@ public class DBController
 
     private static final String DB_GLOBAL = IConstants.DB_GLOBAL; // global database
     private static final String DB_PROGRAM_PREFIX = IConstants.DB_PROGRAM_PREFIX;
+    private static final String DB_DEBUGGING_PREFIX = IConstants.DB_DEBUGGING_PREFIX;
 
     private static final String DB_CONFIGURATION_PATH = IConstants.DB_CONFIGURATION_PATH;
 
@@ -127,6 +128,10 @@ public class DBController
 
     public static String DBNameProgram(final String company_uid) {
         return DB_PROGRAM_PREFIX.concat(company_uid);
+    }
+
+    public static String DBNameDebugging(final String company_uid) {
+        return DB_DEBUGGING_PREFIX.concat(company_uid);
     }
 
 }
