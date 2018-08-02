@@ -2,10 +2,11 @@
   "type": "program",
   "namespace": "system",
   "name": "utils",
-  "description": "Utility Functions",
-  "version": "1.0.1",
+  "description": "Singleton Utility Functions",
+  "version": "1.0.2",
   "author": "Gian Angelo Geminiani",
-  "session_timeout": 30000,
-  "loop_interval": 2000
+  "session_timeout": 0,
+  "loop_interval": 0,
+  "singleton":true
 
 }

@@ -64,8 +64,9 @@ public class ProgramsManagerTest {
     //                     p r i v a t e
     // ------------------------------------------------------------------------
 
-    private OSEProgram get(final String class_name) throws Exception{
-        final OSEProgram program = ProgramsManager.instance().getNew(class_name);
+    private OSEProgram get(final String class_name) throws Exception {
+        final OSEProgramInfo info = ProgramsManager.instance().getInfo(class_name);
+        final OSEProgram program = new OSEProgram(info);
         assertNotNull(program);
 
         final Object init_response = program.open();
@@ -74,7 +75,7 @@ public class ProgramsManagerTest {
         return program;
     }
 
-    private void test_database(final OSEProgram program) throws Exception{
+    private void test_database(final OSEProgram program) throws Exception {
         ScriptObjectMirror database = (ScriptObjectMirror) program.callMember("database");
 
         // upsert
@@ -105,7 +106,7 @@ public class ProgramsManagerTest {
         System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
     }
 
-    private void test_session(final OSEProgram program) throws Exception{
+    private void test_session(final OSEProgram program) throws Exception {
         ScriptObjectMirror session = (ScriptObjectMirror) program.callMember("session");
 
         String method = "id";

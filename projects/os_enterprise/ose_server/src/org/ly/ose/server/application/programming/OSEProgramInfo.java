@@ -31,6 +31,7 @@ public class OSEProgramInfo {
     private String _author;
     private int _session_timeout;
     private int _loop_interval;
+    private boolean _singleton;
 
     private String _installation_root;
 
@@ -46,6 +47,25 @@ public class OSEProgramInfo {
         _files = new HashMap<>();
         _custom_data = new HashMap<>();
         this.init();
+    }
+
+    public OSEProgramInfo(final OSEProgramInfo info) {
+        this();
+
+        // clone data
+        _files.putAll(info._files);
+        _custom_data.putAll(info._custom_data);
+
+        _namespace = info._namespace;
+        _name = info._name;
+        _description = info._description;
+        _version = info._version;
+        _author = info._author;
+        _session_timeout = info._session_timeout;
+        _loop_interval = info._loop_interval;
+        _singleton = info._singleton;
+
+        _installation_root = info._installation_root;
     }
 
     @Override
@@ -65,6 +85,7 @@ public class OSEProgramInfo {
         sb.put("description", _description);
         sb.put("author", _author);
         sb.put("session_timeout", _session_timeout);
+        sb.put("singleton", _singleton);
         sb.put("loop_interval", _loop_interval);
         sb.put("files", _files.size());
         return sb;
@@ -158,11 +179,21 @@ public class OSEProgramInfo {
         return this;
     }
 
+    public boolean singleton() {
+        return _singleton;
+    }
+
+    public OSEProgramInfo singleton(final boolean value) {
+        _singleton = value;
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
     private void init() {
+        _singleton = false;
         this.loopInterval(IConstants.LOOP_INTERVAL_MS);
         this.sessionTimeout(IConstants.SESSION_TIMEOUT_MS);
     }

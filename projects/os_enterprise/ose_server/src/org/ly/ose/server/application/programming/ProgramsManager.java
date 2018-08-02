@@ -61,18 +61,13 @@ public class ProgramsManager
         return _programs.containsKey(class_name);
     }
 
-    /**
-     * Return new instance of a not initialized program
-     *
-     * @param class_name Full class name. i.e. "system.utils"
-     * @return Null or new Program instance (not initialized)
-     */
-    public OSEProgram getNew(final String class_name) {
+    public OSEProgramInfo getInfo(final String class_name) {
         if (_programs.containsKey(class_name)) {
-            return new OSEProgram(_programs.get(class_name));
+            return _programs.get(class_name);
         }
         return null;
     }
+
 
     // ------------------------------------------------------------------------
     //                     p r i v a t e

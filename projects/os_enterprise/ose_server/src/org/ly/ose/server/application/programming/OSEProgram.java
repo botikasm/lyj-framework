@@ -44,8 +44,8 @@ public class OSEProgram {
     private final OSEProgramInfo _program_info;
     private final String _uid;
     private OSEProgramLogger _logger;
-    private final Program _program;
-    private final Loop _loop_ticker;
+    private Program _program;
+    private Loop _loop_ticker;
 
     private ScriptObjectMirror _script_object;
     private Object _init_response;
@@ -55,7 +55,9 @@ public class OSEProgram {
     // ------------------------------------------------------------------------
 
     public OSEProgram(final OSEProgramInfo program_info) {
+        // clone program info
         _program_info = program_info;
+
         _root = program_info.installationRoot();
         _uid = program_info.uid();
 
@@ -63,8 +65,10 @@ public class OSEProgram {
 
         _program = ScriptController.instance().create(_logger).root(_root);
 
-        _loop_ticker = new Loop();
-        _loop_ticker.runInterval(program_info.loopInterval());
+        if (program_info.loopInterval() > 0) {
+            _loop_ticker = new Loop();
+            _loop_ticker.runInterval(program_info.loopInterval());
+        }
 
         this.init();
     }
@@ -72,6 +76,11 @@ public class OSEProgram {
     @Override
     public String toString() {
         return _program_info.toString();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
     }
 
     // ------------------------------------------------------------------------
@@ -86,7 +95,7 @@ public class OSEProgram {
         return _program_info;
     }
 
-    public Object open() throws Exception  {
+    public Object open() throws Exception {
         if (null == _script_object) {
             if (this.createScriptObject()) {
                 // ready for onInit method
@@ -96,19 +105,32 @@ public class OSEProgram {
                 }
 
                 // start loop ticker
-                _loop_ticker.start(this::onTick);
+                if (null != _loop_ticker) {
+                    _loop_ticker.start(this::onTick);
+                }
             }
         }
         return _init_response;
     }
 
     public void close() {
-        _loop_ticker.interrupt(); // stop loop ticker
+        if (null != _loop_ticker) {
+            try {
+                _loop_ticker.interrupt(); // stop loop ticker
+            } catch (Throwable ignored) {
+            }
+            _loop_ticker = null;
+        }
+
         if (null != _program) {
             this.finish();
             _program.close();
         }
         _script_object = null;
+        _program = null;
+
+        _logger = null;
+        _init_response = null;
     }
 
     public String script() {

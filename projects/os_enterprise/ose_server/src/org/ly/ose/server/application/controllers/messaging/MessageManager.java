@@ -10,10 +10,7 @@ import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.OSEProgramInfo;
 import org.ly.ose.server.application.programming.OSEProgramSessions;
 import org.ly.ose.server.application.programming.ProgramsManager;
-import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.ExceptionUtils;
-import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
 import org.lyj.ext.script.utils.Converter;
 
 import java.util.List;
@@ -32,6 +29,8 @@ public class MessageManager {
     // ------------------------------------------------------------------------
 
     private static final String TYPE_PROGRAM = OSERequest.TYPE_PROGRAM;
+
+    private static final Object SYNCHRONIZER = new Object(); // empty static object
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -96,44 +95,55 @@ public class MessageManager {
                             ? payload.clientId()
                             : request.clientId();
 
-                    final OSEProgram program;
-                    if (StringUtils.hasText(client_session_id)) {
-                        if (OSEProgramSessions.instance().containsKey(client_session_id)) {
-                            program = OSEProgramSessions.instance().get(client_session_id);
+
+                    final OSEProgramInfo info = ProgramsManager.instance().getInfo(namespace);
+                    if (null != info) {
+                        // init session and timeout
+                        final long program_timeout;
+                        final String program_session_id;
+                        if (info.singleton()) {
+                            program_timeout = DateUtils.infinite().getTime(); // INFINITE (never expires)
+                            program_session_id = "singleton_" + namespace;
                         } else {
-                            // new program
-                            program = ProgramsManager.instance().getNew(namespace);
-                            if (null != program) {
+                            program_timeout = session_timeout;
+                            program_session_id = client_session_id;
+                        }
+
+                        final OSEProgram program;
+                        if (StringUtils.hasText(program_session_id)) {
+                            if (OSEProgramSessions.instance().containsKey(program_session_id)) {
+                                program = OSEProgramSessions.instance().get(program_session_id);
+                            } else {
+                                // new program
+                                program = new OSEProgram(info);
+
                                 // add some advanced info to program
-                                program.info().data().put(OSEProgramInfo.FLD_SESSION_ID, client_session_id);
+                                program.info().data().put(OSEProgramInfo.FLD_SESSION_ID, client_session_id); // set real session ID
 
                                 // add program to session manager and initialize
-                                OSEProgramSessions.instance().put(client_session_id, program, session_timeout);
+                                OSEProgramSessions.instance().put(program_session_id, program, program_timeout);
                             }
+
+                        } else {
+                            // no session
+                            program = new OSEProgram(info);
                         }
-
-                    } else {
-                        program = ProgramsManager.instance().getNew(namespace);
-                    }
-
-                    if (null != program) {
 
                         // add/refresh context data
-                        program.request(request);
+                        if (!info.singleton()) {
+                            program.request(request);
+                        }
 
                         // call required function
-                        final Object[] params = CollectionUtils.isEmpty(payload_params) ? null : payload_params.toArray(new Object[0]);
-                        final Object result = null != params
-                                ? program.callMember(function, params)
-                                : program.callMember(function);
-                        final JSONArray json_result = Converter.toJsonArray(result);
-                        response.payload(json_result);
+                        final JSONArray result = callMember(program, function, payload_params);
+                        response.payload(result);
 
                         // close program if not in session
-                        if (!StringUtils.hasText(client_session_id)
-                                || !OSEProgramSessions.instance().containsKey(client_session_id)) {
+                        if (!StringUtils.hasText(program_session_id)
+                                || !OSEProgramSessions.instance().containsKey(program_session_id)) {
                             program.close();
                         }
+
                     } else {
                         throw new Exception(FormatUtils.format("Invalid Program Exception: Namespace '%s' not found!",
                                 namespace));
@@ -148,6 +158,36 @@ public class MessageManager {
             // invalid request, missing some parameters
             throw new Exception("Malformer payload. Missing 'namespace' or 'function' fields");
         }
+    }
+
+    private JSONArray callMember(final OSEProgram program,
+                                 final String function,
+                                 final List<Object> payload_params) throws Exception {
+        final Object[] params = CollectionUtils.isEmpty(payload_params)
+                ? null
+                : payload_params.toArray(new Object[0]);
+        return callMember(program, function, params);
+    }
+
+    private JSONArray callMember(final OSEProgram program,
+                                 final String function,
+                                 final Object[] params) throws Exception {
+        if (null != program) {
+            if (program.info().singleton()) {
+                synchronized (SYNCHRONIZER) {
+                    final Object result = null != params
+                            ? program.callMember(function, params)
+                            : program.callMember(function);
+                    return Converter.toJsonArray(result);
+                }
+            } else {
+                final Object result = null != params
+                        ? program.callMember(function, params)
+                        : program.callMember(function);
+                return Converter.toJsonArray(result);
+            }
+        }
+        return new JSONArray();
     }
 
     // ------------------------------------------------------------------------

@@ -76,7 +76,6 @@ module.exports = (function () {
     instance.all = function () {
         try {
 
-            $session.id
 
             return true;
         } catch (err) {

@@ -65,6 +65,12 @@ public class Program
         _engine_name = ENGINE_JAVASCRIPT;
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+    }
+
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
