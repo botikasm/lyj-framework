@@ -12,6 +12,7 @@
     <orderEntry type="module" module-name="lyj-core" />
     <orderEntry type="module" module-name="lyj-core-crypto" />
     <orderEntry type="module" module-name="lyj-core-network" />
+    <orderEntry type="module" module-name="lyj-core-nlp" />
     <orderEntry type="module" module-name="lyj-ext-db-arango" />
     <orderEntry type="module" module-name="lyj-ext-html" />
     <orderEntry type="module" module-name="lyj-ext-mail" />

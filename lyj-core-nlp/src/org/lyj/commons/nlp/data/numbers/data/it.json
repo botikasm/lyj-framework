@@ -1,0 +1,122 @@
+[
+  {
+    "keywords": [
+      "(1|un*|un)"
+    ],
+    "value": 1
+  },
+  {
+    "keywords": [
+      "(2|due|pai*)"
+    ],
+    "value": 2
+  },
+  {
+    "keywords": [
+      "(3|tre)"
+    ],
+    "value": 3
+  },
+  {
+    "keywords": [
+      "(4|quattro)"
+    ],
+    "value": 4
+  },
+  {
+    "keywords": [
+      "(5|cinque)"
+    ],
+    "value": 5
+  },
+  {
+    "keywords": [
+      "(6|sei)"
+    ],
+    "value": 6
+  },
+  {
+    "keywords": [
+      "(7|sette)"
+    ],
+    "value": 7
+  },
+  {
+    "keywords": [
+      "(8|otto)"
+    ],
+    "value": 8
+  },
+  {
+    "keywords": [
+      "(9|nove)"
+    ],
+    "value": 9
+  },
+  {
+    "keywords": [
+      "(10|dieci)"
+    ],
+    "value": 10
+  },
+  {
+    "keywords": [
+      "(11|undici)"
+    ],
+    "value": 11
+  },
+  {
+    "keywords": [
+      "(12|dodici)"
+    ],
+    "value": 12
+  },
+  {
+    "keywords": [
+      "(13|tredici)"
+    ],
+    "value": 13
+  },
+  {
+    "keywords": [
+      "(14|quattordici)"
+    ],
+    "value": 14
+  },
+  {
+    "keywords": [
+      "(15|quindici)"
+    ],
+    "value": 15
+  },
+  {
+    "keywords": [
+      "(16|sedici)"
+    ],
+    "value": 16
+  },
+  {
+    "keywords": [
+      "(17|diciassette)"
+    ],
+    "value": 17
+  },
+  {
+    "keywords": [
+      "(18|diciotto)"
+    ],
+    "value": 18
+  },
+  {
+    "keywords": [
+      "(19|diciannove)"
+    ],
+    "value": 19
+  },
+  {
+    "keywords": [
+      "(20|venti)"
+    ],
+    "value": 20
+  }
+]

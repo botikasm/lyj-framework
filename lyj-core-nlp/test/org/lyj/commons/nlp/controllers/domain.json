@@ -1,0 +1,109 @@
+[
+  {
+    "keys": [
+      "(scarp*|ballerin*|calzatur*|mocassin*|sneaker|stivali)"
+    ],
+    "value": "",
+    "params": "f_family=shoe"
+  },
+  {
+    "keys": [
+      "(magli*|maglion*|vestito|abito)"
+    ],
+    "value": "",
+    "params": "f_family=shirt"
+  },
+  {
+    "keys": [
+      "(pantaloni|pantaloncini|panta|calzoni)"
+    ],
+    "value": "",
+    "params": "f_family=pant"
+  },
+  {
+    "keys": [
+      "valentino"
+    ],
+    "value": "",
+    "params": "f_brand=Valentino"
+  },
+  {
+    "keys": [
+      "lacoste"
+    ],
+    "value": "",
+    "params": "f_brand=Lacoste"
+  },
+  {
+    "keys": [
+      "benetton"
+    ],
+    "value": "",
+    "params": "f_brand=Benetton"
+  },
+  {
+    "keys": [
+      "trussardi"
+    ],
+    "value": "",
+    "params": "f_brand=Trussardi"
+  },
+  {
+    "keys": [
+      "replay"
+    ],
+    "value": "",
+    "params": "f_brand=Replay"
+  },
+  {
+    "keys": [
+      "(lycra|acrilico)"
+    ],
+    "value": "",
+    "params": "f_fabric=lycra"
+  },
+  {
+    "keys": [
+      "(lana|misto|merinos|cachemir)"
+    ],
+    "value": "",
+    "params": "f_fabric=wool"
+  },
+  {
+    "keys": [
+      "(cotone|lino)"
+    ],
+    "value": "",
+    "params": "f_fabric=cotton"
+  },
+  {
+    "keys": [
+      "(pelle|pellame)"
+    ],
+    "value": "",
+    "params": "f_fabric=leather"
+  },
+  {
+    "keys": [
+      "(donn*|femmin*|ragazz*|ragazzin*)"
+    ],
+    "value": "",
+    "params": "f_gender=woman"
+  },
+  {
+    "keys": [
+      "(uomo|maschi|maschio|ragazzo)"
+    ],
+    "value": "",
+    "params": "f_gender=man"
+  },
+  {
+    "keys": [
+      "(voglio|cerca|trova|elenc*|comprare|mostra|mostrami)",
+      "(vorrei|desidero|avete|magazzino)",
+      "(scaffal*|mensole|prodotti|offrite|offre)",
+      "(cost*|prezz*)"
+    ],
+    "value": "items?action=filter&mode=reset"
+  }
+]

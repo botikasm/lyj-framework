@@ -1,0 +1,122 @@
+[
+  {
+    "keywords": [
+      "(1|one|a)"
+    ],
+    "value": 1
+  },
+  {
+    "keywords": [
+      "(2|two|pair|pairs)"
+    ],
+    "value": 2
+  },
+  {
+    "keywords": [
+      "(3|three)"
+    ],
+    "value": 3
+  },
+  {
+    "keywords": [
+      "(4|four)"
+    ],
+    "value": 4
+  },
+  {
+    "keywords": [
+      "(5|five)"
+    ],
+    "value": 5
+  },
+  {
+    "keywords": [
+      "(6|six)"
+    ],
+    "value": 6
+  },
+  {
+    "keywords": [
+      "(7|seven)"
+    ],
+    "value": 7
+  },
+  {
+    "keywords": [
+      "(8|eight)"
+    ],
+    "value": 8
+  },
+  {
+    "keywords": [
+      "(9|nine)"
+    ],
+    "value": 9
+  },
+  {
+    "keywords": [
+      "(10|ten)"
+    ],
+    "value": 10
+  },
+  {
+    "keywords": [
+      "(11|eleven)"
+    ],
+    "value": 11
+  },
+  {
+    "keywords": [
+      "(12|twelve)"
+    ],
+    "value": 12
+  },
+  {
+    "keywords": [
+      "(13|thirteen)"
+    ],
+    "value": 13
+  },
+  {
+    "keywords": [
+      "(14|fourteen)"
+    ],
+    "value": 14
+  },
+  {
+    "keywords": [
+      "(15|fifteen)"
+    ],
+    "value": 15
+  },
+  {
+    "keywords": [
+      "(16|sixteen)"
+    ],
+    "value": 16
+  },
+  {
+    "keywords": [
+      "(17|seventeen)"
+    ],
+    "value": 17
+  },
+  {
+    "keywords": [
+      "(18|eighteen)"
+    ],
+    "value": 18
+  },
+  {
+    "keywords": [
+      "(19|nineteen)"
+    ],
+    "value": 19
+  },
+  {
+    "keywords": [
+      "(20|twenty)"
+    ],
+    "value": 20
+  }
+]

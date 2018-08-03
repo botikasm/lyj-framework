@@ -1,0 +1,16 @@
+[
+  {
+    "keys": [
+      "(start|run|begin|go|hello|hi|hey)",
+      "(via|inizi*|avanti|ciao)"
+    ],
+    "value": "start"
+  },
+  {
+    "keys": [
+      "@==.tb_products.name",
+      "@==.tb_products.uid"
+    ],
+    "value": "tpl_products"
+  }
+]

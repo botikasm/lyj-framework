@@ -6,13 +6,15 @@ import org.lyj.commons.logging.Level;
 import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Program descriptor
  */
-public class OSEProgramInfo {
+public class OSEProgramInfo
+        implements Serializable {
 
     // ------------------------------------------------------------------------
     //                      c o n s t

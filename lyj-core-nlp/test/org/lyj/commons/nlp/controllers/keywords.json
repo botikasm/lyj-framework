@@ -1,0 +1,57 @@
+[
+  {
+    "keys": [
+      "(start|run|begin|go|hello|hi|hey)",
+      "(via|inizi*|avanti|ciao)"
+    ],
+    "value": "home"
+  },
+  {
+    "keys": [
+      "(che|qual*|quando) + (or*|orario|orari)",
+      "(quando|orari|orario|or*) + (apert*|aprite|apertur*|apr*|apert*)"
+    ],
+    "value": "resp_opening_time"
+  },
+  {
+    "keys": [
+      "(help|support|men*)",
+      "(aiuto|supporto|assistenza|aiutami)"
+    ],
+    "value": "menu_help"
+  },
+  {
+    "keys": [
+      "(#settings|settings)"
+    ],
+    "value": "item_settings"
+  },
+  {
+    "keys": [
+      "(prodotti|articoli|magazzino)"
+    ],
+    "value": "items"
+  },
+  {
+    "keys": [
+      "(cerca|ricerca|filtr*|trova)"
+    ],
+    "value": "$filter_main"
+  },
+  {
+    "keys": [
+      "(grazie|thank|gentile)"
+    ],
+    "value": "resp_you_are_welcome"
+  },
+  {
+    "keys": [
+      "(cazzo|figa|stronzo|merda|culo|merdaccia)",
+      "(puttana|mignotta|porc*|troia|maiale|suino|facocero)",
+      "(vaffanculo|vaffa|fottiti|fottuto)",
+      "(bastardo|maledetto|infame|lurido|carogna|vigliacco)",
+      "(schifo|schifezza|orrore|ribrezzo|vomito|diarrea)"
+    ],
+    "value": "resp_bad_words"
+  }
+]

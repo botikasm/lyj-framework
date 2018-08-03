@@ -44,27 +44,31 @@ public class ProgramImporter
 
     @Override
     public void startImport() {
-        // create info for installer
-        final OSEProgramInfo info = new OSEProgramInfo();
+        try {
+            // create info for installer
+            final OSEProgramInfo info = new OSEProgramInfo();
 
-        // add properties
-        final ImportConfig config = super.config();
-        info.name(config.getString("name"));
-        info.description(config.getString("description"));
-        info.version(config.getString("version"));
-        info.author(config.getString("author"));
-        info.namespace(config.getString("namespace"));
-        info.loopInterval(config.getInt("loop_interval"));      // interval for main loop
-        info.sessionTimeout(config.getInt("session_timeout"));  // session duration
-        info.singleton(config.getBoolean("singleton", false));
-        info.logLevel(config.getString("log_level"));
+            // add properties
+            final ImportConfig config = super.config();
+            info.name(config.getString("name"));
+            info.description(config.getString("description"));
+            info.version(config.getString("version"));
+            info.author(config.getString("author"));
+            info.namespace(config.getString("namespace"));
+            info.loopInterval(config.getInt("loop_interval"));      // interval for main loop
+            info.sessionTimeout(config.getInt("session_timeout"));  // session duration
+            info.singleton(config.getBoolean("singleton", false));
+            info.logLevel(config.getString("log_level"));
 
-        // add files
-        for (final File file : super.files()) {
-            info.files().put(file, PathUtils.subtract(super.root(), file.getPath()));
+            // add files
+            for (final File file : super.files()) {
+                info.files().put(file, PathUtils.subtract(super.root(), file.getPath()));
+            }
+
+            ProgramsManager.instance().install(info);
+        }catch(Throwable t){
+            super.error("startImport", t);
         }
-
-        ProgramsManager.instance().install(info);
     }
 
     @Override

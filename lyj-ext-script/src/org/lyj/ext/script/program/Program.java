@@ -207,4 +207,19 @@ public class Program
         }
     }
 
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    /**
+     * Clear programs internal cache.
+     * use only when you need to refresh the engine cache.
+     */
+    public static void clearCache(){
+        ProgramScriptCache.instance().clear();
+    }
+
+    public static void clearCache(final String root){
+        ProgramScriptCache.instance().clear(root);
+    }
 }

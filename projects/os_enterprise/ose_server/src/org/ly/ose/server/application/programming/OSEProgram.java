@@ -292,6 +292,10 @@ public class OSEProgram {
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
+    public static void clearCache(final String root){
+        Program.clearCache(root);
+    }
+
     public static boolean isProtected(final String namespace) {
         if (StringUtils.hasText(namespace)) {
             final String[] tokens = StringUtils.split(namespace, "._", true);
@@ -299,10 +303,6 @@ public class OSEProgram {
         }
         return false;
     }
-
-    // ------------------------------------------------------------------------
-    //                      S I N G L E T O N
-    // ------------------------------------------------------------------------
 
     public static String ensureScriptPrefix(final String name) {
         if (StringUtils.hasText(name)) {

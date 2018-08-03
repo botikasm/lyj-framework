@@ -1,6 +1,9 @@
 package org.lyj.ext.script.program;
 
+import org.lyj.commons.util.PathUtils;
+
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ProgramScriptCache {
@@ -26,6 +29,18 @@ public class ProgramScriptCache {
     public void clear() {
         synchronized (_cache_script) {
             _cache_script.clear();
+        }
+    }
+
+    public void clear(final String root) {
+        synchronized (_cache_script) {
+            final String pattern = PathUtils.concat(root, "*");
+            final Set<String> keys = _cache_script.keySet();
+            for (final String key : keys) {
+                if (PathUtils.pathMatch(key, pattern)) {
+                    _cache_script.remove(key);
+                }
+            }
         }
     }
 

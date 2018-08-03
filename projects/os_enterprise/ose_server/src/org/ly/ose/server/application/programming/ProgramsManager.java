@@ -6,7 +6,11 @@ import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.*;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,6 +24,7 @@ public class ProgramsManager
     // ------------------------------------------------------------------------
 
     private static final String ROOT = PathUtils.getAbsolutePath("ose_programs");
+    private static final String ROOT_REGISTRY = PathUtils.concat(ROOT, "_registry");
 
     private static final String[] PROTECTED_NAMESPACES = IConstants.PROTECTED_NAMESPACES;
     private static final String[] TEXT_FILES = IConstants.TEXT_FILES;
@@ -50,7 +55,7 @@ public class ProgramsManager
         this.finish();
     }
 
-    public void install(final OSEProgramInfo program_info) {
+    public void install(final OSEProgramInfo program_info) throws Exception {
         if (null != program_info && !program_info.files().isEmpty()) {
             // ready to install this program
             this.installProgram(program_info);
@@ -75,6 +80,7 @@ public class ProgramsManager
 
     private void init() {
         this.clean();
+        this.loadFromRegistry();
         OSEProgramSessions.instance().start();
     }
 
@@ -114,26 +120,66 @@ public class ProgramsManager
         return false;
     }
 
-    private void installProgram(final OSEProgramInfo program_info) {
-        final String namespace_path = StringUtils.replace(program_info.namespace(), ".", "/");
+    private void installProgram(final OSEProgramInfo program_info) throws Exception {
+        final String namespace_path = toPath(program_info.namespace());
         final String root = PathUtils.concat(ROOT, namespace_path);
         FileUtils.tryMkdirs(root);
 
         // check path is not protected namespace
         if (!this.isProtected(root)) {
             // deploy files
-            final String program_root = PathUtils.concat(ROOT, program_info.namespace() + "/" + program_info.name());
+            final String program_root = PathUtils.concat(ROOT, namespace_path + "/" + program_info.name());
             final int count = this.deployFiles(program_root, program_info);
             if (count > 0) {
                 program_info.installationRoot(program_root);
 
-                _programs.put(program_info.uid(), program_info);
+                // add program to internal registry
+                this.addToRegistry(program_info);
 
                 this.info("installProgram", "Installed: " + program_info.toString());
             }
         } else {
             this.warning("installProgram", "Unable to install program into a protected namespace: " + program_info.toString());
         }
+    }
+
+    private void addToRegistry(final OSEProgramInfo program_info) throws Exception {
+        // add to memory register
+        _programs.put(program_info.uid(), program_info);
+
+        // add to file system (only not-protected packages)
+        if (!isProtected(program_info.installationRoot())) {
+            // save new registry file
+            final String file_name = program_info.namespace().concat(".").concat(program_info.name()).concat(".dat");
+            final String file_path = PathUtils.concat(ROOT_REGISTRY, file_name);
+            FileUtils.mkdirs(file_path);
+            final byte[] bytes = ByteUtils.getBytes(program_info);
+            FileUtils.copy(bytes, new FileOutputStream(new File(file_path)));
+
+            // clear cache
+            OSEProgram.clearCache(program_info.installationRoot());
+        }
+    }
+
+    private void loadFromRegistry() {
+        final List<File> files = new ArrayList<>();
+        FileUtils.listFiles(files, new File(ROOT_REGISTRY), "*.dat");
+
+        for (final File file : files) {
+            try {
+                final byte[] bytes = FileUtils.copyToByteArray(file);
+                final OSEProgramInfo info = (OSEProgramInfo) ByteUtils.getObject(bytes);
+                // add to memory register
+                _programs.put(info.uid(), info);
+            } catch (Throwable t) {
+
+            }
+        }
+
+    }
+
+    private String toPath(final String namespace) {
+        return StringUtils.replace(namespace, ".", "/");
     }
 
     private int deployFiles(final String root,
