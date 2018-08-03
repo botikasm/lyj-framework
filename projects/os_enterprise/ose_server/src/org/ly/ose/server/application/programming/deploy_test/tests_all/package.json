@@ -7,6 +7,7 @@
   "author": "Gian Angelo Geminiani",
   "session_timeout": 15000,
   "loop_interval": 2000,
-  "singleton":false
+  "singleton":false,
+  "log_level":"info"
 
 }

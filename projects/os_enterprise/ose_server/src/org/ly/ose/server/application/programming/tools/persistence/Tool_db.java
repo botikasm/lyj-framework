@@ -394,6 +394,48 @@ public class Tool_db
             return null;
         }
 
+        //--  c o u n t  --//
+
+        public long count() {
+            if (null != _collection) {
+                return _collection.count();
+            }
+            return 0;
+        }
+
+        public long count(final String query,
+                          final Object raw_args) {
+            if (null != _collection) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                return _collection.count(query, args);
+            }
+            return 0;
+        }
+
+        public long countEqual(final Object raw_args) {
+            if (null != _collection) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                return _collection.countEqual(args);
+            }
+            return 0;
+        }
+
+        public long countLikeOr(final Object raw_args) {
+            if (null != _collection) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                return _collection.countLikeOr(args);
+            }
+            return 0;
+        }
+
+        public long countNotEqual(final Object raw_args) {
+            if (null != _collection) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                return _collection.countNotEqual(args);
+            }
+            return 0;
+        }
+
     }
 
 }

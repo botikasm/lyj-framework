@@ -1,5 +1,8 @@
 package org.ly.ose.server.application.programming;
 
+import org.ly.ose.server.application.persistence.debugging.model.ModelLogging;
+import org.ly.ose.server.application.persistence.debugging.service.ServiceLogging;
+import org.lyj.commons.async.Async;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.StringUtils;
@@ -37,25 +40,45 @@ public class OSEProgramLogger
 
     protected void handle(final Level level,
                           final Object... values) {
-        final String message = StringUtils.toString(values, "\t");
-        final String _program_id = null!=_program?_program.uid():"";
-
-        if (StringUtils.hasText(_program_id)) {
-            if (Level.SEVERE.equals(level)) {
-                //BotLoggingController.instance(bot_id).error("javascript", message);
-            } else if (Level.WARNING.equals(level)) {
-                //BotLoggingController.instance(bot_id).warn("javascript", message);
-            } else if (Level.INFO.equals(level)) {
-                //BotLoggingController.instance(bot_id).info("javascript", message);
-            } else {
-                //BotLoggingController.instance(bot_id).debug("javascript", message);
+        if (null != _program) {
+            final OSEProgramInfo info = _program.info();
+            final String level_name = info.logLevel();
+            if (StringUtils.hasText(level_name)) {
+                final Level program_level = Level.getLevel(level_name);
+                if (null != program_level && isLoggable(level, program_level)) {
+                    final String message = StringUtils.toString(values, "\t");
+                    log(_program.info(), level, message);
+                }
             }
-            LoggingUtils.getLogger(this).log(level, "TODO(handle logging in programs): " + message);
-        } else {
-            LoggingUtils.getLogger(this).log(level, "THIS MESSAGE SHOULD BE LOGGED INTO LOGGER REPO: " + message);
         }
-        // TODO: implement a better javascript logger to trace and debug programs workflow
     }
 
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private static boolean isLoggable(final Level check_level,
+                                      final Level main_level) {
+        return main_level.getNumValue() <= check_level.getNumValue();
+    }
+
+    private static void log(final OSEProgramInfo info,
+                            final Level level,
+                            final String message) {
+        Async.invoke((args)->{
+            try {
+                final ModelLogging entity = new ModelLogging();
+                entity.clientId((String) info.data().get(OSEProgramInfo.FLD_CLIENT_ID));
+                entity.sessionId((String) info.data().get(OSEProgramInfo.FLD_SESSION_ID));
+                entity.programName(info.namespace().concat(".").concat(info.name()));
+                entity.message(message);
+                entity.level(level.name());
+
+                ServiceLogging.instance().upsert(entity);
+            } catch (Throwable t) {
+                LoggingUtils.getLogger(OSEProgramLogger.class).error("log", t);
+            }
+        });
+    }
 
 }

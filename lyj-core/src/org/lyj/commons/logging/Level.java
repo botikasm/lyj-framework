@@ -52,31 +52,31 @@ public enum Level {
     public static Level getLevel(String level) {
         if (level != null) {
             level = level.toUpperCase();
-            if (level.equals("DEBUG")) {
+            if (level.equalsIgnoreCase("DEBUG")) {
                 return Level.FINE;
             }
-            if (level.equals("ERROR")) {
+            if (level.equalsIgnoreCase(Level.SEVERE.name()) || level.equalsIgnoreCase("ERROR")) {
                 return Level.SEVERE;
             }
-            if (level.equals("FINE")) {
+            if (level.equalsIgnoreCase("FINE")) {
                 return Level.FINE;
             }
-            if (level.equals("FINER")) {
+            if (level.equalsIgnoreCase("FINER")) {
                 return Level.FINER;
             }
-            if (level.equals("FINEST")) {
+            if (level.equalsIgnoreCase("FINEST")) {
                 return Level.FINEST;
             }
-            if (level.equals("INFO")) {
+            if (level.equalsIgnoreCase("INFO")) {
                 return Level.INFO;
             }
-            if (level.equals("CONFIG")) {
+            if (level.equalsIgnoreCase("CONFIG")) {
                 return Level.CONFIG;
             }
-            if (level.equals("WARNING")) {
+            if (level.equalsIgnoreCase("WARNING")) {
                 return Level.WARNING;
             }
-            if (level.equals("OFF")) {
+            if (level.equalsIgnoreCase("OFF")) {
                 return Level.OFF;
             }
         }

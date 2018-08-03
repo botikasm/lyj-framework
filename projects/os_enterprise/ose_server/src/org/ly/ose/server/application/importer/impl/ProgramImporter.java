@@ -57,6 +57,7 @@ public class ProgramImporter
         info.loopInterval(config.getInt("loop_interval"));      // interval for main loop
         info.sessionTimeout(config.getInt("session_timeout"));  // session duration
         info.singleton(config.getBoolean("singleton", false));
+        info.logLevel(config.getString("log_level"));
 
         // add files
         for (final File file : super.files()) {

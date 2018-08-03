@@ -283,7 +283,7 @@ public final class LoggingRepository
     }
 
     // ------------------------------------------------------------------------
-    //                      S T A T I C
+    //                      S I N G L E T O N
     // ------------------------------------------------------------------------
     private static LoggingRepository __instance;
 

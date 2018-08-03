@@ -118,7 +118,8 @@ public class MessageManager {
                                 program = new OSEProgram(info);
 
                                 // add some advanced info to program
-                                program.info().data().put(OSEProgramInfo.FLD_SESSION_ID, client_session_id); // set real session ID
+                                program.info().data().put(OSEProgramInfo.FLD_CLIENT_ID, client_session_id); // set real session ID
+                                program.info().data().put(OSEProgramInfo.FLD_SESSION_ID, program_session_id);
 
                                 // add program to session manager and initialize
                                 OSEProgramSessions.instance().put(program_session_id, program, program_timeout);

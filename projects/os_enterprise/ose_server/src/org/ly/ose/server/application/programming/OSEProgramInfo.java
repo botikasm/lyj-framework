@@ -2,6 +2,7 @@ package org.ly.ose.server.application.programming;
 
 import org.json.JSONObject;
 import org.ly.ose.server.IConstants;
+import org.lyj.commons.logging.Level;
 import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.File;
@@ -19,7 +20,7 @@ public class OSEProgramInfo {
 
     // custom data fields
     public static final String FLD_SESSION_ID = "session_id";
-
+    public static final String FLD_CLIENT_ID = "client_id";
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
@@ -32,6 +33,7 @@ public class OSEProgramInfo {
     private int _session_timeout;
     private int _loop_interval;
     private boolean _singleton;
+    private String _log_level; // SEVERE, INFO, ERROR,...
 
     private String _installation_root;
 
@@ -64,6 +66,7 @@ public class OSEProgramInfo {
         _session_timeout = info._session_timeout;
         _loop_interval = info._loop_interval;
         _singleton = info._singleton;
+        _log_level = info._log_level;
 
         _installation_root = info._installation_root;
     }
@@ -86,6 +89,7 @@ public class OSEProgramInfo {
         sb.put("author", _author);
         sb.put("session_timeout", _session_timeout);
         sb.put("singleton", _singleton);
+        sb.put("logging", _log_level);
         sb.put("loop_interval", _loop_interval);
         sb.put("files", _files.size());
         return sb;
@@ -188,12 +192,22 @@ public class OSEProgramInfo {
         return this;
     }
 
+    public String logLevel() {
+        return _log_level;
+    }
+
+    public OSEProgramInfo logLevel(final String value) {
+        _log_level = value;
+        return this;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
     private void init() {
         _singleton = false;
+        _log_level = Level.SEVERE.name();
         this.loopInterval(IConstants.LOOP_INTERVAL_MS);
         this.sessionTimeout(IConstants.SESSION_TIMEOUT_MS);
     }

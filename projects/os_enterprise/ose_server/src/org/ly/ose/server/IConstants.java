@@ -13,8 +13,9 @@ public interface IConstants
     String APP_VERSION = "1.0.1";
 
     String DB_GLOBAL = "ose_server";
+    String DB_GLOBAL_LOGGING = "ose_server_log";
     String DB_PROGRAM_PREFIX = "ose_program_";
-    String DB_DEBUGGING_PREFIX = "ose_debugging_";
+
     String DB_CONFIGURATION_PATH = "databases.main";
 
     // programs constants
