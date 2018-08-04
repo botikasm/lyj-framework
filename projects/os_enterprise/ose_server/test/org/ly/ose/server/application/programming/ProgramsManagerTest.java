@@ -57,6 +57,12 @@ public class ProgramsManagerTest {
         //-- session --//
         this.test_session(program);
 
+        //-- object --//
+        this.test_object(program);
+
+        //-- i18n --//
+        this.test_i18n(program);
+
         program.close();
     }
 
@@ -128,5 +134,29 @@ public class ProgramsManagerTest {
         response = session.callMember(method);
         assertNotNull(response);
         System.out.println(method + ": " + Converter.toJsonCompatible(response));
+    }
+
+    private void test_object(final OSEProgram program) throws Exception {
+
+        String method = "object_name";
+        Object response = program.callMember(method);
+        assertNotNull(response);
+        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+
+        method = "array_len";
+        response = program.callMember(method);
+        assertNotNull(response);
+        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+
+    }
+
+    private void test_i18n(final OSEProgram program) throws Exception {
+
+        String method = "i18n";
+        Object response = program.callMember(method);
+        assertNotNull(response);
+        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+        
+
     }
 }

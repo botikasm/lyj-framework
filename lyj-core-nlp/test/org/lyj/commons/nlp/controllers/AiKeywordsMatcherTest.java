@@ -28,9 +28,13 @@ public class AiKeywordsMatcherTest {
         System.out.println(response);
 
         System.out.println("QUERY: 2");
-        response = AiKeywordsMatcher.instance().match("puppadoro e prospetti con contorno di patatine olè!!", array, this::handleCustomExpression);
+        response = AiKeywordsMatcher.instance().match("pummarò e prospetti con contorno di patatine olè!!", array, this::handleCustomExpression);
         System.out.println(response);
     }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
 
     private JSONArray keywords() {
         final String json = ClassLoaderUtils.getResourceAsString(null, this.getClass(),
@@ -44,7 +48,9 @@ public class AiKeywordsMatcherTest {
         return new JSONArray(json);
     }
 
-    private Object handleCustomExpression(final CustomExpression expression, final String[] keywords, final JSONObject node) {
+    private Object handleCustomExpression(final CustomExpression expression,
+                                          final String[] keywords,
+                                          final JSONObject node) {
         System.out.println(expression);
         System.out.println(StringUtils.toString(keywords));
 
@@ -53,7 +59,7 @@ public class AiKeywordsMatcherTest {
         // simulate query on database
         for (final String key : keywords) {
             final String clean_key = Keyword.clearKeyword(key);
-            if (clean_key.equalsIgnoreCase("puppadoro") || clean_key.equalsIgnoreCase("olè")) {
+            if (clean_key.equalsIgnoreCase("pummarò") || clean_key.equalsIgnoreCase("olè")) {
                 // item found
                 final JSONObject item = new JSONObject();
                 item.put("_key", clean_key);

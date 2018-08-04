@@ -1,8 +1,6 @@
 package org.lyj.ext.script.program.tools.sys;
 
 import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.program.Program;
 import org.lyj.ext.script.program.ProgramScriptCache;
 
@@ -45,19 +43,8 @@ public class ToolRequirer {
     // ------------------------------------------------------------------------
 
     public String require(final String raw_relative_path) {
-        final String ext = PathUtils.getFilenameExtension(raw_relative_path, false);
-        final String relative_path;
-        if (!StringUtils.hasText(ext)) {
-            relative_path = _program.hasFiles()
-                    ? _program.files().filename(raw_relative_path)
-                    : raw_relative_path.concat(_program.engineNameFileExtension());
-        } else {
-            relative_path = raw_relative_path;
-        }
         try {
-            final String path = _program.hasFiles()
-                    ? _program.files().path(relative_path)
-                    : PathUtils.getAbsolutePath(relative_path);
+            final String path = _program.absolutePath(raw_relative_path);
             // update cache
             if (!_cache_script.contains(path)) {
                 _cache_script.put(path, FileUtils.readFileToString(new File(path)));
@@ -68,5 +55,10 @@ public class ToolRequirer {
         }
         return "";
     }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
 
 }

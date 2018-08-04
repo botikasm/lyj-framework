@@ -48,6 +48,7 @@ public interface IConstants {
     public static final String PATH_CONFIGFILES = "./config";
     public static final String PATH_CONFIGFILES_DATABASES = PATH_CONFIGFILES + "/databases";
 
+    public static final String BASE_LANG = "base"; // undefined language
     public static final String DEF_LANG = "en";
     public static final String DEF_COUNTRY = "US";
 

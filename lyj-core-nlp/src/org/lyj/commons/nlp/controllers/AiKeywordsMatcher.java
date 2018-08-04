@@ -25,7 +25,8 @@ public class AiKeywordsMatcher {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public String match(final String text, final JSONArray keywords) {
+    public String match(final String text,
+                        final JSONArray keywords) {
         final Object match = this.match(text, keywords, null);
         if (match instanceof String) {
             return (String) match;
@@ -43,7 +44,8 @@ public class AiKeywordsMatcher {
         return null;
     }
 
-    public boolean match(final String text, final String[] keywords) {
+    public boolean match(final String text,
+                         final String[] keywords) {
         return KeywordsSolver.instance().matchKeywords(text, keywords);
     }
 

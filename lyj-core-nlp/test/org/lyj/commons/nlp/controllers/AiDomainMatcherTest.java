@@ -19,6 +19,7 @@ public class AiDomainMatcherTest {
         final JSONArray array = this.domain();
         final TimeWatcher watcher = new TimeWatcher();
         watcher.start();
+
         final DomainMatch response = AiDomainMatcher.instance().match("voglio scarpe rosse", array);
         watcher.stop();
         assertTrue(response.hasMatchValue());

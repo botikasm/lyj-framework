@@ -19,5 +19,10 @@ public class AiNumberMatcherTest {
 
         Number[] n2 = AiNumberMatcher.instance().matchAll("it", "ne voglio venti");
         System.out.println(StringUtils.toString(n2));
+
+        text =  "ven-11233455323";
+        nn = AiNumberMatcher.instance().matchAll("it", text);
+        count = AiNumberMatcher.instance().count("it", text);
+        System.out.println(text + ": count=" + count + ", number=" + StringUtils.toString(nn));
     }
 }

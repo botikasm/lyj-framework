@@ -11,6 +11,10 @@ ly.new(function () {
     var _DATABASE = require('/scripts/database');
     var _SESSION = require('/scripts/session');
 
+
+    var _OBJECT = require('/scripts/object.json');
+    var _ARRAY = require('/scripts/array.json');
+
     // ------------------------------------------------------------------------
     //              c o n s t
     // ------------------------------------------------------------------------
@@ -69,5 +73,29 @@ ly.new(function () {
         return _DATABASE.findEqualAsc();
     };
 
+    this.object_name = function () {
+        return _OBJECT.name;
+    };
+
+    this.array_len = function () {
+        return _ARRAY.length;
+    };
+
+    this.i18n = function (key) {
+        var response = {};
+
+        response.dic_phrase_base = $i18n.get('hello');
+        response.dic_phrase_it = $i18n.get('it', 'hello');
+        
+        response.content_base = $i18n.load('/i18n').content();
+        response.content_it = $i18n.load('/i18n').content('it');
+
+        response.data_base = $i18n.load('/i18n/data').content();
+        response.data_it = $i18n.load('/i18n/data').content('it');
+        response.data_len_it = $i18n.load('/i18n/data').content('it').length;
+        response.data_len_base = $i18n.load('/i18n/data').content().length;
+
+        return response;
+    };
 
 });

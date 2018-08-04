@@ -99,6 +99,13 @@
   },
   {
     "keys": [
+      "(ross*)"
+    ],
+    "value": "",
+    "params": "f_color=red"
+  },
+  {
+    "keys": [
       "(voglio|cerca|trova|elenc*|comprare|mostra|mostrami)",
       "(vorrei|desidero|avete|magazzino)",
       "(scaffal*|mensole|prodotti|offrite|offre)",

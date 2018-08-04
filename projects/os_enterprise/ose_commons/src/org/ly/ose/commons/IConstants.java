@@ -10,6 +10,7 @@ public interface IConstants {
 
     Locale LOCALE = Locale.ENGLISH;
     String DEF_LANG = org.lyj.IConstants.DEF_LANG;
+    String BASE_LANG = org.lyj.IConstants.BASE_LANG;
     String ROOT = PathUtils.getAbsolutePath("");
     String ROOT_FILES = PathUtils.combine(ROOT, "files");
 

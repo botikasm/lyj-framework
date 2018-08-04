@@ -4,6 +4,7 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
+import org.ly.ose.server.application.programming.tools.i18n.Tool_i18n;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_session;
 import org.ly.ose.server.application.programming.tools.request.Tool_request;
@@ -86,6 +87,10 @@ public class OSEProgram {
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public String root(){
+        return _root;
+    }
 
     public String uid() {
         return _uid;
@@ -240,7 +245,8 @@ public class OSEProgram {
         _program.context().put(ensureScriptPrefix(Tool_session.NAME), new Tool_session(this));
 
         // request tools
-        _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this));
+        _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this)); // all request
+        _program.context().put(ensureScriptPrefix(Tool_i18n.NAME), new Tool_i18n(this)); // uses lang
     }
 
 

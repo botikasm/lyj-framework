@@ -2,6 +2,7 @@ package org.lyj.ext.script.program;
 
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.IScriptConstants;
 import org.lyj.ext.script.program.engines.AbstractEngine;
@@ -171,6 +172,22 @@ public class Program
         return this.engine().eval();
     }
 
+    public String absolutePath(final String raw_relative_path) {
+        final String ext = PathUtils.getFilenameExtension(raw_relative_path, false);
+        final String relative_path;
+        if (!StringUtils.hasText(ext)) {
+            relative_path = this.hasFiles()
+                    ? this.files().filename(raw_relative_path)
+                    : raw_relative_path.concat(this.engineNameFileExtension());
+        } else {
+            relative_path = raw_relative_path;
+        }
+        final String path = this.hasFiles()
+                ? this.files().path(relative_path)
+                : PathUtils.getAbsolutePath(relative_path);
+
+        return path;
+    }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
@@ -215,11 +232,11 @@ public class Program
      * Clear programs internal cache.
      * use only when you need to refresh the engine cache.
      */
-    public static void clearCache(){
+    public static void clearCache() {
         ProgramScriptCache.instance().clear();
     }
 
-    public static void clearCache(final String root){
+    public static void clearCache(final String root) {
         ProgramScriptCache.instance().clear(root);
     }
 }
