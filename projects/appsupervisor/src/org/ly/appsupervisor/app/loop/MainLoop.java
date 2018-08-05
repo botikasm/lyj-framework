@@ -3,7 +3,7 @@ package org.ly.appsupervisor.app.loop;
 import org.ly.appsupervisor.app.loop.installer.InstallMonitor;
 import org.ly.appsupervisor.app.loop.launcher.ExecMonitor;
 import org.ly.appsupervisor.app.loop.launcher.controllers.ActionController;
-import org.ly.appsupervisor.app.model.Action;
+import org.ly.appsupervisor.app.model.ModelAction;
 import org.lyj.commons.async.future.Timed;
 
 import java.util.concurrent.TimeUnit;
@@ -49,6 +49,7 @@ public class MainLoop
 
     public void close() {
         super.stop(true);
+        this.stopExec();
     }
 
 
@@ -87,7 +88,7 @@ public class MainLoop
 
     private void stopExec() {
         try {
-            ActionController.instance().run(Action.COMMAND_STOP);
+            ActionController.instance().run("", ModelAction.COMMAND_STOP);
         } catch (Throwable t) {
             super.error("stopExec", t);
         }

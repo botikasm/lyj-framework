@@ -2,8 +2,13 @@ package org.ly.appsupervisor.deploy.config;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.ly.appsupervisor.app.model.ModelLauncher;
 import org.lyj.Lyj;
 import org.lyj.commons.io.jsonrepository.JsonRepository;
+import org.lyj.commons.util.CollectionUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Direct access to configuration structure
@@ -18,6 +23,7 @@ public class ConfigHelper {
     private static final String TASK_ENABLED = "lyj.task_enabled";
     private static final String TASK_INTERVAL_SEC = "lyj.task_interval_sec";
 
+    private static final String LAUNCHER = "launcher";
     private static final String LAUNCHER_EXEC = "launcher.exec";
     private static final String LAUNCHER_RULES = "launcher.rules";
     private static final String LAUNCHER_ACTIONS = "launcher.actions";
@@ -52,16 +58,20 @@ public class ConfigHelper {
         return _configuration.getInt(TASK_INTERVAL_SEC, 60 * 10);
     }
 
-    public String launcherExec() {
-        return _configuration.getString(LAUNCHER_EXEC);
-    }
-
-    public JSONArray rules() {
-        return _configuration.getJSONArray(LAUNCHER_RULES);
-    }
-
-    public JSONObject actions() {
-        return _configuration.getJSONObject(LAUNCHER_ACTIONS);
+    public Map<String, ModelLauncher> launchers() {
+        final Map<String, ModelLauncher> launchers = new HashMap<>();
+        final JSONObject config = _configuration.getJSONObject(LAUNCHER);
+        if (config.has("launchers")) {
+            final JSONArray array = config.optJSONArray("launchers");
+            CollectionUtils.forEach(array, (item) -> {
+                final ModelLauncher launcher = new ModelLauncher(item);
+                launchers.put(launcher.uid(), launcher);
+            });
+        } else {
+            final ModelLauncher launcher = new ModelLauncher(config);
+            launchers.put(launcher.uid(), launcher);
+        }
+        return launchers;
     }
 
     // ------------------------------------------------------------------------

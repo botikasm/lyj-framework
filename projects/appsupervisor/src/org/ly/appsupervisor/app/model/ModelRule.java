@@ -2,7 +2,7 @@ package org.ly.appsupervisor.app.model;
 
 import org.lyj.commons.util.json.JsonItem;
 
-public class Rule
+public class ModelRule
         extends JsonItem {
 
     // ------------------------------------------------------------------------
@@ -22,11 +22,11 @@ public class Rule
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public Rule() {
+    public ModelRule() {
         super();
     }
 
-    public Rule(final Object item) {
+    public ModelRule(final Object item) {
         super(item);
     }
 
@@ -38,7 +38,7 @@ public class Rule
         return super.getBoolean(FLD_ENABLED);
     }
 
-    public Rule enabled(final boolean value) {
+    public ModelRule enabled(final boolean value) {
         this.put(FLD_ENABLED, value);
         return this;
     }

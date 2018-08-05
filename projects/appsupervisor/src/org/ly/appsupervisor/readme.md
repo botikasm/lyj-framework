@@ -17,9 +17,12 @@ That's particularly useful when you need update an executable started from launc
 
 Launcher.json
 ------------
-Sample *launcher.json* configuration file.
+Launcher.json file can contain a single launcher configuration or multiple launcher configurations.
+
+SINGLE *launcher.json* configuration file.
 ```json
 {
+  "uid":"app_01",
   "exec": "/Users/angelogeminiani/conversacon_bin/run_server_debug.sh",
   "rules": [
     {
@@ -87,6 +90,15 @@ Sample *launcher.json* configuration file.
       "email": {}
     }
   }
+}
+```
+
+Multiple configurations
+```json
+{
+  "launchers":[
+    {...launcher config here...}
+  ]
 }
 ```
 

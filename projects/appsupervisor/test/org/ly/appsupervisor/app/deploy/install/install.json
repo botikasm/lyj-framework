@@ -1,4 +1,5 @@
 {
+  "uid":"conversacon",
   "target":"/home/botuser/conversacon/",
   "action-before":"stop",
   "action-after":"start"

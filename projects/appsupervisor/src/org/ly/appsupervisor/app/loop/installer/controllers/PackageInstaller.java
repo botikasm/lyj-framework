@@ -23,6 +23,7 @@ public class PackageInstaller
 
     private static final String INSTALL_JSON = "install.json";
 
+    private static final String FLD_UID = "uid";
     private static final String FLD_TARGET = "target";
     private static final String FLD_EXTENSIONS = "extensions";
     private static final String FLD_ACTION_BEFORE = "action-before";
@@ -113,22 +114,27 @@ public class PackageInstaller
         if (!files.isEmpty()) {
             final JSONObject info = this.getInstallInfo(files);
             if (null != info) {
-                final String target_path = info.optString(FLD_TARGET);
-                final String action_before = info.optString(FLD_ACTION_BEFORE);
-                final String action_after = info.optString(FLD_ACTION_AFTER);
-                if (StringUtils.hasText(target_path) && files.size() > 1) {
-                    // ACTION BEFORE
-                    this.doAction(action_before);
-                    // copy files
-                    for (final File installable_file : files) {
-                        if (this.isInstallable(installable_file)) {
-                            this.copy(installable_file, target_path);
+                final String uid = info.optString(FLD_UID);
+                if(StringUtils.hasText(uid)){
+                    final String target_path = info.optString(FLD_TARGET);
+                    final String action_before = info.optString(FLD_ACTION_BEFORE);
+                    final String action_after = info.optString(FLD_ACTION_AFTER);
+                    if (StringUtils.hasText(target_path) && files.size() > 1) {
+                        // ACTION BEFORE
+                        this.doAction(uid, action_before);
+                        // copy files
+                        for (final File installable_file : files) {
+                            if (this.isInstallable(installable_file)) {
+                                this.copy(installable_file, target_path);
+                            }
                         }
-                    }
-                    // ACTION AFTER
-                    this.doAction(action_after);
+                        // ACTION AFTER
+                        this.doAction(uid, action_after);
 
-                    return true;
+                        return true;
+                    }
+                } else {
+                   super.error("tryInstall", "BAD CONFIGURATION: missing 'uid' parameter.");
                 }
             } else {
                 super.warning("tryInstall", "MISSING 'install.json' configuration file.");
@@ -175,9 +181,10 @@ public class PackageInstaller
         FileUtils.copy(file, new File(file_name));
     }
 
-    private void doAction(final String action) throws Exception {
+    private void doAction(final String uid,
+                          final String action) throws Exception {
         if (StringUtils.hasText(action)) {
-            ActionController.instance().run(action);
+            ActionController.instance().run(uid, action);
         }
     }
 }

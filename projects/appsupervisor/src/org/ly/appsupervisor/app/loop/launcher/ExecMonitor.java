@@ -2,14 +2,22 @@ package org.ly.appsupervisor.app.loop.launcher;
 
 import org.ly.appsupervisor.app.loop.launcher.controllers.ActionController;
 import org.ly.appsupervisor.app.loop.launcher.controllers.RuleController;
+import org.ly.appsupervisor.app.model.ModelLauncher;
+import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.AbstractLogEmitter;
 
+import java.util.Map;
 import java.util.Set;
 
 public class ExecMonitor
         extends AbstractLogEmitter {
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+
+    private static final Map<String, ModelLauncher> LAUNCHERS = ConfigHelper.instance().launchers();
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -67,11 +75,14 @@ public class ExecMonitor
     // ------------------------------------------------------------------------
 
     private void checkRules() throws Exception {
-        final Set<String> actions = RuleController.instance().check();
-
-        // run actions
-        for (final String action_name : actions) {
-            ActionController.instance().run(action_name);
+        final Map<String, Set<String>> mapped_actions = RuleController.instance().check();
+        final Set<String> uids = mapped_actions.keySet();
+        for (final String uid : uids) {
+            final Set<String> actions = mapped_actions.get(uid);
+            // run actions
+            for (final String action_name : actions) {
+                ActionController.instance().run(uid, action_name);
+            }
         }
     }
 

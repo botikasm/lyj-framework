@@ -2,6 +2,7 @@ package org.ly.appsupervisor.app;
 
 import org.ly.appsupervisor.app.loop.MainLoop;
 import org.ly.appsupervisor.app.loop.installer.controllers.FileController;
+import org.ly.appsupervisor.app.model.ModelLauncher;
 import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.lyj.Lyj;
 import org.lyj.commons.io.jsonrepository.JsonRepository;
@@ -10,6 +11,7 @@ import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.LocaleUtils;
 
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Application Server
@@ -109,7 +111,14 @@ public class Application {
         sb.append("\t").append("VERSION: ").append(IConstants.APP_VERSION).append("\n");
         sb.append("\t").append("MAIN LOOP ENABLED: ").append(config.taskEnabled()).append("\n");
         sb.append("\t").append("MAIN LOOP INTERVAL: ").append(config.taskInterval()).append(" sec.").append("\n");
-        sb.append("\t").append("EXEC: ").append(config.launcherExec()).append("\n");
+
+        // launchers
+        final Map<String, ModelLauncher> launchers = config.launchers();
+        sb.append("\t").append("EXEC: ").append("\n");
+        launchers.forEach((uid, launcher)->{
+            sb.append("\t").append("\t").append(launcher.exec()).append("\n");
+        });
+
         sb.append("\t").append("INSTALL PATH: ").append(FileController.ROOT).append("\n");
         sb.append("**************************************");
 

@@ -1,16 +1,16 @@
 package org.ly.appsupervisor.app.loop.launcher.controllers;
 
-import org.json.JSONArray;
 import org.ly.appsupervisor.app.IConstants;
-import org.ly.appsupervisor.app.model.Rule;
+import org.ly.appsupervisor.app.model.ModelLauncher;
+import org.ly.appsupervisor.app.model.ModelRule;
 import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.lyj.commons.network.URLUtils;
 import org.lyj.commons.util.*;
 
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class RuleController {
@@ -18,6 +18,7 @@ public class RuleController {
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
+    private static final Map<String, ModelLauncher> LAUNCHERS = ConfigHelper.instance().launchers();
 
     private static final String TYPE_MEMORY = IConstants.TYPE_MEMORY; // check memory free
     private static final String TYPE_CLOCK = IConstants.TYPE_CLOCK;  // check date time
@@ -38,17 +39,12 @@ public class RuleController {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final List<Rule> _rules;
-
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     private RuleController() {
-        _rules = new LinkedList<>();
-
-
         this.init();
     }
 
@@ -59,16 +55,20 @@ public class RuleController {
     /**
      * Check all rules for an action to perform
      */
-    public Set<String> check() {
-        final Set<String> actions = new HashSet<>();
-        for (final Rule rule : _rules) {
-            final String action_name = this.validateRule(rule);
-            if (StringUtils.hasText(action_name)) {
-                actions.add(action_name);
-            }
-        }
-
-        return actions;
+    public Map<String, Set<String>> check() {
+        final Map<String, Set<String>> response = new HashMap<>();
+        LAUNCHERS.forEach((uid, launcher) -> {
+            launcher.rules().forEach((rule) -> {
+                final String action_name = this.validateRule(uid, rule);
+                if (StringUtils.hasText(action_name)) {
+                    if (!response.containsKey(uid)) {
+                        response.put(uid, new HashSet<>());
+                    }
+                    response.get(uid).add(action_name);
+                }
+            });
+        });
+        return response;
     }
 
     // ------------------------------------------------------------------------
@@ -76,14 +76,6 @@ public class RuleController {
     // ------------------------------------------------------------------------
 
     private void init() {
-        // init rules
-        final JSONArray rules = ConfigHelper.instance().rules();
-        CollectionUtils.forEach(rules, (item) -> {
-            final Rule rule = new Rule(item);
-            if (rule.enabled()) {
-                _rules.add(rule);
-            }
-        });
 
     }
 
@@ -94,7 +86,8 @@ public class RuleController {
      * @param rule Rule to validate
      * @return Action name or empty string
      */
-    private String validateRule(final Rule rule) {
+    private String validateRule(final String uid,
+                                final ModelRule rule) {
         if (rule.enabled()) {
             final String type = rule.type();
             if (TYPE_MEMORY.equalsIgnoreCase(type)) {
@@ -104,13 +97,13 @@ public class RuleController {
             } else if (TYPE_PING.equalsIgnoreCase(type)) {
                 return this.validatePingRule(rule);
             } else if (TYPE_NULL.equalsIgnoreCase(type)) {
-                return this.validateNullRule(rule);
+                return this.validateNullRule(uid, rule);
             }
         }
         return "";
     }
 
-    private String validateMemoryRule(final Rule rule) {
+    private String validateMemoryRule(final ModelRule rule) {
         try {
             final String mu = rule.mu();
             final String lower_than = rule.lowerThan();
@@ -135,7 +128,7 @@ public class RuleController {
         return "";
     }
 
-    private String validateClockRule(final Rule rule) {
+    private String validateClockRule(final ModelRule rule) {
         try {
             final String mu = rule.mu();
             final String lower_than = rule.lowerThan();
@@ -162,7 +155,7 @@ public class RuleController {
     /**
      * Returns action name if request timeout
      */
-    private String validatePingRule(final Rule rule) {
+    private String validatePingRule(final ModelRule rule) {
         final String host = rule.host();
         final int timeout = rule.timeout();
 
@@ -181,9 +174,9 @@ public class RuleController {
         return "";
     }
 
-    private String validateNullRule(final Rule rule) {
+    private String validateNullRule(final String uid, final ModelRule rule) {
         // is application running?
-        return ActionController.instance().isExecuting() ? "" : rule.action();
+        return ActionController.instance().isExecuting(uid) ? "" : rule.action();
     }
 
     private long freeMemory(final String mu) {

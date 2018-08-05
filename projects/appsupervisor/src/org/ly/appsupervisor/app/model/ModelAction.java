@@ -3,7 +3,7 @@ package org.ly.appsupervisor.app.model;
 import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.json.JsonWrapper;
 
-public class Action
+public class ModelAction
         extends JsonItem {
 
     // ------------------------------------------------------------------------
@@ -28,11 +28,11 @@ public class Action
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public Action() {
+    public ModelAction() {
         super();
     }
 
-    public Action(final Object item) {
+    public ModelAction(final Object item) {
         super(item);
     }
 
