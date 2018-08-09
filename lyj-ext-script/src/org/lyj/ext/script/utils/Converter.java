@@ -130,6 +130,10 @@ public class Converter {
         return new JSONArray();
     }
 
+    public static JSONObject toJsonObject(final Object value) {
+        return toJsonItem(value).json();
+    }
+
     public static JsonItem toJsonItem(final Object value) {
         if (value instanceof JsonItem) {
             return (JsonItem) value;

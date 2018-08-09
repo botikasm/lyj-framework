@@ -1,6 +1,5 @@
 package org.lyj.commons.nlp.entities.macro.simple;
 
-import org.lyj.commons.nlp.entities.data.numbers.AiNumberMatcher;
 import org.lyj.commons.nlp.entities.macro.AbstractEntityMacro;
 import org.lyj.commons.util.RegExpUtils;
 

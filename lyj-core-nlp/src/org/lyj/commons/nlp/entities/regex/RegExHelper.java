@@ -5,6 +5,9 @@ import org.lyj.commons.util.RegExpUtils;
 import java.util.Collection;
 import java.util.LinkedList;
 
+/**
+ * Internal RegEx helper
+ */
 public class RegExHelper {
 
     // ------------------------------------------------------------------------

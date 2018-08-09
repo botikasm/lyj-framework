@@ -7,6 +7,9 @@ import org.lyj.commons.util.StringUtils;
 import java.util.Collection;
 import java.util.LinkedList;
 
+/**
+ * Detect names of persons
+ */
 public class EntityMacroName
         extends AbstractEntityMacro {
 
@@ -15,6 +18,8 @@ public class EntityMacroName
     // ------------------------------------------------------------------------
 
     public static final String NAME = "name"; // detects names of persons (first should be Uppercase)
+
+    private static final String[] DOTS = {".", "?", "!", "¿"};
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
