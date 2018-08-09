@@ -352,7 +352,8 @@ public class ClassLoaderUtils {
         return null;
     }
 
-    private static Constructor getConstructor(final Class aclass, final Object[] args) throws NoSuchMethodException {
+    private static Constructor getConstructor(final Class aclass,
+                                              final Object[] args) throws NoSuchMethodException {
         if(!CollectionUtils.isEmpty(args)) {
             final Constructor[] constructors = aclass.getConstructors();
             for(final Constructor constructor:constructors){

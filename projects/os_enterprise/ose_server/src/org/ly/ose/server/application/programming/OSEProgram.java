@@ -4,10 +4,12 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
+import org.ly.ose.server.application.programming.tools.ai.Tool_nlp;
 import org.ly.ose.server.application.programming.tools.i18n.Tool_i18n;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_session;
 import org.ly.ose.server.application.programming.tools.request.Tool_request;
+import org.ly.ose.server.application.programming.tools.utils.Tool_resource;
 import org.ly.ose.server.application.programming.tools.utils.Tool_rnd;
 import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.util.CollectionUtils;
@@ -88,7 +90,7 @@ public class OSEProgram {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public String root(){
+    public String root() {
         return _root;
     }
 
@@ -98,6 +100,10 @@ public class OSEProgram {
 
     public OSEProgramInfo info() {
         return _program_info;
+    }
+
+    public OSEProgramLogger logger() {
+        return _logger;
     }
 
     public Object open() throws Exception {
@@ -243,10 +249,12 @@ public class OSEProgram {
         _program.context().put(ensureScriptPrefix(Tool_db.NAME), new Tool_db(this));
         _program.context().put(ensureScriptPrefix(Tool_rnd.NAME), new Tool_rnd(this));
         _program.context().put(ensureScriptPrefix(Tool_session.NAME), new Tool_session(this));
+        _program.context().put(ensureScriptPrefix(Tool_resource.NAME), new Tool_resource(this));
 
         // request tools
         _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this)); // all request
         _program.context().put(ensureScriptPrefix(Tool_i18n.NAME), new Tool_i18n(this)); // uses lang
+        _program.context().put(ensureScriptPrefix(Tool_nlp.NAME), new Tool_nlp(this)); // uses lang
     }
 
 
@@ -298,7 +306,7 @@ public class OSEProgram {
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
-    public static void clearCache(final String root){
+    public static void clearCache(final String root) {
         Program.clearCache(root);
     }
 

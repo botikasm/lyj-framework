@@ -35,7 +35,7 @@ public abstract class OSEProgramToolRequest
         _request = request;
     }
 
-    OSERequest get_native_request_value() {
+    protected OSERequest get_native_request_value() {
         return _request;
     }
 
@@ -64,5 +64,6 @@ public abstract class OSEProgramToolRequest
         }
        return "";
     }
+
 
 }

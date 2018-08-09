@@ -7,6 +7,7 @@ import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.program.ProgramLogger;
+import org.lyj.ext.script.utils.Converter;
 
 /**
  * Runtime javascript logger tool.
@@ -46,7 +47,7 @@ public class OSEProgramLogger
             if (StringUtils.hasText(level_name)) {
                 final Level program_level = Level.getLevel(level_name);
                 if (null != program_level && isLoggable(level, program_level)) {
-                    final String message = StringUtils.toString(values, "\t");
+                    final String message = StringUtils.toString(Converter.toJsonArray(values), "\t");
                     log(_program.info(), level, message);
                 }
             }

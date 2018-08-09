@@ -19,6 +19,17 @@ import java.util.Map;
 
 /**
  * Internationalization Utility.
+ * Sample usage:
+ * response.dic_phrase_base = $i18n.get('hello');
+ * response.dic_phrase_it = $i18n.get('it', 'hello');
+ * <p>
+ * response.content_base = $i18n.load('/i18n').content();
+ * response.content_it = $i18n.load('/i18n').content('it');
+ * <p>
+ * response.data_base = $i18n.load('/i18n/data').content();
+ * response.data_it = $i18n.load('/i18n/data').content('it');
+ * response.data_len_it = $i18n.load('/i18n/data').content('it').length;
+ * response.data_len_base = $i18n.load('/i18n/data').content().length;
  */
 public class Tool_i18n
         extends OSEProgramToolRequest {
@@ -55,8 +66,10 @@ public class Tool_i18n
     // ------------------------------------------------------------------------
 
     public void close() {
-
+        _cached_resources.clear();
     }
+
+    //-- dictionary --//
 
     public ContentHelper load() {
         return new ContentHelper(this, _root_i18n);
@@ -75,6 +88,7 @@ public class Tool_i18n
         return this.load().get(lang, key);
     }
 
+    //-- data --//
 
     public Object content() throws Exception {
         return this.load().content();

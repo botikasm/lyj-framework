@@ -6,13 +6,15 @@ import org.ly.appsupervisor.app.model.ModelAction;
 import org.ly.appsupervisor.app.model.ModelLauncher;
 import org.ly.appsupervisor.deploy.config.ConfigHelper;
 import org.ly.ext.mail.SmtpRequest;
+import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ActionController {
+public class ActionController
+        extends AbstractLogEmitter {
 
 
     // ------------------------------------------------------------------------

@@ -63,6 +63,9 @@ public class ProgramsManagerTest {
         //-- i18n --//
         this.test_i18n(program);
 
+        //-- resource --//
+        this.test_resource(program);
+
         program.close();
     }
 
@@ -157,6 +160,16 @@ public class ProgramsManagerTest {
         assertNotNull(response);
         System.out.println(method + ": " + Converter.toJsonCompatible(response));
         
+
+    }
+
+    private void test_resource(final OSEProgram program) throws Exception {
+
+        String method = "resource";
+        Object response = program.callMember(method);
+        assertNotNull(response);
+        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+
 
     }
 }

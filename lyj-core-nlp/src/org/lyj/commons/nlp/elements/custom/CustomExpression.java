@@ -1,8 +1,11 @@
 package org.lyj.commons.nlp.elements.custom;
 
-import org.lyj.commons.nlp.elements.IKeywordConstants;
 import org.json.JSONObject;
+import org.lyj.commons.nlp.elements.IKeywordConstants;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.converters.MapConverter;
+
+import java.util.Map;
 
 /**
  * Parse custom expressions.
@@ -18,7 +21,7 @@ public class CustomExpression {
     // ------------------------------------------------------------------------
 
     private static final String PREFIX = IKeywordConstants.PREFIX_CUSTOM; // @
-    private static final String SEP = "";
+    private static final String SEP = ".";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -79,6 +82,11 @@ public class CustomExpression {
 
         return response;
     }
+
+    public Map toMap() {
+        return MapConverter.toMap(this.toJson());
+    }
+
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e

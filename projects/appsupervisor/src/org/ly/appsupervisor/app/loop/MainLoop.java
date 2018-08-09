@@ -88,6 +88,7 @@ public class MainLoop
 
     private void stopExec() {
         try {
+            // stop alll
             ActionController.instance().run("", ModelAction.COMMAND_STOP);
         } catch (Throwable t) {
             super.error("stopExec", t);

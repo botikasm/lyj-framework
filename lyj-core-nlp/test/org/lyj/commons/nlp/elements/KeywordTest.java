@@ -13,5 +13,10 @@ public class KeywordTest {
         System.out.println(response);
         assertEquals("olèéòç", response);
 
+        response = Keyword.clearKeyword("Hello, I'm a text with some Invalid Characters!! \uD83D\uDC4D");
+        System.out.println(response);
+        assertEquals("helloimatextwithsomeinvalidcharacters", response);
+
+
     }
 }

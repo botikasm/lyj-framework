@@ -98,4 +98,12 @@ ly.new(function () {
         return response;
     };
 
+    this.resource = function () {
+        var response = {};
+
+        response.data_base_json = $resource.load('/i18n/data/base.json').string;
+
+        return response;
+    };
+
 });

@@ -1,0 +1,49 @@
+{
+  "names_regex": {
+    "start": [
+      "(nome|sono|io)"
+    ],
+    "rules": [
+      "/^[A-Z][a-z0-9_-]{3,19}$/"
+    ]
+  },
+  "names": {
+    "start": [],
+    "rules": [
+      "#name"
+    ]
+  },
+  "emails": {
+    "start": [],
+    "rules": [
+      "#email"
+    ]
+  },
+  "numbers": {
+    "start": [],
+    "rules": [
+      "#number"
+    ]
+  },
+  "dates": {
+    "start": [],
+    "rules": [
+      "#date"
+    ]
+  },
+  "phones": {
+    "start": [
+      "(numero|cell|cellulare|telefono|chiama|richiamarmi|chiama**|chiama***)"
+    ],
+    "rules": [
+      "#phone"
+    ]
+  },
+  "multiple": {
+    "start": [],
+    "rules": [
+      "#integerLen#5",
+      "#startsWith#VEN-"
+    ]
+  }
+}

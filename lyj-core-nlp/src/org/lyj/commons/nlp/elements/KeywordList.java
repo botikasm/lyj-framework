@@ -59,7 +59,7 @@ public class KeywordList
      * @return True when al least a keyword (statement expression) match the phrase.
      */
     public Object match(final String phrase) {
-        final String[] tokens = StringUtils.split(phrase, " ", true);
+        final String[] tokens = split(phrase);
         for (final Keyword keyword : _keywords) {
             final Object match = keyword.match(tokens); // boolean or object from a custom parser
             if (null != match) {
@@ -83,10 +83,32 @@ public class KeywordList
         return null;
     }
 
+    public int matchIndex(final String phrase) {
+        final String[] tokens = split(phrase);
+        return matchIndex(tokens);
+    }
+
+    public int matchIndex(final String[] tokens) {
+        for (final Keyword keyword : _keywords) {
+            final int index = keyword.matchIndex(tokens);
+            if (index > -1) {
+                return index;
+            }
+        }
+        return -1;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static String[] split(final String phrase) {
+        return StringUtils.split(phrase, " ", true);
+    }
 
     // ------------------------------------------------------------------------
     //                      E M B E D D E D

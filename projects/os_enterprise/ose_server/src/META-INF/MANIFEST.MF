@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Class-Path: javax.mail.jar slf4j-nop-1.7.21.jar cssparser-0.9.18.jar c
+ ssparser-0.9.18-javadoc.jar cssparser-0.9.18-sources.jar javassist-3.
+ 21.0-GA.jar reactive-streams-1.0.0.jar netty-reactive-streams-1.0.8.j
+ ar async-http-client-2.1.0-alpha2.jar async-http-client-netty-utils-2
+ .1.0-alpha2.jar sac.jar netty-all-4.1.25.Final.jar jsoup-1.8.3.jar js
+ oup-1.8.3-javadoc.jar jsoup-1.8.3-sources.jar slf4j-api-1.7.21.jar sl
+ f4j-api-1.7.13.jar velocypack-1.2.0.jar jackson-core-2.9.5.jar arango
+ db-java-driver-4.5.2.jar
+Main-Class: org.ly.ose.server.Launcher
+

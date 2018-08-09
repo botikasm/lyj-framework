@@ -1,4 +1,4 @@
-package org.lyj.commons.nlp.data.numbers;
+package org.lyj.commons.nlp.entities.data.numbers;
 
 import org.lyj.commons.nlp.controllers.AiKeywordsMatcher;
 import org.json.JSONArray;

@@ -1,8 +1,6 @@
 package org.ly.ose.server.application.programming.tools.request;
 
-import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.server.application.programming.OSEProgram;
-import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
 
 /**
@@ -24,7 +22,6 @@ public class Tool_request
     // ------------------------------------------------------------------------
 
 
-
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -38,6 +35,16 @@ public class Tool_request
     // ------------------------------------------------------------------------
 
 
+    @Override
+    public String getLang() {
+        return super.getLang();
+    }
+
+    public void setLang(final String lang) {
+        if (super.hasRequest()) {
+            super.get_native_request_value().lang(lang);
+        }
+    }
 
 
 }

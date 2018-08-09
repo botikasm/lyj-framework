@@ -51,6 +51,13 @@ public class Keyword {
         return false;
     }
 
+    public int matchIndex(final String[] phrase) {
+        if (null != _expression) {
+            return _expression.matchIndex(phrase);
+        }
+        return -1;
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------

@@ -54,18 +54,6 @@ public abstract class ProgramLogger
         _writer.close();
     }
 
-    public void log(final Object... values) {
-        this.handle(Level.INFO, values);
-    }
-
-    public void error(final Object... values) {
-        this.handle(Level.SEVERE, values);
-    }
-
-    public void error(final String methodName, final Throwable t) {
-        this.handle(Level.SEVERE, methodName, t.toString());
-    }
-
     public void info(final Object... values) {
         this.handle(Level.INFO, values);
     }
@@ -82,6 +70,10 @@ public abstract class ProgramLogger
         this.handle(Level.WARNING, values);
     }
 
+    public void log(final Object... values) {
+        this.handle(Level.INFO, values);
+    }
+    
     @Override
     public void log(final Level level, final String methodName, final String message) {
         this.handle(level, methodName, message);
@@ -102,6 +94,10 @@ public abstract class ProgramLogger
         this.handle(Level.INFO, methodName, message);
     }
 
+    public void error(final String methodName, final Object message) {
+        this.handle(Level.SEVERE, methodName, message);
+    }
+
     @Override
     public void error(final String methodName, final String message) {
         this.handle(Level.SEVERE, methodName, message);
@@ -110,6 +106,14 @@ public abstract class ProgramLogger
     @Override
     public void error(final String methodName, final String template, final Object... args) {
         this.handle(Level.SEVERE, methodName, FormatUtils.format(template, args));
+    }
+
+    public void error(final String methodName, final Throwable t) {
+        this.handle(Level.SEVERE, methodName, t.toString());
+    }
+
+    public void error(final Object... values) {
+        this.handle(Level.SEVERE, values);
     }
 
     // ------------------------------------------------------------------------

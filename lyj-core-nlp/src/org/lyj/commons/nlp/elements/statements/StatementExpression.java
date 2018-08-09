@@ -81,6 +81,12 @@ public class StatementExpression
         return false;
     }
 
+    public int matchIndex(final String[] phrase) {
+        if (null != phrase && phrase.length > 0) {
+            return this.matchIndex(Arrays.asList(phrase));
+        }
+        return -1;
+    }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
@@ -140,6 +146,26 @@ public class StatementExpression
         }
         return count_matches == _statements.size();
     }
+
+    private int matchIndex(final List<String> phrase) {
+        int first_match = -1;
+        int count_matches = 0;
+        for (int i = 0; i < _statements.size(); i++) {
+            final Statement[] statement = _statements.get(i);
+            final String operator = CollectionUtils.get(_operators, i);
+            for (int ii = 0; ii < phrase.size(); ii++) {
+                final String word = phrase.get(ii);
+                final boolean match = (null != operator && operator.equals(OP_NOT)) != this.match(statement, word);
+                if (match) {
+                    first_match = first_match == -1 ? ii : first_match;
+                    count_matches++;
+                    break;
+                }
+            }
+        }
+        return count_matches == _statements.size() ? first_match : -1;
+    }
+
 
     private boolean match(final Statement[] statement_or, final String word) {
         for (final Statement statement : statement_or) {
