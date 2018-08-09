@@ -43,16 +43,17 @@ public class EntityMacroName
         String last_name = "";
         for (int i = start_index; i < phrase.length; i++) {
             final String word = phrase[i];
-            last_ending_dot = word.endsWith(".") ? i : last_ending_dot;
+            last_ending_dot = endsWithDot(word) ? i : last_ending_dot;
             // get uppercase (not starting word that usually is uppercase)
-            if (i > 0 && last_ending_dot!= i-1 && RegExpUtils.isFirstUppercase(word)) {
+            if (i > 0 && last_ending_dot != i - 1 && RegExpUtils.isFirstUppercase(word)) {
                 // check contiguous
                 if (last_i > 0) {
                     if (StringUtils.hasText(last_name)) {
                         if (last_i + 1 == i) {
                             // contiguous
-                            result.add(last_name.trim() + " " + word);
-                            last_name = ""; // reset temp cache
+                            //result.add(last_name.trim() + " " + word);
+                            //last_name = ""; // reset temp cache
+                            last_name += " " + word;
                         } else {
                             // not contiguous
                             result.add(last_name.trim());
@@ -66,6 +67,11 @@ public class EntityMacroName
                     // append to temp cache
                     last_name += " " + word;
                 }
+            } else {
+                if(StringUtils.hasText(last_name)){
+                    result.add(last_name.trim());
+                    last_name = ""; // reset temp cache
+                }
             }
             last_i++;
         }
@@ -73,6 +79,19 @@ public class EntityMacroName
             result.add(last_name.trim());
         }
         return result.toArray(new String[0]);
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private boolean endsWithDot(final String word) {
+        for (final String dot : DOTS) {
+            if (word.endsWith(dot)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

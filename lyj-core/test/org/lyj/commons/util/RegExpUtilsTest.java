@@ -40,4 +40,15 @@ public class RegExpUtilsTest {
         assertEquals(tokens.length, 7);
     }
 
+    @Test
+    public void testUppercase() throws Exception {
+
+        assertTrue(RegExpUtils.isFirstUppercase("De"));
+        assertTrue(RegExpUtils.isFirstUppercase("Della"));
+        assertFalse(RegExpUtils.isFirstUppercase("DELLA"));
+        assertFalse(RegExpUtils.isFirstUppercase("541-642255"));
+        assertFalse(RegExpUtils.isFirstUppercase("asdfghgjhjjk"));
+
+    }
+
 }

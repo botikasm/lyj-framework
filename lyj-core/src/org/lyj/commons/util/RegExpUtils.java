@@ -47,7 +47,7 @@ public abstract class RegExpUtils {
     public static final String EMAIL_PATTERN = "^([0-9a-zA-Z]([-.\\w]*[0-9a-zA-Z])*@(([0-9a-zA-Z])+([-\\w]*[0-9a-zA-Z])*\\.)+[a-zA-Z]{2,9})$";
     public static final String PHONE_PREFIX_PATTERN = "^\\+(?:[0-9] ?){6,14}[0-9]$";
     public static final String PHONE_PATTERN = "^(?:[0-9] ?){6,14}[0-9]$";
-    public static final String FIRST_UPPERCASE = "^[A-Z][a-z0-9_-]{3,19}$";
+    public static final String FIRST_UPPERCASE = "\\b[A-Z][a-z0-9_-]\\w*\\b"; //"^[A-Z][a-z0-9_-]{2,19}$";
 
     /**
      * Matches text included in curly brakets '{' '}'.
