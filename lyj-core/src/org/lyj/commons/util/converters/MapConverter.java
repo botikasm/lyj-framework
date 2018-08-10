@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.lyj.commons.util.BeanUtils;
 import org.lyj.commons.util.CollectionUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.json.JsonItem;
 
 import java.util.*;
@@ -19,6 +20,7 @@ public abstract class MapConverter {
 
     /**
      * Convert passed value into compatible value
+     *
      * @param value Value to convert
      * @return Primitive, String, Map or Collection
      */
@@ -57,12 +59,15 @@ public abstract class MapConverter {
             return toMap((JSONObject) value);
         } else if (value instanceof JsonItem) {
             return toMap((JsonItem) value);
+        } else if (value instanceof String) {
+            return toMap((String) value);
         }
         return null;
     }
 
     /**
      * Return list of Map or Primitive
+     *
      * @param value Value to convert
      * @return List of Primitive, String or Map
      */
@@ -73,6 +78,8 @@ public abstract class MapConverter {
             return toList((Collection) value);
         } else if (value.getClass().isArray()) {
             return toList((Object[]) value);
+        } else if (value instanceof String) {
+            return toList((String) value);
         }
         return null;
     }
@@ -102,6 +109,30 @@ public abstract class MapConverter {
             }
         }
         return response;
+    }
+
+    private static Map<String, Object> toMap(final String text) {
+        if (StringUtils.isJSONObject(text)) {
+            try {
+                return toMap(new JSONObject(text));
+            } catch (Throwable ignored) {
+                // not pure JSON
+            }
+        } else {
+            final Map<String, Object> response = new HashMap<>();
+            // may be a query string
+            final String[] key_values = text.contains("&")
+                    ? StringUtils.split(text, "&")
+                    : StringUtils.split(text, ",");
+            for (final String pair : key_values) {
+                final String[] pairs = StringUtils.split(pair, "=");
+                if (pairs.length == 2) {
+                    response.put(pairs[0], pairs[1]);
+                }
+            }
+            return response;
+        }
+        return new HashMap<>();
     }
 
     private static Collection toList(final JSONArray array) {
@@ -134,5 +165,12 @@ public abstract class MapConverter {
         return response;
     }
 
+    private static Collection toList(final String text) {
+        final Collection response = new LinkedList();
+        if (StringUtils.isJSONArray(text)) {
+            return toList(new JSONArray(text));
+        }
+        return response;
+    }
 
 }

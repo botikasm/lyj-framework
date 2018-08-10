@@ -1,16 +1,15 @@
 package org.ly.ose.commons.model.messaging.payloads;
 
-import org.json.JSONArray;
+import org.json.JSONObject;
 import org.ly.ose.commons.IConstants;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.converters.MapConverter;
 import org.lyj.commons.util.json.JsonWrapper;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-public class OSEPayloadProgram
+public class OSEPayloadDatabase
         extends OSEPayload {
 
     // ------------------------------------------------------------------------
@@ -20,10 +19,10 @@ public class OSEPayloadProgram
     private static final String FLD_APP_TOKEN = "app_token"; // security token
     private static final String FLD_CLIENT_ID = "client_id"; // optional (override request client id)
 
-    private static final String FLD_NAMESPACE = "namespace"; // "system.utils"
-    private static final String FLD_FUNCTION = "function"; // format.date
-    private static final String FLD_PARAMS = "params"; // [1500998882992, it]
-    private static final String FLD_SESSION_TIMEOUT = "session_timeout";
+    private static final String FLD_DATABASE = "database"; // "my_data", "ai_nlp_ventis"
+    private static final String FLD_COLLECTION = "collection"; // "users"
+    private static final String FLD_QUERY = "query"; // "FOR u IN users LET friends = u.friends FILTER u.name == @name RETURN { "name" : u.name, "friends" : friends }"
+    private static final String FLD_PARAMS = "params"; // { "name" : "Mario" }
 
 
     // ------------------------------------------------------------------------
@@ -35,12 +34,12 @@ public class OSEPayloadProgram
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public OSEPayloadProgram() {
+    public OSEPayloadDatabase() {
         super();
         this.init();
     }
 
-    public OSEPayloadProgram(final Object item) {
+    public OSEPayloadDatabase(final Object item) {
         super(item);
         this.init();
     }
@@ -53,7 +52,7 @@ public class OSEPayloadProgram
         return super.map().getString(FLD_APP_TOKEN);
     }
 
-    public OSEPayloadProgram appToken(final String value) {
+    public OSEPayloadDatabase appToken(final String value) {
         super.map().put(FLD_APP_TOKEN, value);
         return this;
     }
@@ -62,43 +61,44 @@ public class OSEPayloadProgram
         return super.map().getString(FLD_CLIENT_ID);
     }
 
-    public OSEPayloadProgram clientId(final String value) {
+    public OSEPayloadDatabase clientId(final String value) {
         super.map().put(FLD_CLIENT_ID, value);
         return this;
     }
 
-    public String namespace() {
-        return super.map().getString(FLD_NAMESPACE);
+    public String database() {
+        return super.map().getString(FLD_DATABASE);
     }
 
-    public OSEPayloadProgram namespace(final String value) {
-        super.map().put(FLD_NAMESPACE, value);
+    public OSEPayloadDatabase database(final String value) {
+        super.map().put(FLD_DATABASE, value);
         return this;
     }
 
-    public String function() {
-        return super.map().getString(FLD_FUNCTION);
+    public String collection() {
+        return super.map().getString(FLD_COLLECTION);
     }
 
-    public OSEPayloadProgram function(final String value) {
-        super.map().put(FLD_FUNCTION, value);
+    public OSEPayloadDatabase collection(final String value) {
+        super.map().put(FLD_COLLECTION, value);
         return this;
     }
 
-    public long sessionTimeout() {
-        return super.map().getLong(FLD_SESSION_TIMEOUT);
+    public String query() {
+        return super.map().getString(FLD_QUERY);
     }
 
-    public OSEPayloadProgram sessionTimeout(final long value) {
-        super.map().put(FLD_SESSION_TIMEOUT, value);
+    public OSEPayloadDatabase query(final String value) {
+        super.map().put(FLD_QUERY, value);
         return this;
     }
 
-    public List<Object> params() {
+
+    public Map<String, Object> params() {
         if (null == super.map().get(FLD_PARAMS)) {
-            super.map().put(FLD_PARAMS, new LinkedList<>());
+            super.map().put(FLD_PARAMS, new HashMap<>());
         }
-        return (List<Object>) super.map().get(FLD_PARAMS);
+        return (Map<String, Object>) super.map().get(FLD_PARAMS);
     }
 
     // ------------------------------------------------------------------------
@@ -110,19 +110,17 @@ public class OSEPayloadProgram
     // ------------------------------------------------------------------------
 
     private void init() {
-        this.sessionTimeout(-1); // not setted (use default system timeout)
         if (!super.map().has(FLD_PARAMS)) {
-            super.map().put(FLD_PARAMS, new LinkedList<>());
+            super.map().put(FLD_PARAMS, new HashMap<>());
         } else {
             final Object params = super.map().get(FLD_PARAMS);
-            if (!(params instanceof Collection)) {
+            if (!(params instanceof Map)) {
 
-                if (StringUtils.isJSONArray(params)) {
-                    final JSONArray array = new JSONArray(params);
-                    super.map().put(FLD_PARAMS, JsonWrapper.toListOfString(array));
-                } else if (params instanceof String && !IConstants.STR_NULL.equalsIgnoreCase((String)params)) {
-                    final String[] array = StringUtils.split((String) params, ",;", true);
-                    super.map().put(FLD_PARAMS, Arrays.asList(array));
+                if (StringUtils.isJSONObject(params)) {
+                    final JSONObject item = new JSONObject(params);
+                    super.map().put(FLD_PARAMS, JsonWrapper.toMap(item));
+                } else if (params instanceof String && !IConstants.STR_NULL.equalsIgnoreCase((String) params)) {
+                    super.map().put(FLD_PARAMS, MapConverter.toMap(params));
                 }
 
             }

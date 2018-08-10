@@ -26,9 +26,6 @@ public class Tool_nlp
 
     public static final String NAME = "nlp"; // used as $nlp.
 
-    private static final String FLD_KEYWORDS = "keywords";
-    private static final String FLD_VALUE = "value";
-
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
@@ -110,6 +107,15 @@ public class Tool_nlp
         return this.getEntities(lang, text, keys_intent, null);
     }
 
+    /**
+     * Returns a map of identified entities.
+     *
+     * @param lang          Language of request
+     * @param text          Message to analyze
+     * @param keys_entities Entity Rules
+     * @param callback      Optional callback used from CustomExpressions
+     * @return Map of entities
+     */
     public Map getEntities(final String lang,
                            final String text,
                            final Object keys_entities,

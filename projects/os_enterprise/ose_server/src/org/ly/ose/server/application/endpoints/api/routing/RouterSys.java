@@ -1,6 +1,7 @@
 package org.ly.ose.server.application.endpoints.api.routing;
 
 
+import org.ly.ose.server.application.endpoints.api.routing.impl.ApiDatabase;
 import org.ly.ose.server.application.endpoints.api.routing.impl.ApiProgram;
 import org.ly.ose.server.application.endpoints.api.routing.impl.ApiUtil;
 import org.ly.ose.server.deploy.config.ConfigHelper;
@@ -25,6 +26,7 @@ public class RouterSys
 
     private static final String PATH_API_UTIL = PATH_API.concat("/util");
     private static final String PATH_API_PROGRAM = PATH_API.concat("/program");
+    private static final String PATH_API_DATABASE = PATH_API.concat("/database");
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -63,6 +65,10 @@ public class RouterSys
         super.post(PATH_API_PROGRAM.concat("/invoke")).handler(ApiProgram::invoke);
         // https://localhost:4000/api/program/invoke/iuhdiu87w23ruh897dfyc2w3r/it/session_12234/system.utils/count/null
         super.get(PATH_API_PROGRAM.concat("/invoke/:app_token/:lang/:client_id/:namespace/:function/:params")).handler(ApiProgram::invoke);
+
+        //-- database --//
+        super.post(PATH_API_DATABASE.concat("/invoke")).handler(ApiDatabase::invoke);
+        super.get(PATH_API_DATABASE.concat("/invoke/:app_token/:lang/:client_id/:database/:collection/:query/:params")).handler(ApiDatabase::invoke);
     }
 
     // ------------------------------------------------------------------------

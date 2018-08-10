@@ -113,6 +113,10 @@ public class OSEProgramInfo
         return _custom_data;
     }
 
+    public String fullName(){
+        return this.namespace() + "_" + this.name();
+    }
+
     public String namespace() {
         return _namespace;
     }

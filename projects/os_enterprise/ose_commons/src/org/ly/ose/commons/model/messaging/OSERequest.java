@@ -22,7 +22,7 @@ public class OSERequest
     // ------------------------------------------------------------------------
 
     public static final String TYPE_PROGRAM = IConstants.TYPE_PROGRAM; // request a program to execute (run custom program on server)
-    public static final String TYPE_SERVICE = IConstants.TYPE_SERVICE; // request a service to execute (usually access to database)
+    public static final String TYPE_DATABASE = IConstants.TYPE_DATABASE; // request a service to execute (usually access to database)
     public static final String TYPE_ERROR = IConstants.TYPE_ERROR;
 
     private static final String FLD_UID = "uid"; // unique client ID
@@ -131,5 +131,19 @@ public class OSERequest
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    public static OSEResponse generateResponse(final OSERequest request){
+        final OSEResponse response = new OSEResponse();
+        response.clientId(request.clientId());
+        response.lang(request.lang());
+        response.type(request.type());
+
+        return response;
+    }
 
 }
+
+

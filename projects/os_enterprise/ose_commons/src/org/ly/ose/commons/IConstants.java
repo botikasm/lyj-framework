@@ -20,7 +20,7 @@ public interface IConstants {
     String APP_TOKEN = "io8dcfvjkkleaqwhjtuyqwuyeio";
 
     String TYPE_PROGRAM = "program";
-    String TYPE_SERVICE = "service";
+    String TYPE_DATABASE = "database";
     String TYPE_ERROR = "error";
 
     String GENDER_MALE = "m";
