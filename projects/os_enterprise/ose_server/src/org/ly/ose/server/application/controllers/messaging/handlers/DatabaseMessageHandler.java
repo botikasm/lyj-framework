@@ -22,6 +22,10 @@ public class DatabaseMessageHandler
 
     private final static String MACRO_PREFIX = "#";
 
+    private final static String MACRO_UPSERT = "upsert";
+    private final static String MACRO_FIND_ONE = "findOne";
+    private final static String MACRO_FIND_ALL = "findAll";
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -64,13 +68,21 @@ public class DatabaseMessageHandler
                             final String query,
                             final Map<String, ?> params_or_entity) {
         if (!query.startsWith(MACRO_PREFIX)) {
+            // direct command
             final Collection<PersistentModel> response = collection.find(query, params_or_entity);
             return JsonConverter.toArray(response);
         } else {
             final String macro_name = query.substring(1);
-            if(macro_name.equalsIgnoreCase("upsert")){
+
+            // macro parser
+            if(macro_name.equalsIgnoreCase(MACRO_UPSERT)){
                 return JsonConverter.toArray(collection.upsert(params_or_entity));
+            } else if (macro_name.equalsIgnoreCase(MACRO_FIND_ALL)){
+                return JsonConverter.toArray(collection.findEqual(params_or_entity));
+            } else if (macro_name.equalsIgnoreCase(MACRO_FIND_ONE)){
+
             }
+
             return null;
         }
     }

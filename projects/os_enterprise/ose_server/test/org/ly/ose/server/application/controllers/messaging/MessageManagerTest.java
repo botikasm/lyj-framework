@@ -1,23 +1,25 @@
 package org.ly.ose.server.application.controllers.messaging;
 
+import org.json.JSONArray;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.commons.model.messaging.OSEResponse;
 import org.ly.ose.commons.model.messaging.payloads.OSEPayloadDatabase;
-import org.ly.ose.commons.model.messaging.payloads.OSEPayloadProgram;
 import org.ly.ose.server.IConstants;
-import org.ly.ose.server.Launcher;
 import org.ly.ose.server.TestInitializer;
-import org.ly.ose.server.application.endpoints.api.ApiHelper;
 import org.ly.ose.server.application.importer.PackageImporter;
 import org.ly.ose.server.application.programming.deploy_test.ProgramsTestDeployer;
 import org.lyj.Lyj;
+import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
 
-import static org.junit.Assert.*;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.Assert.assertNotNull;
 
 public class MessageManagerTest {
 
@@ -38,32 +40,39 @@ public class MessageManagerTest {
     @Test
     public void mainTest() throws Exception {
 
-        OSEResponse response = this.testDatabase();
-        assertNotNull(response);
+        List<OSEResponse> responses = this.testDatabase();
+        assertNotNull(responses);
         System.out.println("DATABASE:");
-        System.out.println(response);
+        System.out.println(responses);
 
+        for (final OSEResponse response:responses) {
+            final JSONArray payload = response.payload();
+            System.out.println("\t------");
+            CollectionUtils.forEach(payload, (item)->{
+                System.out.println("\t\t" + item);
+            });
+        }
     }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private OSEResponse testDatabase(){
+    private List<OSEResponse> testDatabase() {
+        final List<OSEResponse> result = new LinkedList<>();
+
+        List<OSEResponse> upsert = this.insertUsers();
+        result.addAll(upsert);
+
+        result.addAll(this.findUsers());
+
+        return result;
+    }
+
+    private List<OSEResponse> insertUsers() {
+        final List<OSEResponse> result = new LinkedList<>();
+
         final OSERequest request = new OSERequest();
-        final OSEPayloadDatabase payload = new OSEPayloadDatabase();
-
-        payload.appToken(IConstants.APP_TOKEN_CLIENT_API);
-        payload.database("test");
-        payload.collection("users");
-        payload.query("#upsert");
-        payload.params().put("_key", "1234");
-        payload.params().put("name", "Mario");
-        payload.params().put("surname", "Rossi");
-
-        // add payload
-        request.payload().putAll(payload.map());
-
         // complete request
         request.source(IConstants.CHANNEL_API);
         if (!StringUtils.hasText(request.type())) {
@@ -75,11 +84,64 @@ public class MessageManagerTest {
         request.clientId(RandomUtils.randomUUID());
         request.address("");
 
+        final OSEPayloadDatabase payload = new OSEPayloadDatabase();
+
+        payload.appToken(IConstants.APP_TOKEN_CLIENT_API);
+        payload.database("test");
+        payload.collection("users");
+
+        // Mario
+        payload.query("#upsert");
+        payload.params().put("_key", "1234");
+        payload.params().put("name", "Mario");
+        payload.params().put("surname", "Rossi");
+        // add payload
+        request.payload().putAll(payload.map());
         // invoke handler
-        return MessageManager.instance().handle(request);
+        result.add(MessageManager.instance().handle(request));
+
+        // Sergio
+        payload.query("#upsert");
+        payload.params().put("_key", "1qaz");
+        payload.params().put("name", "Sergio");
+        payload.params().put("surname", "Rossi");
+        // add payload
+        request.payload().putAll(payload.map());
+        // invoke handler
+        result.add(MessageManager.instance().handle(request));
+
+        return result;
     }
 
 
+    private List<OSEResponse>  findUsers(){
+        final List<OSEResponse> result = new LinkedList<>();
 
+        final OSERequest request = new OSERequest();
+        // complete request
+        request.source(IConstants.CHANNEL_API);
+        if (!StringUtils.hasText(request.type())) {
+            request.type(IConstants.TYPE_DATABASE);
+        }
+        if (!StringUtils.hasText(request.lang())) {
+            request.lang("it");
+        }
+        request.clientId(RandomUtils.randomUUID());
+        request.address("");
 
+        final OSEPayloadDatabase payload = new OSEPayloadDatabase();
+
+        payload.appToken(IConstants.APP_TOKEN_CLIENT_API);
+        payload.database("test");
+        payload.collection("users");
+
+        payload.query("#findAll");
+        payload.params().put("surname", "Rossi");
+        // add payload
+        request.payload().putAll(payload.map());
+        // invoke handler
+        result.add(MessageManager.instance().handle(request));
+
+        return result;
+    }
 }
