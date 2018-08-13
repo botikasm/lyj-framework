@@ -16,8 +16,7 @@ import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.RandomUtils;
 import org.lyj.commons.util.StringUtils;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -135,8 +134,12 @@ public class MessageManagerTest {
         payload.database("test");
         payload.collection("users");
 
-        payload.query("#findAll");
-        payload.params().put("surname", "Rossi");
+        payload.query("#findEqualAsc");
+        final Map<String, Object> params = new HashMap<>();
+        params.put("surname", "Rossi");
+        payload.params().put("params", params);
+        payload.params().put("sort", Arrays.asList("name"));
+
         // add payload
         request.payload().putAll(payload.map());
         // invoke handler

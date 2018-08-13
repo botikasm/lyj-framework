@@ -1,5 +1,6 @@
 package org.ly.ose.server.application.persistence;
 
+import jdk.nashorn.api.scripting.JSObject;
 import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.ext.db.IDatabase;
@@ -357,6 +358,125 @@ public class DBHelper {
                 return _collection.countNotEqual(args);
             }
             return 0;
+        }
+
+        //--  f o r   e a c h  --//
+
+        public void forEach(final JSObject callback) {
+            if (null != _collection && null != callback) {
+                _collection.forEach((item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEach(final String query,
+                            final Object raw_args,
+                            final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                _collection.forEach(query, args, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEachAsc(final Object raw_sort,
+                               final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
+                _collection.forEachAsc(sort, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEachDesc(final Object raw_sort,
+                                final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
+                _collection.forEachDesc(sort, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEachEqual(final Object raw_args,
+                                 final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                _collection.forEachEqual(args, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEachEqualAsc(final Object raw_args,
+                                    final Object raw_sort,
+                                    final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
+                _collection.forEachEqualAsc(args, sort, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEachEqualDesc(final Object raw_args,
+                                     final Object raw_sort,
+                                     final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
+                _collection.forEachEqualDesc(args, sort, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEachNotEqual(final Object raw_args,
+                                    final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                _collection.forEachNotEqual(args, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEachNotEqualAsc(final Object raw_args,
+                                       final Object raw_sort,
+                                       final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
+                _collection.forEachNotEqualAsc(args, sort, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
+        }
+
+        public void forEachNotEqualDesc(final Object raw_args,
+                                        final Object raw_sort,
+                                        final JSObject callback) {
+            if (null != _collection && null != callback) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
+                _collection.forEachNotEqualDesc(args, sort, (item) -> {
+                    final Object callback_response = callback.call(null, item);
+                    return ConversionUtils.toBoolean(callback_response); // continue loop?
+                });
+            }
         }
 
     }
