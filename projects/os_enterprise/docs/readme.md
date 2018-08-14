@@ -1,4 +1,4 @@
-# Programming witn OSE
+# Programming witn OSE (OS-Enterprise)
 
 Programming with OSE is essentially:
 
