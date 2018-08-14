@@ -14,4 +14,6 @@ public interface IHttpConstants {
     public static final String METHOD_CONNECT = "CONNECT";
     public static final String METHOD_TRACE = "TRACE";
 
+    String HEADER_USER_AGENT = "User-Agent";
+
 }

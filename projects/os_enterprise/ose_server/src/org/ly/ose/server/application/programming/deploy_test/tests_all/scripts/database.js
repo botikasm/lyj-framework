@@ -93,6 +93,35 @@ module.exports = (function () {
         }
     };
 
+    instance.forEach = function () {
+        try {
+            var items = addItems(20);
+
+            var args = {
+                rnd:1
+            };
+
+            // log a parameter, just for testing pompous
+            console.log(FILE + '#forEach', "START");
+
+            var response = [];
+
+            $db.collection(COLLECTION).forEachEqual(args, function(item){
+
+                console.log(FILE + '#forEach', item);
+
+                response.push(item);
+
+                return false;// continue loop
+            });
+
+            return response;
+        } catch (err) {
+            console.error(FILE + '#forEach', err);
+            return err;
+        }
+    };
+
     // ------------------------------------------------------------------------
     //              p r i v a t e
     // ------------------------------------------------------------------------

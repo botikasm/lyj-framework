@@ -10,6 +10,7 @@ ly.new(function () {
     var _FUNCTIONS = require('/scripts/functions');
     var _DATABASE = require('/scripts/database');
     var _SESSION = require('/scripts/session');
+    var _HTTP = require('/scripts/http');
 
 
     var _OBJECT = require('/scripts/object.json');
@@ -63,6 +64,10 @@ ly.new(function () {
 
     this.session = function () {
         return _SESSION;
+    };
+
+    this.http = function () {
+        return _HTTP;
     };
 
     // ------------------------------------------------------------------------

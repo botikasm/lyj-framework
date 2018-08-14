@@ -1,20 +1,44 @@
 package org.lyj.commons.network.http.client;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lyj.Lyj;
+import org.lyj.TestInitializer;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.util.ClassLoaderUtils;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.SystemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by angelogeminiani on 12/01/16.
  */
 public class HttpClientTest {
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        TestInitializer.init();
+    }
+
+    @Test
+    public void testGet() throws Exception {
+
+        String url = "http://httpbin.org/get";
+        Task<String> task = this.get(url, null);
+        String response = task.get();
+        System.out.println(response);
+
+        url = "https://httpbin.org/get"; // https 
+        task = this.get(url, null);
+        response = task.get();
+        System.out.println(response);
+    }
 
     @Test
     public void testPost() throws Exception {
@@ -72,10 +96,27 @@ public class HttpClientTest {
             client.post(url, params.getJSONObject(), (err, result) -> {
                 if (null != err) {
                     t.fail(err);
-                    System.out.println(err);
+                    //System.out.println(err);
                 } else {
                     t.success(result);
-                    System.out.println(result);
+                    //System.out.println(result);
+                }
+            });
+
+        }).run();
+    }
+
+    private Task<String> get(final String url, final Map params) {
+        return new Task<String>(t -> {
+
+            HttpClient client = new HttpClient();
+            client.get(url, params, (err, result) -> {
+                if (null != err) {
+                    t.fail(err);
+                    //System.out.println(err);
+                } else {
+                    t.success(result);
+                    //System.out.println(result);
                 }
             });
 

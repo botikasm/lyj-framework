@@ -66,6 +66,9 @@ public class ProgramsManagerTest {
         //-- resource --//
         this.test_resource(program);
 
+        //-- http --//
+        this.test_http(program);
+
         program.close();
     }
 
@@ -111,7 +114,14 @@ public class ProgramsManagerTest {
         method = "findEqualAsc";
         response = database.callMember(method);
         assertNotNull(response);
-        list = (Collection) response;
+        list = Converter.toList(response);
+        System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
+
+        // findEqual
+        method = "forEach";
+        response = database.callMember(method);
+        assertNotNull(response);
+        list = Converter.toList(response);
         System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
     }
 
@@ -159,7 +169,7 @@ public class ProgramsManagerTest {
         Object response = program.callMember(method);
         assertNotNull(response);
         System.out.println(method + ": " + Converter.toJsonCompatible(response));
-        
+
 
     }
 
@@ -172,4 +182,21 @@ public class ProgramsManagerTest {
 
 
     }
+
+    private void test_http(final OSEProgram program) throws Exception {
+        ScriptObjectMirror http = (ScriptObjectMirror) program.callMember("http");
+
+        // get
+        String method = "get";
+        Object response = http.callMember(method);
+        assertNotNull(response);
+        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+
+        // post
+        method = "post";
+        response = http.callMember(method);
+        assertNotNull(response);
+        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+    }
+
 }

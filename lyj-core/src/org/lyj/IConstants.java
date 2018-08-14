@@ -22,6 +22,8 @@ package org.lyj;
 
 public interface IConstants {
 
+    String VERSION = "1.0.1";
+
     public static final String SYSPROP_HOME = "lyj.home";
     public static final String SYSPROP_CHARSET = "lyj.charset";
     public static final String SYSPROP_USE_PROXIES = "lyj.useSystemProxies";

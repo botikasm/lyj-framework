@@ -36,7 +36,7 @@ public class Tool_rnd
     public Tool_rnd(final OSEProgram program) {
         super(NAME, program);
 
-        _package_name = super.info().namespace() + "_" + super.info().name();
+        _package_name = super.info().fullName();
     }
 
     // ------------------------------------------------------------------------

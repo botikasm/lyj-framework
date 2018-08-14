@@ -198,15 +198,15 @@ public class HttpClient {
     private void doGet(final String surl, final Map<String, Object> params,
                         final Delegates.SingleResultCallback<HttpBuffer> callback) {
         try {
-            HttpRequest request = new HttpRequest(GET, surl)
+            final String body = StringUtils.toQueryString(params, _char_encoding, true);
+            final String url = StringUtils.hasLength(body)?surl.concat("?").concat(body):surl;
+
+            HttpRequest request = new HttpRequest(GET, url)
                     .setEncoding(_char_encoding)
                     .setChunkBody(_do_chunk_body)
                     .setChunkSize(_chunk_size)
                     .setConnectionTimeout(_connection_timeout)
                     .setIdleTimeout(_idle_timeout);
-
-            final String body = StringUtils.toQueryString(params, _char_encoding, true);
-
 
             request.errorHandler((err) -> {
                 Delegates.invoke(callback, err, null);
@@ -217,6 +217,7 @@ public class HttpClient {
             });
 
             request.write(body).end();
+            
         } catch(Throwable t) {
             Delegates.invoke(callback, t, null);
         }

@@ -8,6 +8,7 @@ import org.ly.ose.server.application.programming.tools.ai.Tool_nlp;
 import org.ly.ose.server.application.programming.tools.i18n.Tool_i18n;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_session;
+import org.ly.ose.server.application.programming.tools.remote.Tool_http;
 import org.ly.ose.server.application.programming.tools.request.Tool_request;
 import org.ly.ose.server.application.programming.tools.utils.Tool_resource;
 import org.ly.ose.server.application.programming.tools.utils.Tool_rnd;
@@ -250,6 +251,7 @@ public class OSEProgram {
         _program.context().put(ensureScriptPrefix(Tool_rnd.NAME), new Tool_rnd(this));
         _program.context().put(ensureScriptPrefix(Tool_session.NAME), new Tool_session(this));
         _program.context().put(ensureScriptPrefix(Tool_resource.NAME), new Tool_resource(this));
+        _program.context().put(ensureScriptPrefix(Tool_http.NAME), new Tool_http(this));
 
         // request tools
         _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this)); // all request

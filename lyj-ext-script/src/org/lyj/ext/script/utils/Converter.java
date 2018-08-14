@@ -6,12 +6,14 @@ import org.json.JSONObject;
 import org.lyj.commons.lang.Base64;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.converters.JsonConverter;
+import org.lyj.commons.util.converters.MapConverter;
 import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.ext.script.program.engines.javascript.utils.JavascriptConverter;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  *
@@ -131,7 +133,10 @@ public class Converter {
     }
 
     public static JSONObject toJsonObject(final Object value) {
-        return toJsonItem(value).json();
+        if (null != value) {
+            return toJsonItem(value).json();
+        }
+        return new JSONObject();
     }
 
     public static JsonItem toJsonItem(final Object value) {
@@ -185,6 +190,18 @@ public class Converter {
 
         }
         return new String[0];
+    }
+
+    // ------------------------------------------------------------------------
+    //                      Map Objects
+    // ------------------------------------------------------------------------
+
+    public static Map<String, Object> toMap(final Object item) {
+        return MapConverter.toMap(Converter.toJsonObject(item));
+    }
+
+    public static Collection toList(final Object item) {
+        return MapConverter.toList(Converter.toJsonArray(item));
     }
 
 }

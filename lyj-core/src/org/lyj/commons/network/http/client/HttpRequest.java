@@ -1,7 +1,9 @@
 package org.lyj.commons.network.http.client;
 
+import org.lyj.IConstants;
 import org.lyj.commons.Delegates;
 import org.lyj.commons.lang.CharEncoding;
+import org.lyj.commons.network.http.IHttpConstants;
 import org.lyj.commons.network.http.client.exceptions.BadStateException;
 import org.lyj.commons.network.http.client.exceptions.ConnectionException;
 import org.lyj.commons.network.http.client.exceptions.UnsupportedMethodException;
@@ -9,9 +11,13 @@ import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.MimeTypeUtils;
 import org.lyj.commons.util.StringUtils;
 
+import javax.net.ssl.*;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +39,7 @@ public class HttpRequest {
     public static final String HEADER_CONTENT_LENGTH = "Content-Length";
     public static final String HEADER_CHARSET = "charset";
     public static final String HEADER_CONTENT_TYPE = "Content-Type";
+    public static final String HEADER_USER_AGENT = IHttpConstants.HEADER_USER_AGENT;
     public static final String HEADER_CONTENT_TYPE_FORM = MimeTypeUtils.MIME_FORM;
     public static final String HEADER_CONTENT_TYPE_JSON = MimeTypeUtils.MIME_JSON;
 
@@ -80,6 +87,7 @@ public class HttpRequest {
         _headers = new HashMap<>();
         _buffer = new HttpBuffer();
 
+        this.initHeaders(_headers);
     }
 
     @Override
@@ -218,9 +226,19 @@ public class HttpRequest {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void init() throws IOException, UnsupportedMethodException {
+    private void initHeaders(final Map<String, String> headers) {
+        if(!headers.containsKey(HEADER_CHARSET)){
+            headers.put(HEADER_CHARSET, CharEncoding.UTF_8);
+        }
+        if(!headers.containsKey(HEADER_USER_AGENT)){
+            headers.put(HEADER_USER_AGENT, "lyj/v=" + IConstants.VERSION);
+        }
+    }
+
+    private void init() throws Exception {
         if (isSupportedMethod(_method)) {
             final URL url = new URL(_url);
+
             _connection = (HttpURLConnection) url.openConnection();
             _connection.setConnectTimeout(_connection_timeout);
             _connection.setReadTimeout(_idle_timeout);
@@ -229,10 +247,38 @@ public class HttpRequest {
             _connection.setDoInput(true);
             _connection.setDoOutput(!_method.equals(GET)); // no output for get
 
+            if (_connection instanceof HttpsURLConnection) {
+                HttpsURLConnection tls = (HttpsURLConnection) _connection;
+                // SSL CONNECTION
+                SSLSocketFactory sslSocketFactory = getFactorySimple();
+                tls.setSSLSocketFactory(sslSocketFactory);
+            }
+
         } else {
             // method not supported
             throw new UnsupportedMethodException(_method);
         }
+    }
+
+    private static TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+        @Override
+        public void checkClientTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] x509Certificates, String s) throws CertificateException {
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            return new X509Certificate[0];
+        }
+    }};
+
+    private static SSLSocketFactory getFactorySimple() throws Exception {
+        final SSLContext context = SSLContext.getInstance("TLS");
+        context.init(null, trustAllCerts, new SecureRandom());
+        return context.getSocketFactory();
     }
 
     private void handleError(final Throwable t) {
