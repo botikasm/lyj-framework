@@ -55,3 +55,18 @@ OSE error responses write error message into "error" field.
 With errors, also *type* field is changed and assigned to "error".
 
 Errors may occurr because you asked for an endpoint that no longer exists or due an internal error.
+
+## Client Side and Server Side programming.
+OSE allow you to store data on a remote database with no server side programming.
+You can save, retrieve, remove or edit data without write a single line of code.
+
+However sometime you need write some code to run on server side.
+For example when you need to loop on milion records or to run server side scheduled tasks.
+
+OSE allow you to write Server SIde code or just simply work on Client Side.
+
+### Client Side programming
+Documentation: [HERE](./client_side.md)
+
+### Server Side programming
+Documentation: [HERE](./server_side.md)
