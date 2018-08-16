@@ -18,4 +18,4 @@ Features:
 - Blockchain connections (with ChainOS project)
 
 
-
+Documentation: [HERE](./docs/readme.md).
