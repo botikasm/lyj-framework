@@ -2,19 +2,25 @@
 
 lyj is a Java 8 library created to build both client side and server side applications.
 
-### Why lyj
+## Why lyj
 
 * Quick summary
 * Version
 * [Support](https://plus.google.com/u/0/+GianAngeloGeminiani)
 
-#### Quick Summary
+### Quick Summary
 lyj is a light-weight java library (lyj-core) with some extensions and modules (projects).
 
-Most important project is [DesktopGap](https://bitbucket.org/angelogeminiani/lyj/src/827bc77cf709fbfa3e0ac62d96ec57768f8c5551/projects/desktopgap/?at=master), that allow java developers to write awesome applications with an HTML gui.
+### OS-Enterprise (OSE)
+OSE is a "Serverless" Application Server.
+You can find [more about OSE here](./projects/os_enterprise/readme.md).
+
+#### Desktop Gap
+[DesktopGap](https://bitbucket.org/angelogeminiani/lyj/src/827bc77cf709fbfa3e0ac62d96ec57768f8c5551/projects/desktopgap/?at=master) allows java developers to write awesome applications with an HTML gui.
 
 lyj-ext-netty is a very light-weight web server (complete of routing) integrated in DesktopGap.
 
+#### Automator
 Another interesting project is [Automator](https://bitbucket.org/angelogeminiani/lyj/src/827bc77cf709fbfa3e0ac62d96ec57768f8c5551/projects/automator/?at=master), a modular application built to create web server stress tools.
 
 For example, this simple script (json syntax) in Automator produce a web request in 3 threads every seconds and repeats 2 times, writing output in standard console.
