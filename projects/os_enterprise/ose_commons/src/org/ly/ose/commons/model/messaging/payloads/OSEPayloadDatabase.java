@@ -116,13 +116,15 @@ public class OSEPayloadDatabase
             final Object params = super.map().get(FLD_PARAMS);
             if (!(params instanceof Map)) {
 
-                if (StringUtils.isJSONObject(params)) {
-                    final JSONObject item = new JSONObject(params);
-                    super.map().put(FLD_PARAMS, JsonWrapper.toMap(item));
-                } else if (params instanceof String && !IConstants.STR_NULL.equalsIgnoreCase((String) params)) {
-                    super.map().put(FLD_PARAMS, MapConverter.toMap(params));
+                if (params instanceof String) {
+                    final String s_params = (String) params;
+                    if (StringUtils.isJSONObject(s_params)) {
+                        final JSONObject item = new JSONObject(s_params);
+                        super.map().put(FLD_PARAMS, JsonWrapper.toMap(item));
+                    } else if (!IConstants.STR_NULL.equalsIgnoreCase(s_params)) {
+                        super.map().put(FLD_PARAMS, MapConverter.toMap(s_params));
+                    }
                 }
-
             }
         }
     }

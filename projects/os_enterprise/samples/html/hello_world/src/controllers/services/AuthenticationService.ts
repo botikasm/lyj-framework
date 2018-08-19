@@ -1,13 +1,25 @@
-import AbstractService, {ServiceCallback} from "./AbstractService";
+import {ServiceCallback} from "./AbstractService";
 import lang from "../../../vendor/lyts_core/commons/lang";
+import AbstractDatabaseService from "./AbstractDatabaseService";
+import i18n from "../../../vendor/lyts_core/view/i18n";
+import ModelAccount from "../../model/ModelAccount";
+import ly from "../../../vendor/lyts_core/ly";
 
-const PATH: string = '/api/account/';
+// ------------------------------------------------------------------------
+//                      c o n s t
+// ------------------------------------------------------------------------
+
+const COLLECTION: string = 'accounts';
+
+// ------------------------------------------------------------------------
+//                      c l a s s
+// ------------------------------------------------------------------------
 
 /**
  * SAMPLE AUTHENTICATION SERVICE
  */
 export default class AuthenticationService
-    extends AbstractService {
+    extends AbstractDatabaseService {
 
 
     // ------------------------------------------------------------------------
@@ -19,19 +31,49 @@ export default class AuthenticationService
     // ------------------------------------------------------------------------
 
     constructor(host: string, app_token: string) {
-        super(host, app_token);
+        super(host, app_token, COLLECTION);
+
+        this.init();
     }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public get_account(key: string, callback: ServiceCallback): void {
-        let data = {
-            'app_token': this.app_token,
-            'key': key
+    public register(email: string,
+                    password: string,
+                    callback: ServiceCallback): void {
+
+        // new account model
+        const account: ModelAccount = {
+            _key: ly.random.guid(),
+            username: email,
+            password: password,
+            lang: i18n.lang,
+            email: email,
+            address: '',
+            first_name: '',
+            last_name: '',
+            phone: '',
+            is_enabled: true
         };
-        super.post(PATH + "get_account", data).then((req_resp) => {
+
+        // build request
+        const request_data = this.request;
+        request_data.query = '#upsert';
+        request_data.params = JSON.stringify(account);
+
+        super.post(request_data).then((req_resp) => {
+            super.invoke(callback, req_resp);
+        }).catch((req_resp) => {
+            super.invoke(callback, req_resp);
+        });
+    }
+
+    public get_account(key: string, callback: ServiceCallback): void {
+        let data = this.request;
+
+        super.post(data).then((req_resp) => {
             super.invoke(callback, req_resp);
         }).catch((req_resp) => {
             super.invoke(callback, req_resp);
@@ -44,32 +86,20 @@ export default class AuthenticationService
             'email': email,
             'password': password
         };
-        super.post(PATH + "login", data).then((req_resp) => {
+        super.post(data).then((req_resp) => {
             super.invoke(callback, req_resp);
         }).catch((req_resp) => {
             super.invoke(callback, req_resp);
         });
     }
 
-    public register(email: string, password: string, callback: ServiceCallback): void {
-        let data = {
-            'app_token': this.app_token,
-            'email': email,
-            'password': password
-        };
-        super.post(PATH + "register", data).then((req_resp) => {
-            super.invoke(callback, req_resp);
-        }).catch((req_resp) => {
-            super.invoke(callback, req_resp);
-        });
-    }
 
     public reset_password(email: string, callback: ServiceCallback): void {
         let data = {
             'app_token': this.app_token,
             'email': email
         };
-        super.post(PATH + "reset_password", data).then((req_resp) => {
+        super.post(data).then((req_resp) => {
             super.invoke(callback, req_resp);
         }).catch((req_resp) => {
             super.invoke(callback, req_resp);
@@ -81,7 +111,7 @@ export default class AuthenticationService
             'app_token': this.app_token,
             'item': lang.isString(item) ? item : lang.toString(item)
         };
-        super.post(PATH + "upsert", data).then((req_resp) => {
+        super.post(data).then((req_resp) => {
             super.invoke(callback, req_resp);
         }).catch((req_resp) => {
             super.invoke(callback, req_resp);
@@ -93,6 +123,21 @@ export default class AuthenticationService
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    private init(): void {
+        // add keys
+        const request_data = this.request;
+        request_data.query = '#addIndex';
+        request_data.params = JSON.stringify({
+            'fields': ['username', 'password'],
+            'is_unique': true
+        });
+
+        super.post(request_data).then((req_resp) => {
+            //super.invoke(callback, req_resp);
+        }).catch((req_resp) => {
+            //super.invoke(callback, req_resp);
+        });
+    }
 
 }
 

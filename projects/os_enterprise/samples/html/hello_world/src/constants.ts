@@ -15,7 +15,7 @@ const constants = {
     host: IS_LOCALE ? HOST_LOCALE : HOST,
 
     // APP IDENTIFIER
-    APP_TOKEN: "botbuilder_dashboard_uyfgvdjqs6723",
+    APP_TOKEN: "iuhdiu87w23ruh897dfyc2w3r", // test token with limited access
 
     DEBOUNCE_TIME_MS: 1000,
     DELAY_TIME_MS: 400,

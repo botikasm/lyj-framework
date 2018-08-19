@@ -8,7 +8,7 @@ export default function view(uid: string, props?: any): string {
    
                 <nav>
                     <div class="nav-wrapper">
-                      <a href="#" class="brand-logo">USB TEST</a>
+                      <a href="#" class="brand-logo">This is Generic Screen</a>
                       <ul id="nav-mobile" class="right hide-on-med-and-down">
                       <!--
                         <li><a data-router="relative" href="auth/signin">Login</a></li>

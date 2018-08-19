@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 25);
+/******/ 	return __webpack_require__(__webpack_require__.s = 26);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -69,21 +69,21 @@
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_lang__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_format__ = __webpack_require__(26);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_strings__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_objects__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_format__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_strings__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_objects__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_random__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_browser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__view_installer__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__view_cookies__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__view_dom__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__view_i18n__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_browser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__view_installer__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__view_cookies__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__view_dom__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__view_i18n__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__commons_collections_Dictionary__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__commons_events_Events__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__commons_events_EventEmitter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__net_HttpClient__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__view_components_Component__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__application_Application__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__commons_events_Events__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__commons_events_EventEmitter__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__net_HttpClient__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__view_components_Component__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__application_Application__ = __webpack_require__(29);
 //-- static --//
 
 
@@ -662,7 +662,7 @@ var constants = {
     //-- host --//
     host: IS_LOCALE ? HOST_LOCALE : HOST,
     // APP IDENTIFIER
-    APP_TOKEN: "botbuilder_dashboard_uyfgvdjqs6723",
+    APP_TOKEN: "iuhdiu87w23ruh897dfyc2w3r",
     DEBOUNCE_TIME_MS: 1000,
     DELAY_TIME_MS: 400,
     //-- STANDARD COMPONENTS EVENTS --//
@@ -737,8 +737,167 @@ var random = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Events__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BaseObject__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_events_EventEmitter__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__browser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dom__ = __webpack_require__(10);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+/**
+ * Localization singleton controller.
+ * Add dictionary using i18n.register(lang, dictionary);
+ *
+ * WARN:
+ *  Do not listen directly at EVENT_CHANGE_LANG, but use Application events propagation.
+ *  Components automatically handle this event, so you do not need to do it by yourself.
+ *
+ */
+var i18n = /** @class */ (function (_super) {
+    __extends(i18n, _super);
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+    function i18n() {
+        var _this = _super.call(this) || this;
+        _this._dictionaries = new __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */]();
+        // get lang from browser
+        _this._browser_lang = __WEBPACK_IMPORTED_MODULE_2__browser__["a" /* default */].lang();
+        _this.register("", { key: "" });
+        return _this;
+    }
+    Object.defineProperty(i18n.prototype, "EVENT_CHANGE_LANG", {
+        // ------------------------------------------------------------------------
+        //                      p u b l i c
+        // ------------------------------------------------------------------------
+        get: function () {
+            return i18n._EVENT_CHANGE_LANG;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(i18n.prototype, "EVENT_LOCALIZED", {
+        get: function () {
+            return i18n._EVENT_LOCALIZED;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(i18n.prototype, "lang", {
+        get: function () {
+            return this._lang || this._browser_lang;
+        },
+        set: function (lang) {
+            this._changeLang(lang);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    i18n.prototype.register = function (lang, dictionary) {
+        var dic = (dictionary instanceof __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */]) ? dictionary : new __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */](dictionary);
+        this._dictionaries.put(lang, dic);
+    };
+    i18n.prototype.registerDefault = function (dictionary) {
+        var dic = (dictionary instanceof __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */]) ? dictionary : new __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */](dictionary);
+        this._dictionaries.put(i18n._DEF_LANG, dic);
+    };
+    i18n.prototype.get = function (label, def_val) {
+        if (this._dictionaries.containsKey(this._lang)) {
+            var dic = this._dictionaries.get(this._lang);
+            return dic.get(label) || def_val || '';
+        }
+        else if (this._dictionaries.containsKey(i18n._DEF_LANG)) {
+            var dic = this._dictionaries.get(i18n._DEF_LANG);
+            return dic.get(label) || def_val || '';
+        }
+        return def_val || '';
+    };
+    i18n.prototype.localize = function (elem) {
+        var _this = this;
+        this._localize(elem);
+        __WEBPACK_IMPORTED_MODULE_3__dom__["a" /* default */].forEachChild(elem, function (child) {
+            _this._localize(child);
+        }, true);
+        var trigger_event = !!this._lang && this._dictionaries.count() > 0;
+        if (trigger_event) {
+            _super.prototype.emit.call(this, i18n._EVENT_LOCALIZED, this._lang, this._dictionaries.get(this._lang));
+        }
+    };
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+    i18n.prototype._changeLang = function (value) {
+        var new_lang = !!value ? value.split('-')[0] : '';
+        if (!!new_lang) {
+            var lang_changed = (this._dictionaries.count() > 0) && (new_lang !== this._lang);
+            if (lang_changed) {
+                this._lang = new_lang;
+                _super.prototype.emit.call(this, i18n._EVENT_CHANGE_LANG, this._lang, this._dictionaries.get(this._lang));
+            }
+        }
+    };
+    i18n.prototype._localize = function (elem) {
+        if (!!elem && !!elem.hasAttribute) {
+            var data_i18n = elem.getAttribute(i18n._ATTR_DATA_I18N) || '';
+            if (!!data_i18n) {
+                var value = this.get(data_i18n);
+                if (!!value) {
+                    // console.log("i18n._localize", data_i18n, value);
+                    // ready to set i18n text or placeholder
+                    if (__WEBPACK_IMPORTED_MODULE_3__dom__["a" /* default */].isInput(elem)) {
+                        if (__WEBPACK_IMPORTED_MODULE_3__dom__["a" /* default */].isInputButton(elem)) {
+                            __WEBPACK_IMPORTED_MODULE_3__dom__["a" /* default */].setValue(elem, value);
+                        }
+                        else if (elem.hasAttribute("placeholder")) {
+                            elem.setAttribute("placeholder", value);
+                        }
+                    }
+                    else {
+                        elem.innerHTML = value;
+                    }
+                }
+            }
+        }
+    };
+    i18n.instance = function () {
+        if (null == i18n.__instance) {
+            i18n.__instance = new i18n();
+        }
+        return i18n.__instance;
+    };
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+    i18n._EVENT_CHANGE_LANG = "on_change_lang";
+    i18n._EVENT_LOCALIZED = "on_localized";
+    i18n._DEF_LANG = "base";
+    i18n._ATTR_DATA_I18N = "data-i18n";
+    return i18n;
+}(__WEBPACK_IMPORTED_MODULE_1__commons_events_EventEmitter__["a" /* default */]));
+// ------------------------------------------------------------------------
+//                      e x p o r t
+// ------------------------------------------------------------------------
+/* harmony default export */ __webpack_exports__["a"] = (i18n.instance());
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Events__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BaseObject__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__collections_Dictionary__ = __webpack_require__(3);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -834,7 +993,7 @@ var EventEmitter = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -904,7 +1063,7 @@ var strings = /** @class */ (function () {
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1035,14 +1194,14 @@ var browser = /** @class */ (function () {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export SelectorType */
 /* unused harmony export SelectorParser */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__browser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_strings__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__browser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_strings__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_lang__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ly__ = __webpack_require__(0);
 
@@ -1570,7 +1729,7 @@ var dom = domClass.instance();
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1740,17 +1899,17 @@ var Events = /** @class */ (function () {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_lang__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_collections_Dictionary__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__i18n__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__i18n__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__ = __webpack_require__(23);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2137,7 +2296,7 @@ var Component = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2146,7 +2305,7 @@ var Component = /** @class */ (function (_super) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EVENT_ON_ROUTE; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ly__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_collections_Dictionary__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_events_EventEmitter__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_events_EventEmitter__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_console__ = __webpack_require__(2);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -2525,30 +2684,12 @@ var Router = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 13 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/**
- * GLOBAL VARIABLES
- */
-var root = window;
-var globals = {
-    // expone window
-    root: root,
-    Materialize: root['Materialize'],
-    $: root['$'],
-};
-/* harmony default export */ __webpack_exports__["a"] = (globals);
-
-
-/***/ }),
 /* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_console__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(12);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2619,165 +2760,6 @@ var Page = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_events_EventEmitter__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__browser__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dom__ = __webpack_require__(9);
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-
-
-
-
-/**
- * Localization singleton controller.
- * Add dictionary using i18n.register(lang, dictionary);
- *
- * WARN:
- *  Do not listen directly at EVENT_CHANGE_LANG, but use Application events propagation.
- *  Components automatically handle this event, so you do not need to do it by yourself.
- *
- */
-var i18n = /** @class */ (function (_super) {
-    __extends(i18n, _super);
-    // ------------------------------------------------------------------------
-    //                      c o n s t r u c t o r
-    // ------------------------------------------------------------------------
-    function i18n() {
-        var _this = _super.call(this) || this;
-        _this._dictionaries = new __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */]();
-        // get lang from browser
-        _this._browser_lang = __WEBPACK_IMPORTED_MODULE_2__browser__["a" /* default */].lang();
-        _this.register("", { key: "" });
-        return _this;
-    }
-    Object.defineProperty(i18n.prototype, "EVENT_CHANGE_LANG", {
-        // ------------------------------------------------------------------------
-        //                      p u b l i c
-        // ------------------------------------------------------------------------
-        get: function () {
-            return i18n._EVENT_CHANGE_LANG;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(i18n.prototype, "EVENT_LOCALIZED", {
-        get: function () {
-            return i18n._EVENT_LOCALIZED;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(i18n.prototype, "lang", {
-        get: function () {
-            return this._lang || this._browser_lang;
-        },
-        set: function (lang) {
-            this._changeLang(lang);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    i18n.prototype.register = function (lang, dictionary) {
-        var dic = (dictionary instanceof __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */]) ? dictionary : new __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */](dictionary);
-        this._dictionaries.put(lang, dic);
-    };
-    i18n.prototype.registerDefault = function (dictionary) {
-        var dic = (dictionary instanceof __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */]) ? dictionary : new __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__["a" /* Dictionary */](dictionary);
-        this._dictionaries.put(i18n._DEF_LANG, dic);
-    };
-    i18n.prototype.get = function (label, def_val) {
-        if (this._dictionaries.containsKey(this._lang)) {
-            var dic = this._dictionaries.get(this._lang);
-            return dic.get(label) || def_val || '';
-        }
-        else if (this._dictionaries.containsKey(i18n._DEF_LANG)) {
-            var dic = this._dictionaries.get(i18n._DEF_LANG);
-            return dic.get(label) || def_val || '';
-        }
-        return def_val || '';
-    };
-    i18n.prototype.localize = function (elem) {
-        var _this = this;
-        this._localize(elem);
-        __WEBPACK_IMPORTED_MODULE_3__dom__["a" /* default */].forEachChild(elem, function (child) {
-            _this._localize(child);
-        }, true);
-        var trigger_event = !!this._lang && this._dictionaries.count() > 0;
-        if (trigger_event) {
-            _super.prototype.emit.call(this, i18n._EVENT_LOCALIZED, this._lang, this._dictionaries.get(this._lang));
-        }
-    };
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-    i18n.prototype._changeLang = function (value) {
-        var new_lang = !!value ? value.split('-')[0] : '';
-        if (!!new_lang) {
-            var lang_changed = (this._dictionaries.count() > 0) && (new_lang !== this._lang);
-            if (lang_changed) {
-                this._lang = new_lang;
-                _super.prototype.emit.call(this, i18n._EVENT_CHANGE_LANG, this._lang, this._dictionaries.get(this._lang));
-            }
-        }
-    };
-    i18n.prototype._localize = function (elem) {
-        if (!!elem && !!elem.hasAttribute) {
-            var data_i18n = elem.getAttribute(i18n._ATTR_DATA_I18N) || '';
-            if (!!data_i18n) {
-                var value = this.get(data_i18n);
-                if (!!value) {
-                    // console.log("i18n._localize", data_i18n, value);
-                    // ready to set i18n text or placeholder
-                    if (__WEBPACK_IMPORTED_MODULE_3__dom__["a" /* default */].isInput(elem)) {
-                        if (__WEBPACK_IMPORTED_MODULE_3__dom__["a" /* default */].isInputButton(elem)) {
-                            __WEBPACK_IMPORTED_MODULE_3__dom__["a" /* default */].setValue(elem, value);
-                        }
-                        else if (elem.hasAttribute("placeholder")) {
-                            elem.setAttribute("placeholder", value);
-                        }
-                    }
-                    else {
-                        elem.innerHTML = value;
-                    }
-                }
-            }
-        }
-    };
-    i18n.instance = function () {
-        if (null == i18n.__instance) {
-            i18n.__instance = new i18n();
-        }
-        return i18n.__instance;
-    };
-    // ------------------------------------------------------------------------
-    //                      c o n s t
-    // ------------------------------------------------------------------------
-    i18n._EVENT_CHANGE_LANG = "on_change_lang";
-    i18n._EVENT_LOCALIZED = "on_localized";
-    i18n._DEF_LANG = "base";
-    i18n._ATTR_DATA_I18N = "data-i18n";
-    return i18n;
-}(__WEBPACK_IMPORTED_MODULE_1__commons_events_EventEmitter__["a" /* default */]));
-// ------------------------------------------------------------------------
-//                      e x p o r t
-// ------------------------------------------------------------------------
-/* harmony default export */ __webpack_exports__["a"] = (i18n.instance());
-
-
-/***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__random__ = __webpack_require__(5);
 
 var BaseObject = /** @class */ (function () {
@@ -2810,15 +2792,15 @@ var BaseObject = /** @class */ (function () {
 
 
 /***/ }),
-/* 17 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Animate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return AnimateEffect; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StyleManager__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StyleManager__ = __webpack_require__(39);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lyts_core_commons_lang__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__animate_css__ = __webpack_require__(39);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__animate_css__ = __webpack_require__(40);
 
 
 
@@ -2983,11 +2965,29 @@ var Animate = AnimateClass.instance();
 
 
 /***/ }),
+/* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/**
+ * GLOBAL VARIABLES
+ */
+var root = window;
+var globals = {
+    // expone window
+    root: root,
+    Materialize: root['Materialize'],
+    $: root['$'],
+};
+/* harmony default export */ __webpack_exports__["a"] = (globals);
+
+
+/***/ }),
 /* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__globals__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__globals__ = __webpack_require__(17);
 
 /**
  * Main message controller.
@@ -3052,6 +3052,208 @@ var ToastController = /** @class */ (function () {
 
 /***/ }),
 /* 19 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ServiceController__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_errors__ = __webpack_require__(50);
+/**
+ * Authentication controller.
+ *
+ * Call authenticate() to login user or auto-login if cookies are stored.
+ * Each time the user is authenticated the system do:
+ *  - store user in memory (AuthController.user)
+ *  - set user language into i18n
+ *  - trigger ON_LOGIN event
+ *
+ *  Call exit() to logout.
+ *  If you need to clean cookies, user exit(true).
+ *
+ */
+
+
+
+
+
+
+var AuthController = /** @class */ (function () {
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+    function AuthController() {
+        // ------------------------------------------------------------------------
+        //                      f i e l d s
+        // ------------------------------------------------------------------------
+        this.COOKIE_USER_ID = 'user_id';
+        this.COOKIE_USERNAME = 'username';
+        this.COOKIE_USER_LANG = 'user_lang';
+    }
+    Object.defineProperty(AuthController.prototype, "user", {
+        // ------------------------------------------------------------------------
+        //                      p u b l i c
+        // ------------------------------------------------------------------------
+        /**
+         * Current authorized user
+         * @return User
+         */
+        get: function () {
+            return this._user;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AuthController.prototype, "user_id", {
+        get: function () {
+            return !!this._user ? this._user._key : __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].read(this.COOKIE_USER_ID);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AuthController.prototype, "username", {
+        get: function () {
+            return !!this._user ? this._user.username : __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].read(this.COOKIE_USERNAME);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(AuthController.prototype, "lang", {
+        get: function () {
+            return !!this._user ? this._user.lang : __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].read(this.COOKIE_USER_LANG) || __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].i18n.lang;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * Try to authenticate user.
+     * Each time this method find a valid accounts, trigger the ON_LOGIN event.
+     * Call this method without any parameter for autologin.
+     * @param {string} username  (Optional)
+     * @param {string} password (Optional)
+     * @param {ServiceCallback} callback Callback to handle response
+     */
+    AuthController.prototype.authenticate = function (username, password, callback) {
+        var _this = this;
+        if (!!username && !!password) {
+            this.services.account.login(username, password, function (error, response) {
+                if (!error) {
+                    // save cookies
+                    _this.store(response);
+                    // trigger global login event
+                    __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGIN, response);
+                }
+                if (!!callback) {
+                    __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, __WEBPACK_IMPORTED_MODULE_5__utils_errors__["a" /* default */].getMessage(error), response);
+                }
+            });
+        }
+        else if (!!this._user) {
+            // trigger global login event
+            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGIN, this._user);
+            if (!!callback) {
+                __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, null, this._user);
+            }
+        }
+        else if (!!this.user_id) {
+            this.services.account.get_account(this.user_id, function (error, response) {
+                if (!error) {
+                    // save cookies
+                    _this.store(response);
+                    // trigger global login event
+                    __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGIN, response);
+                }
+                if (!!callback) {
+                    __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, __WEBPACK_IMPORTED_MODULE_5__utils_errors__["a" /* default */].getMessage(error), response);
+                }
+            });
+        }
+        else {
+            if (!!callback) {
+                __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, "User Not Logged: Login Required!", null);
+            }
+        }
+    };
+    AuthController.prototype.register = function (username, password, callback) {
+        var _this = this;
+        if (!!callback && !!username && !!password) {
+            try {
+                this.services.account.register(username, password, function (error, response) {
+                    if (!error) {
+                        // save cookies
+                        _this.store(response);
+                        // trigger global login event
+                        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGIN, response);
+                    }
+                    __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, __WEBPACK_IMPORTED_MODULE_5__utils_errors__["a" /* default */].getMessage(error), response);
+                });
+            }
+            catch (err) {
+                __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, __WEBPACK_IMPORTED_MODULE_5__utils_errors__["a" /* default */].getMessage(err), null);
+            }
+        }
+    };
+    AuthController.prototype.setAuthUser = function (user) {
+        if (!!user) {
+            this.store(user);
+        }
+    };
+    /**
+     * Logout
+     * @param {boolean} clear_cache If true remove cookies and everything on this user in memory
+     */
+    AuthController.prototype.exit = function (clear_cache) {
+        if (clear_cache === void 0) { clear_cache = false; }
+        if (clear_cache) {
+            this.clearCookies();
+        }
+        this._user = null;
+        // trigger global login event
+        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGOUT);
+    };
+    Object.defineProperty(AuthController.prototype, "services", {
+        // ------------------------------------------------------------------------
+        //                      p r i v a t e
+        // ------------------------------------------------------------------------
+        get: function () {
+            return __WEBPACK_IMPORTED_MODULE_0__ServiceController__["a" /* default */].instance();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    AuthController.prototype.store = function (user) {
+        if (!!user && !!user._key) {
+            // save locally in memory
+            this._user = user;
+            // save cookies
+            __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].create(this.COOKIE_USER_ID, user._key, 20);
+            __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].create(this.COOKIE_USERNAME, user.username, 20);
+            __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].create(this.COOKIE_USER_LANG, user.lang, 20);
+            // set user lang into i18n controller
+            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].i18n.lang = user.lang;
+            // console.log('AuthController.store', this._user);
+        }
+    };
+    AuthController.prototype.clearCookies = function () {
+        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].erase(this.COOKIE_USER_ID);
+        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].erase(this.COOKIE_USERNAME);
+        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].erase(this.COOKIE_USER_LANG);
+    };
+    AuthController.instance = function () {
+        if (null == AuthController.__instance) {
+            AuthController.__instance = new AuthController();
+        }
+        return AuthController.__instance;
+    };
+    return AuthController;
+}());
+/* harmony default export */ __webpack_exports__["a"] = (AuthController);
+
+
+/***/ }),
+/* 20 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3136,11 +3338,11 @@ var objects = /** @class */ (function () {
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__browser__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__browser__ = __webpack_require__(9);
 
 /**
  * Cookies Helper class
@@ -3203,7 +3405,7 @@ var cookies = /** @class */ (function () {
 
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3320,12 +3522,12 @@ var HttpClient = /** @class */ (function () {
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_random__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__(10);
 
 
 /**
@@ -3659,13 +3861,13 @@ var ElementWrapper = /** @class */ (function () {
 
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_console__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_PageController__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_paths__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_PageController__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_paths__ = __webpack_require__(42);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -3756,219 +3958,69 @@ var Screen = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ServiceController__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__ = __webpack_require__(20);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_errors__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_AuthenticationService__ = __webpack_require__(46);
+
+
+var HOST = __WEBPACK_IMPORTED_MODULE_0__constants__["a" /* default */].host;
+var APP_TOKEN = __WEBPACK_IMPORTED_MODULE_0__constants__["a" /* default */].APP_TOKEN;
 /**
- * Authentication controller.
- *
- * Call authenticate() to login user or auto-login if cookies are stored.
- * Each time the user is authenticated the system do:
- *  - store user in memory (AuthController.user)
- *  - set user language into i18n
- *  - trigger ON_LOGIN event
- *
- *  Call exit() to logout.
- *  If you need to clean cookies, user exit(true).
- *
+ * Main services controller.
+ * Use this singleton to access all services.
  */
-
-
-
-
-
-
-var AuthController = /** @class */ (function () {
+var ServiceController = /** @class */ (function () {
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
-    function AuthController() {
-        // ------------------------------------------------------------------------
-        //                      f i e l d s
-        // ------------------------------------------------------------------------
-        this.COOKIE_USER_ID = 'user_id';
-        this.COOKIE_USERNAME = 'username';
-        this.COOKIE_USER_LANG = 'user_lang';
+    function ServiceController() {
+        this.registerServices();
     }
-    Object.defineProperty(AuthController.prototype, "user", {
+    Object.defineProperty(ServiceController.prototype, "account", {
         // ------------------------------------------------------------------------
-        //                      p u b l i c
-        // ------------------------------------------------------------------------
-        /**
-         * Current authorized user
-         * @return User
-         */
-        get: function () {
-            return this._user;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AuthController.prototype, "user_id", {
-        get: function () {
-            return !!this._user ? this._user._key : __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].read(this.COOKIE_USER_ID);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AuthController.prototype, "username", {
-        get: function () {
-            return !!this._user ? this._user.username : __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].read(this.COOKIE_USERNAME);
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(AuthController.prototype, "lang", {
-        get: function () {
-            return !!this._user ? this._user.lang : __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].read(this.COOKIE_USER_LANG) || __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].i18n.lang;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    /**
-     * Try to authenticate user.
-     * Each time this method find a valid accounts, trigger the ON_LOGIN event.
-     * Call this method without any parameter for autologin.
-     * @param {string} username  (Optional)
-     * @param {string} password (Optional)
-     * @param {ServiceCallback} callback Callback to handle response
-     */
-    AuthController.prototype.authenticate = function (username, password, callback) {
-        var _this = this;
-        if (!!username && !!password) {
-            this.services.account.login(username, password, function (error, response) {
-                if (!error) {
-                    // save cookies
-                    _this.store(response);
-                    // trigger global login event
-                    __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGIN, response);
-                }
-                if (!!callback) {
-                    __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, __WEBPACK_IMPORTED_MODULE_5__utils_errors__["a" /* default */].getMessage(error), response);
-                }
-            });
-        }
-        else if (!!this._user) {
-            // trigger global login event
-            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGIN, this._user);
-            if (!!callback) {
-                __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, null, this._user);
-            }
-        }
-        else if (!!this.user_id) {
-            this.services.account.get_account(this.user_id, function (error, response) {
-                if (!error) {
-                    // save cookies
-                    _this.store(response);
-                    // trigger global login event
-                    __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGIN, response);
-                }
-                if (!!callback) {
-                    __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, __WEBPACK_IMPORTED_MODULE_5__utils_errors__["a" /* default */].getMessage(error), response);
-                }
-            });
-        }
-        else {
-            if (!!callback) {
-                __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, "User Not Logged: Login Required!", null);
-            }
-        }
-    };
-    AuthController.prototype.register = function (username, password, callback) {
-        var _this = this;
-        if (!!callback && !!username && !!password) {
-            try {
-                this.services.account.register(username, password, function (error, response) {
-                    if (!error) {
-                        // save cookies
-                        _this.store(response);
-                        // trigger global login event
-                        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGIN, response);
-                    }
-                    __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, __WEBPACK_IMPORTED_MODULE_5__utils_errors__["a" /* default */].getMessage(error), response);
-                });
-            }
-            catch (err) {
-                __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].funcInvoke(callback, __WEBPACK_IMPORTED_MODULE_5__utils_errors__["a" /* default */].getMessage(err), null);
-            }
-        }
-    };
-    AuthController.prototype.setAuthUser = function (user) {
-        if (!!user) {
-            this.store(user);
-        }
-    };
-    /**
-     * Logout
-     * @param {boolean} clear_cache If true remove cookies and everything on this user in memory
-     */
-    AuthController.prototype.exit = function (clear_cache) {
-        if (clear_cache === void 0) { clear_cache = false; }
-        if (clear_cache) {
-            this.clearCookies();
-        }
-        this._user = null;
-        // trigger global login event
-        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].Application.events.emit(__WEBPACK_IMPORTED_MODULE_4__constants__["a" /* default */].EVENT_ON_LOGOUT);
-    };
-    Object.defineProperty(AuthController.prototype, "services", {
-        // ------------------------------------------------------------------------
-        //                      p r i v a t e
+        //                      p r o p e r t i e s
         // ------------------------------------------------------------------------
         get: function () {
-            return __WEBPACK_IMPORTED_MODULE_0__ServiceController__["a" /* default */].instance();
+            return this._srvc_account;
         },
         enumerable: true,
         configurable: true
     });
-    AuthController.prototype.store = function (user) {
-        if (!!user && !!user._key) {
-            // save locally in memory
-            this._user = user;
-            // save cookies
-            __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].create(this.COOKIE_USER_ID, user._key, 20);
-            __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].create(this.COOKIE_USERNAME, user.username, 20);
-            __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].create(this.COOKIE_USER_LANG, user.lang, 20);
-            // set user lang into i18n controller
-            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].i18n.lang = user.lang;
-            // console.log('AuthController.store', this._user);
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+    ServiceController.prototype.registerServices = function () {
+        this._srvc_account = new __WEBPACK_IMPORTED_MODULE_1__services_AuthenticationService__["a" /* default */](HOST, APP_TOKEN);
+    };
+    ServiceController.instance = function () {
+        if (null == ServiceController.__instance) {
+            ServiceController.__instance = new ServiceController();
         }
+        return ServiceController.__instance;
     };
-    AuthController.prototype.clearCookies = function () {
-        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].erase(this.COOKIE_USER_ID);
-        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].erase(this.COOKIE_USERNAME);
-        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__["a" /* default */].erase(this.COOKIE_USER_LANG);
-    };
-    AuthController.instance = function () {
-        if (null == AuthController.__instance) {
-            AuthController.__instance = new AuthController();
-        }
-        return AuthController.__instance;
-    };
-    return AuthController;
+    return ServiceController;
 }());
-/* harmony default export */ __webpack_exports__["a"] = (AuthController);
+/* harmony default export */ __webpack_exports__["a"] = (ServiceController);
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_ly__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_BaseObject__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_BaseObject__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_commons_console__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__views_Main__ = __webpack_require__(29);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__controllers_ApplicationController__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__views_Main__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__controllers_ApplicationController__ = __webpack_require__(63);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4063,13 +4115,13 @@ launcher.instance().start();
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lang__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__strings__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objects__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__strings__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objects__ = __webpack_require__(20);
 
 
 
@@ -4165,7 +4217,7 @@ var format = /** @class */ (function () {
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4294,15 +4346,15 @@ var installer = /** @class */ (function () {
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_collections_Dictionary__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_BaseObject__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_i18n__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_BaseObject__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_i18n__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__commons_lang__ = __webpack_require__(1);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -4472,20 +4524,20 @@ var Application = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_components_ElementWrapper__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_components_ElementWrapper__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_ScreenController__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_ScreenController__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__i18n_en__ = __webpack_require__(33);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__i18n_it__ = __webpack_require__(34);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__screens_auth_AuthScreen__ = __webpack_require__(35);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__screens_generic_GenericScreen__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__i18n_en__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__i18n_it__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__screens_auth_AuthScreen__ = __webpack_require__(36);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__screens_generic_GenericScreen__ = __webpack_require__(54);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4589,12 +4641,12 @@ var Main = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Router__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Router__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ly__ = __webpack_require__(0);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -4725,12 +4777,12 @@ var ScreenController = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = view;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(33);
 
 function view(uid, props) {
     props = props || {};
@@ -4739,7 +4791,7 @@ function view(uid, props) {
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4753,7 +4805,7 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 33 */
+/* 34 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4775,7 +4827,7 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 34 */
+/* 35 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4797,16 +4849,16 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_screen_Screen__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_signin_PageSignin__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_signup_PageSignup__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_screen_Screen__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_signin_PageSignin__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_signup_PageSignup__ = __webpack_require__(51);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4882,12 +4934,12 @@ var AuthScreen = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = view;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(37);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(38);
 
 function view(uid, props) {
     props = props || {};
@@ -4896,7 +4948,7 @@ function view(uid, props) {
 
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -4910,7 +4962,7 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5042,7 +5094,7 @@ var StyleManager = StyleManagerClass.instance();
 
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5058,12 +5110,12 @@ function animate_css(props) {
 
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Router__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Router__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ly__ = __webpack_require__(0);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -5184,7 +5236,7 @@ var PageController = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5209,19 +5261,19 @@ var paths = /** @class */ (function () {
 
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_view_Router__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_view_Router__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__constants__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__globals__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__view__ = __webpack_require__(43);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__globals__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__view__ = __webpack_require__(44);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__vendor_lyts_core_commons_console__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__vendor_lyts_core_view_pages_page_Page__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__controllers_ToastController__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__controllers_AuthController__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__controllers_AuthController__ = __webpack_require__(19);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5472,12 +5524,12 @@ var PageSignin = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = view;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(45);
 
 function view(uid, props) {
     props = props || {};
@@ -5486,7 +5538,7 @@ function view(uid, props) {
 
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5505,64 +5557,14 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 45 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_AuthenticationService__ = __webpack_require__(46);
-
-
-var HOST = __WEBPACK_IMPORTED_MODULE_0__constants__["a" /* default */].host;
-var APP_TOKEN = __WEBPACK_IMPORTED_MODULE_0__constants__["a" /* default */].APP_TOKEN;
-/**
- * Main services controller.
- * Use this singleton to access all services.
- */
-var ServiceController = /** @class */ (function () {
-    // ------------------------------------------------------------------------
-    //                      c o n s t r u c t o r
-    // ------------------------------------------------------------------------
-    function ServiceController() {
-        this.registerServices();
-    }
-    Object.defineProperty(ServiceController.prototype, "account", {
-        // ------------------------------------------------------------------------
-        //                      p r o p e r t i e s
-        // ------------------------------------------------------------------------
-        get: function () {
-            return this._srvc_account;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    // ------------------------------------------------------------------------
-    //                      p u b l i c
-    // ------------------------------------------------------------------------
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-    ServiceController.prototype.registerServices = function () {
-        this._srvc_account = new __WEBPACK_IMPORTED_MODULE_1__services_AuthenticationService__["a" /* default */](HOST, APP_TOKEN);
-    };
-    ServiceController.instance = function () {
-        if (null == ServiceController.__instance) {
-            ServiceController.__instance = new ServiceController();
-        }
-        return ServiceController.__instance;
-    };
-    return ServiceController;
-}());
-/* harmony default export */ __webpack_exports__["a"] = (ServiceController);
-
-
-/***/ }),
 /* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AbstractService__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AbstractDatabaseService__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_i18n__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__ = __webpack_require__(0);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5575,7 +5577,15 @@ var __extends = (this && this.__extends) || (function () {
 })();
 
 
-var PATH = '/api/account/';
+
+
+// ------------------------------------------------------------------------
+//                      c o n s t
+// ------------------------------------------------------------------------
+var COLLECTION = 'accounts';
+// ------------------------------------------------------------------------
+//                      c l a s s
+// ------------------------------------------------------------------------
 /**
  * SAMPLE AUTHENTICATION SERVICE
  */
@@ -5588,18 +5598,42 @@ var AuthenticationService = /** @class */ (function (_super) {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
     function AuthenticationService(host, app_token) {
-        return _super.call(this, host, app_token) || this;
+        var _this = _super.call(this, host, app_token, COLLECTION) || this;
+        _this.init();
+        return _this;
     }
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+    AuthenticationService.prototype.register = function (email, password, callback) {
+        var _this = this;
+        // new account model
+        var account = {
+            _key: __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].random.guid(),
+            username: email,
+            password: password,
+            lang: __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_i18n__["a" /* default */].lang,
+            email: email,
+            address: '',
+            first_name: '',
+            last_name: '',
+            phone: '',
+            is_enabled: true
+        };
+        // build request
+        var request_data = this.request;
+        request_data.query = '#upsert';
+        request_data.params = JSON.stringify(account);
+        _super.prototype.post.call(this, request_data).then(function (req_resp) {
+            _super.prototype.invoke.call(_this, callback, req_resp);
+        }).catch(function (req_resp) {
+            _super.prototype.invoke.call(_this, callback, req_resp);
+        });
+    };
     AuthenticationService.prototype.get_account = function (key, callback) {
         var _this = this;
-        var data = {
-            'app_token': this.app_token,
-            'key': key
-        };
-        _super.prototype.post.call(this, PATH + "get_account", data).then(function (req_resp) {
+        var data = this.request;
+        _super.prototype.post.call(this, data).then(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
         }).catch(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
@@ -5612,20 +5646,7 @@ var AuthenticationService = /** @class */ (function (_super) {
             'email': email,
             'password': password
         };
-        _super.prototype.post.call(this, PATH + "login", data).then(function (req_resp) {
-            _super.prototype.invoke.call(_this, callback, req_resp);
-        }).catch(function (req_resp) {
-            _super.prototype.invoke.call(_this, callback, req_resp);
-        });
-    };
-    AuthenticationService.prototype.register = function (email, password, callback) {
-        var _this = this;
-        var data = {
-            'app_token': this.app_token,
-            'email': email,
-            'password': password
-        };
-        _super.prototype.post.call(this, PATH + "register", data).then(function (req_resp) {
+        _super.prototype.post.call(this, data).then(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
         }).catch(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
@@ -5637,7 +5658,7 @@ var AuthenticationService = /** @class */ (function (_super) {
             'app_token': this.app_token,
             'email': email
         };
-        _super.prototype.post.call(this, PATH + "reset_password", data).then(function (req_resp) {
+        _super.prototype.post.call(this, data).then(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
         }).catch(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
@@ -5647,16 +5668,33 @@ var AuthenticationService = /** @class */ (function (_super) {
         var _this = this;
         var data = {
             'app_token': this.app_token,
-            'item': __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].isString(item) ? item : __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__["a" /* default */].toString(item)
+            'item': __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_lang__["a" /* default */].isString(item) ? item : __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_lang__["a" /* default */].toString(item)
         };
-        _super.prototype.post.call(this, PATH + "upsert", data).then(function (req_resp) {
+        _super.prototype.post.call(this, data).then(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
         }).catch(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
         });
     };
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+    AuthenticationService.prototype.init = function () {
+        // add keys
+        var request_data = this.request;
+        request_data.query = '#addIndex';
+        request_data.params = JSON.stringify({
+            'fields': ['username', 'password'],
+            'is_unique': true
+        });
+        _super.prototype.post.call(this, request_data).then(function (req_resp) {
+            //super.invoke(callback, req_resp);
+        }).catch(function (req_resp) {
+            //super.invoke(callback, req_resp);
+        });
+    };
     return AuthenticationService;
-}(__WEBPACK_IMPORTED_MODULE_0__AbstractService__["a" /* default */]));
+}(__WEBPACK_IMPORTED_MODULE_1__AbstractDatabaseService__["a" /* default */]));
 /* harmony default export */ __webpack_exports__["a"] = (AuthenticationService);
 
 
@@ -5665,7 +5703,78 @@ var AuthenticationService = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_net_RemoteService__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AbstractService__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_i18n__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__AuthController__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(4);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+// ------------------------------------------------------------------------
+//                      c o n s t
+// ------------------------------------------------------------------------
+var PATH = '/api/database/invoke/';
+var DATABASE = __WEBPACK_IMPORTED_MODULE_3__constants__["a" /* default */].uid;
+// ------------------------------------------------------------------------
+//                      c l a s s
+// ------------------------------------------------------------------------
+/**
+ * SAMPLE AUTHENTICATION SERVICE
+ */
+var AbstractDatabaseService = /** @class */ (function (_super) {
+    __extends(AbstractDatabaseService, _super);
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+    function AbstractDatabaseService(host, app_token, collection) {
+        var _this = _super.call(this, host, app_token) || this;
+        _this._collection = collection;
+        return _this;
+    }
+    Object.defineProperty(AbstractDatabaseService.prototype, "request", {
+        // ------------------------------------------------------------------------
+        //                      p r o t e c t e d
+        // ------------------------------------------------------------------------
+        get: function () {
+            return {
+                'app_token': this.app_token,
+                'lang': __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_i18n__["a" /* default */].lang,
+                'client_id': __WEBPACK_IMPORTED_MODULE_2__AuthController__["a" /* default */].instance().user_id,
+                'database': DATABASE,
+                'collection': this._collection,
+                'query': '',
+                'params': {}
+            };
+        },
+        enumerable: true,
+        configurable: true
+    });
+    AbstractDatabaseService.prototype.post = function (body, options) {
+        if (body === void 0) { body = null; }
+        return _super.prototype.post.call(this, PATH, body, options);
+    };
+    return AbstractDatabaseService;
+}(__WEBPACK_IMPORTED_MODULE_0__AbstractService__["a" /* default */]));
+/* harmony default export */ __webpack_exports__["a"] = (AbstractDatabaseService);
+
+
+/***/ }),
+/* 48 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_net_RemoteService__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__ = __webpack_require__(0);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -5705,27 +5814,47 @@ var AbstractService = /** @class */ (function (_super) {
         __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__["a" /* default */].lang.funcInvoke(callback, error, data);
     };
     AbstractService.prototype.getError = function (data) {
-        if (__WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__["a" /* default */].lang.isString(data)) {
-            try {
-                return JSON.parse(data).error;
+        return AbstractService.errorFrom(data);
+    };
+    AbstractService.prototype.getResponse = function (data) {
+        return AbstractService.responseFrom(data);
+    };
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+    AbstractService.responseFrom = function (data) {
+        data = this.toJSON(data);
+        var response = data;
+        if (!!data && !!data.response) {
+            response = data.response;
+        }
+        //console.log("AbstractService.getResponse()", data, response);
+        if (!!response) {
+            response = !!response.payload ? response.payload : response;
+        }
+        return response;
+    };
+    AbstractService.errorFrom = function (data) {
+        data = this.toJSON(data);
+        if (!!data) {
+            if (!!data.error) {
+                return data.error;
             }
-            catch (err) {
+            else if (data.hasOwnProperty("ok") && !data.ok) {
+                // RequestResult
+                return data.statusText;
             }
-        }
-        else if (!!data.error) {
-            return data.error;
-        }
-        else if (data.hasOwnProperty("ok") && !data.ok) {
-            // RequestResult
-            return data.statusText;
-        }
-        else if (!!data.data) {
-            // nested data
-            return this.getError(data.data);
+            else if (!!data.data) {
+                // nested data
+                return AbstractService.errorFrom(data.data);
+            }
+            else if (!!data.response) {
+                return AbstractService.errorFrom(data.response);
+            }
         }
         return null;
     };
-    AbstractService.prototype.getResponse = function (data) {
+    AbstractService.toJSON = function (data) {
         if (__WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__["a" /* default */].lang.isString(data)) {
             try {
                 data = JSON.parse(data);
@@ -5747,18 +5876,7 @@ var AbstractService = /** @class */ (function (_super) {
             // nested data
             data = data.data;
         }
-        return AbstractService.responseFrom(data);
-    };
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-    AbstractService.responseFrom = function (data) {
-        var response = data;
-        if (!!data && !!data.response) {
-            response = data.response;
-        }
-        //console.log("AbstractService.getResponse()", data, response);
-        return response;
+        return data;
     };
     return AbstractService;
 }(__WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_net_RemoteService__["a" /* RemoteService */]));
@@ -5766,13 +5884,13 @@ var AbstractService = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RemoteService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_strings__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HttpClient__ = __webpack_require__(21);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_strings__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HttpClient__ = __webpack_require__(22);
 
 
 var RemoteService = /** @class */ (function () {
@@ -5811,7 +5929,7 @@ var RemoteService = /** @class */ (function () {
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -5846,17 +5964,17 @@ var errors = /** @class */ (function () {
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_view_pages_page_Page__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_Router__ = __webpack_require__(12);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__globals__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_Router__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__globals__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__vendor_lyts_core_ly__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__constants__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__controllers_AuthController__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__controllers_AuthController__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__controllers_ToastController__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__vendor_lyts_core_commons_console__ = __webpack_require__(2);
 var __extends = (this && this.__extends) || (function () {
@@ -6147,12 +6265,12 @@ var PageSignup = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = view;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(53);
 
 function view(uid, props) {
     props = props || {};
@@ -6161,7 +6279,7 @@ function view(uid, props) {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6180,16 +6298,16 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_screen_Screen__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_page1_Page1__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_page2_Page2__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_screen_Screen__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_page1_Page1__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_page2_Page2__ = __webpack_require__(60);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6265,21 +6383,21 @@ var GenericScreen = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 54 */
+/* 55 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = view;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(56);
 
 function view(uid, props) {
     props = props || {};
-    return "\n            <div id=\"" + uid + "\" class=\"\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n   \n                <nav>\n                    <div class=\"nav-wrapper\">\n                      <a href=\"#\" class=\"brand-logo\">USB TEST</a>\n                      <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n                      <!--\n                        <li><a data-router=\"relative\" href=\"auth/signin\">Login</a></li>\n                      -->\n                      </ul>\n                    </div>\n                </nav>\n                \n                <div id=\"" + uid + "_pages\"></div>        \n                        \n            </div>\n\n        ";
+    return "\n            <div id=\"" + uid + "\" class=\"\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n   \n                <nav>\n                    <div class=\"nav-wrapper\">\n                      <a href=\"#\" class=\"brand-logo\">This is Generic Screen</a>\n                      <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n                      <!--\n                        <li><a data-router=\"relative\" href=\"auth/signin\">Login</a></li>\n                      -->\n                      </ul>\n                    </div>\n                </nav>\n                \n                <div id=\"" + uid + "_pages\"></div>        \n                        \n            </div>\n\n        ";
 }
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6293,17 +6411,17 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_pages_page_Page__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__globals__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__controllers_ToastController__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__constants__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__controllers_ToastController__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__constants__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__controllers_ServiceController__ = __webpack_require__(25);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6328,18 +6446,11 @@ var Page1 = /** @class */ (function (_super) {
     // ------------------------------------------------------------------------
     function Page1(route) {
         var _this = _super.call(this, route) || this;
-        _this._btn_connect = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_btn_connect");
-        _this._btn_send = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_btn_send");
-        _this._fld_requestType = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_requestType");
-        _this._fld_recipient = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_recipient");
-        _this._fld_request = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_request");
-        _this._fld_value = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_value");
-        _this._fld_index = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_index");
-        _this._fld_response_endpoint = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_response_endpoint");
-        _this._fld_response_byte_count = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_response_byte_count");
-        _this._usb_response = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_usb_response");
         _this._lbl_version = _super.prototype.getFirst.call(_this, "#version");
-        _this._lbl_device = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_device");
+        // register
+        _this._fld_register_username = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_register_username");
+        _this._fld_register_password = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_register_password");
+        _this._btn_register = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_btn_register");
         return _this;
     }
     // ------------------------------------------------------------------------
@@ -6350,7 +6461,7 @@ var Page1 = /** @class */ (function (_super) {
     };
     Page1.prototype.free = function () {
         // release memory
-        this._btn_connect.removeEventListener();
+        this._btn_register.removeEventListener();
         __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log("REMOVED:", this.uid);
     };
     Page1.prototype.ready = function () {
@@ -6370,150 +6481,47 @@ var Page1 = /** @class */ (function (_super) {
     // ------------------------------------------------------------------------
     Page1.prototype.init = function () {
         try {
-            this._lbl_version.innerHTML = __WEBPACK_IMPORTED_MODULE_6__constants__["a" /* default */].version;
+            this._lbl_version.innerHTML = __WEBPACK_IMPORTED_MODULE_5__constants__["a" /* default */].version;
             // call debounced function
-            this._btn_connect.addEventListener('click', __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].lang.funcDebounce(this, this.onButtonClick, 1000, true, 'param1'));
-            this._btn_send.addEventListener('click', __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].lang.funcDebounce(this, this.onBtnSendClick, 1000, true));
+            this._btn_register.addEventListener('click', __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].lang.funcDebounce(this, this.onRegisterClick, 1000, true));
         }
         catch (err) {
             __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error("Page1.init()", err);
         }
     };
-    Page1.prototype.onButtonClick = function (ev, param1) {
+    Page1.prototype.onRegisterClick = function (ev) {
         ev.preventDefault();
         var self = this;
         __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].dom.ready(function () {
-            self.initUSB();
+            self.doRegister();
         }, this);
     };
-    Page1.prototype.onBtnSendClick = function (ev, param1) {
-        ev.preventDefault();
-        var self = this;
-        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].dom.ready(function () {
-            self.sendMessage();
-        }, this);
-    };
-    Page1.prototype.setLblDevice = function () {
-        if (!!this._lbl_device && !!this._device) {
-            var device = this._device;
-            this._lbl_device.innerHTML = "CONNECTED: " + device.productName + " - " + device.manufacturerName;
-            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('CONFIGURATIONS: ', device.configurations);
-        }
-    };
-    Page1.prototype.initUSB = function () {
-        var _this = this;
-        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('', 'Getting USB Devices...');
-        try {
-            var navigator_1 = __WEBPACK_IMPORTED_MODULE_4__globals__["a" /* default */].root.navigator;
-            var array_filters = []; //[{vendorId: 0x8457}];
-            var usb = !!navigator_1.usb ? navigator_1.usb : navigator_1.USB;
-            // get coupled devices
-            usb.getDevices()
-                .then(function (devices) {
-                devices.map(function (device) {
-                    __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Page1.initUSB', device);
-                    __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Page1.initUSB', device.productName);
-                    __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Page1.initUSB', device.manufacturerName);
-                });
-            });
-            /**  **/
-            usb
-                .requestDevice({ filters: array_filters })
-                .then(function (device) {
-                _this._device = device;
-                return device.open();
-            })
-                .then(function () {
-                _this.setLblDevice();
-            })
-                .catch(function (error) {
-                __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error('Page1.initUSB', error);
-                __WEBPACK_IMPORTED_MODULE_5__controllers_ToastController__["a" /* default */].instance().showError(error);
-            });
-        }
-        catch (err) {
-            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error('Page1.initUSB', err);
-        }
-    };
-    Page1.prototype.sendMessage = function () {
-        try {
-            if (!!this._device) {
-                var device = this._device;
-                // request
-                var requestType = this._fld_requestType.value();
-                var recipient = this._fld_recipient.value();
-                var request = this._fld_request.value();
-                var value = this._fld_request.value();
-                var index = this._fld_request.value();
-                // response
-                var response_endpoint = this._fld_response_endpoint.value();
-                var response_byte_count = this._fld_response_byte_count.value();
-                if (!!requestType && !!recipient) {
-                    this.sendMessageToUSB(device, requestType, recipient, request, value, index, response_endpoint, response_byte_count);
-                }
-                else {
-                    __WEBPACK_IMPORTED_MODULE_5__controllers_ToastController__["a" /* default */].instance().showError("Channel and Message are required fields.");
-                }
-            }
-            else {
-                __WEBPACK_IMPORTED_MODULE_5__controllers_ToastController__["a" /* default */].instance().showError("DEVICE NOT CONNECTED");
-            }
-        }
-        catch (err) {
-            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error('Page1.sendMessage', err);
-        }
-    };
-    /**
-     * Send a message to USB device.
-     */
-    Page1.prototype.sendMessageToUSB = function (device, requestType, recipient, request, value, index, response_endpoint, response_byte_count) {
+    Page1.prototype.doRegister = function () {
         var _this = this;
         try {
-            device.selectConfiguration(1)
-                .then(function () {
-                return device.claimInterface(index);
-            })
-                .then(function () {
-                return device.controlTransferOut({
-                    requestType: 'class',
-                    recipient: 'interface',
-                    request: request,
-                    value: value,
-                    index: index,
-                });
-            })
-                // Waiting for 64 bytes of data from endpoint #5.
-                .then(function () {
-                device.transferIn(response_endpoint, response_byte_count)
-                    .then(function (result) {
-                    if (!!result) {
-                        var decoder = new TextDecoder();
-                        var decoded_data = decoder.decode(result.data);
-                        _this._usb_response.value(decoded_data);
-                        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Received: ' + decoded_data);
+            var username = this._fld_register_username.value();
+            var password = this._fld_register_password.value();
+            if (!!username && !!password) {
+                __WEBPACK_IMPORTED_MODULE_6__controllers_ServiceController__["a" /* default */].instance().account.register(username, password, function (err, response) {
+                    if (!!err) {
+                        _this.logError('Page1.doRegister', err);
                     }
                     else {
-                        // ToastController.instance().showInfo("NO DATA INTO RESPONSE");
-                        _this._usb_response.value("NO DATA INTO RESPONSE");
+                        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Page1.doRegister', response);
                     }
-                })
-                    // get errors
-                    .catch(function (error) {
-                    _this.logError('Page1.sendMessageToUSB#transferIn', error);
                 });
-            })
-                // get errors
-                .catch(function (error) {
-                _this.logError('Page1.sendMessageToUSB', error);
-            });
+            }
+            else {
+                this.logError('Page1.doRegister', 'Missing username or password');
+            }
         }
         catch (err) {
-            this.logError('Page1.sendMessageToUSB', err);
+            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error('Page1.doRegister', err);
         }
     };
     Page1.prototype.logError = function (scope, err) {
         __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error(scope, err);
-        __WEBPACK_IMPORTED_MODULE_5__controllers_ToastController__["a" /* default */].instance().showError(err);
+        __WEBPACK_IMPORTED_MODULE_4__controllers_ToastController__["a" /* default */].instance().showError(err);
     };
     return Page1;
 }(__WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_pages_page_Page__["a" /* default */]));
@@ -6521,21 +6529,21 @@ var Page1 = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = view;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(59);
 
 function view(uid, props) {
     props = props || {};
-    return "\n            <div id=\"" + uid + "\" class=\"container\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n   \n                <h1>USB test page</h1>\n                <span id=\"version\">0.0.0</span>\n                \n                <div class=\"section\">\n                    <h5>1. Enable USB</h5>\n                    <div class=\"row\">\n                        <div class=\"col s4\">\n                           <a id=\"" + uid + "_btn_connect\" class=\"waves-effect waves-light btn\"><i class=\"material-icons right\">settings_power</i>Init USB</a>  \n                        </div>\n                        <div id=\"" + uid + "_devices\" class=\"col s8\">\n                            <span><b id=\"" + uid + "_device\">NO DEVICES ARE CONNECTED</b></span>\n                        </div>\n                    </div>\n                    \n                 </div>\n                \n                <div class=\"section\">\n                    <h5>2. Set Up Message</h5>\n                    <div class=\"row\">\n                      <form class=\"col s12\">\n                      \n                        <div class=\"row\">\n                            <div class=\"input-field col s4\">\n                              <input id=\"" + uid + "_fld_requestType\" type=\"text\" class=\"validate\" value=\"class\">\n                              <label for=\"" + uid + "_fld_requestType\">Request Type</label>\n                            </div>\n                            <div class=\"input-field col s8\">\n                              <input id=\"" + uid + "_fld_recipient\" type=\"text\" class=\"validate\" value=\"interface\">\n                              <label for=\"" + uid + "_fld_recipient\">Recipient</label>\n                            </div>\n                        </div>\n                        \n                        <div class=\"row\">\n                            <div class=\"input-field col s3\">\n                              <input id=\"" + uid + "_fld_request\" type=\"text\" class=\"validate\" value=\"0x22\">\n                              <label for=\"" + uid + "_fld_request\">Request</label>\n                            </div>\n                            <div class=\"input-field col s3\">\n                              <input id=\"" + uid + "_fld_value\" type=\"text\" class=\"validate\" value=\"0x01\">\n                              <label for=\"" + uid + "_fld_value\">Value</label>\n                            </div>\n                            <div class=\"input-field col s3\">\n                              <input id=\"" + uid + "_fld_index\" type=\"text\" class=\"validate\" value=\"0x00\">\n                              <label for=\"" + uid + "_fld_index\">Index</label>\n                            </div>\n                        </div>\n                        \n                      \n                      </form>\n                </div>    \n                \n                <div class=\"section\">\n                    <h5>3. Set Up Response</h5>\n                    <form class=\"col s12\">\n                    \n                         <div class=\"row\">\n                            <div class=\"input-field col s4\">\n                              <input id=\"" + uid + "_fld_response_endpoint\" type=\"text\" class=\"validate\" value=\"5\">\n                              <label for=\"" + uid + "_fld_response_endpoint\">End Point #number</label>\n                            </div>\n                            <div class=\"input-field col s8\">\n                              <input id=\"" + uid + "_fld_response_byte_count\" type=\"text\" class=\"validate\" value=\"64\">\n                              <label for=\"" + uid + "_fld_response_byte_count\">Byte Count (expected bytes in response)</label>\n                            </div>\n                        </div>\n                    \n                    </form>\n                </div>\n                \n                <div class=\"section\">\n                    <h5>4. Run</h5>\n                    <div class=\"row\">\n                       <a id=\"" + uid + "_btn_send\" class=\"waves-effect waves-light btn\"><i class=\"material-icons right\">send</i>Send</a>  \n                    </div>\n                    <div class=\"row\">\n                        <span><b id=\"" + uid + "_usb_response\">NO RESPONSE FROM USB DEVICE</b></span>\n                    </div>\n               </div>\n                   \n               <div class=\"section\">\n                    <h5>5. Debug</h5>\n                    <div class=\"row\">\n                        <div class=\"col s12\">\n                           <p>\n                           Open <b>chrome://device-log/</b> to view USB Log\n                            </p>\n                        </div>\n                    \n                    </div>\n                    \n               </div>\n                     \n            </div>\n\n        ";
+    return "\n            <div id=\"" + uid + "\" class=\"container\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n   \n                <h1>TEST PAGE</h1>\n                <span id=\"version\">0.0.0</span>\n                \n                <div class=\"section\">\n                    <h5>1. Register Accounts</h5>\n                    <div class=\"row\">\n                        \n                        <form class=\"col s12\">\n                            <div class=\"row\">\n                                <!-- register-username -->\n                                <div class=\"input-field col s4\">\n                                  <input id=\"" + uid + "_fld_register_username\" type=\"text\" class=\"validate\" value=\"\">\n                                  <label for=\"" + uid + "_fld_register_username\">Username</label>\n                                </div>\n                                \n                                <!-- register-password -->\n                                <div class=\"input-field col s8\">\n                                  <input id=\"" + uid + "_fld_register_password\" type=\"text\" class=\"validate\" value=\"\">\n                                  <label for=\"" + uid + "_fld_register_password\">Password</label>\n                                </div>\n                            </div>\n                        </form>\n                        \n                    </div>\n                    \n                    <div class=\"row\">\n                       <a id=\"" + uid + "_btn_register\" class=\"waves-effect waves-light btn\">\n                       <i class=\"material-icons right\">send</i>Register\n                       </a>  \n                    </div>\n                    \n                 </div>\n                \n                <div class=\"section\">\n                    <h5>2. Test Login</h5>\n                    <div class=\"row\">\n                    \n                    </div>\n                </div>    \n                \n      \n                     \n            </div>\n\n        ";
 }
 
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6549,14 +6557,14 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 59 */
+/* 60 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_view_pages_page_Page__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_console__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view__ = __webpack_require__(61);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6621,12 +6629,12 @@ var Page2 = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 60 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = view;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(62);
 
 function view(uid, props) {
     props = props || {};
@@ -6635,7 +6643,7 @@ function view(uid, props) {
 
 
 /***/ }),
-/* 61 */
+/* 62 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6649,12 +6657,12 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 62 */
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_ly__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_ModelApplicationContext__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_ModelApplicationContext__ = __webpack_require__(64);
 
 
 /**
@@ -6710,7 +6718,7 @@ var ApplicationController = /** @class */ (function () {
 
 
 /***/ }),
-/* 63 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

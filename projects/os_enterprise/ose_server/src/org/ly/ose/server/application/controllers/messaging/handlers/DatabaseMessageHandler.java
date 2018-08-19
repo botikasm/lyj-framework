@@ -26,6 +26,8 @@ public class DatabaseMessageHandler
 
     private final static String MACRO_PREFIX = "#";
 
+    private final static String MACRO_ADD_INDEX = "addIndex";
+    private final static String MACRO_ADD_GEO_INDEX = "addGeoIndex";
     private final static String MACRO_UPSERT = "upsert";
     private final static String MACRO_REMOVE = "remove";
 
@@ -112,7 +114,17 @@ public class DatabaseMessageHandler
             }
 
             // macro parser
-            if (macro_name.equalsIgnoreCase(MACRO_UPSERT)) {
+            if (macro_name.equalsIgnoreCase(MACRO_ADD_INDEX)) {
+                final boolean is_unique = ConversionUtils.toBoolean(params.get("is_unique"));
+                final Collection<String> fields = (Collection) params.get("fields");
+                collection.addIndex(fields, is_unique);
+                return JsonConverter.toArray(true);
+            } else if (macro_name.equalsIgnoreCase(MACRO_ADD_GEO_INDEX)) {
+                final boolean is_geoJson = ConversionUtils.toBoolean(params.get("is_geoJson"));
+                final Collection<String> fields = (Collection) params.get("fields");
+                collection.addGeoIndex(fields, is_geoJson);
+                return JsonConverter.toArray(true);
+            } else if (macro_name.equalsIgnoreCase(MACRO_UPSERT)) {
                 return JsonConverter.toArray(collection.upsert(params));
             } else if (macro_name.equalsIgnoreCase(MACRO_REMOVE)) {
                 if (StringUtils.hasText(query)) {

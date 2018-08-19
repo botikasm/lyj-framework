@@ -12,11 +12,14 @@ import org.ly.ose.server.application.endpoints.api.ApiHelper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.HttpServerContext;
 
+import java.util.Map;
+
 public class ApiDatabase {
 
     public static void invoke(final HttpServerContext context) {
         final OSERequest request = new OSERequest();
-        final OSEPayloadDatabase payload = new OSEPayloadDatabase(ApiHelper.getParams(context));
+        final Map<String, Object> request_params = ApiHelper.getParams(context);
+        final OSEPayloadDatabase payload = new OSEPayloadDatabase(request_params);
 
         // add payload
         request.payload().putAll(payload.map());

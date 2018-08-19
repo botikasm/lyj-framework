@@ -1,0 +1,60 @@
+/*
+
+                L Y       A N I M A T I O N S
+
+*/
+
+
+
+/* ROTATIONS */
+
+
+.--rotate{
+
+    animation-duration: 0.8s;
+    animation: rotate 2s infinite ease-in-out;
+
+}
+
+@keyframes rotate{
+
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+.--counterclock-rotate{
+
+    animation-duration: 0.8s;
+    animation: counterclockRotate 2s infinite ease-in-out;
+
+}
+
+@-webkit-keyframes counterclockRotate {
+    from {
+        -webkit-transform: rotate(360deg);
+    }
+    to {
+        -webkit-transform: rotate(0deg);
+    }
+}
+
+.--rotate-faster{
+
+    animation-duration: 0.8s;
+    animation: rotateFaster 1s infinite ease-in-out;
+
+}
+
+@-webkit-keyframes rotateFaster {
+    from {
+        -webkit-transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+    }
+}

@@ -2,9 +2,6 @@ export default interface ModelAccount {
 
     _key: string;
 
-    last_access_date: number;
-    last_access_date_fmt: string;
-
     is_enabled: boolean;
 
     username: string;

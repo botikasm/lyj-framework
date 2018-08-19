@@ -116,10 +116,10 @@ public class DBHelper {
         }
 
         public void addGeoIndex(final Object raw_fields,
-                                final Object raw_geoJson) {
+                                final Object raw_is_geoJson) {
             if (null != _collection) {
                 final String[] fields = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_fields));
-                final boolean geoJson = ConversionUtils.toBoolean(raw_geoJson);
+                final boolean geoJson = ConversionUtils.toBoolean(raw_is_geoJson);
 
                 _collection.schema().addGeoIndex(fields, geoJson);
             }

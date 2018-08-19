@@ -1,0 +1,22 @@
+/* Base */
+@import url('base/_normalize.css');
+@import url('base/_base.css');
+
+@import url('loader/_loader.css?v=1.0.1');
+
+/* Animations */
+@import url('animations/_swipes.css?v=1.0.1');
+@import url('animations/_clicks.css?v=1.0.1');
+@import url('animations/_rotations.css?v=1.0.1');
+@import url('animations/_transformations.css?v=1.0.1');
+
+/* FONTS */
+@font-face {
+    font-family: RobotoBold;
+    src: url('../vendor/fonts/roboto/Roboto-Bold.woff2');
+}
+
+@font-face {
+    font-family: RobotoRegular;
+    src: url('../vendor/fonts/roboto/Roboto-Regular.woff2');
+}

@@ -1,6 +1,7 @@
 import {RemoteService} from "../../../vendor/lyts_core/net/RemoteService";
 import ly from "../../../vendor/lyts_core/ly";
 import {RequestResult} from "../../../vendor/lyts_core/net/HttpClient";
+import console from "../../../vendor/lyts_core/commons/console";
 
 export type ServiceCallback = (error: any, response: any) => void;
 
@@ -38,24 +39,50 @@ export default class AbstractService
     }
 
     protected getError(data: any): any {
-        if (ly.lang.isString(data)) {
-            try {
-                return (<{ error: any }>JSON.parse(data)).error;
-            } catch (err) {
+        return AbstractService.errorFrom(data);
+    }
+
+    protected getResponse(data: any): any {
+        return AbstractService.responseFrom(data);
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private static responseFrom(data: any): any {
+        data = this.toJSON(data);
+        let response = data;
+        if (!!data && !!data.response) {
+            response = data.response;
+        }
+        //console.log("AbstractService.getResponse()", data, response);
+        if (!!response) {
+            response = !!response.payload ? response.payload : response;
+        }
+        return response;
+    }
+
+    private static errorFrom(data: any): any {
+        data = this.toJSON(data);
+        if(!!data){
+            if(!!data.error){
+                return data.error;
+            } else if (data.hasOwnProperty("ok") && !data.ok) {
+                // RequestResult
+                return data.statusText;
+            } else if (!!data.data) {
+                // nested data
+                return AbstractService.errorFrom(data.data);
+            } else if (!!data.response){
+                return AbstractService.errorFrom(data.response);
             }
-        } else if (!!data.error) {
-            return data.error;
-        } else if (data.hasOwnProperty("ok") && !data.ok) {
-            // RequestResult
-            return data.statusText;
-        } else if (!!data.data) {
-            // nested data
-            return this.getError(data.data);
         }
         return null;
     }
 
-    protected getResponse(data: any): any {
+
+    private static toJSON(data: any): any {
         if (ly.lang.isString(data)) {
             try {
                 data = JSON.parse(data);
@@ -73,20 +100,7 @@ export default class AbstractService
             // nested data
             data = data.data;
         }
-        return AbstractService.responseFrom(data);
-    }
-
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-
-    private static responseFrom(data: any): any {
-        let response = data;
-        if (!!data && !!data.response) {
-            response = data.response;
-        }
-        //console.log("AbstractService.getResponse()", data, response);
-        return response;
+        return data;
     }
 
 }
