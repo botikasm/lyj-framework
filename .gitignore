@@ -3,3 +3,5 @@ out
 Task2.java
 lyj-ext-netty/vendor/netty-4.1.0CR3/example
 projects/desktop-fences/node_modules
+projects/os_enterprise/samples/html/hello_world/node_modules
+projects/os_enterprise/samples/html/hello_world/.tmp
