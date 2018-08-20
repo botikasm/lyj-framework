@@ -68,21 +68,21 @@
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_lang__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_format__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_strings__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_strings__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_objects__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_random__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_browser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__view_browser__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__view_installer__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__view_cookies__ = __webpack_require__(21);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__view_dom__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__view_dom__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__view_i18n__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__commons_collections_Dictionary__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__commons_events_Events__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__commons_events_Events__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__commons_events_EventEmitter__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__net_HttpClient__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__view_components_Component__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__view_components_Component__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__application_Application__ = __webpack_require__(29);
 //-- static --//
 
@@ -137,6 +137,79 @@ var ly = {
 
 /***/ }),
 /* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__random__ = __webpack_require__(5);
+/**
+ * Extends standard console
+ */
+
+var console_ext = /** @class */ (function () {
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+    function console_ext() {
+        this._uid = __WEBPACK_IMPORTED_MODULE_0__random__["a" /* default */].guid();
+    }
+    Object.defineProperty(console_ext.prototype, "uid", {
+        // ------------------------------------------------------------------------
+        //                      p u b l i c
+        // ------------------------------------------------------------------------
+        get: function () {
+            return this._uid;
+        },
+        set: function (value) {
+            this._uid = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    console_ext.prototype.error = function (scope, error) {
+        var args = [];
+        for (var _i = 2; _i < arguments.length; _i++) {
+            args[_i - 2] = arguments[_i];
+        }
+        console.error.apply(console, ["[" + this.uid + "] " + scope, error].concat(args));
+    };
+    ;
+    console_ext.prototype.warn = function (scope) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        console.warn.apply(console, ["[" + this.uid + "] " + scope].concat(args));
+    };
+    ;
+    console_ext.prototype.log = function (scope) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        console.log.apply(console, ["[" + this.uid + "] " + scope].concat(args));
+    };
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+    console_ext.prototype.init = function () {
+        this.uid = __WEBPACK_IMPORTED_MODULE_0__random__["a" /* default */].guid();
+    };
+    console_ext.instance = function () {
+        if (null == console_ext.__instance) {
+            console_ext.__instance = new console_ext();
+        }
+        return console_ext.__instance;
+    };
+    return console_ext;
+}());
+// ------------------------------------------------------------------------
+//                      e x p o r t
+// ------------------------------------------------------------------------
+/* harmony default export */ __webpack_exports__["a"] = (console_ext.instance());
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -498,79 +571,6 @@ var lang = langClass.instance();
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__random__ = __webpack_require__(5);
-/**
- * Extends standard console
- */
-
-var console_ext = /** @class */ (function () {
-    // ------------------------------------------------------------------------
-    //                      c o n s t r u c t o r
-    // ------------------------------------------------------------------------
-    function console_ext() {
-        this._uid = __WEBPACK_IMPORTED_MODULE_0__random__["a" /* default */].guid();
-    }
-    Object.defineProperty(console_ext.prototype, "uid", {
-        // ------------------------------------------------------------------------
-        //                      p u b l i c
-        // ------------------------------------------------------------------------
-        get: function () {
-            return this._uid;
-        },
-        set: function (value) {
-            this._uid = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    console_ext.prototype.error = function (scope, error) {
-        var args = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            args[_i - 2] = arguments[_i];
-        }
-        console.error.apply(console, ["[" + this.uid + "] " + scope, error].concat(args));
-    };
-    ;
-    console_ext.prototype.warn = function (scope) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        console.warn.apply(console, ["[" + this.uid + "] " + scope].concat(args));
-    };
-    ;
-    console_ext.prototype.log = function (scope) {
-        var args = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            args[_i - 1] = arguments[_i];
-        }
-        console.log.apply(console, ["[" + this.uid + "] " + scope].concat(args));
-    };
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-    console_ext.prototype.init = function () {
-        this.uid = __WEBPACK_IMPORTED_MODULE_0__random__["a" /* default */].guid();
-    };
-    console_ext.instance = function () {
-        if (null == console_ext.__instance) {
-            console_ext.__instance = new console_ext();
-        }
-        return console_ext.__instance;
-    };
-    return console_ext;
-}());
-// ------------------------------------------------------------------------
-//                      e x p o r t
-// ------------------------------------------------------------------------
-/* harmony default export */ __webpack_exports__["a"] = (console_ext.instance());
-
-
-/***/ }),
 /* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -739,8 +739,8 @@ var random = /** @class */ (function () {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_collections_Dictionary__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_events_EventEmitter__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__browser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dom__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__browser__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__dom__ = __webpack_require__(11);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -896,7 +896,7 @@ var i18n = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Events__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Events__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__BaseObject__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__collections_Dictionary__ = __webpack_require__(3);
 var __extends = (this && this.__extends) || (function () {
@@ -997,7 +997,404 @@ var EventEmitter = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_lang__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_collections_Dictionary__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__i18n__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__ = __webpack_require__(23);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+
+
+
+var Component = /** @class */ (function (_super) {
+    __extends(Component, _super);
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+    function Component() {
+        var _this = _super.call(this) || this;
+        _this._native_events = new __WEBPACK_IMPORTED_MODULE_3__commons_collections_Dictionary__["a" /* Dictionary */]();
+        _this._native_elements = new __WEBPACK_IMPORTED_MODULE_3__commons_collections_Dictionary__["a" /* Dictionary */]();
+        _this._element = _this._createElement(_this.render());
+        _this._element_wrapper = new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](_this, _this._element);
+        _this._data = {};
+        _this._normalizeElements();
+        _this.localize();
+        // auto-localize
+        __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].on(_this, __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].EVENT_CHANGE_LANG, _this.localize);
+        return _this;
+    }
+    Component.prototype.remove = function () {
+        this._free();
+    };
+    Object.defineProperty(Component.prototype, "data", {
+        // ------------------------------------------------------------------------
+        //                      p u b l i c
+        // ------------------------------------------------------------------------
+        get: function () {
+            return this._data;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Component.prototype, "element", {
+        get: function () {
+            return this._element_wrapper;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Component.prototype, "outerHTML", {
+        get: function () {
+            return !!this._element ? this._element.outerHTML : "";
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Component.prototype, "innerHTML", {
+        get: function () {
+            return !!this._element ? this._element.innerHTML : "";
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Component.prototype.hashCode = function (selector) {
+        if (!!selector) {
+            return this._hash(this._getFirstElement(selector));
+        }
+        return this._hash(this._element);
+    };
+    Component.prototype.hide = function () {
+        __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].classAdd(this._element, 'hidden');
+    };
+    Component.prototype.show = function () {
+        __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].classRemove(this._element, 'hidden');
+    };
+    // ------------------------------------------------------------------------
+    //                      d o m
+    // ------------------------------------------------------------------------
+    Component.prototype.localize = function () {
+        __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].localize(this._element);
+    };
+    Component.prototype.get = function (selector) {
+        var result = [];
+        var elements = __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].get(selector, this._element);
+        for (var _i = 0, elements_1 = elements; _i < elements_1.length; _i++) {
+            var elem = elements_1[_i];
+            result.push(new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](this, elem));
+        }
+        return result;
+    };
+    Component.prototype.getFirst = function (selector) {
+        return new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](this, __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getFirst(selector, this._element));
+    };
+    Component.prototype.getLast = function (selector) {
+        return new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](this, __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getLast(selector, this._element));
+    };
+    Component.prototype.appendTo = function (selector, clean_parent) {
+        if (clean_parent === void 0) { clean_parent = false; }
+        var elem = (selector instanceof __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */])
+            ? selector
+            : new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](this, __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getFirst(selector));
+        if (!!elem) {
+            if (clean_parent) {
+                elem.innerHTML = '';
+            }
+            elem.appendChild(this._element);
+            //-- this is ready --//
+            this.ready();
+        }
+    };
+    Component.prototype.appendChild = function (child_html, opt_target_selector) {
+        if (!!child_html) {
+            var child = this._createElement(child_html);
+            var target = this._resolveElement(opt_target_selector || null, this._element);
+            if (!!target) {
+                target.appendChild(child);
+                // handle events for child
+                this._normalizeElement(child);
+            }
+        }
+    };
+    /**
+     * Return a class list.
+     * @param {string} selector Element selector. Only first matched element is returned.
+     * @return {string[]} Array of class names
+     */
+    Component.prototype.classList = function (selector) {
+        var elem = this._getFirstElement(selector);
+        if (!!elem) {
+            return elem.className.split(" ");
+        }
+        return [];
+    };
+    /**
+     * Check if selected element contains passed class. If passed class is an Array, check for all of them.
+     * @param {string} selector Element selector. Only first matched element is returned.
+     * @param {string | string[]} class_name Single class name or multiple class names.
+     * @return {boolean} Match found or not.
+     */
+    Component.prototype.classHas = function (selector, class_name) {
+        var elem = this._getFirstElement(selector);
+        if (!!elem) {
+            var classes = __WEBPACK_IMPORTED_MODULE_2__commons_lang__["a" /* default */].toArray(class_name);
+            for (var _i = 0, classes_1 = classes; _i < classes_1.length; _i++) {
+                var aclass = classes_1[_i];
+                if (!elem.classList.contains(aclass)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    };
+    /**
+     * Check the array for at least one match.
+     * @param {string} selector  Element selector. Only first matched element is returned.
+     * @param {string[]} class_name Array of classes
+     * @return {boolean} Match found or not.
+     */
+    Component.prototype.classHasOne = function (selector, class_name) {
+        var elem = this._getFirstElement(selector);
+        if (!!elem) {
+            var classes = __WEBPACK_IMPORTED_MODULE_2__commons_lang__["a" /* default */].toArray(class_name);
+            for (var _i = 0, classes_2 = classes; _i < classes_2.length; _i++) {
+                var aclass = classes_2[_i];
+                if (elem.classList.contains(aclass)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    Component.prototype.classAdd = function (selector, class_name) {
+        var elem = this._getFirstElement(selector);
+        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].classAdd(elem, class_name);
+    };
+    Component.prototype.classRemove = function (selector, class_name) {
+        var elem = this._getFirstElement(selector);
+        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].classRemove(elem, class_name);
+    };
+    Component.prototype.classSet = function (selector, value) {
+        return this.attrSet(selector, "class", name);
+    };
+    Component.prototype.attrValue = function (selector, attr_name) {
+        var elem = this._getFirstElement(selector);
+        if (!!elem) {
+            return elem.getAttribute(attr_name) || '';
+        }
+        return '';
+    };
+    Component.prototype.attrHas = function (selector, attr_name) {
+        var elem = this._getFirstElement(selector);
+        if (!!elem) {
+            return elem.hasAttribute(attr_name);
+        }
+        return false;
+    };
+    Component.prototype.attrSet = function (selector, name, value) {
+        var elem = this._getFirstElement(selector);
+        if (!!elem) {
+            elem.setAttribute(name, value);
+            return elem.getAttribute(name) || '';
+        }
+        return '';
+    };
+    Component.prototype.getValue = function (selector) {
+        var elem = this._getFirstElement(selector);
+        if (!!elem) {
+            return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getValue(elem);
+        }
+        return null;
+    };
+    // ------------------------------------------------------------------------
+    //                      p r o t e c t e d
+    // ------------------------------------------------------------------------
+    /**
+     * Add event listener to internal HTMLElement
+     * @param {string} selector
+     * @param {string} event_name
+     * @param {Listener} listener
+     */
+    Component.prototype.addEventListener = function (selector, event_name, listener) {
+        var elem = this._resolveElement(selector, this._element);
+        if (!!elem) {
+            this._addEventListener(elem, event_name, listener);
+        }
+        else {
+            console.warn("Component.addEventListener()", "Unable to add event '" + event_name + "' to '" + selector + "': Element not found!");
+        }
+    };
+    /**
+     * Remove event listener from internal HTMLElement
+     * @param {string} selector
+     * @param {string | string[]} event_names
+     */
+    Component.prototype.removeEventListener = function (selector, event_names) {
+        var elem = this._resolveElement(selector, this._element);
+        if (!!elem) {
+            this._removeEventListener(elem, __WEBPACK_IMPORTED_MODULE_2__commons_lang__["a" /* default */].toArray(event_names));
+        }
+    };
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+    Component.prototype._free = function () {
+        // remove ly events
+        _super.prototype.off.call(this, this);
+        // remove native events
+        this._freeListeners();
+        // remove element from dom
+        if (!!this._element) {
+            this._element.remove();
+        }
+        // clear list
+        this._native_events.clear();
+        this._native_elements.clear();
+        __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].off(this, __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].EVENT_CHANGE_LANG);
+        // call abstract free
+        this.free();
+    };
+    Component.prototype._freeListeners = function () {
+        var hash_codes = this._native_events.keys();
+        for (var _i = 0, hash_codes_1 = hash_codes; _i < hash_codes_1.length; _i++) {
+            var hash_code = hash_codes_1[_i];
+            var elem = this._native_elements.get(hash_code);
+            if (!!elem) {
+                var names = this._native_events.get(hash_code).eventNames();
+                var count = this._removeEventListener(elem, names);
+                //console.log("Component._free()", hash_code, names, count);
+            }
+        }
+    };
+    Component.prototype._normalizeElements = function () {
+        var _this = this;
+        // events on root
+        this._normalizeElement(this._element);
+        // events on child
+        __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].forEachChild(this._element, function (elem) {
+            _this._normalizeElement(elem);
+        }, true);
+    };
+    Component.prototype._resolveElement = function (elem_or_selector, defVal) {
+        if (!!elem_or_selector) {
+            if (__WEBPACK_IMPORTED_MODULE_2__commons_lang__["a" /* default */].isString(elem_or_selector)) {
+                var found = this._getFirstElement(elem_or_selector);
+                if (!!found) {
+                    return this._normalizeElement(found);
+                }
+            }
+            else {
+                var found = elem_or_selector;
+                if (!!found) {
+                    return this._normalizeElement(found);
+                }
+            }
+        }
+        return !!defVal ? this._normalizeElement(defVal) : null;
+    };
+    Component.prototype._getElement = function (selector) {
+        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].get(selector, this._element);
+    };
+    Component.prototype._getFirstElement = function (selector) {
+        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getFirst(selector, this._element);
+    };
+    Component.prototype._getLastElement = function (selector) {
+        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getLast(selector, this._element);
+    };
+    Component.prototype._addEventListener = function (elem, event_name, listener) {
+        var hash_code = this._hash(elem);
+        if (!this._native_events.containsKey(hash_code)) {
+            this._native_events.put(hash_code, new __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__["a" /* default */]());
+        }
+        // get context binded listener
+        var ctx_listener = listener.bind(this);
+        // register reference for further removal
+        this._native_events.get(hash_code).on(event_name, ctx_listener);
+        // attach listener to native event
+        elem.addEventListener(event_name, ctx_listener, false);
+    };
+    Component.prototype._removeEventListener = function (elem, event_names, listener) {
+        var counter = 0;
+        if (!!elem) {
+            var hash_code = this._hash(elem);
+            if (this._native_events.containsKey(hash_code)) {
+                var events = this._native_events.get(hash_code);
+                for (var _i = 0, event_names_1 = event_names; _i < event_names_1.length; _i++) {
+                    var name_1 = event_names_1[_i];
+                    if (!!listener) {
+                        // remove reference
+                        events.removeListener(name_1, listener);
+                        // remove native
+                        elem.removeEventListener(name_1, listener);
+                        counter++;
+                    }
+                    else {
+                        var all_listeners = events.listeners(name_1);
+                        for (var i = 0; i < all_listeners.length; i++) {
+                            var _listener = all_listeners[i];
+                            // remove reference
+                            events.removeListener(name_1, _listener);
+                            // remove native
+                            elem.removeEventListener(name_1, _listener);
+                            counter++;
+                        }
+                    }
+                }
+            }
+        }
+        return counter;
+    };
+    Component.prototype._createElement = function (html) {
+        html = html.trim();
+        return this._normalizeElement(__WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].newElement(html));
+    };
+    Component.prototype._normalizeElement = function (elem) {
+        // add hash
+        this._hash(elem);
+        //... do more stuff here
+        return elem;
+    };
+    Component.prototype._hash = function (elem) {
+        if (null != elem) {
+            var hash_code = __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */].hash(elem);
+            if (!!hash_code) {
+                // add new element reference to internal hash dictionary
+                this._native_elements.put(hash_code, elem);
+            }
+            return hash_code;
+        }
+        return '';
+    };
+    return Component;
+}(__WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__["a" /* default */]));
+// ------------------------------------------------------------------------
+//                      e x p o r t s
+// ------------------------------------------------------------------------
+/* harmony default export */ __webpack_exports__["a"] = (Component);
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lang__ = __webpack_require__(2);
 
 var strings = /** @class */ (function () {
     function strings() {
@@ -1063,11 +1460,11 @@ var strings = /** @class */ (function () {
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_lang__ = __webpack_require__(2);
 /**
  * Browser Utility class
  */
@@ -1194,15 +1591,15 @@ var browser = /** @class */ (function () {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* unused harmony export SelectorType */
 /* unused harmony export SelectorParser */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__browser__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_strings__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__browser__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_strings__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_lang__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ly__ = __webpack_require__(0);
 
 
@@ -1729,12 +2126,12 @@ var dom = domClass.instance();
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__collections_Dictionary__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lang__ = __webpack_require__(2);
 
 
 /**
@@ -1899,403 +2296,6 @@ var Events = /** @class */ (function () {
 
 
 /***/ }),
-/* 12 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_lang__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_collections_Dictionary__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__i18n__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__ = __webpack_require__(23);
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-
-
-
-
-
-
-
-var Component = /** @class */ (function (_super) {
-    __extends(Component, _super);
-    // ------------------------------------------------------------------------
-    //                      c o n s t r u c t o r
-    // ------------------------------------------------------------------------
-    function Component() {
-        var _this = _super.call(this) || this;
-        _this._native_events = new __WEBPACK_IMPORTED_MODULE_3__commons_collections_Dictionary__["a" /* Dictionary */]();
-        _this._native_elements = new __WEBPACK_IMPORTED_MODULE_3__commons_collections_Dictionary__["a" /* Dictionary */]();
-        _this._element = _this._createElement(_this.render());
-        _this._element_wrapper = new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](_this, _this._element);
-        _this._data = {};
-        _this._normalizeElements();
-        _this.localize();
-        // auto-localize
-        __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].on(_this, __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].EVENT_CHANGE_LANG, _this.localize);
-        return _this;
-    }
-    Component.prototype.remove = function () {
-        this._free();
-    };
-    Object.defineProperty(Component.prototype, "data", {
-        // ------------------------------------------------------------------------
-        //                      p u b l i c
-        // ------------------------------------------------------------------------
-        get: function () {
-            return this._data;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Component.prototype, "element", {
-        get: function () {
-            return this._element_wrapper;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Component.prototype, "outerHTML", {
-        get: function () {
-            return !!this._element ? this._element.outerHTML : "";
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Component.prototype, "innerHTML", {
-        get: function () {
-            return !!this._element ? this._element.innerHTML : "";
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Component.prototype.hashCode = function (selector) {
-        if (!!selector) {
-            return this._hash(this._getFirstElement(selector));
-        }
-        return this._hash(this._element);
-    };
-    Component.prototype.hide = function () {
-        __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].classAdd(this._element, 'hidden');
-    };
-    Component.prototype.show = function () {
-        __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].classRemove(this._element, 'hidden');
-    };
-    // ------------------------------------------------------------------------
-    //                      d o m
-    // ------------------------------------------------------------------------
-    Component.prototype.localize = function () {
-        __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].localize(this._element);
-    };
-    Component.prototype.get = function (selector) {
-        var result = [];
-        var elements = __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].get(selector, this._element);
-        for (var _i = 0, elements_1 = elements; _i < elements_1.length; _i++) {
-            var elem = elements_1[_i];
-            result.push(new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](this, elem));
-        }
-        return result;
-    };
-    Component.prototype.getFirst = function (selector) {
-        return new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](this, __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getFirst(selector, this._element));
-    };
-    Component.prototype.getLast = function (selector) {
-        return new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](this, __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getLast(selector, this._element));
-    };
-    Component.prototype.appendTo = function (selector, clean_parent) {
-        if (clean_parent === void 0) { clean_parent = false; }
-        var elem = (selector instanceof __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */])
-            ? selector
-            : new __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */](this, __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getFirst(selector));
-        if (!!elem) {
-            if (clean_parent) {
-                elem.innerHTML = '';
-            }
-            elem.appendChild(this._element);
-            //-- this is ready --//
-            this.ready();
-        }
-    };
-    Component.prototype.appendChild = function (child_html, opt_target_selector) {
-        if (!!child_html) {
-            var child = this._createElement(child_html);
-            var target = this._resolveElement(opt_target_selector || null, this._element);
-            if (!!target) {
-                target.appendChild(child);
-                // handle events for child
-                this._normalizeElement(child);
-            }
-        }
-    };
-    /**
-     * Return a class list.
-     * @param {string} selector Element selector. Only first matched element is returned.
-     * @return {string[]} Array of class names
-     */
-    Component.prototype.classList = function (selector) {
-        var elem = this._getFirstElement(selector);
-        if (!!elem) {
-            return elem.className.split(" ");
-        }
-        return [];
-    };
-    /**
-     * Check if selected element contains passed class. If passed class is an Array, check for all of them.
-     * @param {string} selector Element selector. Only first matched element is returned.
-     * @param {string | string[]} class_name Single class name or multiple class names.
-     * @return {boolean} Match found or not.
-     */
-    Component.prototype.classHas = function (selector, class_name) {
-        var elem = this._getFirstElement(selector);
-        if (!!elem) {
-            var classes = __WEBPACK_IMPORTED_MODULE_2__commons_lang__["a" /* default */].toArray(class_name);
-            for (var _i = 0, classes_1 = classes; _i < classes_1.length; _i++) {
-                var aclass = classes_1[_i];
-                if (!elem.classList.contains(aclass)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    };
-    /**
-     * Check the array for at least one match.
-     * @param {string} selector  Element selector. Only first matched element is returned.
-     * @param {string[]} class_name Array of classes
-     * @return {boolean} Match found or not.
-     */
-    Component.prototype.classHasOne = function (selector, class_name) {
-        var elem = this._getFirstElement(selector);
-        if (!!elem) {
-            var classes = __WEBPACK_IMPORTED_MODULE_2__commons_lang__["a" /* default */].toArray(class_name);
-            for (var _i = 0, classes_2 = classes; _i < classes_2.length; _i++) {
-                var aclass = classes_2[_i];
-                if (elem.classList.contains(aclass)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
-    Component.prototype.classAdd = function (selector, class_name) {
-        var elem = this._getFirstElement(selector);
-        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].classAdd(elem, class_name);
-    };
-    Component.prototype.classRemove = function (selector, class_name) {
-        var elem = this._getFirstElement(selector);
-        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].classRemove(elem, class_name);
-    };
-    Component.prototype.classSet = function (selector, value) {
-        return this.attrSet(selector, "class", name);
-    };
-    Component.prototype.attrValue = function (selector, attr_name) {
-        var elem = this._getFirstElement(selector);
-        if (!!elem) {
-            return elem.getAttribute(attr_name) || '';
-        }
-        return '';
-    };
-    Component.prototype.attrHas = function (selector, attr_name) {
-        var elem = this._getFirstElement(selector);
-        if (!!elem) {
-            return elem.hasAttribute(attr_name);
-        }
-        return false;
-    };
-    Component.prototype.attrSet = function (selector, name, value) {
-        var elem = this._getFirstElement(selector);
-        if (!!elem) {
-            elem.setAttribute(name, value);
-            return elem.getAttribute(name) || '';
-        }
-        return '';
-    };
-    Component.prototype.getValue = function (selector) {
-        var elem = this._getFirstElement(selector);
-        if (!!elem) {
-            return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getValue(elem);
-        }
-        return null;
-    };
-    // ------------------------------------------------------------------------
-    //                      p r o t e c t e d
-    // ------------------------------------------------------------------------
-    /**
-     * Add event listener to internal HTMLElement
-     * @param {string} selector
-     * @param {string} event_name
-     * @param {Listener} listener
-     */
-    Component.prototype.addEventListener = function (selector, event_name, listener) {
-        var elem = this._resolveElement(selector, this._element);
-        if (!!elem) {
-            this._addEventListener(elem, event_name, listener);
-        }
-        else {
-            console.warn("Component.addEventListener()", "Unable to add event '" + event_name + "' to '" + selector + "': Element not found!");
-        }
-    };
-    /**
-     * Remove event listener from internal HTMLElement
-     * @param {string} selector
-     * @param {string | string[]} event_names
-     */
-    Component.prototype.removeEventListener = function (selector, event_names) {
-        var elem = this._resolveElement(selector, this._element);
-        if (!!elem) {
-            this._removeEventListener(elem, __WEBPACK_IMPORTED_MODULE_2__commons_lang__["a" /* default */].toArray(event_names));
-        }
-    };
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-    Component.prototype._free = function () {
-        // remove ly events
-        _super.prototype.off.call(this, this);
-        // remove native events
-        this._freeListeners();
-        // remove element from dom
-        if (!!this._element) {
-            this._element.remove();
-        }
-        // clear list
-        this._native_events.clear();
-        this._native_elements.clear();
-        __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].off(this, __WEBPACK_IMPORTED_MODULE_5__i18n__["a" /* default */].EVENT_CHANGE_LANG);
-        // call abstract free
-        this.free();
-    };
-    Component.prototype._freeListeners = function () {
-        var hash_codes = this._native_events.keys();
-        for (var _i = 0, hash_codes_1 = hash_codes; _i < hash_codes_1.length; _i++) {
-            var hash_code = hash_codes_1[_i];
-            var elem = this._native_elements.get(hash_code);
-            if (!!elem) {
-                var names = this._native_events.get(hash_code).eventNames();
-                var count = this._removeEventListener(elem, names);
-                //console.log("Component._free()", hash_code, names, count);
-            }
-        }
-    };
-    Component.prototype._normalizeElements = function () {
-        var _this = this;
-        // events on root
-        this._normalizeElement(this._element);
-        // events on child
-        __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].forEachChild(this._element, function (elem) {
-            _this._normalizeElement(elem);
-        }, true);
-    };
-    Component.prototype._resolveElement = function (elem_or_selector, defVal) {
-        if (!!elem_or_selector) {
-            if (__WEBPACK_IMPORTED_MODULE_2__commons_lang__["a" /* default */].isString(elem_or_selector)) {
-                var found = this._getFirstElement(elem_or_selector);
-                if (!!found) {
-                    return this._normalizeElement(found);
-                }
-            }
-            else {
-                var found = elem_or_selector;
-                if (!!found) {
-                    return this._normalizeElement(found);
-                }
-            }
-        }
-        return !!defVal ? this._normalizeElement(defVal) : null;
-    };
-    Component.prototype._getElement = function (selector) {
-        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].get(selector, this._element);
-    };
-    Component.prototype._getFirstElement = function (selector) {
-        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getFirst(selector, this._element);
-    };
-    Component.prototype._getLastElement = function (selector) {
-        return __WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].getLast(selector, this._element);
-    };
-    Component.prototype._addEventListener = function (elem, event_name, listener) {
-        var hash_code = this._hash(elem);
-        if (!this._native_events.containsKey(hash_code)) {
-            this._native_events.put(hash_code, new __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__["a" /* default */]());
-        }
-        // get context binded listener
-        var ctx_listener = listener.bind(this);
-        // register reference for further removal
-        this._native_events.get(hash_code).on(event_name, ctx_listener);
-        // attach listener to native event
-        elem.addEventListener(event_name, ctx_listener, false);
-    };
-    Component.prototype._removeEventListener = function (elem, event_names, listener) {
-        var counter = 0;
-        if (!!elem) {
-            var hash_code = this._hash(elem);
-            if (this._native_events.containsKey(hash_code)) {
-                var events = this._native_events.get(hash_code);
-                for (var _i = 0, event_names_1 = event_names; _i < event_names_1.length; _i++) {
-                    var name_1 = event_names_1[_i];
-                    if (!!listener) {
-                        // remove reference
-                        events.removeListener(name_1, listener);
-                        // remove native
-                        elem.removeEventListener(name_1, listener);
-                        counter++;
-                    }
-                    else {
-                        var all_listeners = events.listeners(name_1);
-                        for (var i = 0; i < all_listeners.length; i++) {
-                            var _listener = all_listeners[i];
-                            // remove reference
-                            events.removeListener(name_1, _listener);
-                            // remove native
-                            elem.removeEventListener(name_1, _listener);
-                            counter++;
-                        }
-                    }
-                }
-            }
-        }
-        return counter;
-    };
-    Component.prototype._createElement = function (html) {
-        html = html.trim();
-        return this._normalizeElement(__WEBPACK_IMPORTED_MODULE_1__dom__["a" /* default */].newElement(html));
-    };
-    Component.prototype._normalizeElement = function (elem) {
-        // add hash
-        this._hash(elem);
-        //... do more stuff here
-        return elem;
-    };
-    Component.prototype._hash = function (elem) {
-        if (null != elem) {
-            var hash_code = __WEBPACK_IMPORTED_MODULE_6__ElementWrapper__["a" /* default */].hash(elem);
-            if (!!hash_code) {
-                // add new element reference to internal hash dictionary
-                this._native_elements.put(hash_code, elem);
-            }
-            return hash_code;
-        }
-        return '';
-    };
-    return Component;
-}(__WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__["a" /* default */]));
-// ------------------------------------------------------------------------
-//                      e x p o r t s
-// ------------------------------------------------------------------------
-/* harmony default export */ __webpack_exports__["a"] = (Component);
-
-
-/***/ }),
 /* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -2306,7 +2306,7 @@ var Component = /** @class */ (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ly__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_collections_Dictionary__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_events_EventEmitter__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_console__ = __webpack_require__(1);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2688,8 +2688,8 @@ var Router = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_console__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_console__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(8);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -2799,7 +2799,7 @@ var BaseObject = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Animate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return AnimateEffect; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__StyleManager__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lyts_core_commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__lyts_core_commons_lang__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__animate_css__ = __webpack_require__(40);
 
 
@@ -3056,7 +3056,7 @@ var ToastController = /** @class */ (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ServiceController__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_lang__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_cookies__ = __webpack_require__(21);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__constants__ = __webpack_require__(4);
@@ -3257,7 +3257,7 @@ var AuthController = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lang__ = __webpack_require__(2);
 
 var objects = /** @class */ (function () {
     function objects() {
@@ -3342,7 +3342,7 @@ var objects = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__browser__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__browser__ = __webpack_require__(10);
 
 /**
  * Cookies Helper class
@@ -3527,7 +3527,7 @@ var HttpClient = /** @class */ (function () {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_random__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__(11);
 
 
 /**
@@ -3865,7 +3865,7 @@ var ElementWrapper = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_console__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__pages_PageController__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_paths__ = __webpack_require__(42);
 var __extends = (this && this.__extends) || (function () {
@@ -4017,10 +4017,10 @@ var ServiceController = /** @class */ (function () {
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_ly__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_BaseObject__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__constants__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__views_Main__ = __webpack_require__(30);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__controllers_ApplicationController__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__controllers_ApplicationController__ = __webpack_require__(66);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4119,8 +4119,8 @@ launcher.instance().start();
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lang__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__strings__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__lang__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__strings__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objects__ = __webpack_require__(20);
 
 
@@ -4221,7 +4221,7 @@ var format = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_console__ = __webpack_require__(1);
 /**
  *
  *  MANAGE APP DESKTOP INSTALLATION:
@@ -4350,12 +4350,12 @@ var installer = /** @class */ (function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_events_Events__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_collections_Dictionary__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_BaseObject__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view_i18n__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_events_EventEmitter__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__commons_lang__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__commons_lang__ = __webpack_require__(2);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -4528,7 +4528,7 @@ var Application = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_components_ElementWrapper__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_ScreenController__ = __webpack_require__(31);
@@ -4646,7 +4646,7 @@ var Main = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Router__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ly__ = __webpack_require__(0);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -4798,7 +4798,7 @@ function view(uid, props) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = style;
 function style(uid, props) {
     // main
-    var main = "\n        <style>\n            \n        </style>      \n    ";
+    var main = "\n        <style>\n            .clickable {\n                cursor: pointer;\n            }\n        </style>      \n    ";
     return "\n        " + main + "\n           \n    ";
 }
 ;
@@ -4853,7 +4853,7 @@ function style(uid, props) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(37);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_screen_Screen__ = __webpack_require__(24);
@@ -5115,7 +5115,7 @@ function animate_css(props) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Router__ = __webpack_require__(13);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Component__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ly__ = __webpack_require__(0);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
@@ -5270,7 +5270,7 @@ var paths = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__constants__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__globals__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__view__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__vendor_lyts_core_commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__vendor_lyts_core_view_pages_page_Page__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__controllers_ToastController__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__controllers_AuthController__ = __webpack_require__(19);
@@ -5561,10 +5561,9 @@ function style(uid, props) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_lang__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__AbstractDatabaseService__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_i18n__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AbstractDatabaseService__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_i18n__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__ = __webpack_require__(0);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5575,7 +5574,6 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-
 
 
 
@@ -5605,14 +5603,51 @@ var AuthenticationService = /** @class */ (function (_super) {
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
+    AuthenticationService.prototype.get_all_accounts = function (skip, limit, callback) {
+        var _this = this;
+        var request_data = this.request;
+        request_data.query = '#findEqualAsc';
+        request_data.params = JSON.stringify({
+            skip: skip,
+            limit: limit,
+            sort: ['username', 'password']
+        });
+        _super.prototype.post.call(this, request_data).then(function (req_resp) {
+            _super.prototype.invoke.call(_this, callback, req_resp);
+        }).catch(function (req_resp) {
+            _super.prototype.invoke.call(_this, callback, req_resp);
+        });
+    };
+    AuthenticationService.prototype.get_account = function (key, callback) {
+        var _this = this;
+        var request_data = this.request;
+        _super.prototype.post.call(this, request_data).then(function (req_resp) {
+            _super.prototype.invoke.call(_this, callback, req_resp);
+        }).catch(function (req_resp) {
+            _super.prototype.invoke.call(_this, callback, req_resp);
+        });
+    };
+    AuthenticationService.prototype.remove_account = function (key, callback) {
+        var _this = this;
+        var request_data = this.request;
+        request_data.query = '#remove';
+        request_data.params = JSON.stringify({
+            _key: key
+        });
+        _super.prototype.post.call(this, request_data).then(function (req_resp) {
+            _super.prototype.invoke.call(_this, callback, req_resp);
+        }).catch(function (req_resp) {
+            _super.prototype.invoke.call(_this, callback, req_resp);
+        });
+    };
     AuthenticationService.prototype.register = function (email, password, callback) {
         var _this = this;
         // new account model
         var account = {
-            _key: __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_ly__["a" /* default */].random.guid(),
+            _key: __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].random.guid(),
             username: email,
             password: password,
-            lang: __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_view_i18n__["a" /* default */].lang,
+            lang: __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_i18n__["a" /* default */].lang,
             email: email,
             address: '',
             first_name: '',
@@ -5624,16 +5659,10 @@ var AuthenticationService = /** @class */ (function (_super) {
         var request_data = this.request;
         request_data.query = '#upsert';
         request_data.params = JSON.stringify(account);
-        _super.prototype.post.call(this, request_data).then(function (req_resp) {
-            _super.prototype.invoke.call(_this, callback, req_resp);
-        }).catch(function (req_resp) {
-            _super.prototype.invoke.call(_this, callback, req_resp);
+        request_data.transform = JSON.stringify({
+            'password': 'md5'
         });
-    };
-    AuthenticationService.prototype.get_account = function (key, callback) {
-        var _this = this;
-        var data = this.request;
-        _super.prototype.post.call(this, data).then(function (req_resp) {
+        _super.prototype.post.call(this, request_data).then(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
         }).catch(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
@@ -5641,36 +5670,16 @@ var AuthenticationService = /** @class */ (function (_super) {
     };
     AuthenticationService.prototype.login = function (email, password, callback) {
         var _this = this;
-        var data = {
-            'app_token': this.app_token,
-            'email': email,
-            'password': password
-        };
-        _super.prototype.post.call(this, data).then(function (req_resp) {
-            _super.prototype.invoke.call(_this, callback, req_resp);
-        }).catch(function (req_resp) {
-            _super.prototype.invoke.call(_this, callback, req_resp);
+        var request_data = this.request;
+        request_data.query = '#findOneEqual';
+        request_data.params = JSON.stringify({
+            username: email,
+            password: password
         });
-    };
-    AuthenticationService.prototype.reset_password = function (email, callback) {
-        var _this = this;
-        var data = {
-            'app_token': this.app_token,
-            'email': email
-        };
-        _super.prototype.post.call(this, data).then(function (req_resp) {
-            _super.prototype.invoke.call(_this, callback, req_resp);
-        }).catch(function (req_resp) {
-            _super.prototype.invoke.call(_this, callback, req_resp);
+        request_data.transform = JSON.stringify({
+            'password': 'md5'
         });
-    };
-    AuthenticationService.prototype.upsert = function (item, callback) {
-        var _this = this;
-        var data = {
-            'app_token': this.app_token,
-            'item': __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_lang__["a" /* default */].isString(item) ? item : __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_lang__["a" /* default */].toString(item)
-        };
-        _super.prototype.post.call(this, data).then(function (req_resp) {
+        _super.prototype.post.call(this, request_data).then(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
         }).catch(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
@@ -5694,7 +5703,7 @@ var AuthenticationService = /** @class */ (function (_super) {
         });
     };
     return AuthenticationService;
-}(__WEBPACK_IMPORTED_MODULE_1__AbstractDatabaseService__["a" /* default */]));
+}(__WEBPACK_IMPORTED_MODULE_0__AbstractDatabaseService__["a" /* default */]));
 /* harmony default export */ __webpack_exports__["a"] = (AuthenticationService);
 
 
@@ -5754,7 +5763,8 @@ var AbstractDatabaseService = /** @class */ (function (_super) {
                 'database': DATABASE,
                 'collection': this._collection,
                 'query': '',
-                'params': {}
+                'params': {},
+                'transform': {}
             };
         },
         enumerable: true,
@@ -5889,7 +5899,7 @@ var AbstractService = /** @class */ (function (_super) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RemoteService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_strings__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__commons_strings__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HttpClient__ = __webpack_require__(22);
 
 
@@ -5976,7 +5986,7 @@ var errors = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__constants__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__controllers_AuthController__ = __webpack_require__(19);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__controllers_ToastController__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__vendor_lyts_core_commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6302,12 +6312,12 @@ function style(uid, props) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__view__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_view_screens_screen_Screen__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__pages_page1_Page1__ = __webpack_require__(57);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_page2_Page2__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__pages_page2_Page2__ = __webpack_require__(63);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6392,7 +6402,7 @@ var GenericScreen = /** @class */ (function (_super) {
 
 function view(uid, props) {
     props = props || {};
-    return "\n            <div id=\"" + uid + "\" class=\"\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n   \n                <nav>\n                    <div class=\"nav-wrapper\">\n                      <a href=\"#\" class=\"brand-logo\">This is Generic Screen</a>\n                      <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n                      <!--\n                        <li><a data-router=\"relative\" href=\"auth/signin\">Login</a></li>\n                      -->\n                      </ul>\n                    </div>\n                </nav>\n                \n                <div id=\"" + uid + "_pages\"></div>        \n                        \n            </div>\n\n        ";
+    return "\n            <div id=\"" + uid + "\" class=\"\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n   \n                <nav>\n                    <div class=\"nav-wrapper\">\n                      <a href=\"#\" class=\"brand-logo\">This is Generic Screen!!!!</a>\n                      <ul id=\"nav-mobile\" class=\"right hide-on-med-and-down\">\n                      <!--\n                        <li><a data-router=\"relative\" href=\"auth/signin\">Login</a></li>\n                      -->\n                      </ul>\n                    </div>\n                </nav>\n                \n                <div id=\"" + uid + "_pages\"></div>        \n                        \n            </div>\n\n        ";
 }
 
 
@@ -6418,10 +6428,11 @@ function style(uid, props) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__view__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_pages_page_Page__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__controllers_ToastController__ = __webpack_require__(18);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__constants__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__controllers_ServiceController__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_user_list_item_UserListItem__ = __webpack_require__(60);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6432,6 +6443,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 
@@ -6451,6 +6463,13 @@ var Page1 = /** @class */ (function (_super) {
         _this._fld_register_username = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_register_username");
         _this._fld_register_password = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_register_password");
         _this._btn_register = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_btn_register");
+        // login
+        _this._fld_login_username = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_login_username");
+        _this._fld_login_password = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_fld_login_password");
+        _this._btn_login = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_btn_login");
+        // list of all users
+        _this._user_list = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_user_list");
+        _this._components = [];
         return _this;
     }
     // ------------------------------------------------------------------------
@@ -6462,6 +6481,8 @@ var Page1 = /** @class */ (function (_super) {
     Page1.prototype.free = function () {
         // release memory
         this._btn_register.removeEventListener();
+        this._btn_login.removeEventListener();
+        this.finishUserList();
         __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log("REMOVED:", this.uid);
     };
     Page1.prototype.ready = function () {
@@ -6484,16 +6505,39 @@ var Page1 = /** @class */ (function (_super) {
             this._lbl_version.innerHTML = __WEBPACK_IMPORTED_MODULE_5__constants__["a" /* default */].version;
             // call debounced function
             this._btn_register.addEventListener('click', __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].lang.funcDebounce(this, this.onRegisterClick, 1000, true));
+            this._btn_login.addEventListener('click', __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].lang.funcDebounce(this, this.onLoginClick, 1000, true));
         }
         catch (err) {
             __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error("Page1.init()", err);
         }
+        // add users to users list
+        this.loadUsersList();
+    };
+    Page1.prototype.finishUserList = function () {
+        // remove content
+        this._user_list.innerHTML = '';
+        for (var _i = 0, _a = this._components; _i < _a.length; _i++) {
+            var comp = _a[_i];
+            comp.off(this);
+        }
+        this._components = [];
+    };
+    Page1.prototype.logError = function (scope, err) {
+        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error(scope, err);
+        __WEBPACK_IMPORTED_MODULE_4__controllers_ToastController__["a" /* default */].instance().showError(err);
     };
     Page1.prototype.onRegisterClick = function (ev) {
         ev.preventDefault();
         var self = this;
         __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].dom.ready(function () {
             self.doRegister();
+        }, this);
+    };
+    Page1.prototype.onLoginClick = function (ev) {
+        ev.preventDefault();
+        var self = this;
+        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_ly__["a" /* default */].dom.ready(function () {
+            self.doLogin();
         }, this);
     };
     Page1.prototype.doRegister = function () {
@@ -6507,7 +6551,8 @@ var Page1 = /** @class */ (function (_super) {
                         _this.logError('Page1.doRegister', err);
                     }
                     else {
-                        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Page1.doRegister', response);
+                        // console.log('Page1.doRegister', response);
+                        _this.loadUsersList();
                     }
                 });
             }
@@ -6519,9 +6564,70 @@ var Page1 = /** @class */ (function (_super) {
             __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error('Page1.doRegister', err);
         }
     };
-    Page1.prototype.logError = function (scope, err) {
-        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error(scope, err);
-        __WEBPACK_IMPORTED_MODULE_4__controllers_ToastController__["a" /* default */].instance().showError(err);
+    Page1.prototype.doLogin = function () {
+        var _this = this;
+        try {
+            var username = this._fld_login_username.value();
+            var password = this._fld_login_password.value();
+            if (!!username && !!password) {
+                __WEBPACK_IMPORTED_MODULE_6__controllers_ServiceController__["a" /* default */].instance().account.login(username, password, function (err, response) {
+                    if (!!err) {
+                        _this.logError('Page1.doLogin', err);
+                    }
+                    else {
+                        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Page1.doLogin', response);
+                        // this.loadUsersList();
+                    }
+                });
+            }
+            else {
+                this.logError('Page1.doLogin', 'Missing username or password');
+            }
+        }
+        catch (err) {
+            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error('Page1.doLogin', err);
+        }
+    };
+    Page1.prototype.loadUsersList = function () {
+        var _this = this;
+        // remove content
+        this.finishUserList();
+        // get all users
+        __WEBPACK_IMPORTED_MODULE_6__controllers_ServiceController__["a" /* default */].instance().account.get_all_accounts(0, 100, function (err, response) {
+            if (!!err) {
+                _this.logError('Page1.loadUsersList', err);
+            }
+            else {
+                try {
+                    __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Page1.loadUsersList', response);
+                    for (var i = 0; i < response.length; i++) {
+                        var item = response[i];
+                        _this.loadUserListItem(item);
+                    }
+                }
+                catch (err) {
+                    _this.logError('Page1.loadUsersList', err);
+                }
+            }
+        });
+    };
+    Page1.prototype.loadUserListItem = function (account) {
+        __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].log('Page1.loadUserListItem', account);
+        var comp = new __WEBPACK_IMPORTED_MODULE_7__components_user_list_item_UserListItem__["a" /* default */](account);
+        comp.appendTo(this._user_list);
+        this._components.push(comp);
+        // event
+        comp.on(this, __WEBPACK_IMPORTED_MODULE_7__components_user_list_item_UserListItem__["a" /* default */].ON_REMOVE, this.doRemoveAccountItem);
+    };
+    Page1.prototype.doRemoveAccountItem = function (account) {
+        var _this = this;
+        if (!!account) {
+            //console.log('Page1.doRemoveAccountItem', account);
+            __WEBPACK_IMPORTED_MODULE_6__controllers_ServiceController__["a" /* default */].instance().account.remove_account(account._key, function (err, response) {
+                // reload
+                _this.loadUsersList();
+            });
+        }
     };
     return Page1;
 }(__WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_view_pages_page_Page__["a" /* default */]));
@@ -6538,7 +6644,7 @@ var Page1 = /** @class */ (function (_super) {
 
 function view(uid, props) {
     props = props || {};
-    return "\n            <div id=\"" + uid + "\" class=\"container\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n   \n                <h1>TEST PAGE</h1>\n                <span id=\"version\">0.0.0</span>\n                \n                <div class=\"section\">\n                    <h5>1. Register Accounts</h5>\n                    <div class=\"row\">\n                        \n                        <form class=\"col s12\">\n                            <div class=\"row\">\n                                <!-- register-username -->\n                                <div class=\"input-field col s4\">\n                                  <input id=\"" + uid + "_fld_register_username\" type=\"text\" class=\"validate\" value=\"\">\n                                  <label for=\"" + uid + "_fld_register_username\">Username</label>\n                                </div>\n                                \n                                <!-- register-password -->\n                                <div class=\"input-field col s8\">\n                                  <input id=\"" + uid + "_fld_register_password\" type=\"text\" class=\"validate\" value=\"\">\n                                  <label for=\"" + uid + "_fld_register_password\">Password</label>\n                                </div>\n                            </div>\n                        </form>\n                        \n                    </div>\n                    \n                    <div class=\"row\">\n                       <a id=\"" + uid + "_btn_register\" class=\"waves-effect waves-light btn\">\n                       <i class=\"material-icons right\">send</i>Register\n                       </a>  \n                    </div>\n                    \n                 </div>\n                \n                <div class=\"section\">\n                    <h5>2. Test Login</h5>\n                    <div class=\"row\">\n                    \n                    </div>\n                </div>    \n                \n      \n                     \n            </div>\n\n        ";
+    return "\n            <div id=\"" + uid + "\" class=\"container\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n   \n                <h1>TEST PAGE</h1>\n                <span id=\"version\">0.0.0</span>\n                \n                <div class=\"section\">\n                    <h5>1. Register Accounts</h5>\n                    <div class=\"row\">\n                        \n                        <form class=\"col s12\">\n                            <div class=\"row\">\n                                <!-- register-username -->\n                                <div class=\"input-field col s4\">\n                                  <input id=\"" + uid + "_fld_register_username\" type=\"text\" class=\"validate\" value=\"\">\n                                  <label for=\"" + uid + "_fld_register_username\">Username</label>\n                                </div>\n                                \n                                <!-- register-password -->\n                                <div class=\"input-field col s8\">\n                                  <input id=\"" + uid + "_fld_register_password\" type=\"text\" class=\"validate\" value=\"\">\n                                  <label for=\"" + uid + "_fld_register_password\">Password</label>\n                                </div>\n                            </div>\n                        </form>\n                        \n                    </div>\n                    \n                    <div class=\"row\">\n                       <a id=\"" + uid + "_btn_register\" class=\"waves-effect waves-light btn\">\n                       <i class=\"material-icons right\">send</i>Register\n                       </a>  \n                    </div>\n                    \n                 </div>\n                \n                <div class=\"section\">\n                    <h5>2. Test Login</h5>\n                    <div class=\"row\">\n                        <form class=\"col s12\">\n                            <div class=\"row\">\n                                <!-- login-username -->\n                                <div class=\"input-field col s4\">\n                                  <input id=\"" + uid + "_fld_login_username\" type=\"text\" class=\"validate\" value=\"\">\n                                  <label for=\"" + uid + "_fld_login_username\">Username</label>\n                                </div>\n                                \n                                <!-- login-password -->\n                                <div class=\"input-field col s8\">\n                                  <input id=\"" + uid + "_fld_login_password\" type=\"text\" class=\"validate\" value=\"\">\n                                  <label for=\"" + uid + "_fld_login_password\">Password</label>\n                                </div>\n                            </div>\n                        </form>\n                        <div class=\"row\">\n                            <a id=\"" + uid + "_btn_login\" class=\"waves-effect waves-light btn\">\n                            <i class=\"material-icons right\">send</i>Login\n                            </a>  \n                        </div>\n                    \n                    </div>\n                </div>    \n                \n                <div class=\"section\">\n                    <h5>3. User's List</h5>\n                    <div class=\"row\">\n                    \n                        <div id=\"" + uid + "_user_list\" class=\"col s12\"> </div>\n                        \n                    </div>\n                </div>  \n                     \n            </div>\n\n        ";
 }
 
 
@@ -6561,10 +6667,128 @@ function style(uid, props) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_view_components_Component__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__view__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__ = __webpack_require__(1);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+
+
+
+
+var UserListItem = /** @class */ (function (_super) {
+    __extends(UserListItem, _super);
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+    function UserListItem(account) {
+        var _this = _super.call(this) || this;
+        _this._model_account = account;
+        _this._username = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_username");
+        _this._password = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_password");
+        _this._btn_remove = _super.prototype.getFirst.call(_this, "#" + _this.uid + "_btn_remove");
+        return _this;
+    }
+    // ------------------------------------------------------------------------
+    //                      o v e r r i d e
+    // ------------------------------------------------------------------------
+    UserListItem.prototype.render = function () {
+        return Object(__WEBPACK_IMPORTED_MODULE_2__view__["a" /* default */])(this.uid, {});
+    };
+    UserListItem.prototype.free = function () {
+        __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__["a" /* default */].Application.events.off(this);
+        this._btn_remove.removeEventListener();
+    };
+    UserListItem.prototype.ready = function () {
+        this.init();
+    };
+    UserListItem.prototype.show = function () {
+    };
+    UserListItem.prototype.hide = function () {
+    };
+    // ------------------------------------------------------------------------
+    //                      p u b l i c
+    // ------------------------------------------------------------------------
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+    UserListItem.prototype.init = function () {
+        // ly.Application.events.on(this, constants.EVENT_ON_LOGIN, this.onLogin);
+        __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__["a" /* default */].lang.funcDelay(function () {
+            // this.emit( this.OPEN_LAYER, { url: 'https://www.wikipedia.org/'} );
+        }, 5000);
+        this._btn_remove.addEventListener('click', this.onClickRemove);
+        this.initModel();
+    };
+    UserListItem.prototype.initModel = function () {
+        if (!!this._model_account) {
+            this._username.value(this._model_account.username);
+            this._password.value(this._model_account.password);
+        }
+        else {
+            __WEBPACK_IMPORTED_MODULE_3__vendor_lyts_core_commons_console__["a" /* default */].error('UserListItem.initModel', 'MODEL IS EMPTY OR NULL');
+        }
+    };
+    UserListItem.prototype.onClickRemove = function (e) {
+        e.preventDefault();
+        // emit event
+        this.emit(UserListItem.ON_REMOVE, this._model_account);
+    };
+    // ------------------------------------------------------------------------
+    //                      c o n s t
+    // ------------------------------------------------------------------------
+    UserListItem.ON_REMOVE = 'on_remove';
+    return UserListItem;
+}(__WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_view_components_Component__["a" /* default */]));
+/* harmony default export */ __webpack_exports__["a"] = (UserListItem);
+
+
+/***/ }),
+/* 61 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = view;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(62);
+
+function view(uid, props) {
+    props = props || {};
+    return "\n            <div id=\"" + uid + "\" class=\"row z-depth-1\">\n                " + Object(__WEBPACK_IMPORTED_MODULE_0__style__["a" /* default */])(uid, props) + "\n            \n                <div class=\"col s5\">\n                    <span id=\"" + uid + "_username\"></span>\n                </div>\n                <div class=\"col s5\">\n                    <span id=\"" + uid + "_password\"></span>\n                </div>\n                <div class=\"col s2\">\n                    <i id=\"" + uid + "_btn_remove\" class=\"clickable material-icons\">delete</i>\n                </div>\n                \n            </div>\n\n        ";
+}
+
+
+/***/ }),
+/* 62 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = style;
+function style(uid, props) {
+    // main
+    var main = "\n        <style>\n            \n        </style>      \n    ";
+    return "\n        " + main + "\n           \n    ";
+}
+;
+
+
+/***/ }),
+/* 63 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_view_pages_page_Page__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_console__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_style_styles_animate_Animate__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__view__ = __webpack_require__(64);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -6629,12 +6853,12 @@ var Page2 = /** @class */ (function (_super) {
 
 
 /***/ }),
-/* 61 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = view;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__style__ = __webpack_require__(65);
 
 function view(uid, props) {
     props = props || {};
@@ -6643,7 +6867,7 @@ function view(uid, props) {
 
 
 /***/ }),
-/* 62 */
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -6657,12 +6881,12 @@ function style(uid, props) {
 
 
 /***/ }),
-/* 63 */
+/* 66 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_ly__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_ModelApplicationContext__ = __webpack_require__(64);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__model_ModelApplicationContext__ = __webpack_require__(67);
 
 
 /**
@@ -6718,7 +6942,7 @@ var ApplicationController = /** @class */ (function () {
 
 
 /***/ }),
-/* 64 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

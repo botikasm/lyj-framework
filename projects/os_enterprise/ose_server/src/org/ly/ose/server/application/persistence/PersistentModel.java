@@ -2,6 +2,9 @@ package org.ly.ose.server.application.persistence;
 
 import org.lyj.ext.db.arango.serialization.ArangoMapDocument;
 
+import java.util.Collection;
+import java.util.Set;
+
 /**
  *
  */
@@ -24,6 +27,8 @@ public class PersistentModel
 
     public PersistentModel(final Object item) {
         super(item);
+
+        this.init();
     }
 
     // ------------------------------------------------------------------------
@@ -48,6 +53,9 @@ public class PersistentModel
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    private void init(){
 
+
+    }
 
 }

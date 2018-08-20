@@ -40,6 +40,46 @@ export default class AuthenticationService
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public get_all_accounts(skip: number, limit: number, callback: ServiceCallback): void {
+        const request_data = this.request;
+        request_data.query = '#findEqualAsc';
+        request_data.params = JSON.stringify({
+            skip: skip,
+            limit: limit,
+            sort: ['username', 'password']
+        });
+
+        super.post(request_data).then((req_resp) => {
+            super.invoke(callback, req_resp);
+        }).catch((req_resp) => {
+            super.invoke(callback, req_resp);
+        });
+    }
+
+    public get_account(key: string, callback: ServiceCallback): void {
+        const request_data = this.request;
+
+        super.post(request_data).then((req_resp) => {
+            super.invoke(callback, req_resp);
+        }).catch((req_resp) => {
+            super.invoke(callback, req_resp);
+        });
+    }
+
+    public remove_account(key: string, callback: ServiceCallback): void {
+        const request_data = this.request;
+        request_data.query = '#remove';
+        request_data.params = JSON.stringify({
+            _key: key
+        });
+
+        super.post(request_data).then((req_resp) => {
+            super.invoke(callback, req_resp);
+        }).catch((req_resp) => {
+            super.invoke(callback, req_resp);
+        });
+    }
+
     public register(email: string,
                     password: string,
                     callback: ServiceCallback): void {
@@ -62,6 +102,9 @@ export default class AuthenticationService
         const request_data = this.request;
         request_data.query = '#upsert';
         request_data.params = JSON.stringify(account);
+        request_data.transform = JSON.stringify({
+            'password':'md5'
+        });
 
         super.post(request_data).then((req_resp) => {
             super.invoke(callback, req_resp);
@@ -70,48 +113,19 @@ export default class AuthenticationService
         });
     }
 
-    public get_account(key: string, callback: ServiceCallback): void {
-        let data = this.request;
-
-        super.post(data).then((req_resp) => {
-            super.invoke(callback, req_resp);
-        }).catch((req_resp) => {
-            super.invoke(callback, req_resp);
-        });
-    }
-
     public login(email: string, password: string, callback: ServiceCallback): void {
-        let data = {
-            'app_token': this.app_token,
-            'email': email,
-            'password': password
-        };
-        super.post(data).then((req_resp) => {
-            super.invoke(callback, req_resp);
-        }).catch((req_resp) => {
-            super.invoke(callback, req_resp);
+
+        const request_data = this.request;
+        request_data.query = '#findOneEqual';
+        request_data.params = JSON.stringify({
+            username: email,
+            password: password
         });
-    }
-
-
-    public reset_password(email: string, callback: ServiceCallback): void {
-        let data = {
-            'app_token': this.app_token,
-            'email': email
-        };
-        super.post(data).then((req_resp) => {
-            super.invoke(callback, req_resp);
-        }).catch((req_resp) => {
-            super.invoke(callback, req_resp);
+        request_data.transform = JSON.stringify({
+            'password':'md5'
         });
-    }
 
-    public upsert(item: any, callback: ServiceCallback): void {
-        let data = {
-            'app_token': this.app_token,
-            'item': lang.isString(item) ? item : lang.toString(item)
-        };
-        super.post(data).then((req_resp) => {
+        super.post(request_data).then((req_resp) => {
             super.invoke(callback, req_resp);
         }).catch((req_resp) => {
             super.invoke(callback, req_resp);

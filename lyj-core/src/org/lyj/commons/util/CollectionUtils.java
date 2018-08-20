@@ -1621,7 +1621,7 @@ public abstract class CollectionUtils {
     public static JSONArray addAll(final JSONArray collection,
                                    final JSONArray items,
                                    final boolean deep) {
-        if(null!=items){
+        if (null != items) {
             CollectionUtils.forEach(items, (value) -> {
                 try {
                     if (null != value) {
@@ -1899,7 +1899,7 @@ public abstract class CollectionUtils {
     }
 
     public static <T> T get(T[] array, int index) {
-        if (index < 0 || array.length < index + 1) {
+        if (null == array || index < 0 || array.length < index + 1) {
             return null;
         }
         return array[index];

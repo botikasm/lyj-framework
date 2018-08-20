@@ -23,6 +23,7 @@ public class OSEPayloadDatabase
     private static final String FLD_COLLECTION = "collection"; // "users"
     private static final String FLD_QUERY = "query"; // "FOR u IN users LET friends = u.friends FILTER u.name == @name RETURN { "name" : u.name, "friends" : friends }"
     private static final String FLD_PARAMS = "params"; // { "name" : "Mario" }
+    private static final String FLD_TRANSFORM = "transform"; // { "name" : "Mario" }
 
 
     // ------------------------------------------------------------------------
@@ -101,6 +102,13 @@ public class OSEPayloadDatabase
         return (Map<String, Object>) super.map().get(FLD_PARAMS);
     }
 
+    public Map<String, String> transform() {
+        if (null == super.map().get(FLD_TRANSFORM)) {
+            super.map().put(FLD_TRANSFORM, new HashMap<>());
+        }
+        return (Map<String, String>) super.map().get(FLD_TRANSFORM);
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -110,19 +118,24 @@ public class OSEPayloadDatabase
     // ------------------------------------------------------------------------
 
     private void init() {
-        if (!super.map().has(FLD_PARAMS)) {
-            super.map().put(FLD_PARAMS, new HashMap<>());
+        this.ensureMap(FLD_PARAMS);
+        this.ensureMap(FLD_TRANSFORM);
+    }
+
+    private void ensureMap(final String field_name) {
+        if (!super.map().has(field_name)) {
+            super.map().put(field_name, new HashMap<>());
         } else {
-            final Object params = super.map().get(FLD_PARAMS);
+            final Object params = super.map().get(field_name);
             if (!(params instanceof Map)) {
 
                 if (params instanceof String) {
                     final String s_params = (String) params;
                     if (StringUtils.isJSONObject(s_params)) {
                         final JSONObject item = new JSONObject(s_params);
-                        super.map().put(FLD_PARAMS, JsonWrapper.toMap(item));
+                        super.map().put(field_name, JsonWrapper.toMap(item));
                     } else if (!IConstants.STR_NULL.equalsIgnoreCase(s_params)) {
-                        super.map().put(FLD_PARAMS, MapConverter.toMap(s_params));
+                        super.map().put(field_name, MapConverter.toMap(s_params));
                     }
                 }
             }

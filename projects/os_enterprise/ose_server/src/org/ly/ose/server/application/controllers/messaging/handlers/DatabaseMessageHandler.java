@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.commons.model.messaging.OSEResponse;
 import org.ly.ose.commons.model.messaging.payloads.OSEPayloadDatabase;
+import org.ly.ose.server.application.controllers.validation.ValidationController;
 import org.ly.ose.server.application.persistence.DBController;
 import org.ly.ose.server.application.persistence.DBHelper;
 import org.ly.ose.server.application.persistence.PersistentModel;
@@ -65,10 +66,11 @@ public class DatabaseMessageHandler
             final String coll_name = payload.collection();
             final String query = payload.query();
             final Map<String, ?> params = payload.params();
+            final Map<String, String> transform = payload.transform();
 
             final DBHelper.CollectionWrapper collection = new DBHelper.CollectionWrapper(DBHelper.instance().collection(db_name, coll_name));
             if (collection.connected()) {
-                final JSONArray query_result = this.execute(collection, query, params);
+                final JSONArray query_result = this.execute(collection, query, params, transform);
                 response.payload(query_result);
             } else {
                 throw new Exception(FormatUtils.format("Collection '%s' in database '%s' not found.", coll_name, db_name));
@@ -82,9 +84,10 @@ public class DatabaseMessageHandler
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    final JSONArray execute(final DBHelper.CollectionWrapper collection,
-                            final String query_or_macro,
-                            final Map<String, ?> params_or_entity) {
+    private JSONArray execute(final DBHelper.CollectionWrapper collection,
+                              final String query_or_macro,
+                              final Map<String, ?> params_or_entity,
+                              final Map<String, String> transform) {
         if (!query_or_macro.startsWith(MACRO_PREFIX)) {
             // direct command
             final String query = query_or_macro;
@@ -99,7 +102,8 @@ public class DatabaseMessageHandler
             final int skip;
             final int limit;
             final Map params;
-            if (params_or_entity.containsKey("params")) {
+            if (params_or_entity.containsKey("params")
+                    || (params_or_entity.containsKey("skip") && params_or_entity.containsKey("limit"))) {
                 query = StringUtils.toString(params_or_entity.get("query"));
                 sort = params_or_entity.containsKey("sort") ? (Collection) params_or_entity.get("sort") : new ArrayList<>();
                 skip = ConversionUtils.toInteger(params_or_entity.get("skip"));
@@ -111,6 +115,11 @@ public class DatabaseMessageHandler
                 skip = 0;
                 limit = 0;
                 params = params_or_entity;
+            }
+
+            // should apply some kind of transformation?
+            if (null != transform && !transform.isEmpty()) {
+                ValidationController.instance().validate(params, transform);
             }
 
             // macro parser

@@ -49,7 +49,8 @@ export default class AbstractDatabaseService
             'database': DATABASE, // application name
             'collection': this._collection,
             'query': '',
-            'params': {}
+            'params': {},
+            'transform': {}
         };
     }
 
