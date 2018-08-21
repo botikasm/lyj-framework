@@ -176,6 +176,9 @@ public class Converter {
             // try convert other types
             if (value instanceof ScriptObjectMirror) {
                 result = JavascriptConverter.toJSON((ScriptObjectMirror) value);
+            } else {
+                final String str_value = StringUtils.toString(value);
+                result = str_value;
             }
         }
 

@@ -3,6 +3,7 @@ package org.ly.ose.server.application.programming;
 import org.json.JSONObject;
 import org.ly.ose.server.IConstants;
 import org.lyj.commons.logging.Level;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.File;
@@ -114,7 +115,7 @@ public class OSEProgramInfo
     }
 
     public String fullName(){
-        return this.namespace() + "_" + this.name();
+        return StringUtils.replace(this.namespace() + "." + this.name(), ".", "_");
     }
 
     public String namespace() {

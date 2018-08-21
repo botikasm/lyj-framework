@@ -2,19 +2,21 @@ package org.ly.ose.server.application.programming.tools.utils;
 
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
-import org.lyj.commons.util.RandomUtils;
+import org.lyj.commons.cryptograph.MD5;
+import org.lyj.commons.util.RegExpUtils;
+import org.lyj.commons.util.StringUtils;
 
 /**
  *
  */
-public class Tool_rnd
+public class Tool_string
         extends OSEProgramTool {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    public static final String NAME = "rnd"; // used as $rnd.
+    public static final String NAME = "string"; // used as $string.
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -27,7 +29,7 @@ public class Tool_rnd
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public Tool_rnd(final OSEProgram program) {
+    public Tool_string(final OSEProgram program) {
         super(NAME, program);
 
         _package_name = super.info().fullName();
@@ -41,34 +43,13 @@ public class Tool_rnd
 
     }
 
-    public String uuid() {
-        return RandomUtils.randomUUID(true);
+    public String md5(final String text) {
+        return MD5.encode(text);
     }
 
-    public String digits(final int count_digits) {
-        return RandomUtils.randomNumeric(count_digits);
+    public boolean isEmail(final Object email) {
+        return RegExpUtils.isValidEmail(StringUtils.toString(email));
     }
-
-    public String ascii(final int count_chars) {
-        return RandomUtils.randomAscii(count_chars);
-    }
-
-    public String text(final int count_chars) {
-        return RandomUtils.randomAlphabetic(count_chars);
-    }
-
-    public int timeBased() {
-        return RandomUtils.getTimeBasedRandomInteger();
-    }
-
-    public int timeBased(final int count_chars) {
-        return RandomUtils.getTimeBasedRandomInteger(count_chars);
-    }
-
-    public Number number(final Object num1, final Object num2) {
-        return RandomUtils.rnd(num1, num2);
-    }
-
 
 
 }

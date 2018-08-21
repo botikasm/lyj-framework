@@ -90,6 +90,17 @@ public class OSEProgramSessions {
         }
     }
 
+    public OSEProgram remove(final String key) {
+        synchronized (_cache) {
+            if (_cache.containsKey(key)) {
+                final MemoryCacheItem<OSEProgram> item = _cache.remove(key);
+                return item.item();
+            }
+            return null;
+        }
+    }
+
+
     // ------------------------------------------------------------------------
     //                     p r i v a t e
     // ------------------------------------------------------------------------

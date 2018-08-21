@@ -7,7 +7,6 @@ import org.lyj.commons.util.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -144,8 +143,6 @@ public class ProgramsManager
     }
 
     private void addToRegistry(final OSEProgramInfo program_info) throws Exception {
-        // add to memory register
-        _programs.put(program_info.uid(), program_info);
 
         // add to file system (only not-protected packages)
         if (!isProtected(program_info.installationRoot())) {
@@ -158,7 +155,25 @@ public class ProgramsManager
 
             // clear cache
             OSEProgram.clearCache(program_info.installationRoot());
+
+            // remove singleton instance
+            if (program_info.singleton()) {
+                final OSEProgramInfo old_info = _programs.get(program_info.uid());
+                if(null!=old_info){
+                    final String program_session_id = (String) old_info.data().get(OSEProgramInfo.FLD_SESSION_ID);
+                    if (StringUtils.hasText(program_session_id)) {
+                        final OSEProgram program = OSEProgramSessions.instance().remove(program_session_id);
+                        if (null != program) {
+                            program.close();
+                        }
+                    }
+                }
+            }
         }
+
+        // add to memory register
+        _programs.put(program_info.uid(), program_info);
+
     }
 
     private void loadFromRegistry() {

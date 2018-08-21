@@ -10,8 +10,10 @@ import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_session;
 import org.ly.ose.server.application.programming.tools.remote.Tool_http;
 import org.ly.ose.server.application.programming.tools.request.Tool_request;
+import org.ly.ose.server.application.programming.tools.utils.Tool_error;
 import org.ly.ose.server.application.programming.tools.utils.Tool_resource;
 import org.ly.ose.server.application.programming.tools.utils.Tool_rnd;
+import org.ly.ose.server.application.programming.tools.utils.Tool_string;
 import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -252,6 +254,8 @@ public class OSEProgram {
         _program.context().put(ensureScriptPrefix(Tool_session.NAME), new Tool_session(this));
         _program.context().put(ensureScriptPrefix(Tool_resource.NAME), new Tool_resource(this));
         _program.context().put(ensureScriptPrefix(Tool_http.NAME), new Tool_http(this));
+        _program.context().put(ensureScriptPrefix(Tool_string.NAME), new Tool_string(this));
+        _program.context().put(ensureScriptPrefix(Tool_error.NAME), new Tool_error(this));
 
         // request tools
         _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this)); // all request
@@ -357,7 +361,7 @@ public class OSEProgram {
 
     public static Object callMember(final ScriptObjectMirror script,
                                     final String scriptName,
-                                    final Object... args) {
+                                    final Object... args) throws Exception {
         if (null != script && StringUtils.hasText(scriptName)) {
 
             if (scriptName.contains(".")) {
@@ -367,16 +371,37 @@ public class OSEProgram {
                     final boolean latest = i == tokens.length - 1;
                     final String method = tokens[i];
                     if (latest) {
-                        return null != tmp ? tmp.callMember(method, args) : null;
+                        return validate(null != tmp ? tmp.callMember(method, args) : null);
                     } else {
                         tmp = (ScriptObjectMirror) script.callMember(method);
                     }
                 }
             } else {
-                return script.callMember(scriptName, args);
+                return validate(script.callMember(scriptName, args));
             }
         }
         return null;
     }
 
+    private static Object validate(final Object value) throws Exception {
+
+        if (value instanceof ScriptObjectMirror) {
+            final Map map_value = Tool_error.toMapError(value);
+            if (isError(map_value)) {
+                throw new Exception(StringUtils.toString(map_value.get("message")));
+            }
+        } else if (value instanceof Map) {
+            final Map map_value = (Map) value;
+            if (isError(map_value)) {
+                throw new Exception(StringUtils.toString(map_value.get("message")));
+            }
+        }
+        return value;
+    }
+
+    private static boolean isError(final Map map_value) {
+        return map_value.containsKey("type")
+                && map_value.get("type").equals("error")
+                && StringUtils.hasText(StringUtils.toString(map_value.get("message")));
+    }
 }

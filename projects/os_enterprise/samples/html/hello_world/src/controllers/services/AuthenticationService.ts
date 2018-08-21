@@ -58,6 +58,10 @@ export default class AuthenticationService
 
     public get_account(key: string, callback: ServiceCallback): void {
         const request_data = this.request;
+        request_data.query = '#findOneEqual';
+        request_data.params = JSON.stringify({
+            _key: key
+        });
 
         super.post(request_data).then((req_resp) => {
             super.invoke(callback, req_resp);
