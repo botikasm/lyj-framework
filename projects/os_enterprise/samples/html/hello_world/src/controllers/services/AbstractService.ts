@@ -65,8 +65,11 @@ export default class AbstractService
 
     private static errorFrom(data: any): any {
         data = this.toJSON(data);
-        if(!!data){
-            if(!!data.error){
+        console.log('AbstractService.errorFrom', data);
+        if (!!data) {
+            if (ly.lang.isString(data)) {
+                return data;
+            } else if (!!data.error) {
                 return data.error;
             } else if (data.hasOwnProperty("ok") && !data.ok) {
                 // RequestResult
@@ -74,7 +77,7 @@ export default class AbstractService
             } else if (!!data.data) {
                 // nested data
                 return AbstractService.errorFrom(data.data);
-            } else if (!!data.response){
+            } else if (!!data.response) {
                 return AbstractService.errorFrom(data.response);
             }
         }

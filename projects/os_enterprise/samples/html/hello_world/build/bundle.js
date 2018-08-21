@@ -5786,6 +5786,7 @@ var AbstractDatabaseService = /** @class */ (function (_super) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_lyts_core_net_RemoteService__ = __webpack_require__(49);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_commons_console__ = __webpack_require__(1);
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -5796,6 +5797,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+
 
 
 var AbstractService = /** @class */ (function (_super) {
@@ -5846,8 +5848,12 @@ var AbstractService = /** @class */ (function (_super) {
     };
     AbstractService.errorFrom = function (data) {
         data = this.toJSON(data);
+        __WEBPACK_IMPORTED_MODULE_2__vendor_lyts_core_commons_console__["a" /* default */].log('AbstractService.errorFrom', data);
         if (!!data) {
-            if (!!data.error) {
+            if (__WEBPACK_IMPORTED_MODULE_1__vendor_lyts_core_ly__["a" /* default */].lang.isString(data)) {
+                return data;
+            }
+            else if (!!data.error) {
                 return data.error;
             }
             else if (data.hasOwnProperty("ok") && !data.ok) {
