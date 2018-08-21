@@ -7,6 +7,14 @@ import org.lyj.commons.util.RegExpUtils;
 import java.util.Collection;
 import java.util.LinkedList;
 
+/**
+ * Rule:
+ * - is number
+ * - is lower than x
+ *
+ * Usage:
+ *  integerLenL#10
+ */
 public class EntityMacroIntegerLenL
         extends AbstractEntityMacro {
 

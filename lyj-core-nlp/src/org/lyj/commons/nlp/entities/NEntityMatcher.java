@@ -129,6 +129,7 @@ public class NEntityMatcher {
 
         // require parameters in contructor
         _macros.register(EntityMacroStartsWith.NAME, EntityMacroStartsWith.class);
+        _macros.register(EntityMacroStartsWithExp.NAME, EntityMacroStartsWithExp.class);
         _macros.register(EntityMacroEndsWith.NAME, EntityMacroEndsWith.class);
         _macros.register(EntityMacroContains.NAME, EntityMacroContains.class);
         _macros.register(EntityMacroIntegerLen.NAME, EntityMacroIntegerLen.class);
@@ -307,7 +308,7 @@ public class NEntityMatcher {
         public AbstractEntityMacro get(final String name) {
             try {
                 final String raw_name = name.startsWith(PREFIX_MACRO) ? name.substring(1) : name;
-                final String[] tokens = StringUtils.split(raw_name, PREFIX_MACRO); // params are separated with dots
+                final String[] tokens = StringUtils.split(raw_name, PREFIX_MACRO); // params are separated with #
                 final String key = tokens[0]; // macro name is first
                 if (_classes.containsKey(key)) {
                     final String[] args = CollectionUtils.subArray(tokens, 1, tokens.length - 1);

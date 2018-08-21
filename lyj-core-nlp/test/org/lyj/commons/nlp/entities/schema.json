@@ -43,7 +43,7 @@
     "start": [],
     "rules": [
       "#integerLen#5",
-      "#startsWith#VEN-"
+      "#startsWithExp#VEN-#([0-9a-zA-Z-])"
     ]
   }
 }

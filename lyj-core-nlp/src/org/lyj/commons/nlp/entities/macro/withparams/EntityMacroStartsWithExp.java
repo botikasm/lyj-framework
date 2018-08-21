@@ -1,42 +1,44 @@
 package org.lyj.commons.nlp.entities.macro.withparams;
 
 import org.lyj.commons.nlp.entities.macro.AbstractEntityMacro;
-import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.RegExpUtils;
+import org.lyj.commons.util.StringUtils;
 
 import java.util.Collection;
 import java.util.LinkedList;
 
 /**
  * Rule:
- * - is number
- * - is greater than x
- *
+ * - Starts with x
+ * - if condition is respected, RegExp is applied
+ * <p>
  * Usage:
- *  integerLenG#10
+ * integerLenG#10
  */
-public class EntityMacroIntegerLenG
+public class EntityMacroStartsWithExp
         extends AbstractEntityMacro {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    public static final String NAME = "integerLenG";
+    public static final String NAME = "startsWithExp";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final int _len;
+    private final String _start_text;
+    private final String _regex_pattern;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public EntityMacroIntegerLenG(final String[] args) {
+    public EntityMacroStartsWithExp(final String[] args) {
         super(NAME, args);
-        _len = args.length > 0 ? ConversionUtils.toInteger(args[0]) : 0;
+        _start_text = args.length > 0 ? args[0] : "";
+        _regex_pattern = args.length > 1 ? args[1] : "";
     }
 
     // ------------------------------------------------------------------------
@@ -50,8 +52,12 @@ public class EntityMacroIntegerLenG
         final Collection<String> result = new LinkedList<>();
         for (int i = start_index; i < phrase.length; i++) {
             final String word = phrase[i];
-            if (RegExpUtils.isValidIntNumber(word) && word.length() > _len) {
-                result.add(word);
+            if (StringUtils.hasText(_start_text) && word.startsWith(_start_text)) {
+                if (StringUtils.hasText(_regex_pattern)) {
+                    result.add(RegExpUtils.matches(_regex_pattern, word));
+                } else {
+                    result.add(word);
+                }
             }
         }
         return result.toArray(new String[0]);

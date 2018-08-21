@@ -101,14 +101,6 @@ public abstract class RegExpUtils {
                 : "";
     }
 
-    public static String matches(final String regexp,
-                                 final String string) {
-        final String[] matches = getMatches(string, regexp);
-        return null != matches && matches.length > 0
-                ? StringUtils.toString(matches, "")
-                : "";
-    }
-
     public static boolean match(String text, String pattern) {
         if (!StringUtils.hasText(text)) {
             return false;
@@ -252,6 +244,14 @@ public abstract class RegExpUtils {
         return text.split(regex);
     }
 
+    public static String matches(final String regexp,
+                                 final String string) {
+        final String[] matches = getMatches(string, regexp);
+        return null != matches && matches.length > 0
+                ? StringUtils.toString(matches, "")
+                : "";
+    }
+
     /**
      * Return an array of matched groups.
      *
@@ -259,7 +259,8 @@ public abstract class RegExpUtils {
      * @param regex The regular expression. i.e "\{(?:[^\}]+)?\}"
      * @return Array of matched groups. i.e. ["{hello}", "{world}"]
      */
-    public static String[] getMatches(final String text, final String regex) {
+    public static String[] getMatches(final String text,
+                                      final String regex) {
         final List<String> list = new LinkedList<String>();
         final Pattern p = Pattern.compile(regex);
         final Matcher m = p.matcher(text);
