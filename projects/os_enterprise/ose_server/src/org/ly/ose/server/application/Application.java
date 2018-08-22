@@ -1,6 +1,7 @@
 package org.ly.ose.server.application;
 
 import org.ly.ose.server.IConstants;
+import org.ly.ose.server.application.controllers.fs.temp.FSTemp;
 import org.ly.ose.server.application.endpoints.api.ApiServer;
 import org.ly.ose.server.application.endpoints.socket.SocketServer;
 import org.ly.ose.server.application.endpoints.web.WebServer;
@@ -115,6 +116,11 @@ public class Application {
             PackageImporter.instance().force(); // import immediately existing
             this.getLogger().info("APP SERVER: IMPORTER CONTROLLER INITIALIZED");
 
+            // cache (./fs_cache)
+            this.getLogger().info("APP SERVER: INITIALIZING FILE SYSTEM CACHE");
+            FSTemp.instance().open();
+            this.getLogger().info("APP SERVER: FILE SYSTEM CACHE INITIALIZED");
+
             if (!_test_mode) {
 
                 // start license manager
@@ -136,6 +142,7 @@ public class Application {
         PackageImporter.instance().close();
         ProgramsManager.instance().close();
         DBController.instance().close();
+        FSTemp.instance().close();
     }
 
 

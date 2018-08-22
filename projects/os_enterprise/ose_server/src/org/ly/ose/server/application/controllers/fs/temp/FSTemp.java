@@ -1,21 +1,24 @@
 package org.ly.ose.server.application.controllers.fs.temp;
 
+import org.lyj.commons.io.cache.filecache.CacheFiles;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
 
-public class FSTemp {
+public class FSTemp
+        extends CacheFiles {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    private static String ROOT = PathUtils.getAbsolutePath("./fs_cache");
+    private static String ROOT = PathUtils.getAbsolutePath("./files/cache");
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     private FSTemp() {
+        super(ROOT);
         this.init();
     }
 
@@ -23,13 +26,21 @@ public class FSTemp {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    
+    @Override
+    public void open() {
+        super.open();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+    }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void init(){
+    private void init() {
         FileUtils.tryMkdirs(ROOT);
     }
 

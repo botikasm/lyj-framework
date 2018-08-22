@@ -105,6 +105,22 @@ public class CacheFiles
     }
 
     public void put(final String key,
+                    final File file) {
+        this.put(key, file, super.duration());
+    }
+
+    public void put(final String key,
+                    final File file,
+                    final long duration) {
+        try {
+            final byte[] content = ByteUtils.getBytes(file);
+            this.put(key, content, duration);
+        } catch (Throwable t) {
+            super.logger().error("put#Bytes", t);
+        }
+    }
+
+    public void put(final String key,
                     final byte[] content) {
         this.put(key, content, super.duration());
     }
