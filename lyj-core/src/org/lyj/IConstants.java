@@ -26,42 +26,42 @@ public interface IConstants {
 
     String VERSION = "1.0.1";
 
-    public static final String SYSPROP_HOME = "lyj.home";
-    public static final String SYSPROP_CHARSET = "lyj.charset";
-    public static final String SYSPROP_USE_PROXIES = "lyj.useSystemProxies";
+    String SYSPROP_HOME = "lyj.home";
+    String SYSPROP_CHARSET = "lyj.charset";
+    String SYSPROP_USE_PROXIES = "lyj.useSystemProxies";
 
-    public static final String USER_DIR = PathUtils.toUnixPath(System.getProperty("user.dir"));   // application directory
-    public static final String USER_HOME = PathUtils.toUnixPath(System.getProperty("user.home")); // user home directory
+    String USER_DIR = PathUtils.toUnixPath(System.getProperty("user.dir"));   // application directory
+    String USER_HOME = PathUtils.toUnixPath(System.getProperty("user.home")); // user home directory
 
     /**
      * Line separator. i.e. "\n" *
      */
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    String LINE_SEPARATOR = System.getProperty("line.separator");
 
-    public static final String FOLDER_SEPARATOR = "/";
-    public static final String PATH_WHILDCHAR = "*";
-    public static final String WINDOWS_FOLDER_SEPARATOR = "\\";
-    public static final String TOP_PATH = "..";
-    public static final String CURRENT_PATH = ".";
-    public static final char EXTENSION_SEPARATOR = '.';
-    public static final String PLACEHOLDER_PREFIX = "{";
-    public static final String PLACEHOLDER_SUFFIX = "}";
-    public static final String NULL = "NULL";
+    String FOLDER_SEPARATOR = "/";
+    String PATH_WHILDCHAR = "*";
+    String WINDOWS_FOLDER_SEPARATOR = "\\";
+    String TOP_PATH = "..";
+    String CURRENT_PATH = ".";
+    char EXTENSION_SEPARATOR = '.';
+    String PLACEHOLDER_PREFIX = "{";
+    String PLACEHOLDER_SUFFIX = "}";
+    String NULL = "NULL";
 
-    public static final String PATH_LOG = "./logs";
-    public static final String PATH_CONFIGFILES = "./config";
-    public static final String PATH_CONFIGFILES_DATABASES = PATH_CONFIGFILES + "/databases";
+    String PATH_LOG = "./logs";
+    String PATH_CONFIGFILES = "./config";
+    String PATH_CONFIGFILES_DATABASES = PATH_CONFIGFILES + "/databases";
 
-    public static final String BASE_LANG = "base"; // undefined language
-    public static final String DEF_LANG = "en";
-    public static final String DEF_COUNTRY = "US";
+    String BASE_LANG = "base"; // undefined language
+    String DEF_LANG = "en";
+    String DEF_COUNTRY = "US";
 
     //-- Content-Type --//
-    public static final String TYPE_JSON = "application/json";
-    public static final String TYPE_PNG = "image/png";
-    public static final String TYPE_TEXT = "text/plain;charset=UTF-8";
-    public static final String TYPE_HTML = "text/html;charset=UTF-8";
-    public static final String TYPE_ZIP = "application/zip";
-    public static final String TYPE_XML = "application/xml";
-    public static final String TYPE_ALL ="text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+    String TYPE_JSON = "application/json";
+    String TYPE_PNG = "image/png";
+    String TYPE_TEXT = "text/plain;charset=UTF-8";
+    String TYPE_HTML = "text/html;charset=UTF-8";
+    String TYPE_ZIP = "application/zip";
+    String TYPE_XML = "application/xml";
+    String TYPE_ALL ="text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 }

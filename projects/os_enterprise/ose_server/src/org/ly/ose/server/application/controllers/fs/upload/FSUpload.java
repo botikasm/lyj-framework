@@ -2,8 +2,15 @@ package org.ly.ose.server.application.controllers.fs.upload;
 
 import org.lyj.commons.util.FileUtils;
 
-public class UploadController {
+public class FSUpload {
 
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
+    private FSUpload(){
+
+    }
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -37,11 +44,11 @@ public class UploadController {
     //                      S I N G L E T O N
     // ------------------------------------------------------------------------
 
-    private static UploadController __instance;
+    private static FSUpload __instance;
 
-    public static synchronized UploadController instance() {
+    public static synchronized FSUpload instance() {
         if (null == __instance) {
-            __instance = new UploadController();
+            __instance = new FSUpload();
         }
         return __instance;
     }

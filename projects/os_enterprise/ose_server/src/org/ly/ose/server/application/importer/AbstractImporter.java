@@ -96,7 +96,7 @@ public abstract class AbstractImporter
             for (final File file : files) {
                 if (isConfig(file)) {
                     _config = config(file);
-                    _root = PathUtils.getParent(file.getAbsolutePath());
+                    _root = PathUtils.getParent(PathUtils.toUnixPath(file.getAbsolutePath()));
                 } else if (this.isValidFile(file)) {
                     _files.add(file);
                 }

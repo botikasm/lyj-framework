@@ -1,6 +1,6 @@
 package org.ly.ose.server.application.endpoints.api;
 
-import org.ly.ose.server.application.controllers.fs.upload.UploadController;
+import org.ly.ose.server.application.controllers.fs.upload.FSUpload;
 import org.ly.ose.server.application.endpoints.api.routing.RouterSys;
 import org.ly.ose.server.deploy.config.ConfigHelper;
 import org.lyj.ext.netty.server.web.HttpServer;
@@ -37,7 +37,7 @@ public class ApiServer
 
         // #2 - add upload handler
         final UploadHandler uploader = UploadHandler.create(super.config());
-        uploader.onFileUpload(UploadController.instance()::onFileUpload); // delegation
+        uploader.onFileUpload(FSUpload.instance()::onFileUpload); // delegation
         super.handler(uploader);
 
     }
