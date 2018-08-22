@@ -20,6 +20,8 @@
 
 package org.lyj;
 
+import org.lyj.commons.util.PathUtils;
+
 public interface IConstants {
 
     String VERSION = "1.0.1";
@@ -28,8 +30,8 @@ public interface IConstants {
     public static final String SYSPROP_CHARSET = "lyj.charset";
     public static final String SYSPROP_USE_PROXIES = "lyj.useSystemProxies";
 
-    public static final String USER_DIR = System.getProperty("user.dir");   // application directory
-    public static final String USER_HOME = System.getProperty("user.home"); // user home directory
+    public static final String USER_DIR = PathUtils.toUnixPath(System.getProperty("user.dir"));   // application directory
+    public static final String USER_HOME = PathUtils.toUnixPath(System.getProperty("user.home")); // user home directory
 
     /**
      * Line separator. i.e. "\n" *

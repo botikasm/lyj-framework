@@ -1,6 +1,6 @@
 package org.ly.ose.server.application.endpoints.api;
 
-import org.ly.ose.server.application.controllers.upload.UploadController;
+import org.ly.ose.server.application.controllers.fs.upload.UploadController;
 import org.ly.ose.server.application.endpoints.api.routing.RouterSys;
 import org.ly.ose.server.deploy.config.ConfigHelper;
 import org.lyj.ext.netty.server.web.HttpServer;

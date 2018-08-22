@@ -1,4 +1,4 @@
-package org.ly.ose.server.application.controllers.upload;
+package org.ly.ose.server.application.controllers.fs.upload;
 
 import org.lyj.commons.util.FileUtils;
 
