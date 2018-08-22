@@ -1,6 +1,7 @@
 package org.ly.ose.server.application;
 
 import org.ly.ose.server.IConstants;
+import org.ly.ose.server.application.controllers.fs.cloud.FSCloud;
 import org.ly.ose.server.application.controllers.fs.temp.FSTemp;
 import org.ly.ose.server.application.endpoints.api.ApiServer;
 import org.ly.ose.server.application.endpoints.socket.SocketServer;
@@ -119,6 +120,7 @@ public class Application {
             // cache (./fs_cache)
             this.getLogger().info("APP SERVER: INITIALIZING FILE SYSTEM CACHE");
             FSTemp.instance().open();
+            FSCloud.instance().open();
             this.getLogger().info("APP SERVER: FILE SYSTEM CACHE INITIALIZED");
 
             if (!_test_mode) {
@@ -143,6 +145,7 @@ public class Application {
         ProgramsManager.instance().close();
         DBController.instance().close();
         FSTemp.instance().close();
+        FSCloud.instance().close();
     }
 
 

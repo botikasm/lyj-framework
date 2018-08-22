@@ -129,6 +129,19 @@ public class CloudFS
         }
     }
 
+    public boolean has(final String file_id) throws IOException {
+        synchronized (_disks) {
+            if (!_disks.isEmpty()) {
+                for (final CloudDisk disk : _disks) {
+                    if (disk.contains(file_id)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
+
     public File get(final String file_id) throws IOException {
         synchronized (_disks) {
             if (!_disks.isEmpty()) {

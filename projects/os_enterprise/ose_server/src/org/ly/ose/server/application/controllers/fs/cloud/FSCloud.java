@@ -34,6 +34,14 @@ public class FSCloud {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public void open() {
+        _cloud.open();
+    }
+
+    public void close() {
+        _cloud.close();
+    }
+
     /**
      * Lookup a file in cache and move into cloud FS
      *
@@ -68,6 +76,10 @@ public class FSCloud {
 
     public File get(final String cloud_id) throws IOException {
         return _cloud.get(cloud_id);
+    }
+
+    public boolean has(final String cloud_id) throws IOException {
+        return _cloud.has(cloud_id);
     }
 
     // ------------------------------------------------------------------------

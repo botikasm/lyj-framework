@@ -10,7 +10,7 @@ public interface IConstants
         extends org.ly.ose.commons.IConstants {
 
     String APP_NAME = "OSEnterprise Server Node";
-    String APP_VERSION = "1.0.1";
+    String APP_VERSION = "1.0.2";
 
     String DB_GLOBAL = "ose_server";
     String DB_GLOBAL_LOGGING = "ose_server_log";

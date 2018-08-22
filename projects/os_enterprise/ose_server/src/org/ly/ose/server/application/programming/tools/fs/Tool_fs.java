@@ -1,10 +1,12 @@
 package org.ly.ose.server.application.programming.tools.fs;
 
 import org.ly.ose.server.application.controllers.fs.cloud.FSCloud;
+import org.ly.ose.server.application.controllers.fs.temp.FSTemp;
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * File System
@@ -50,28 +52,52 @@ public class Tool_fs
     }
 
     public long sizeOf(final String file_id) throws Exception {
-        final File file = FSCloud.instance().get(file_id);
-        if (file.exists()) {
+        final File file = this.lookupFile(file_id);
+        if (null != file && file.exists()) {
             return file.length();
         }
         return 0;
     }
 
     public long sizeOfMb(final String file_id) throws Exception {
-        return this.sizeOf(file_id) / (1024L * 1024L);
+        final long size = this.sizeOf(file_id);
+        return size > 0 ? size / (1024L * 1024L) : 0;
     }
 
     public boolean remove(final String file_id) throws Exception {
-        return FSCloud.instance().remove(file_id);
+        return this.removeFile(file_id);
     }
 
     public File get(final String file_id) throws Exception {
-        return FSCloud.instance().get(file_id);
+        return this.lookupFile(file_id);
     }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private File lookupFile(final String cache_or_file_id) throws IOException {
+        if (FSCloud.instance().has(cache_or_file_id)) {
+            return FSCloud.instance().get(cache_or_file_id);
+        }
+        if (FSTemp.instance().has(cache_or_file_id)) {
+            final File file = FSTemp.instance().getFile(cache_or_file_id);
+            if (null != file) {
+                return file;
+            }
+        }
+        return null;
+    }
+
+    private boolean removeFile(final String cache_or_file_id) throws Exception {
+        if (FSCloud.instance().has(cache_or_file_id)) {
+            return FSCloud.instance().remove(cache_or_file_id);
+        }
+        if (FSTemp.instance().has(cache_or_file_id)) {
+            return FSTemp.instance().remove(cache_or_file_id);
+        }
+        return false;
+    }
 
 
     // ------------------------------------------------------------------------
