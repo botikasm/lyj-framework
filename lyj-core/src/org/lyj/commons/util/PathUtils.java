@@ -1071,20 +1071,24 @@ public abstract class PathUtils
      * @param path2
      * @return Concatenated path.
      */
-    public static String concat(final String path1, final String path2) {
+    public static String concat(final String path1,
+                                final String path2) {
         if (StringUtils.hasText(path1)) {
+            final String clear_path_2 = removeUserPaths(path2);
+
             if (!path1.endsWith(FOLDER_SEPARATOR)
-                    && !path2.startsWith(FOLDER_SEPARATOR)) {
-                return path1.concat(FOLDER_SEPARATOR).concat(path2);
+                    && !clear_path_2.startsWith(FOLDER_SEPARATOR)) {
+                return path1.concat(FOLDER_SEPARATOR).concat(clear_path_2);
             } else {
                 if (path1.equalsIgnoreCase(FOLDER_SEPARATOR)) {
-                    return path2;
+                    return clear_path_2;
                 }
-                if (path1.endsWith(FOLDER_SEPARATOR) && path2.startsWith(FOLDER_SEPARATOR)) {
-                    return path1.concat(path2.substring(1));
+                if (path1.endsWith(FOLDER_SEPARATOR) && clear_path_2.startsWith(FOLDER_SEPARATOR)) {
+                    return path1.concat(clear_path_2.substring(1));
                 }
-                return path1.concat(path2);
+                return path1.concat(clear_path_2);
             }
+            
         } else {
             return path2;
         }
@@ -1100,6 +1104,7 @@ public abstract class PathUtils
     public static String join(final String path1, final String path2) {
         final String cleanpath2 = clean(path2);
         if (StringUtils.hasText(path1)) {
+
             if (!path1.endsWith(FOLDER_SEPARATOR)
                     && !cleanpath2.startsWith(FOLDER_SEPARATOR)) {
                 return path1.concat(FOLDER_SEPARATOR).concat(cleanpath2);
@@ -1112,6 +1117,7 @@ public abstract class PathUtils
                 }
                 return path1.concat(cleanpath2);
             }
+
         } else {
             return cleanpath2;
         }
@@ -1346,6 +1352,15 @@ public abstract class PathUtils
         } else {
             return type.getValue();
         }
+    }
+
+    private static String removeUserPaths(final String path) {
+        final String[] paths = {IConstants.USER_DIR, IConstants.USER_HOME};
+        String response = path;
+        for (final String p_remove : paths) {
+            response = StringUtils.replace(response, p_remove, "");
+        }
+        return response;
     }
 
     private static String clean(final String path) {

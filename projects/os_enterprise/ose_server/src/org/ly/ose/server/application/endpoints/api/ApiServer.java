@@ -1,8 +1,10 @@
 package org.ly.ose.server.application.endpoints.api;
 
+import org.ly.ose.server.application.controllers.upload.UploadController;
 import org.ly.ose.server.application.endpoints.api.routing.RouterSys;
 import org.ly.ose.server.deploy.config.ConfigHelper;
 import org.lyj.ext.netty.server.web.HttpServer;
+import org.lyj.ext.netty.server.web.handlers.impl.UploadHandler;
 
 /**
  *
@@ -32,6 +34,11 @@ public class ApiServer
 
         // #2 - add basic http resource server (serve text and images)
         //super.handler(ResourceHandler.create(this.config()));
+
+        // #2 - add upload handler
+        final UploadHandler uploader = UploadHandler.create(super.config());
+        uploader.onFileUpload(UploadController.instance()::onFileUpload); // delegation
+        super.handler(uploader);
 
     }
 

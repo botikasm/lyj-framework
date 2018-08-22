@@ -1,0 +1,12 @@
+{
+  "disks": [
+    {
+      "name": "./disk1",
+      "size_mb": "500"
+    },
+    {
+      "name": "./disk2",
+      "size_mb": "500"
+    }
+  ]
+}
