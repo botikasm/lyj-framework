@@ -1,4 +1,4 @@
-package org.ly.ose.server.application.email;
+package org.ly.ose.server.application.controllers.email.smtp;
 
 import org.json.JSONObject;
 import org.ly.ext.mail.SmtpRequest;

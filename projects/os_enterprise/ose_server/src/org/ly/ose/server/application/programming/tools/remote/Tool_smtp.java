@@ -2,7 +2,7 @@ package org.ly.ose.server.application.programming.tools.remote;
 
 import jdk.nashorn.api.scripting.JSObject;
 import org.json.JSONObject;
-import org.ly.ose.server.application.email.MailSender;
+import org.ly.ose.server.application.controllers.email.smtp.MailSender;
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
 import org.lyj.commons.util.StringUtils;

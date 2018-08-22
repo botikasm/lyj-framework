@@ -12,10 +12,7 @@ import org.ly.ose.server.application.programming.tools.persistence.Tool_session;
 import org.ly.ose.server.application.programming.tools.remote.Tool_http;
 import org.ly.ose.server.application.programming.tools.remote.Tool_smtp;
 import org.ly.ose.server.application.programming.tools.request.Tool_request;
-import org.ly.ose.server.application.programming.tools.utils.Tool_error;
-import org.ly.ose.server.application.programming.tools.utils.Tool_resource;
-import org.ly.ose.server.application.programming.tools.utils.Tool_rnd;
-import org.ly.ose.server.application.programming.tools.utils.Tool_string;
+import org.ly.ose.server.application.programming.tools.utils.*;
 import org.lyj.commons.async.future.Loop;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.FormatUtils;
@@ -260,6 +257,7 @@ public class OSEProgram {
         _program.context().put(ensureScriptPrefix(Tool_string.NAME), new Tool_string(this));
         _program.context().put(ensureScriptPrefix(Tool_error.NAME), new Tool_error(this));
         _program.context().put(ensureScriptPrefix(Tool_fs.NAME), new Tool_fs(this));
+        _program.context().put(ensureScriptPrefix(Tool_date.NAME), new Tool_date(this));
 
         // request tools
         _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this)); // all request
