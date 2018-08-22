@@ -190,6 +190,21 @@ public class CacheFiles
         return null;
     }
 
+    public File getFile(final String key) {
+        try {
+            if (super.registry().has(key)) {
+                final String target = super.registry().get(key).path();
+                final File file = new File(target);
+                if (file.exists()) {
+                    return file;
+                }
+            }
+        } catch (Throwable ignored) {
+
+        }
+        return null;
+    }
+
     public byte[] getBytes(final String key) {
         return this.getBytes(key, false);
     }

@@ -4,12 +4,16 @@ import org.lyj.commons.io.cache.filecache.CacheFiles;
 import org.lyj.commons.util.FileUtils;
 import org.lyj.commons.util.PathUtils;
 
+import java.io.File;
+
 public class FSTemp
         extends CacheFiles {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
+
+    private static int DURATION_MS = 2 * 60* 1000; // 2 minutes cache
 
     private static String ROOT = PathUtils.getAbsolutePath("./files/cache");
 
@@ -19,6 +23,8 @@ public class FSTemp
 
     private FSTemp() {
         super(ROOT);
+        super.duration(DURATION_MS);
+
         this.init();
     }
 
@@ -34,6 +40,22 @@ public class FSTemp
     @Override
     public void close() {
         super.close();
+    }
+
+    @Override
+    public boolean has(final String key) {
+        return super.has(key);
+    }
+
+    @Override
+    public void put(final String key,
+                    final File file) {
+        super.put(key, file);
+    }
+
+    @Override
+    public File getFile(final String key) {
+        return super.getFile(key);
     }
 
     // ------------------------------------------------------------------------

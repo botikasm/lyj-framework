@@ -91,7 +91,9 @@ public abstract class AbstractCacheFiles
         FileUtils.tryMkdirs(_root);
 
         //-- load file registry (creates if any) --//
-        _registry = _mode.equals(Mode.File) ? new FileRegistry(_path_settings, _path_data) : new MemoryRegistry(_path_settings, _path_data);
+        _registry = _mode.equals(Mode.File)
+                ? new FileRegistry(_path_settings, _path_data)
+                : new MemoryRegistry(_path_settings, _path_data);
         _registry.setCheck(_check_interval);
         _registry.trySave();
 
