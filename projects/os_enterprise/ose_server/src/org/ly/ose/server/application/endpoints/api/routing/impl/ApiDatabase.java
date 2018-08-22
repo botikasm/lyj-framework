@@ -36,10 +36,14 @@ public class ApiDatabase {
         request.address(context.fullUrl());
 
         // invoke handler
-        final OSEResponse response = MessageManager.instance().handle(request);
-        response.uid(Launcher.configApi().uri());
+        final Object response = MessageManager.instance().handle(request);
+        if (response instanceof OSEResponse) {
+            ((OSEResponse) response).uid(Launcher.configApi().uri());
+            ApiHelper.writeJSON(context, ((OSEResponse) response).json());
+        }else {
+            ApiHelper.writeError(context, "output not supported: " + response.getClass().getName());
+        }
 
-        ApiHelper.writeJSON(context, response.json());
     }
 
 

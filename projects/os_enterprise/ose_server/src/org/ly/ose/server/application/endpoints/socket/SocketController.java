@@ -53,13 +53,15 @@ public class SocketController
                 // ready to process message
                 // if message has a response, it's immediately dispatched
                 // note: socket messages can have async later responses
-                final OSEResponse response = MessageManager.instance().handle(request);
-                response.uid(_server.config().uri());
-
-                // send only if response has a payload
-                if (response.hasPayload() || response.hasError()) {
-                    sendResponse(request.clientId(), response);
+                final Object response = MessageManager.instance().handle(request);
+                if(response instanceof OSEResponse){
+                    ((OSEResponse)response).uid(_server.config().uri());
+                    // send only if response has a payload
+                    if (((OSEResponse)response).hasPayload() || ((OSEResponse)response).hasError()) {
+                        sendResponse(request.clientId(), ((OSEResponse)response));
+                    }
                 }
+
             }
 
         } catch (Throwable t) {

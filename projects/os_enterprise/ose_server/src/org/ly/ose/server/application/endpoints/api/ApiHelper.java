@@ -10,6 +10,7 @@ import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.netty.server.web.HttpServerContext;
 import org.lyj.ext.script.utils.Converter;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -134,6 +135,10 @@ public abstract class ApiHelper {
 
     public static void writeJSON(final HttpServerContext context, final String json) {
         context.writeJson(ApiHelper.wrapResponse(json));
+    }
+
+    public static void writeFile(final HttpServerContext context, final File file) {
+        context.writeFile(file);
     }
 
     public static void writeRawValue(final HttpServerContext context, final Object value) {

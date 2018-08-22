@@ -58,9 +58,10 @@ public class DatabaseMessageHandler
     // ------------------------------------------------------------------------
 
     @Override
-    protected void handleRequest(final OSERequest request,
-                                 final OSEResponse response) throws Exception {
+    protected Object handleRequest(final OSERequest request) throws Exception {
         if (request.hasPayload()) {
+            final OSEResponse response = OSERequest.generateResponse(request);
+
             final OSEPayloadDatabase payload = new OSEPayloadDatabase(request.payload());
             final String db_name = DBController.DBNameProgram(payload.database());
             final String coll_name = payload.collection();
@@ -72,6 +73,8 @@ public class DatabaseMessageHandler
             if (collection.connected()) {
                 final JSONArray query_result = this.execute(collection, query, params, transform);
                 response.payload(query_result);
+
+                return response;
             } else {
                 throw new Exception(FormatUtils.format("Collection '%s' in database '%s' not found.", coll_name, db_name));
             }

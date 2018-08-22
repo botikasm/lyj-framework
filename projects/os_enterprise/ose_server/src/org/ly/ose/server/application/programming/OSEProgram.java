@@ -5,6 +5,7 @@ import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
 import org.ly.ose.server.application.programming.tools.ai.Tool_nlp;
+import org.ly.ose.server.application.programming.tools.fs.Tool_fs;
 import org.ly.ose.server.application.programming.tools.i18n.Tool_i18n;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_db;
 import org.ly.ose.server.application.programming.tools.persistence.Tool_session;
@@ -258,6 +259,7 @@ public class OSEProgram {
         _program.context().put(ensureScriptPrefix(Tool_smtp.NAME), new Tool_smtp(this));
         _program.context().put(ensureScriptPrefix(Tool_string.NAME), new Tool_string(this));
         _program.context().put(ensureScriptPrefix(Tool_error.NAME), new Tool_error(this));
+        _program.context().put(ensureScriptPrefix(Tool_fs.NAME), new Tool_fs(this));
 
         // request tools
         _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this)); // all request

@@ -114,7 +114,8 @@ public class CacheFiles
                     final long duration) {
         try {
             final byte[] content = ByteUtils.getBytes(file);
-            this.put(key, content, duration);
+            final String target = this.path(key.concat(PathUtils.getFilenameExtension(file.getName(), true)));
+            this.putOrUpdate(key, target, content, duration);
         } catch (Throwable t) {
             super.logger().error("put#Bytes", t);
         }
@@ -128,17 +129,8 @@ public class CacheFiles
     public void put(final String key,
                     final byte[] content,
                     final long duration) {
-        try {
-            if (!this.has(key)) {
-                final String target = this.path(key.concat(".dat"));
-
-                this.put(key, target, content, duration);
-            } else {
-                this.update(key, duration);
-            }
-        } catch (Throwable t) {
-            super.logger().error("put#Bytes", t);
-        }
+        final String target = this.path(key.concat(".dat"));
+        this.putOrUpdate(key, target, content, duration);
     }
 
     public void put(final String key,
@@ -254,6 +246,21 @@ public class CacheFiles
             return PathUtils.concat(time_path, rel_path);
         } else {
             return time_path;
+        }
+    }
+
+    private void putOrUpdate(final String key,
+                             final String target,
+                             final byte[] content,
+                             final long duration) {
+        try {
+            if (!this.has(key)) {
+                this.put(key, target, content, duration);
+            } else {
+                this.update(key, duration);
+            }
+        } catch (Throwable t) {
+            super.logger().error("putOrUpdate#Bytes", t);
         }
     }
 

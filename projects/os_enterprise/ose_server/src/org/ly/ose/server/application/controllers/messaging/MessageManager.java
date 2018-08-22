@@ -45,7 +45,7 @@ public class MessageManager {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public OSEResponse handle(final OSERequest request) {
+    public Object handle(final OSERequest request) {
         // remove "null" values
         removeNulls(request);
 

@@ -16,22 +16,21 @@ public abstract class AbstractMessageHandler {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public OSEResponse handle(final OSERequest request) {
-        final OSEResponse response = OSERequest.generateResponse(request);
+    public Object handle(final OSERequest request) {
         try {
-            this.handleRequest(request, response);
+            return this.handleRequest(request);
         } catch (Throwable t) {
+            final OSEResponse response = OSERequest.generateResponse(request);
             response.error(ExceptionUtils.getRealMessage(t));
+            return response;
         }
-
-        return response;
     }
 
     // ------------------------------------------------------------------------
     //                      p r o t e c t e d
     // ------------------------------------------------------------------------
 
-    protected abstract  void  handleRequest(final OSERequest request, final OSEResponse response) throws Exception;
+    protected abstract  Object  handleRequest(final OSERequest request) throws Exception;
 
 
 }

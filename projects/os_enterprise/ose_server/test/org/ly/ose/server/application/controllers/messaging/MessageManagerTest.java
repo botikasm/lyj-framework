@@ -97,7 +97,7 @@ public class MessageManagerTest {
         // add payload
         request.payload().putAll(payload.map());
         // invoke handler
-        result.add(MessageManager.instance().handle(request));
+        result.add((OSEResponse) MessageManager.instance().handle(request));
 
         // Sergio
         payload.query("#upsert");
@@ -107,7 +107,7 @@ public class MessageManagerTest {
         // add payload
         request.payload().putAll(payload.map());
         // invoke handler
-        result.add(MessageManager.instance().handle(request));
+        result.add((OSEResponse)MessageManager.instance().handle(request));
 
         return result;
     }
@@ -143,7 +143,7 @@ public class MessageManagerTest {
         // add payload
         request.payload().putAll(payload.map());
         // invoke handler
-        result.add(MessageManager.instance().handle(request));
+        result.add((OSEResponse)MessageManager.instance().handle(request));
 
         return result;
     }
