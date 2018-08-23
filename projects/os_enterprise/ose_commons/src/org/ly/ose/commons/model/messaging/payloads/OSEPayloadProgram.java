@@ -5,10 +5,14 @@ import org.json.JSONObject;
 import org.ly.ose.commons.IConstants;
 import org.lyj.commons.lang.Base64;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.commons.util.converters.MapConverter;
 import org.lyj.commons.util.json.JsonWrapper;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class OSEPayloadProgram
         extends OSEPayload {
@@ -127,13 +131,13 @@ public class OSEPayloadProgram
             final JSONArray array = new JSONArray(params);
             return JsonWrapper.toListOfString(array);
         } else if (StringUtils.isJSONObject(params)) {
-            final JSONObject json = new JSONObject(params);
+            final JSONObject json = JsonConverter.toObject(params);
             return Arrays.asList(json);
         } else if (params instanceof String && !IConstants.STR_NULL.equalsIgnoreCase((String) params)) {
             final String s_params = params.toString();
             if (s_params.contains("&") && s_params.contains("=")) {
                 return Arrays.asList(MapConverter.toMap(s_params));
-            } else if (s_params.contains(",") || s_params.contains(";")) {
+            } else if (s_params.startsWith("array:")) {
                 final String[] array = StringUtils.split((String) params, ",;", true);
                 return Arrays.asList(array);
             } else if (s_params.startsWith("base64:")) {
@@ -141,7 +145,7 @@ public class OSEPayloadProgram
                 return toList(Base64.decode(base64));
             }
         }
-        return new ArrayList();
+        return Arrays.asList(params);
     }
 
 }

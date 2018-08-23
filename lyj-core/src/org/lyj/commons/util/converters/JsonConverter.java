@@ -159,12 +159,12 @@ public abstract class JsonConverter {
     public static JSONObject toObject(final Object value) {
         final Object compatible = toJsonCompatible(value);
         if (compatible instanceof JSONObject) {
-            return (JSONObject) value;
+            return (JSONObject) compatible;
         } else if (compatible instanceof String) {
-            return toObject((String) value);
+            return toObject((String) compatible);
         } else {
             final JSONObject result = new JSONObject();
-            result.put("value", value);
+            result.put("value", compatible);
             return result;
         }
     }
