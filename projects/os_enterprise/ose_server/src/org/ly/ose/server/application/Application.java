@@ -7,6 +7,7 @@ import org.ly.ose.server.application.endpoints.api.ApiServer;
 import org.ly.ose.server.application.endpoints.socket.SocketServer;
 import org.ly.ose.server.application.endpoints.web.WebServer;
 import org.ly.ose.server.application.importer.PackageImporter;
+import org.ly.ose.server.application.importer.SetupMailMonitor;
 import org.ly.ose.server.application.persistence.DBController;
 import org.ly.ose.server.application.programming.ProgramsManager;
 import org.ly.ose.server.deploy.config.ConfigHelper;
@@ -115,6 +116,7 @@ public class Application {
             this.getLogger().info("APP SERVER: INITIALIZING IMPORTER CONTROLLER");
             PackageImporter.instance().open();
             PackageImporter.instance().force(); // import immediately existing
+            SetupMailMonitor.instance().open();
             this.getLogger().info("APP SERVER: IMPORTER CONTROLLER INITIALIZED");
 
             // cache (./fs_cache)
@@ -141,6 +143,7 @@ public class Application {
         // stop endpoint listeners
         this.stopEnpointServices();
 
+        SetupMailMonitor.instance().close();
         PackageImporter.instance().close();
         ProgramsManager.instance().close();
         DBController.instance().close();

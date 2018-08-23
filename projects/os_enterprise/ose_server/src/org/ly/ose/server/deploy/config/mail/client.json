@@ -1,0 +1,12 @@
+{
+  "enabled": false,
+  "pop3": {
+    "server": "SSL0.OVH.NET",
+    "port": 110,
+    "email": "install@bofarmy.com",
+    "user": "install@botfarmy.com",
+    "psw": "xxxxx"
+  },
+  "subject": "auth_password",
+  "authorized":["angelo.geminiani@gmail.com"]
+}

@@ -1,14 +1,14 @@
 package org.ly.ose.commons.model.messaging.payloads;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.ly.ose.commons.IConstants;
+import org.lyj.commons.lang.Base64;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.converters.MapConverter;
 import org.lyj.commons.util.json.JsonWrapper;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class OSEPayloadProgram
         extends OSEPayload {
@@ -111,22 +111,37 @@ public class OSEPayloadProgram
 
     private void init() {
         this.sessionTimeout(-1); // not setted (use default system timeout)
+
         if (!super.map().has(FLD_PARAMS)) {
             super.map().put(FLD_PARAMS, new LinkedList<>());
         } else {
             final Object params = super.map().get(FLD_PARAMS);
             if (!(params instanceof Collection)) {
-
-                if (StringUtils.isJSONArray(params)) {
-                    final JSONArray array = new JSONArray(params);
-                    super.map().put(FLD_PARAMS, JsonWrapper.toListOfString(array));
-                } else if (params instanceof String && !IConstants.STR_NULL.equalsIgnoreCase((String)params)) {
-                    final String[] array = StringUtils.split((String) params, ",;", true);
-                    super.map().put(FLD_PARAMS, Arrays.asList(array));
-                }
-
+                super.map().put(FLD_PARAMS, toList(params));
             }
         }
+    }
+
+    private static Collection toList(final Object params) {
+        if (StringUtils.isJSONArray(params)) {
+            final JSONArray array = new JSONArray(params);
+            return JsonWrapper.toListOfString(array);
+        } else if (StringUtils.isJSONObject(params)) {
+            final JSONObject json = new JSONObject(params);
+            return Arrays.asList(json);
+        } else if (params instanceof String && !IConstants.STR_NULL.equalsIgnoreCase((String) params)) {
+            final String s_params = params.toString();
+            if (s_params.contains("&") && s_params.contains("=")) {
+                return Arrays.asList(MapConverter.toMap(s_params));
+            } else if (s_params.contains(",") || s_params.contains(";")) {
+                final String[] array = StringUtils.split((String) params, ",;", true);
+                return Arrays.asList(array);
+            } else if (s_params.startsWith("base64:")) {
+                final String base64 = s_params.replace("base64:", "");
+                return toList(Base64.decode(base64));
+            }
+        }
+        return new ArrayList();
     }
 
 }
