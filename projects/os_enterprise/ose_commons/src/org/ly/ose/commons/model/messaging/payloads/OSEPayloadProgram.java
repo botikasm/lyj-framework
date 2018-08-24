@@ -129,10 +129,10 @@ public class OSEPayloadProgram
     private static Collection toList(final Object params) {
         if (StringUtils.isJSONArray(params)) {
             final JSONArray array = JsonConverter.toArray(params);
-            return JsonWrapper.toListOfString(array);
+            return MapConverter.toList(array);
         } else if (StringUtils.isJSONObject(params)) {
             final JSONObject json = JsonConverter.toObject(params);
-            return Arrays.asList(json);
+            return Arrays.asList(MapConverter.toMap(json));
         } else if (params instanceof String && !IConstants.STR_NULL.equalsIgnoreCase((String) params)) {
             final String s_params = params.toString();
             if (s_params.contains("&") && s_params.contains("=")) {

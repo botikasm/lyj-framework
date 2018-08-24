@@ -137,9 +137,9 @@ public class OSERequest
 
     public static OSEResponse generateResponse(final OSERequest request){
         final OSEResponse response = new OSEResponse();
-        response.clientId(request.clientId());
-        response.lang(request.lang());
-        response.type(request.type());
+        response.clientId(null!=request?request.clientId():"");
+        response.lang(null!=request?request.lang():"");
+        response.type(null!=request?request.type():"");
 
         return response;
     }

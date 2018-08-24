@@ -136,16 +136,15 @@ public class OSEProgramInvoker {
                               final OSEProgram program,
                               final String function,
                               final List<Object> payload_params) throws Exception {
-        final String program_session_id = (String) program.info().data().get(OSEProgramInfo.FLD_SESSION_ID);
-
-        // add/refresh context data
-        if (!program.info().singleton()) {
-            program.request(request);
-        }
+  
+        final Object[] params = CollectionUtils.isEmpty(payload_params)
+                ? null
+                : payload_params.toArray(new Object[0]);
 
         // call required function
         try {
-            final Object program_result = callMember(program, function, payload_params);
+            // syncronized invoke for singletons
+            final Object program_result = callMember(request, program, function, params);
             if (program_result instanceof JSONArray) {
                 final OSEResponse response = OSERequest.generateResponse(request);
                 response.payload((JSONArray) program_result);
@@ -156,6 +155,7 @@ public class OSEProgramInvoker {
             }
         } finally {
             // close program if not in session
+            final String program_session_id = (String) program.info().data().get(OSEProgramInfo.FLD_SESSION_ID);
             if (!StringUtils.hasText(program_session_id)
                     || !OSEProgramSessions.instance().containsKey(program_session_id)) {
                 program.close();
@@ -163,27 +163,21 @@ public class OSEProgramInvoker {
         }
     }
 
-    private Object callMember(final OSEProgram program,
-                              final String function,
-                              final List<Object> payload_params) throws Exception {
-        final Object[] params = CollectionUtils.isEmpty(payload_params)
-                ? null
-                : payload_params.toArray(new Object[0]);
-        return callMember(program, function, params);
-    }
-
-    private Object callMember(final OSEProgram program,
+    private Object callMember(final OSERequest request,
+                              final OSEProgram program,
                               final String function,
                               final Object[] params) throws Exception {
         if (null != program) {
             if (program.info().singleton()) {
                 synchronized (SYNCHRONIZER) {
+                    program.request(request);
                     final Object result = null != params
                             ? program.callMember(function, params)
                             : program.callMember(function);
                     return convert(result);
                 }
             } else {
+                program.request(request);
                 final Object result = null != params
                         ? program.callMember(function, params)
                         : program.callMember(function);
