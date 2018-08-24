@@ -53,7 +53,9 @@ module.exports = (function () {
             var args = {
                 index:3
             };
-            return $db.collection(COLLECTION).find(query, args);
+            var response = $db.collection(COLLECTION).find(query, args);
+
+            return response;
         } catch (err) {
             console.error(FILE + '#find', err);
             return err;

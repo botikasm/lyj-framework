@@ -88,6 +88,16 @@ public class ProgramsManagerTest {
 
     }
 
+    @Test
+    public void runTest_database() throws Exception {
+        final OSEProgram program = this.get("tests.all");
+
+        //-- ose --//
+        this.test_database(program);
+
+        program.close();
+
+    }
 
     // ------------------------------------------------------------------------
     //                     p r i v a t e
@@ -117,14 +127,14 @@ public class ProgramsManagerTest {
         method = "find";
         response = database.callMember(method);
         assertNotNull(response);
-        Collection list = (Collection) response;
+        Collection list = Converter.toList(response);
         System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
 
         // findEqual
         method = "findEqual";
         response = database.callMember(method);
         assertNotNull(response);
-        list = (Collection) response;
+        list = Converter.toList(response);
         System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
 
         // findEqual
