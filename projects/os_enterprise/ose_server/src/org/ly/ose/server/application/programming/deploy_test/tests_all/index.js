@@ -11,6 +11,7 @@ ly.new(function () {
     var _DATABASE = require('/scripts/database');
     var _SESSION = require('/scripts/session');
     var _HTTP = require('/scripts/http');
+    var _OSE = require('/scripts/ose');
 
 
     var _OBJECT = require('/scripts/object.json');
@@ -70,9 +71,21 @@ ly.new(function () {
         return _HTTP;
     };
 
+    this.ose = function () {
+        return _OSE;
+    };
+
     // ------------------------------------------------------------------------
     //                 direct access
     // ------------------------------------------------------------------------
+
+    this.version = function () {
+        return _FUNCTIONS.version();
+    };
+
+    this.recursive = function () {
+        return _FUNCTIONS.version();
+    };
 
     this.database_findEqualAsc = function () {
         return _DATABASE.findEqualAsc();
@@ -91,7 +104,7 @@ ly.new(function () {
 
         response.dic_phrase_base = $i18n.get('hello');
         response.dic_phrase_it = $i18n.get('it', 'hello');
-        
+
         response.content_base = $i18n.load('/i18n').content();
         response.content_it = $i18n.load('/i18n').content('it');
 

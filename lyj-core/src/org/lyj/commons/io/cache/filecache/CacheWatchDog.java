@@ -22,6 +22,7 @@ package org.lyj.commons.io.cache.filecache;
 
 import org.lyj.commons.io.FileObserver;
 import org.lyj.commons.io.IFileObserverListener;
+import org.lyj.commons.io.cache.filecache.registry.IRegistry;
 import org.lyj.commons.util.FormatUtils;
 
 /**
@@ -29,7 +30,7 @@ import org.lyj.commons.util.FormatUtils;
  * Expired files are removed
  */
 public class CacheWatchDog
-        extends AbstractCacheFiles
+        extends AbstractFileCache
         implements IFileObserverListener {
 
     // ------------------------------------------------------------------------
@@ -56,7 +57,7 @@ public class CacheWatchDog
 
     public CacheWatchDog(final String root,
                          final long duration) {
-        super(root, duration, duration, Mode.Memory);
+        super(root, duration, duration, IRegistry.Mode.Memory);
         _countErrors = 0;
     }
 

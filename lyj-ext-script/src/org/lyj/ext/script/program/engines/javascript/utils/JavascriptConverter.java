@@ -1,9 +1,10 @@
 package org.lyj.ext.script.program.engines.javascript.utils;
 
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import jdk.nashorn.api.scripting.ScriptUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lyj.commons.util.StringEscapeUtils;
+import org.lyj.ext.script.program.engines.javascript.EngineJavascript;
 
 import java.util.Set;
 
@@ -44,6 +45,14 @@ public class JavascriptConverter {
             }
         }
         return new JSONObject();
+    }
+
+    public static Object toScriptObject(final Object item) throws Exception {
+        if (null != item) {
+            final String text = StringEscapeUtils.escapeJavaScript(item.toString());
+            return EngineJavascript.engine(true).eval("JSON.parse(\"" + text + "\")");
+        }
+        return false;
     }
 
     // ------------------------------------------------------------------------

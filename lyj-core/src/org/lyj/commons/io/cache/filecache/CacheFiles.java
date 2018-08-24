@@ -1,5 +1,6 @@
 package org.lyj.commons.io.cache.filecache;
 
+import org.lyj.commons.io.cache.filecache.registry.IRegistry;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.lang.Counter;
 import org.lyj.commons.util.*;
@@ -12,7 +13,7 @@ import java.io.InputStream;
  *
  */
 public class CacheFiles
-        extends AbstractCacheFiles {
+        extends AbstractFileCache {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
@@ -40,7 +41,7 @@ public class CacheFiles
     public CacheFiles(final String root,
                       final long duration,
                       final String encoding) {
-        super(root, duration, (long) (duration * 0.5), Mode.Memory);
+        super(root, duration, (long) (duration * 0.5), IRegistry.Mode.Memory);
         _encoding = encoding;
     }
 

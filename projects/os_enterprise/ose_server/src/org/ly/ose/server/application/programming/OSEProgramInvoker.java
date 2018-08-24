@@ -7,7 +7,7 @@ import org.lyj.commons.util.*;
 import org.lyj.ext.script.utils.Converter;
 
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
 
 public class OSEProgramInvoker {
 
@@ -35,7 +35,7 @@ public class OSEProgramInvoker {
                              final long session_timeout,
                              final String namespace,
                              final String function,
-                             final List<Object> payload_params) throws Exception {
+                             final Collection<Object> payload_params) throws Exception {
         final String class_name = StringUtils.replace(namespace, "_", ".");
         final OSEProgramInfo info = ProgramsManager.instance().getInfo(class_name);
         if (null == info) {
@@ -50,7 +50,7 @@ public class OSEProgramInvoker {
                              final long session_timeout,
                              final OSEProgramInfo info,
                              final String function,
-                             final List<Object> payload_params) throws Exception {
+                             final Collection<Object> payload_params) throws Exception {
         if (null == info) {
             throw new Exception("Invalid ProgramInfo Exception: info cannot be NULL");
         }
@@ -65,6 +65,82 @@ public class OSEProgramInvoker {
         return this.callMember(request, program, function, payload_params);
     }
 
+    public Object callMember(final OSERequest request,
+                             final OSEProgram program,
+                             final String function,
+                             final Collection<Object> payload_params) throws Exception {
+
+        final Object[] params = CollectionUtils.isEmpty(payload_params)
+                ? null
+                : payload_params.toArray(new Object[0]);
+
+        return this.callMember(request, program, function, params);
+    }
+
+    public Object callMember(final OSERequest request,
+                             final OSEProgram program,
+                             final String function,
+                             final Object[] params) throws Exception {
+        // call required function
+        try {
+            // syncronized invoke for singletons
+            final Object program_result = callMemberSync(request, program, function, params);
+            if (program_result instanceof JSONArray) {
+                final OSEResponse response = OSERequest.generateResponse(request);
+                response.payload((JSONArray) program_result);
+                return response;
+            } else {
+                // special response
+                return program_result;
+            }
+        } finally {
+            // close program if not in session
+            final String program_session_id = (String) program.info().data().get(OSEProgramInfo.FLD_SESSION_ID);
+            if (!StringUtils.hasText(program_session_id)
+                    || !OSEProgramSessions.instance().containsKey(program_session_id)) {
+                program.close();
+            }
+        }
+    }
+
+    // ------------------------------------------------------------------------
+    //                     p r i v a t e
+    // ------------------------------------------------------------------------
+
+
+    private Object callMemberSync(final OSERequest request,
+                                  final OSEProgram program,
+                                  final String function,
+                                  final Object[] params) throws Exception {
+        if (null != program) {
+            if (program.info().singleton()) {
+                synchronized (SYNCHRONIZER) {
+                    program.request(request);
+                    final Object result = null != params
+                            ? program.callMember(function, params)
+                            : program.callMember(function);
+                    return convert(result);
+                }
+            } else {
+                program.request(request);
+                final Object result = null != params
+                        ? program.callMember(function, params)
+                        : program.callMember(function);
+                return convert(result);
+            }
+        }
+        return new JSONArray();
+    }
+
+    private static Object convert(final Object result) throws Exception {
+        if (result instanceof File) {
+            return result;
+        } else if (result instanceof Exception) {
+            throw (Exception) result;
+        }
+        return Converter.toJsonArray(result);
+    }
+
     /**
      * Get or Create a Program
      *
@@ -72,9 +148,9 @@ public class OSEProgramInvoker {
      * @param client_session_id Optional Client ID
      * @param session_timeout   Optional session timeout
      */
-    public OSEProgram get(final String namespace,
-                          final String client_session_id,
-                          final long session_timeout) throws Exception {
+    private OSEProgram get(final String namespace,
+                           final String client_session_id,
+                           final long session_timeout) throws Exception {
         final String class_name = StringUtils.replace(namespace, "_", ".");
         final OSEProgramInfo info = ProgramsManager.instance().getInfo(class_name);
         if (null == info) {
@@ -84,9 +160,9 @@ public class OSEProgramInvoker {
         return this.get(info, client_session_id, session_timeout);
     }
 
-    public OSEProgram get(final OSEProgramInfo info,
-                          final String client_session_id,
-                          final long session_timeout) throws Exception {
+    private OSEProgram get(final OSEProgramInfo info,
+                           final String client_session_id,
+                           final long session_timeout) throws Exception {
         if (null != info) {
             final String full_name = info.fullName();
 
@@ -126,74 +202,6 @@ public class OSEProgramInvoker {
         } else {
             throw new Exception("Invalid ProgramInfo Exception: info cannot be NULL");
         }
-    }
-
-    // ------------------------------------------------------------------------
-    //                     p r i v a t e
-    // ------------------------------------------------------------------------
-
-    private Object callMember(final OSERequest request,
-                              final OSEProgram program,
-                              final String function,
-                              final List<Object> payload_params) throws Exception {
-  
-        final Object[] params = CollectionUtils.isEmpty(payload_params)
-                ? null
-                : payload_params.toArray(new Object[0]);
-
-        // call required function
-        try {
-            // syncronized invoke for singletons
-            final Object program_result = callMember(request, program, function, params);
-            if (program_result instanceof JSONArray) {
-                final OSEResponse response = OSERequest.generateResponse(request);
-                response.payload((JSONArray) program_result);
-                return response;
-            } else {
-                // special response
-                return program_result;
-            }
-        } finally {
-            // close program if not in session
-            final String program_session_id = (String) program.info().data().get(OSEProgramInfo.FLD_SESSION_ID);
-            if (!StringUtils.hasText(program_session_id)
-                    || !OSEProgramSessions.instance().containsKey(program_session_id)) {
-                program.close();
-            }
-        }
-    }
-
-    private Object callMember(final OSERequest request,
-                              final OSEProgram program,
-                              final String function,
-                              final Object[] params) throws Exception {
-        if (null != program) {
-            if (program.info().singleton()) {
-                synchronized (SYNCHRONIZER) {
-                    program.request(request);
-                    final Object result = null != params
-                            ? program.callMember(function, params)
-                            : program.callMember(function);
-                    return convert(result);
-                }
-            } else {
-                program.request(request);
-                final Object result = null != params
-                        ? program.callMember(function, params)
-                        : program.callMember(function);
-                return convert(result);
-            }
-        }
-        return new JSONArray();
-    }
-
-    private static Object convert(final Object result) throws Exception {
-        if (result instanceof File) {
-            return result;
-        } else if (result instanceof Exception) {
-            throw (Exception) result;
-        }
-        return Converter.toJsonArray(result);
     }
 
     // ------------------------------------------------------------------------

@@ -22,13 +22,17 @@ package org.lyj.commons.io.cache.filecache.registry.memory;
 
 import org.json.JSONObject;
 import org.lyj.Lyj;
+import org.lyj.commons.Delegates;
 import org.lyj.commons.io.cache.filecache.registry.IRegistry;
 import org.lyj.commons.io.cache.filecache.registry.IRegistryItem;
 import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -52,6 +56,48 @@ public class MemoryRegistry
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
+    /**
+     * Use this constructor to create a memory cache registry with no
+     * persistence features. Items are stored only in memory
+     */
+    public MemoryRegistry() {
+        this("", "");
+    }
+
+    /**
+     * Use this constructor to create a memory cache registry with no
+     * persistence features. Items are stored only in memory
+     */
+    public MemoryRegistry(final JSONObject settings) {
+        _path_settings = "";
+        _path_data = "";
+
+        _data = new JsonWrapper(this.loadData(_path_data));
+        _settings = new JsonWrapper(settings);
+    }
+
+
+    /**
+     * Use this constructor to create a registry that can persist data on file
+     *
+     * @param settings  Settings
+     * @param path_data Data File
+     */
+    public MemoryRegistry(final JSONObject settings,
+                          final String path_data) {
+        _path_settings = "";
+        _path_data = path_data;
+
+        _data = new JsonWrapper(this.loadData(_path_data));
+        _settings = new JsonWrapper(settings);
+    }
+
+    /**
+     * Use this constructor to create a registry that can persist data on file
+     *
+     * @param path_settings Settings file
+     * @param path_data     Data File
+     */
     public MemoryRegistry(final String path_settings,
                           final String path_data) {
         _path_settings = path_settings;
@@ -99,7 +145,9 @@ public class MemoryRegistry
     }
 
     public void reloadSettings() {
-        _settings.parse(this.loadSettings(_path_settings));
+        if (StringUtils.hasText(_path_settings)) {
+            _settings.parse(this.loadSettings(_path_settings));
+        }
     }
 
     public long getCheck() {
@@ -188,9 +236,9 @@ public class MemoryRegistry
         }
     }
 
-    public int removeExpired() throws Exception {
+    public String[] removeExpired() throws Exception {
         synchronized (_data) {
-            int count = 0;
+            final Collection<String> removed = new ArrayList<>();
             final JsonWrapper items = new JsonWrapper(_data.optJSONObject(ITEMS));
             final Set<String> keys = items.keys();
             for (final String key : keys) {
@@ -199,10 +247,10 @@ public class MemoryRegistry
                     items.remove(key);
                     // remove file
                     this.removeFile(item.path());
-                    count++;
+                    removed.add(item.path());
                 }
             }
-            return count;
+            return removed.toArray(new String[0]);
         }
     }
 
@@ -211,31 +259,41 @@ public class MemoryRegistry
     // --------------------------------------------------------------------
 
     private String loadData(final String fileName) {
-        try {
-            return FileUtils.readFileToString(new File(fileName));
-        } catch (Throwable t) {
-            return "{'items':{}}";
+        if (StringUtils.hasText(fileName)) {
+            try {
+                return FileUtils.readFileToString(new File(fileName));
+            } catch (Throwable ignored) {
+            }
         }
+        // default structure
+        return "{\"items\":{}}";
     }
 
     private String loadSettings(final String fileName) {
-        try {
-            return FileUtils.readFileToString(new File(fileName));
-        } catch (Throwable t) {
-            return "{'" + CHECK_MS + "':" + DEFAULT_LIFE + "}";
+        if (StringUtils.hasText(fileName)) {
+            try {
+                return FileUtils.readFileToString(new File(fileName));
+            } catch (Throwable ignored) {
+            }
         }
+        // default 1 minute
+        return "{\"" + CHECK_MS + "\":" + DEFAULT_LIFE + "}";
     }
 
     private void saveData() throws IOException {
-        FileUtils.writeStringToFile(new File(_path_data),
-                _data.toString(1),
-                Lyj.getCharset());
+        if (StringUtils.hasText(_path_data)) {
+            FileUtils.writeStringToFile(new File(_path_data),
+                    _data.toString(1),
+                    Lyj.getCharset());
+        }
     }
 
     private void saveSettings() throws IOException {
-        FileUtils.writeStringToFile(new File(_path_settings),
-                _settings.toString(1),
-                Lyj.getCharset());
+        if (StringUtils.hasText(_path_settings)) {
+            FileUtils.writeStringToFile(new File(_path_settings),
+                    _settings.toString(1),
+                    Lyj.getCharset());
+        }
     }
 
     private void removeFile(final String file) {
@@ -271,7 +329,8 @@ public class MemoryRegistry
                     try {
 
                         //-- check registry items --//
-                        if (registry.removeExpired() > 0) {
+                        final String[] expired = registry.removeExpired();
+                        if (expired.length > 0) {
                             try {
                                 registry.save();
                             } catch (Throwable ignored) {

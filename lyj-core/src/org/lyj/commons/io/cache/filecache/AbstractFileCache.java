@@ -17,31 +17,8 @@ import java.io.IOException;
  * Repository with expiration time for its content.
  * Expired files are removed
  */
-public abstract class AbstractCacheFiles
+public abstract class AbstractFileCache
         extends AbstractLogEmitter {
-
-    public enum Mode {
-
-        File((byte) 0),
-        Memory((byte) 1);
-
-        private final byte _value;
-
-        private Mode(byte value) {
-            _value = value;
-        }
-
-        public byte getValue() {
-            return _value;
-        }
-
-        public static Mode getEnum(byte value) {
-            for (Mode v : values())
-                if (v.getValue() == value) return v;
-            throw new IllegalArgumentException();
-        }
-    }
-
 
     private static final String REGISTRY_LOG = "_registry.log";
     private static final String REGISTRY_SETTINGS = "_registry_settings.json";
@@ -55,7 +32,7 @@ public abstract class AbstractCacheFiles
     private final String _path_log;
     private final IRegistry _registry; // the registry
 
-    private Mode _mode;
+    private IRegistry.Mode _mode;
     private long _duration;
     private long _check_interval;
     private boolean _debugMode;
@@ -65,14 +42,14 @@ public abstract class AbstractCacheFiles
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public AbstractCacheFiles(final String root) {
-        this(root, ONE_MINUTE, ONE_MINUTE, Mode.Memory);
+    public AbstractFileCache(final String root) {
+        this(root, ONE_MINUTE, ONE_MINUTE, IRegistry.Mode.Memory);
     }
 
-    public AbstractCacheFiles(final String root,
-                              final long duration_ms,
-                              final long check_interval_ms,
-                              final Mode mode) {
+    public AbstractFileCache(final String root,
+                             final long duration_ms,
+                             final long check_interval_ms,
+                             final IRegistry.Mode mode) {
 
         _mode = mode;
         _root = PathUtils.getAbsolutePath(root);
@@ -91,7 +68,7 @@ public abstract class AbstractCacheFiles
         FileUtils.tryMkdirs(_root);
 
         //-- load file registry (creates if any) --//
-        _registry = _mode.equals(Mode.File)
+        _registry = _mode.equals(IRegistry.Mode.File)
                 ? new FileRegistry(_path_settings, _path_data)
                 : new MemoryRegistry(_path_settings, _path_data);
         _registry.setCheck(_check_interval);
@@ -127,12 +104,12 @@ public abstract class AbstractCacheFiles
         return _debugMode;
     }
 
-    public AbstractCacheFiles debugMode(final boolean value) {
+    public AbstractFileCache debugMode(final boolean value) {
         _debugMode = value;
         return this;
     }
 
-    public AbstractCacheFiles duration(final long value) {
+    public AbstractFileCache duration(final long value) {
         _duration = value;
         return this;
     }
@@ -145,7 +122,7 @@ public abstract class AbstractCacheFiles
         return _check_interval;
     }
 
-    public AbstractCacheFiles checkIntervall(final long value) {
+    public AbstractFileCache checkIntervall(final long value) {
         _check_interval = value;
 
         _registry.interrupt();

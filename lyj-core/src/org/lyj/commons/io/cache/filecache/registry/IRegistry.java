@@ -1,8 +1,32 @@
 package org.lyj.commons.io.cache.filecache.registry;
 
+import org.lyj.commons.Delegates;
+
 import java.io.IOException;
 
 public interface IRegistry {
+
+    public enum Mode {
+
+        File((byte) 0),
+        Memory((byte) 1);
+
+        private final byte _value;
+
+        private Mode(byte value) {
+            _value = value;
+        }
+
+        public byte getValue() {
+            return _value;
+        }
+
+        public static IRegistry.Mode getEnum(byte value) {
+            for (IRegistry.Mode v : values())
+                if (v.getValue() == value) return v;
+            throw new IllegalArgumentException();
+        }
+    }
 
     void start();
 
@@ -39,6 +63,6 @@ public interface IRegistry {
 
     boolean removeItemByPath(final String path) throws Exception;
 
-    int removeExpired()  throws Exception;
+    String[] removeExpired()  throws Exception;
 
 }

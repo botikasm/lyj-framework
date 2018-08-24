@@ -72,7 +72,9 @@ public class FileRegistry
     // ------------------------------------------------------------------------
 
     public void reloadSettings() {
-        _settings.parse(this.loadSettings(_path_settings));
+        if (StringUtils.hasText(_path_settings)) {
+            _settings.parse(this.loadSettings(_path_settings));
+        }
     }
 
     public long getCheck() {
@@ -191,7 +193,7 @@ public class FileRegistry
         return this.removeItemByPath(path, true);
     }
 
-    public int removeExpired() throws Exception {
+    public String[] removeExpired() throws Exception {
         final Set<String> expired = new HashSet<>();
         if (null != _collection) {
             _collection.forEach((entity) -> {
@@ -207,8 +209,9 @@ public class FileRegistry
                 this.removeItem(key);
             }
         }
-        return expired.size();
+        return expired.toArray(new String[0]);
     }
+
 
     // --------------------------------------------------------------------
     //               p r i v a t e
@@ -304,7 +307,8 @@ public class FileRegistry
                     try {
 
                         //-- check registry items --//
-                        if (registry.removeExpired() > 0) {
+                        final String[] expired = registry.removeExpired();
+                        if (expired.length > 0) {
                             try {
                                 registry.save();
                             } catch (Throwable ignored) {

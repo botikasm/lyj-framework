@@ -12,6 +12,7 @@ import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.converters.JsonConverter;
+import org.lyj.ext.script.utils.Converter;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,7 +70,9 @@ public class DatabaseMessageHandler
             final Map<String, ?> params = payload.params();
             final Map<String, String> transform = payload.transform();
 
-            final DBHelper.CollectionWrapper collection = new DBHelper.CollectionWrapper(DBHelper.instance().collection(db_name, coll_name));
+            final DBHelper.CollectionWrapper collection = new DBHelper.CollectionWrapper(
+                    DBHelper.instance().collection(db_name, coll_name),
+                    true);
             if (collection.connected()) {
                 final JSONArray query_result = this.execute(collection, query, params, transform);
                 response.payload(query_result);
@@ -94,8 +97,8 @@ public class DatabaseMessageHandler
         if (!query_or_macro.startsWith(MACRO_PREFIX)) {
             // direct command
             final String query = query_or_macro;
-            final Collection<PersistentModel> response = collection.find(query, params_or_entity);
-            return JsonConverter.toArray(response);
+            final Object response = collection.find(query, params_or_entity);
+            return Converter.toJsonArray(response);
         } else {
             // macro name
             final String macro_name = query_or_macro.substring(1);
@@ -137,49 +140,49 @@ public class DatabaseMessageHandler
                 collection.addGeoIndex(fields, is_geoJson);
                 return JsonConverter.toArray(true);
             } else if (macro_name.equalsIgnoreCase(MACRO_UPSERT)) {
-                return JsonConverter.toArray(collection.upsert(params));
+                return Converter.toJsonArray(collection.upsert(params));
             } else if (macro_name.equalsIgnoreCase(MACRO_REMOVE)) {
                 if (StringUtils.hasText(query)) {
-                    return JsonConverter.toArray(collection.remove(query, params));
+                    return Converter.toJsonArray(collection.remove(query, params));
                 }
-                return JsonConverter.toArray(collection.removeEqual(params));
+                return Converter.toJsonArray(collection.removeEqual(params));
             } else if (macro_name.equalsIgnoreCase(MACRO_FIND_ONE)) {
-                return JsonConverter.toArray(collection.findOne(query, params));
+                return Converter.toJsonArray(collection.findOne(query, params));
             } else if (macro_name.equalsIgnoreCase(MACRO_FIND_ONE_EQUAL)) {
-                return JsonConverter.toArray(collection.findOneEqual(params));
+                return Converter.toJsonArray(collection.findOneEqual(params));
             } else if (macro_name.equalsIgnoreCase(MACRO_FIND_EQUAL)) {
-                return JsonConverter.toArray(collection.findEqual(params));
+                return Converter.toJsonArray(collection.findEqual(params));
             } else if (macro_name.equalsIgnoreCase(MACRO_FIND_EQUAL_ASC)) {
                 if (skip > 0 || limit > 0) {
-                    return JsonConverter.toArray(collection.findEqualAsc(params, sort, skip, limit));
+                    return Converter.toJsonArray(collection.findEqualAsc(params, sort, skip, limit));
                 }
-                return JsonConverter.toArray(collection.findEqualAsc(params, sort));
+                return Converter.toJsonArray(collection.findEqualAsc(params, sort));
             } else if (macro_name.equalsIgnoreCase(MACRO_FIND_EQUAL_DESC)) {
                 if (skip > 0 || limit > 0) {
-                    return JsonConverter.toArray(collection.findEqualDesc(params, sort, skip, limit));
+                    return Converter.toJsonArray(collection.findEqualDesc(params, sort, skip, limit));
                 }
-                return JsonConverter.toArray(collection.findEqualDesc(params, sort));
+                return Converter.toJsonArray(collection.findEqualDesc(params, sort));
             } else if (macro_name.equalsIgnoreCase(MACRO_FIND_LIKE_OR_ASC)) {
                 if (skip > 0 || limit > 0) {
-                    return JsonConverter.toArray(collection.findLikeOrAsc(params, sort, skip, limit));
+                    return Converter.toJsonArray(collection.findLikeOrAsc(params, sort, skip, limit));
                 }
-                return JsonConverter.toArray(collection.findLikeOrAsc(params, sort));
+                return Converter.toJsonArray(collection.findLikeOrAsc(params, sort));
             } else if (macro_name.equalsIgnoreCase(MACRO_FIND_LIKE_OR_DESC)) {
                 if (skip > 0 || limit > 0) {
-                    return JsonConverter.toArray(collection.findLikeOrDesc(params, sort, skip, limit));
+                    return Converter.toJsonArray(collection.findLikeOrDesc(params, sort, skip, limit));
                 }
-                return JsonConverter.toArray(collection.findLikeOrDesc(params, sort));
+                return Converter.toJsonArray(collection.findLikeOrDesc(params, sort));
             } else if (macro_name.equalsIgnoreCase(MACRO_COUNT)) {
                 if (StringUtils.hasText(query)) {
-                    return JsonConverter.toArray(collection.count(query, params));
+                    return Converter.toJsonArray(collection.count(query, params));
                 }
-                return JsonConverter.toArray(collection.count());
+                return Converter.toJsonArray(collection.count());
             } else if (macro_name.equalsIgnoreCase(MACRO_COUNT_EQUAL)) {
-                return JsonConverter.toArray(collection.countEqual(params));
+                return Converter.toJsonArray(collection.countEqual(params));
             } else if (macro_name.equalsIgnoreCase(MACRO_COUNT_NOT_EQUAL)) {
-                return JsonConverter.toArray(collection.countNotEqual(params));
+                return Converter.toJsonArray(collection.countNotEqual(params));
             } else if (macro_name.equalsIgnoreCase(MACRO_COUNT_LIKE_OR)) {
-                return JsonConverter.toArray(collection.countLikeOr(params));
+                return Converter.toJsonArray(collection.countLikeOr(params));
             }
 
             return null;

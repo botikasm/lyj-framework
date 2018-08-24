@@ -8,6 +8,7 @@ import org.lyj.ext.script.program.engines.AbstractEngine;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.Map;
 
 /**
@@ -40,7 +41,7 @@ public class EngineJavascript
 
     public EngineJavascript(final Program program) {
         super(program);
-        _engine = new ScriptEngineManager().getEngineByName("nashorn");
+        _engine = engine();
 
         _engine.getContext().setErrorWriter(program.logger());
         _engine.getContext().setWriter(program.logger());
@@ -50,7 +51,7 @@ public class EngineJavascript
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public void close(){
+    public void close() {
 
     }
 
@@ -119,5 +120,28 @@ public class EngineJavascript
         return result;
     }
 
+    // ------------------------------------------------------------------------
+    //                      S T A T I C
+    // ------------------------------------------------------------------------
+
+    private static ScriptEngine __engine;
+
+    public static Object evalScript(final String script) throws ScriptException {
+        return engine().eval(script);
+    }
+
+    public static ScriptEngine engine() {
+        return new ScriptEngineManager().getEngineByName("nashorn");
+    }
+
+    public static ScriptEngine engine(final boolean singleton) {
+        if (!singleton) {
+            return engine();
+        }
+        if (null == __engine) {
+            __engine = engine();
+        }
+        return __engine;
+    }
 
 }

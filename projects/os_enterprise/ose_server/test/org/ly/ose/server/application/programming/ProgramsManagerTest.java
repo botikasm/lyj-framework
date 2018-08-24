@@ -3,11 +3,13 @@ package org.ly.ose.server.application.programming;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.server.TestInitializer;
 import org.ly.ose.server.application.importer.PackageImporter;
 import org.ly.ose.server.application.programming.deploy_test.ProgramsTestDeployer;
 import org.lyj.Lyj;
 import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.RandomUtils;
 import org.lyj.ext.script.utils.Converter;
 
 import java.util.Collection;
@@ -69,8 +71,23 @@ public class ProgramsManagerTest {
         //-- http --//
         this.test_http(program);
 
+        //-- ose --//
+        this.test_ose(program);
+
         program.close();
     }
+
+    @Test
+    public void runTest_ose() throws Exception {
+        final OSEProgram program = this.get("tests.all");
+        
+        //-- ose --//
+        this.test_ose(program);
+
+        program.close();
+
+    }
+
 
     // ------------------------------------------------------------------------
     //                     p r i v a t e
@@ -199,4 +216,26 @@ public class ProgramsManagerTest {
         System.out.println(method + ": " + Converter.toJsonCompatible(response));
     }
 
+    private void test_ose(final OSEProgram program) throws Exception {
+
+        final OSERequest request = new OSERequest();
+        request.type(OSERequest.TYPE_PROGRAM);
+        request.lang("it");
+        request.clientId(RandomUtils.randomUUID());
+
+        // callMember
+        String method = "ose.callMember";
+        Object response =  OSEProgramInvoker.instance().callMember(request, program, method,
+                new String[]{"tests.all", "version", "param1", "params2"});
+        assertNotNull(response);
+        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+
+        // callMember
+        method = "ose.recursive";
+        response =  OSEProgramInvoker.instance().callMember(request, program, method,
+                new String[]{"tests.all", "recursive", "param1", "params2"});
+        assertNotNull(response);
+        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+
+    }
 }

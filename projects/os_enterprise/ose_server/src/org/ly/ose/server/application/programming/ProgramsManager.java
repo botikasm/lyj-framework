@@ -81,10 +81,12 @@ public class ProgramsManager
         this.clean();
         this.loadFromRegistry();
         OSEProgramSessions.instance().start();
+        OSEProgramInvokerMonitor.instance().open();
     }
 
     private void finish() {
         OSEProgramSessions.instance().stop();
+        OSEProgramInvokerMonitor.instance().close();
         if (!_programs.isEmpty()) {
             _programs.forEach((key, value) -> {
                 try {
@@ -146,6 +148,7 @@ public class ProgramsManager
 
         // add to file system (only not-protected packages)
         if (!isProtected(program_info.installationRoot())) {
+
             // save new registry file
             final String file_name = program_info.namespace().concat(".").concat(program_info.name()).concat(".dat");
             final String file_path = PathUtils.concat(ROOT_REGISTRY, file_name);

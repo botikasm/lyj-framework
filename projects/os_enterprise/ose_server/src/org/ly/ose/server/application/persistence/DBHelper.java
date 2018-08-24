@@ -2,9 +2,12 @@ package org.ly.ose.server.application.persistence;
 
 import jdk.nashorn.api.scripting.JSObject;
 import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.StringEscapeUtils;
 import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.ext.db.IDatabase;
 import org.lyj.ext.db.IDatabaseCollection;
+import org.lyj.ext.script.program.engines.javascript.EngineJavascript;
+import org.lyj.ext.script.program.engines.javascript.utils.JavascriptConverter;
 import org.lyj.ext.script.utils.Converter;
 
 import java.util.Collection;
@@ -86,13 +89,15 @@ public class DBHelper {
     public static class CollectionWrapper {
 
         private final IDatabaseCollection<PersistentModel> _collection;
-
+        private final boolean _auto_convert_to_jsobjects;
         // ------------------------------------------------------------------------
         //                      c o n s t r u c t o r
         // ------------------------------------------------------------------------
 
-        public CollectionWrapper(final IDatabaseCollection<PersistentModel> collection) {
+        public CollectionWrapper(final IDatabaseCollection<PersistentModel> collection,
+                                 final boolean autoconvert) {
             _collection = collection;
+            _auto_convert_to_jsobjects = autoconvert;
         }
 
         // ------------------------------------------------------------------------
@@ -142,11 +147,11 @@ public class DBHelper {
 
         //--  u p s e r t  --//
 
-        public PersistentModel upsert(final Object item) {
+        public Object upsert(final Object item) {
             if (null != _collection) {
                 if (null != item) {
                     final PersistentModel entity = new PersistentModel(Converter.toJsonItem(item));
-                    return _collection.upsert(entity);
+                    return convert(_collection.upsert(entity));
                 }
             }
             return null;
@@ -161,159 +166,159 @@ public class DBHelper {
             return false;
         }
 
-        public Collection<PersistentModel> remove(final String query,
-                                                  final Object raw_args) {
+        public Object remove(final String query,
+                                    final Object raw_args) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
-                return _collection.remove(query, args);
+                return convert(_collection.remove(query, args));
             }
             return null;
         }
 
-        public Collection<PersistentModel> removeEqual(final Object raw_args) {
+        public Object removeEqual(final Object raw_args) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
-                return _collection.removeEqual(args);
+                return convert(_collection.removeEqual(args));
             }
             return null;
         }
 
-        public PersistentModel removeOne(final String query,
-                                         final Object raw_args) {
+        public Object removeOne(final String query,
+                                final Object raw_args) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
-                return _collection.removeOne(query, args);
+                return convert(_collection.removeOne(query, args));
             }
             return null;
         }
 
-        public PersistentModel removeOneEqual(final Object raw_args) {
+        public Object removeOneEqual(final Object raw_args) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
-                return _collection.removeOneEqual(args);
+                return convert(_collection.removeOneEqual(args));
             }
             return null;
         }
 
         //--  g e t  --//
 
-        public PersistentModel get(final String key) {
+        public Object get(final String key) {
             if (null != _collection) {
-                return _collection.get(key);
+                return convert(_collection.get(key));
             }
             return null;
         }
 
-        public Collection<PersistentModel> find(final String query,
-                                                final Object raw_args) {
-            if (null != _collection) {
-                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
-                return _collection.find(query, args);
-            }
-            return null;
-        }
-
-        public PersistentModel findOne(final String query,
-                                       final Object raw_args) {
+        public Object find(final String query,
+                                  final Object raw_args) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
-                return _collection.findOne(query, args);
+                return convert(_collection.find(query, args));
             }
             return null;
         }
 
-        public Collection<PersistentModel> findEqual(final Object raw_args) {
+        public Object findOne(final String query,
+                              final Object raw_args) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
-                return _collection.findEqual(args);
+                return convert(_collection.findOne(query, args));
             }
             return null;
         }
 
-        public PersistentModel findOneEqual(final Object raw_args) {
+        public Object findEqual(final Object raw_args) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
-                return _collection.findOneEqual(args);
+                return convert(_collection.findEqual(args));
             }
             return null;
         }
 
-        public Collection<PersistentModel> findEqualAsc(final Object raw_args,
-                                                        final Object raw_sort) {
+        public Object findOneEqual(final Object raw_args) {
+            if (null != _collection) {
+                final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
+                return convert(_collection.findOneEqual(args));
+            }
+            return null;
+        }
+
+        public Object findEqualAsc(final Object raw_args,
+                                          final Object raw_sort) {
             return this.findEqualAsc(raw_args, raw_sort, 0, 0);
         }
 
-        public Collection<PersistentModel> findEqualAsc(final Object raw_args,
-                                                        final Object raw_sort,
-                                                        final Object raw_skip,
-                                                        final Object raw_limit) {
+        public Object findEqualAsc(final Object raw_args,
+                                          final Object raw_sort,
+                                          final Object raw_skip,
+                                          final Object raw_limit) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 final int skip = ConversionUtils.toInteger(raw_skip);
                 final int limit = ConversionUtils.toInteger(raw_limit);
 
-                return _collection.findEqualAsc(args, sort, skip, limit);
+                return convert(_collection.findEqualAsc(args, sort, skip, limit));
             }
             return null;
         }
 
-        public Collection<PersistentModel> findEqualDesc(final Object raw_args,
-                                                         final Object raw_sort) {
+        public Object findEqualDesc(final Object raw_args,
+                                           final Object raw_sort) {
             return this.findEqualDesc(raw_args, raw_sort, 0, 0);
         }
 
-        public Collection<PersistentModel> findEqualDesc(final Object raw_args,
-                                                         final Object raw_sort,
-                                                         final Object raw_skip,
-                                                         final Object raw_limit) {
+        public Object findEqualDesc(final Object raw_args,
+                                           final Object raw_sort,
+                                           final Object raw_skip,
+                                           final Object raw_limit) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 final int skip = ConversionUtils.toInteger(raw_skip);
                 final int limit = ConversionUtils.toInteger(raw_limit);
 
-                return _collection.findEqualDesc(args, sort, skip, limit);
+                return convert(_collection.findEqualDesc(args, sort, skip, limit));
             }
             return null;
         }
 
-        public Collection<PersistentModel> findLikeOrAsc(final Object raw_args,
-                                                         final Object raw_sort) {
+        public Object findLikeOrAsc(final Object raw_args,
+                                           final Object raw_sort) {
             return this.findLikeOrAsc(raw_args, raw_sort, 0, 0);
         }
 
-        public Collection<PersistentModel> findLikeOrAsc(final Object raw_args,
-                                                         final Object raw_sort,
-                                                         final Object raw_skip,
-                                                         final Object raw_limit) {
+        public Object findLikeOrAsc(final Object raw_args,
+                                           final Object raw_sort,
+                                           final Object raw_skip,
+                                           final Object raw_limit) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 final int skip = ConversionUtils.toInteger(raw_skip);
                 final int limit = ConversionUtils.toInteger(raw_limit);
 
-                return _collection.findLikeOrAsc(args, sort, skip, limit);
+                return convert(_collection.findLikeOrAsc(args, sort, skip, limit));
             }
             return null;
         }
 
-        public Collection<PersistentModel> findLikeOrDesc(final Object raw_args,
-                                                          final Object raw_sort) {
+        public Object findLikeOrDesc(final Object raw_args,
+                                            final Object raw_sort) {
             return this.findLikeOrDesc(raw_args, raw_sort, 0, 0);
         }
 
-        public Collection<PersistentModel> findLikeOrDesc(final Object raw_args,
-                                                          final Object raw_sort,
-                                                          final Object raw_skip,
-                                                          final Object raw_limit) {
+        public Object findLikeOrDesc(final Object raw_args,
+                                            final Object raw_sort,
+                                            final Object raw_skip,
+                                            final Object raw_limit) {
             if (null != _collection) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 final int skip = ConversionUtils.toInteger(raw_skip);
                 final int limit = ConversionUtils.toInteger(raw_limit);
 
-                return _collection.findLikeOrDesc(args, sort, skip, limit);
+                return convert(_collection.findLikeOrDesc(args, sort, skip, limit));
             }
             return null;
         }
@@ -365,7 +370,7 @@ public class DBHelper {
         public void forEach(final JSObject callback) {
             if (null != _collection && null != callback) {
                 _collection.forEach((item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -377,7 +382,7 @@ public class DBHelper {
             if (null != _collection && null != callback) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 _collection.forEach(query, args, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -388,7 +393,7 @@ public class DBHelper {
             if (null != _collection && null != callback) {
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 _collection.forEachAsc(sort, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -399,7 +404,7 @@ public class DBHelper {
             if (null != _collection && null != callback) {
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 _collection.forEachDesc(sort, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -410,7 +415,7 @@ public class DBHelper {
             if (null != _collection && null != callback) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 _collection.forEachEqual(args, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -423,7 +428,7 @@ public class DBHelper {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 _collection.forEachEqualAsc(args, sort, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -436,7 +441,7 @@ public class DBHelper {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 _collection.forEachEqualDesc(args, sort, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -447,7 +452,7 @@ public class DBHelper {
             if (null != _collection && null != callback) {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 _collection.forEachNotEqual(args, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -460,7 +465,7 @@ public class DBHelper {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 _collection.forEachNotEqualAsc(args, sort, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
@@ -473,10 +478,36 @@ public class DBHelper {
                 final Map<String, Object> args = Converter.toJsonItem(raw_args).map();
                 final String[] sort = JsonWrapper.toArrayOfString(Converter.toJsonArray(raw_sort));
                 _collection.forEachNotEqualDesc(args, sort, (item) -> {
-                    final Object callback_response = callback.call(null, item);
+                    final Object callback_response = callback.call(null, convert(item));
                     return ConversionUtils.toBoolean(callback_response); // continue loop?
                 });
             }
+        }
+
+        // ------------------------------------------------------------------------
+        //                      p u b l i c
+        // ------------------------------------------------------------------------
+
+        private Object convert(final Collection<PersistentModel> data) {
+            try {
+                if (_auto_convert_to_jsobjects) {
+                    return JavascriptConverter.toScriptObject(data);
+                }
+            } catch (Throwable ignored) {
+                // ignored
+            }
+            return data;
+        }
+
+        private Object convert(final PersistentModel data) {
+            try {
+                if (_auto_convert_to_jsobjects) {
+                    return JavascriptConverter.toScriptObject(data);
+                }
+            } catch (Throwable ignored) {
+                // ignored
+            }
+            return data;
         }
 
     }

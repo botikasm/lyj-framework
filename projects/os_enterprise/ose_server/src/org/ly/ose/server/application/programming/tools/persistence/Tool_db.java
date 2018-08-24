@@ -37,6 +37,7 @@ public class Tool_db
 
     private final String _package_name;
     private String _db_name; // usually equals program name with a custom prefix. i.e. "ose_program_system_utils"
+    private boolean _auto_convert_to_jsobjects;
 
     private CollectionsController __collections;
 
@@ -49,6 +50,7 @@ public class Tool_db
 
         _package_name = super.info().fullName(); // "system_utils", "ai_nlp_ventis"
         _db_name = _package_name; // program name "system_utils", "ai_nlp_ventis"
+        _auto_convert_to_jsobjects = true;
     }
 
     // ------------------------------------------------------------------------
@@ -60,6 +62,15 @@ public class Tool_db
             __collections.close();
             __collections = null;
         }
+    }
+
+    public Tool_db autoconvert(final boolean value) {
+        _auto_convert_to_jsobjects = value;
+        return this;
+    }
+
+    public boolean autoconvert() {
+        return _auto_convert_to_jsobjects;
     }
 
     public Tool_db name(final String name) throws Exception {
@@ -150,7 +161,8 @@ public class Tool_db
         private DBHelper.CollectionWrapper collection(final String name) {
             final IDatabase db = this.database();
             if (null != db) {
-                return new DBHelper.CollectionWrapper(db.collection(name, PersistentModel.class));
+                return new DBHelper.CollectionWrapper(db.collection(name, PersistentModel.class),
+                        _tool_db.autoconvert());
             }
             return null;
         }

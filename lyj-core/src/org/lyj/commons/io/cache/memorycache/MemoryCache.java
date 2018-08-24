@@ -15,6 +15,7 @@ public class MemoryCache<T> {
     //                      c o n s t
     // ------------------------------------------------------------------------
 
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
@@ -102,7 +103,7 @@ public class MemoryCache<T> {
 
     public boolean isExpired(final String key) {
         synchronized (_cache) {
-            return !_cache.containsKey(key) || (null!=_cache.get(key) && _cache.get(key).expired());
+            return !_cache.containsKey(key) || (null != _cache.get(key) && _cache.get(key).expired());
         }
     }
 
