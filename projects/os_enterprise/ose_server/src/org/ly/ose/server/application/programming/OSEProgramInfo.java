@@ -118,6 +118,10 @@ public class OSEProgramInfo
         return StringUtils.replace(this.namespace() + "." + this.name(), ".", "_");
     }
 
+    public String className(){
+        return StringUtils.replace(this.namespace() + "_" + this.name(), "_", ".");
+    }
+
     public String namespace() {
         return _namespace;
     }

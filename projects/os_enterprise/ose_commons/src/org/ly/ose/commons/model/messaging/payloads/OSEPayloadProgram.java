@@ -128,7 +128,7 @@ public class OSEPayloadProgram
 
     private static Collection toList(final Object params) {
         if (StringUtils.isJSONArray(params)) {
-            final JSONArray array = new JSONArray(params);
+            final JSONArray array = JsonConverter.toArray(params);
             return JsonWrapper.toListOfString(array);
         } else if (StringUtils.isJSONObject(params)) {
             final JSONObject json = JsonConverter.toObject(params);
