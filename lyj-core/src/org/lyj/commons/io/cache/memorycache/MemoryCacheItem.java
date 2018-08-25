@@ -1,6 +1,10 @@
 package org.lyj.commons.io.cache.memorycache;
 
-import org.lyj.commons.util.json.JsonItem;
+import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.converters.JsonConverter;
+
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Wrap a cached item
@@ -21,20 +25,20 @@ public class MemoryCacheItem<T> {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final JsonItem _data;
+    private final Map<String, Object> _data;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     public MemoryCacheItem() {
-        _data = new JsonItem();
+        _data = new TreeMap<>();
         this.duration(DEFAULT_LIFE);
     }
 
     @Override
     public String toString() {
-        return _data.toString();
+        return JsonConverter.toObject(_data).toString();
     }
 
     // ------------------------------------------------------------------------
@@ -42,11 +46,11 @@ public class MemoryCacheItem<T> {
     // ------------------------------------------------------------------------
 
     public long timestamp() {
-        return _data.getLong(TIMESTAMP);
+        return ConversionUtils.toLong(_data.get(TIMESTAMP));
     }
 
     public long duration() {
-        return _data.getLong(DURATION);
+        return ConversionUtils.toLong(_data.get(DURATION));
     }
 
     public MemoryCacheItem<T> duration(final long value) {
@@ -54,7 +58,7 @@ public class MemoryCacheItem<T> {
         return this;
     }
 
-    public MemoryCacheItem<T> wakeUp(){
+    public MemoryCacheItem<T> wakeUp() {
         _data.put(TIMESTAMP, System.currentTimeMillis());
         return this;
     }
@@ -65,14 +69,19 @@ public class MemoryCacheItem<T> {
     }
 
     public MemoryCacheItem<T> item(final T item) {
-        _data.put(ITEM, item);
-        _data.put(TIMESTAMP, System.currentTimeMillis());
+        return this.item(item, true);
+    }
 
+    public MemoryCacheItem<T> item(final T item, final boolean wakeup) {
+        _data.put(ITEM, item);
+        if(wakeup){
+            _data.put(TIMESTAMP, System.currentTimeMillis());
+        }
         return this;
     }
 
     public T item() {
-        return (T)_data.get(ITEM);
+        return (T) _data.get(ITEM);
     }
 
 

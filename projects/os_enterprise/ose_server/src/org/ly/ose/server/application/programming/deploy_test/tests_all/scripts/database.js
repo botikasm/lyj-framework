@@ -41,21 +41,51 @@ module.exports = (function () {
         }
     };
 
-    /**
-     * https://docs.arangodb.com/3.1/AQL/Fundamentals/BindParameters.html
-     */
-    instance.find = function () {
+    instance.upsert2 = function () {
         try {
-            var items = addItems(20);
+            //addItems(20);
+
+            // get some items to change
             var query = "FOR t IN " + COLLECTION + "\n" +
                 "  FILTER t.index > @index\n" +
                 "  RETURN t";
             var args = {
                 index:3
             };
-            var response = $db.collection(COLLECTION).find(query, args);
+            var items = $db.collection(COLLECTION).find(query, args);
+            items.forEach(function(item){
+                item['bool_val_2'] = true;
+                item['time_val_1'] = (new Date()).getTime();
+                $db.collection(COLLECTION).upsert(item);
+            });
 
-            return response;
+            return $db.collection(COLLECTION).find(query, args);
+        } catch (err) {
+            console.error(FILE + '#upsert2', err);
+            return err;
+        }
+    };
+
+    /**
+     * https://docs.arangodb.com/3.1/AQL/Fundamentals/BindParameters.html
+     */
+    instance.find = function () {
+        try {
+            addItems(20);
+
+            var query = "FOR t IN " + COLLECTION + "\n" +
+                "  FILTER t.index > @index\n" +
+                "  RETURN t";
+            var args = {
+                index:3
+            };
+            var out=[];
+            var response = $db.collection(COLLECTION).find(query, args);
+            response.forEach(function(item){
+                //console.info(FILE + '#find.forEach', item._key);
+                out.push(item._key);
+            });
+            return out;
         } catch (err) {
             console.error(FILE + '#find', err);
             return err;
@@ -64,7 +94,7 @@ module.exports = (function () {
 
     instance.findEqual = function () {
         try {
-            var items = addItems(20);
+            addItems(20);
 
             var args = {
                 _key:'sample_item_10'
@@ -138,7 +168,8 @@ module.exports = (function () {
                 "name": "This is a sample entity to store into database",
                 "timestamp": (new Date()).getTime(),
                 "index":(i===17?"🤘":i),
-                "rnd": 1
+                "rnd": 1,
+                "bool_val": true
             };
             response.push($db.collection(COLLECTION).upsert(model));
         }

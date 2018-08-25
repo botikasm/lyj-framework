@@ -2,8 +2,10 @@ package org.ly.ose.server.application.programming.tools.ose;
 
 import org.ly.ose.commons.model.messaging.OSERequest;
 import org.ly.ose.commons.model.messaging.OSEResponse;
+import org.ly.ose.commons.model.messaging.payloads.OSEPayloadProgram;
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.OSEProgramInvoker;
+import org.ly.ose.server.application.programming.OSEProgramInvokerMonitor;
 import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
 import org.lyj.commons.util.converters.MapConverter;
 
@@ -46,13 +48,26 @@ public class Tool_ose
 
     }
 
+    /**
+     * Invoke a function declared in another program.
+     * NOTE: Each program works in a different virtual machine.
+     * @param namespace ex: "com.drillio.server"
+     * @param function  ex: "version"
+     * @param raw_params Optional parameters
+     */
     public Object callMember(final String namespace,
                              final String function,
                              final Object... raw_params) throws Exception {
         final OSERequest request = this.request();
-
+        if (!request.hasPayload()) {
+            final OSEPayloadProgram payload = new OSEPayloadProgram();
+            payload.clientId(request.clientId());
+            payload.namespace(namespace);
+            payload.function(function);
+            request.payload().putAll(payload.map());
+        }
         // security check for infinite recursive loops
-        this.checkInfiniteLoop(request);
+        OSEProgramInvokerMonitor.instance().validate(request);
 
         final String client_session_id = request.clientId();
         final Collection<Object> params = MapConverter.toList(raw_params);
@@ -75,10 +90,6 @@ public class Tool_ose
             throw new Exception("NULL request is not a valid request.");
         }
         return request;
-    }
-
-    private void checkInfiniteLoop(final OSERequest request) {
-
     }
 
 }

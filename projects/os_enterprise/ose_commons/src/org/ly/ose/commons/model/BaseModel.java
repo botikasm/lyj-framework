@@ -47,6 +47,15 @@ public class BaseModel
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o instanceof BaseModel) {
+            return this.key().equalsIgnoreCase(((BaseModel) o).key());
+        }
+        return false;
+    }
+
     public BaseModel putAllNotEmpty(final JSONObject values,
                                     final boolean only_existing_fields) {
         super.putAllNotEmpty(values, only_existing_fields, new String[]{"_*"});

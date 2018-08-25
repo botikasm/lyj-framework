@@ -71,10 +71,16 @@ public class MemoryCache<T> {
 
     public MemoryCacheItem<T> put(final String key,
                                   final T item) {
+        return this.put(key, item, true);
+    }
+
+    public MemoryCacheItem<T> put(final String key,
+                                  final T item,
+                                  final boolean wakeup) {
         synchronized (_cache) {
             if (!_cache.containsKey(key)) {
                 // insert
-                _cache.put(key, new MemoryCacheItem<T>().item(item));
+                _cache.put(key, new MemoryCacheItem<T>().item(item, wakeup));
             } else {
                 // update
                 _cache.get(key).item(item);

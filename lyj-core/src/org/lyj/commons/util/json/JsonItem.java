@@ -7,6 +7,7 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.*;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -14,7 +15,7 @@ import java.util.*;
  */
 public class JsonItem
         extends AbstractLogEmitter
-        implements Cloneable {
+        implements Cloneable, Serializable {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s

@@ -4,9 +4,13 @@ import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.ly.ose.commons.model.messaging.OSERequest;
+import org.ly.ose.commons.model.messaging.payloads.OSEPayloadProgram;
+import org.ly.ose.server.IConstants;
 import org.ly.ose.server.TestInitializer;
 import org.ly.ose.server.application.importer.PackageImporter;
 import org.ly.ose.server.application.programming.deploy_test.ProgramsTestDeployer;
+import org.ly.ose.server.application.programming.exceptions.ImproperUseException;
+import org.ly.ose.server.application.programming.exceptions.InfiniteLoopException;
 import org.lyj.Lyj;
 import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.RandomUtils;
@@ -80,7 +84,7 @@ public class ProgramsManagerTest {
     @Test
     public void runTest_ose() throws Exception {
         final OSEProgram program = this.get("tests.all");
-        
+
         //-- ose --//
         this.test_ose(program);
 
@@ -94,6 +98,17 @@ public class ProgramsManagerTest {
 
         //-- ose --//
         this.test_database(program);
+
+        program.close();
+
+    }
+
+    @Test
+    public void runTest_database2() throws Exception {
+        final OSEProgram program = this.get("tests.all");
+
+        //-- ose --//
+        this.test_database_upsert2(program);
 
         program.close();
 
@@ -123,11 +138,18 @@ public class ProgramsManagerTest {
         assertNotNull(response);
         System.out.println(method + ": " + Converter.toJsonCompatible(response));
 
+        // upsert2
+        method = "upsert2";
+        response = database.callMember(method);
+        assertNotNull(response);
+        Collection list = Converter.toList(response);
+        System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
+
         // find
         method = "find";
         response = database.callMember(method);
         assertNotNull(response);
-        Collection list = Converter.toList(response);
+        list = Converter.toList(response);
         System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
 
         // findEqual
@@ -149,6 +171,17 @@ public class ProgramsManagerTest {
         response = database.callMember(method);
         assertNotNull(response);
         list = Converter.toList(response);
+        System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
+    }
+
+    private void test_database_upsert2(final OSEProgram program) throws Exception {
+        ScriptObjectMirror database = (ScriptObjectMirror) program.callMember("database");
+
+        // upsert
+        String method = "upsert2";
+        Object response = database.callMember(method);
+        assertNotNull(response);
+        Collection list = Converter.toList(response);
         System.out.println(method + " (" + list.size() + ") : " + Converter.toJsonCompatible(response));
     }
 
@@ -232,20 +265,30 @@ public class ProgramsManagerTest {
         request.type(OSERequest.TYPE_PROGRAM);
         request.lang("it");
         request.clientId(RandomUtils.randomUUID());
+        final OSEPayloadProgram payload = new OSEPayloadProgram();
+        payload.appToken(IConstants.APP_TOKEN_CLIENT_API);
+        request.payload().putAll(payload.map());
 
         // callMember
         String method = "ose.callMember";
-        Object response =  OSEProgramInvoker.instance().callMember(request, program, method,
+        Object response = OSEProgramInvoker.instance().callMember(request, program, method,
                 new String[]{"tests.all", "version", "param1", "params2"});
         assertNotNull(response);
         System.out.println(method + ": " + Converter.toJsonCompatible(response));
 
         // callMember
-        method = "ose.recursive";
-        response =  OSEProgramInvoker.instance().callMember(request, program, method,
-                new String[]{"tests.all", "recursive", "param1", "params2"});
-        assertNotNull(response);
-        System.out.println(method + ": " + Converter.toJsonCompatible(response));
+        Throwable err = null;
+        try {
+            method = "ose.recursive";
+            response = OSEProgramInvoker.instance().callMember(request, program, method,
+                    new String[]{"tests.all", "recursive", "param1", "params2"});
+            assertNotNull(response);
+            System.out.println(method + ": " + Converter.toJsonCompatible(response));
+        } catch (Throwable t) {
+            err = t;
+        }
+        assertNotNull(err);
+        assertTrue( (err instanceof InfiniteLoopException)  );
 
     }
 }
