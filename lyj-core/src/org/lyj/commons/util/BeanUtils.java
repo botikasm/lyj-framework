@@ -76,6 +76,10 @@ public abstract class BeanUtils {
             return primitiveClazz;
         }
 
+        public static boolean isPrimitive(Object obj) {
+            return null != obj ? isPrimitive(obj.getClass()) : false;
+        }
+
         public static boolean isPrimitive(Class aclass) {
             final PrimitiveClasses[] array = PrimitiveClasses.values();
             for (final PrimitiveClasses item : array) {

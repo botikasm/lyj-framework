@@ -5621,6 +5621,10 @@ var AuthenticationService = /** @class */ (function (_super) {
     AuthenticationService.prototype.get_account = function (key, callback) {
         var _this = this;
         var request_data = this.request;
+        request_data.query = '#findOneEqual';
+        request_data.params = JSON.stringify({
+            _key: key
+        });
         _super.prototype.post.call(this, request_data).then(function (req_resp) {
             _super.prototype.invoke.call(_this, callback, req_resp);
         }).catch(function (req_resp) {

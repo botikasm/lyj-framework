@@ -834,7 +834,7 @@ public final class JsonWrapper implements Cloneable {
                 } else if (value instanceof Map) {
                     // map
                     result.put(key, parse((Map) value));
-                } else if (BeanUtils.isPrimitiveClass(value)) {
+                } else if (BeanUtils.PrimitiveClasses.isPrimitive(value)) {
                     // primitive
                     result.put(key, value);
                 } else if (value instanceof JSONObject || value instanceof JSONArray) {
@@ -871,7 +871,7 @@ public final class JsonWrapper implements Cloneable {
             } else if (item instanceof Map) {
                 // map
                 result.put(parse((Map) item));
-            } else if (BeanUtils.isPrimitiveClass(item)) {
+            } else if (BeanUtils.PrimitiveClasses.isPrimitive(item)) {
                 // primitive
                 result.put(item);
             } else if (item instanceof JSONObject || item instanceof JSONArray) {
