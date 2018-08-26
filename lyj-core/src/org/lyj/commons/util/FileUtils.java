@@ -162,25 +162,28 @@ public abstract class FileUtils {
 
     public static boolean isEmptyDir(final File dir,
                                      final boolean excludeHidden) {
-        if (dir.isDirectory()) {
-            final File[] files = dir.listFiles();
-            if (null != files && files.length > 0) {
-                if (!excludeHidden) {
-                    return false; // not empty
-                }
-                // hidden files does not count
-                int count = 0;
-                for (final File file : files) {
-                    if (!file.isHidden()) {
-                        count++;
+        if (dir.exists()) {
+            if (dir.isDirectory()) {
+                final File[] files = dir.listFiles();
+                if (null != files && files.length > 0) {
+                    if (!excludeHidden) {
+                        return false; // not empty
                     }
+                    // hidden files does not count
+                    int count = 0;
+                    for (final File file : files) {
+                        if (!file.isHidden()) {
+                            count++;
+                        }
+                    }
+                    return count == 0;
+                } else {
+                    return true; // empty
                 }
-                return count == 0;
-            } else {
-                return true; // empty
             }
+            return false;
         }
-        return false;
+        return true; // does not exists
     }
 
     public static boolean isFile(final String fileName) {

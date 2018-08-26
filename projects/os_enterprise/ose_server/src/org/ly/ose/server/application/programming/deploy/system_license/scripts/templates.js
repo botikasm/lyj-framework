@@ -1,5 +1,5 @@
 /**
- * functions.js
+ * templates.js
  * ---------------
  * Sample functions
  */
@@ -15,13 +15,11 @@ module.exports = (function () {
     //              c o n s t
     // ------------------------------------------------------------------------
 
-    var FILE = 'functions.js';// used only for logs
+    var FILE = 'templates.js';// used only for logs
 
     // ------------------------------------------------------------------------
     //              f i e l d s
     // ------------------------------------------------------------------------
-
-    var _counter = 0;
 
     // ------------------------------------------------------------------------
     //              i n s t a n c e
@@ -30,44 +28,30 @@ module.exports = (function () {
     var instance = {};
 
     /**
-     * Return script version
-     * @return {*}
+     *
      */
-    instance.version = function () {
+    instance.email_admin = function () {
         try {
-            return version();
+            var email_admin = get('email_admin'); // get localized resource
+            return email_admin;
         } catch (err) {
-            console.error(FILE + '#version', err);
+            console.error(FILE + '#email_admin', err);
             return err;
         }
     };
 
-    instance.echo = function (value) {
-        try {
-            return value;
-        } catch (err) {
-            console.error(FILE + '#echo', err);
-            return err;
-        }
-    };
-
-    instance.count = function () {
-        try {
-            _counter++;
-            return _counter;
-        } catch (err) {
-            console.error(FILE + '#count', err);
-            _counter = 0; // reset counter
-            return err;
-        }
-    };
 
     // ------------------------------------------------------------------------
     //              p r i v a t e
     // ------------------------------------------------------------------------
 
-    function version() {
-        return _CONST.version;
+    function get(name) {
+        try {
+            return $i18n.load('/html/' + name, '.html').content();
+        } catch (err) {
+            console.error(FILE + '#get("' + name + '")', err);
+            return err;
+        }
     }
 
     // ------------------------------------------------------------------------

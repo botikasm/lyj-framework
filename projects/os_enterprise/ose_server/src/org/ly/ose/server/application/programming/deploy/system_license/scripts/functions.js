@@ -42,25 +42,6 @@ module.exports = (function () {
         }
     };
 
-    instance.echo = function (value) {
-        try {
-            return value;
-        } catch (err) {
-            console.error(FILE + '#echo', err);
-            return err;
-        }
-    };
-
-    instance.count = function () {
-        try {
-            _counter++;
-            return _counter;
-        } catch (err) {
-            console.error(FILE + '#count', err);
-            _counter = 0; // reset counter
-            return err;
-        }
-    };
 
     // ------------------------------------------------------------------------
     //              p r i v a t e

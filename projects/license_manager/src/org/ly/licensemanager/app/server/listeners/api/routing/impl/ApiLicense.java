@@ -345,18 +345,19 @@ public class ApiLicense
         if (null != license) {
             Async.invoke((args) -> {
                 final String[] recipients = ConfigHelper.instance().apiNotifyTo();
+                final String host =  ConfigHelper.instance().apiHost();
                 if (null != recipients && recipients.length > 0) {
                     final String license_uid = license.uid();
                     final String license_name = license.name();
                     final String license_email = license.email();
-                    final String url_show = PathUtils.concat(ConfigHelper.instance().apiHost(),
-                            "api/license/get/" + IConstants.APP_TOKEN_COINMULE_API + "/" + license_uid);
-                    final String url_enable = PathUtils.concat(ConfigHelper.instance().apiHost(),
-                            "api/license/enable/" + IConstants.APP_TOKEN_COINMULE_API + "/" + license_uid);
-                    final String url_postpone_30 = PathUtils.concat(ConfigHelper.instance().apiHost(),
-                            "api/license/postpone/" + IConstants.APP_TOKEN_COINMULE_API + "/" + license_uid + "/30");
-                    final String url_postpone_365 = PathUtils.concat(ConfigHelper.instance().apiHost(),
-                            "api/license/postpone/" + IConstants.APP_TOKEN_COINMULE_API + "/" + license_uid + "/365");
+                    final String url_show = PathUtils.concat(host, "api/license/get/" +
+                            IConstants.APP_TOKEN_COINMULE_API + "/" + license_uid);
+                    final String url_enable = PathUtils.concat(host, "api/license/enable/" +
+                            IConstants.APP_TOKEN_COINMULE_API + "/" + license_uid);
+                    final String url_postpone_30 = PathUtils.concat(host, "api/license/postpone/" +
+                            IConstants.APP_TOKEN_COINMULE_API + "/" + license_uid + "/30");
+                    final String url_postpone_365 = PathUtils.concat(host, "api/license/postpone/" +
+                            IConstants.APP_TOKEN_COINMULE_API + "/" + license_uid + "/365");
 
                     final Map<String, String> params = new HashMap<>();
                     params.put("LANG", license.lang());

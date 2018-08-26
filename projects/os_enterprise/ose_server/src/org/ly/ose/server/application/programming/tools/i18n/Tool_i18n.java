@@ -41,6 +41,7 @@ public class Tool_i18n
     public static final String NAME = "i18n"; // used as $i18n.
 
     private static final String BASE_LANG = IConstants.BASE_LANG;
+    private static final String DEFAULT_EXT = ".json";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -72,11 +73,16 @@ public class Tool_i18n
     //-- dictionary --//
 
     public ContentHelper load() {
-        return new ContentHelper(this, _root_i18n);
+        return new ContentHelper(this, _root_i18n, DEFAULT_EXT);
     }
 
     public ContentHelper load(final String partial_path) {
-        return new ContentHelper(this, PathUtils.concat(_root, partial_path));
+        return this.load(partial_path, DEFAULT_EXT);
+    }
+
+    public ContentHelper load(final String partial_path,
+                              final String extension) {
+        return new ContentHelper(this, PathUtils.concat(_root, partial_path), extension);
     }
 
     public Object get(final String key) throws Exception {
@@ -103,9 +109,9 @@ public class Tool_i18n
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private Resource getCachedResource(final String root) {
+    private Resource getCachedResource(final String root, final String extension) {
         if (!_cached_resources.containsKey(root)) {
-            _cached_resources.put(root, new Resource(root));
+            _cached_resources.put(root, new Resource(root, extension));
         }
         return _cached_resources.get(root);
     }
@@ -123,13 +129,16 @@ public class Tool_i18n
         // --------------------------------------------------------------------
 
         private final String _root_dir;
+        private final String _extension;
         private final Map<String, Object> _resources;
 
         // --------------------------------------------------------------------
         //                      c o n s t r u c t o r
         // --------------------------------------------------------------------
 
-        private Resource(final String root_dir) {
+        private Resource(final String root_dir,
+                         final String extension) {
+            _extension = extension;
             _root_dir = root_dir;
             _resources = new HashMap<>();
         }
@@ -154,7 +163,7 @@ public class Tool_i18n
         private Object getData(final String lang) throws Exception {
             if (!_resources.containsKey(lang)) {
                 // lookup for resource
-                final String content = this.read(PathUtils.concat(_root_dir, lang.concat(".json")));
+                final String content = this.read(PathUtils.concat(_root_dir, lang.concat(_extension)));
                 if (StringUtils.hasText(content)) {
                     if (StringUtils.isJSONArray(content)) {
                         _resources.put(lang, new JSONArray(content));
@@ -187,15 +196,18 @@ public class Tool_i18n
 
         private final Tool_i18n _parent;
         private final String _root_dir;
+        private final String _extension;
 
         // --------------------------------------------------------------------
         //                      c o n s t r u c t o r
         // --------------------------------------------------------------------
 
         private ContentHelper(final Tool_i18n parent,
-                              final String root_dir) {
+                              final String root_dir,
+                              final String extension) {
             _parent = parent;
             _root_dir = root_dir;
+            _extension = extension;
         }
 
         // --------------------------------------------------------------------
@@ -207,7 +219,7 @@ public class Tool_i18n
         }
 
         public Object content(final String lang) throws Exception {
-            return this.getContent(lang, _root_dir);
+            return this.getContent(lang, _root_dir, _extension);
         }
 
         public Object get(final String key) throws Exception {
@@ -216,7 +228,7 @@ public class Tool_i18n
 
         public Object get(final String lang,
                           final String key) throws Exception {
-            final Object content = this.getContent(lang, _root_dir);
+            final Object content = this.getContent(lang, _root_dir, DEFAULT_EXT);
             if (null != content) {
                 if (content instanceof Map) {
                     final Map map = (Map) content;
@@ -231,8 +243,9 @@ public class Tool_i18n
         // --------------------------------------------------------------------
 
         private Object getContent(final String lang,
-                                  final String root) throws Exception {
-            final Resource resource = _parent.getCachedResource(root);
+                                  final String root,
+                                  final String extension) throws Exception {
+            final Resource resource = _parent.getCachedResource(root, extension);
             if (null != resource) {
                 final Object obj = resource.get(lang);
                 if (null != obj) {

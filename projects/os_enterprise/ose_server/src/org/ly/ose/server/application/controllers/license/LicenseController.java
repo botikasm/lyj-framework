@@ -10,6 +10,9 @@ import java.util.Map;
 
 /**
  * Multi-Project License Controller.
+ * Each project have a project-key and a registry of licences.
+ * ex: "drillio_project" has its own license registry containing all drillio-project's licences.
+ *
  */
 public class LicenseController {
 
@@ -23,7 +26,7 @@ public class LicenseController {
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final Map<String, LicenseRegistry> _licenses; // one registry for each license project
+    private final Map<String, LicenseRegistry> _licenses; // one registry for each license project (project-key, registry)
     private final String _root;
 
     // ------------------------------------------------------------------------
@@ -51,6 +54,11 @@ public class LicenseController {
         }
     }
 
+    /**
+     * Get (or create new) registry for a project key.
+     * @param project_key project-key of registry to retrieve or create.
+     * @return A Licence Registry
+     */
     public LicenseRegistry registry(final String project_key) {
         return this.registry(project_key, true);
     }

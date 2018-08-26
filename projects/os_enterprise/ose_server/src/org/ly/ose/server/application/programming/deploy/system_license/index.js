@@ -8,6 +8,7 @@ ly.new(function () {
     // ------------------------------------------------------------------------
 
     var _FUNCTIONS = require('/scripts/functions');
+    var _TEMPLATES = require('/scripts/templates');
 
     // ------------------------------------------------------------------------
     //              c o n s t
@@ -16,8 +17,6 @@ ly.new(function () {
     // ------------------------------------------------------------------------
     //              f i e l d s
     // ------------------------------------------------------------------------
-
-    var _count = 0;
 
     // ------------------------------------------------------------------------
     //                      onInit (run once when program is initialized)
@@ -44,23 +43,24 @@ ly.new(function () {
 
     this._loop = function (program) {
         // _count++;
-        // console.log("_loop: ", "COUNT", _count, "PROGRAM: " + program);
+        //console.log("_loop: ", "COUNT", _count, "PROGRAM: " + program);
     };
 
     // ------------------------------------------------------------------------
     //                 exposed functions
     // ------------------------------------------------------------------------
 
+    this.templates = function () {
+        return _TEMPLATES;
+    };
+
+    // ------------------------------------------------------------------------
+    //                 direct access
+    // ------------------------------------------------------------------------
+
     this.version = function () {
         return _FUNCTIONS.version();
     };
 
-    this.echo = function (value) {
-        return _FUNCTIONS.echo(value);
-    };
-
-    this.count = function () {
-        return _FUNCTIONS.count();
-    };
 
 });

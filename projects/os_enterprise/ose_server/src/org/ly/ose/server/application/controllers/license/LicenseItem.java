@@ -1,5 +1,6 @@
 package org.ly.ose.server.application.controllers.license;
 
+import org.json.JSONObject;
 import org.lyj.commons.util.DateUtils;
 import org.lyj.commons.util.DateWrapper;
 import org.lyj.commons.util.FormatUtils;
@@ -23,6 +24,8 @@ public class LicenseItem
     private static final String FLD_NAME = "name";
     private static final String FLD_LANG = "lang";
     private static final String FLD_FMT_EXPIRATION = "fmt_expiration";
+
+    private static final String FLD_ATTRIBUTES = "attributes"; // license special or custom attributes.
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -100,6 +103,13 @@ public class LicenseItem
         return this;
     }
 
+    public JSONObject attributes() {
+        if (!super.has(FLD_ATTRIBUTES)) {
+            super.put(FLD_ATTRIBUTES, new JSONObject());
+        }
+        return super.getJSONObject(FLD_ATTRIBUTES);
+    }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
@@ -143,6 +153,17 @@ public class LicenseItem
         return true;
     }
 
+    public int incAttribute(final String name, final int value) {
+        final JSONObject attributes = this.attributes();
+        if (!attributes.has(name)) {
+            attributes.put(name, value);
+        } else {
+            final int initial_value = attributes.optInt(name);
+            attributes.put(name, value + initial_value);
+        }
+        return attributes.optInt(name);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -169,7 +190,7 @@ public class LicenseItem
         return timestamp + duration_ms;
     }
 
-    private void recalculate(){
+    private void recalculate() {
         final String fmt_date = FormatUtils.formatDate(new Date(this.expirationTime()));
         super.put(FLD_FMT_EXPIRATION, fmt_date);
     }

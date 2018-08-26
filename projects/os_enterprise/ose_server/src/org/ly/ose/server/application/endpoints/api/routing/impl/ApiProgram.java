@@ -42,6 +42,12 @@ public class ApiProgram {
             // files or other kind of responses
             if (response instanceof File) {
                 ApiHelper.writeFile(context, (File) response);
+            } else if (response instanceof String){
+                 if(StringUtils.isHTML(response) || StringUtils.isXml(response)){
+                    ApiHelper.writeHTML(context, (String)response);
+                 } else {
+                     ApiHelper.writeError(context, "output not supported: " + response);
+                 }
             } else {
                 ApiHelper.writeError(context, "output not supported: " + response.getClass().getName());
             }

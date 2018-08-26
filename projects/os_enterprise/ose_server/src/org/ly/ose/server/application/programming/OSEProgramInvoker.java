@@ -9,6 +9,15 @@ import org.lyj.ext.script.utils.Converter;
 import java.io.File;
 import java.util.Collection;
 
+/**
+ * Invoke a program and return converted value to OSEResponse.
+ * Not converted:
+ * - File
+ * - Exception
+ * - HTML
+ * - XML
+ * 
+ */
 public class OSEProgramInvoker {
 
 
@@ -134,9 +143,17 @@ public class OSEProgramInvoker {
 
     private static Object convert(final Object result) throws Exception {
         if (result instanceof File) {
+            // FILE
             return result;
         } else if (result instanceof Exception) {
+            // EXCEPTION
             throw (Exception) result;
+        } else if (StringUtils.isHTML(result)) {
+            // HTML
+            return result;
+        } else if (StringUtils.isXml(result)) {
+            // XML
+            return result;
         }
         return Converter.toJsonArray(result);
     }

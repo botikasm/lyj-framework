@@ -26,6 +26,7 @@ public class ProgramsManager
     private static final String ROOT_REGISTRY = PathUtils.concat(ROOT, "_registry");
 
     private static final String[] PROTECTED_NAMESPACES = IConstants.PROTECTED_NAMESPACES;
+    private static final String[] ALLOWED_NAMESPACES = IConstants.ALLOWED_NAMESPACES;
     private static final String[] TEXT_FILES = IConstants.TEXT_FILES;
 
     // ------------------------------------------------------------------------
@@ -110,26 +111,16 @@ public class ProgramsManager
         }
     }
 
-    private static boolean isProtected(final String namespace) {
-        for (final String path : PROTECTED_NAMESPACES) {
-            final String dir = PathUtils.concat(ROOT, path);
-            if (PathUtils.pathMatch(namespace, dir)
-                    || PathUtils.pathMatch(namespace, PathUtils.concat(dir, "*"))) {
-                return !FileUtils.isEmptyDir(namespace, true);
-            }
-        }
-        return false;
-    }
-
     private void installProgram(final OSEProgramInfo program_info) throws Exception {
-        final String namespace_path = toPath(program_info.namespace());
-        final String root = PathUtils.concat(ROOT, namespace_path);
-        FileUtils.tryMkdirs(root);
-
         // check path is not protected namespace
-        if (!this.isProtected(root)) {
+        if (canInstall(program_info)) {
             // deploy files
+            final String namespace_path = toPath(program_info.namespace());
+            final String root = PathUtils.concat(ROOT, namespace_path);
             final String program_root = PathUtils.concat(ROOT, namespace_path + "/" + program_info.name());
+
+            FileUtils.tryMkdirs(program_root);
+
             final int count = this.deployFiles(program_root, program_info);
             if (count > 0) {
                 program_info.installationRoot(program_root);
@@ -145,30 +136,28 @@ public class ProgramsManager
     }
 
     private void addToRegistry(final OSEProgramInfo program_info) throws Exception {
-
+        final String root = program_info.installationRoot();
         // add to file system (only not-protected packages)
-        if (!isProtected(program_info.installationRoot())) {
 
-            // save new registry file
-            final String file_name = program_info.namespace().concat(".").concat(program_info.name()).concat(".dat");
-            final String file_path = PathUtils.concat(ROOT_REGISTRY, file_name);
-            FileUtils.mkdirs(file_path);
-            final byte[] bytes = ByteUtils.getBytes(program_info);
-            FileUtils.copy(bytes, new FileOutputStream(new File(file_path)));
+        // save new registry file
+        final String file_name = program_info.namespace().concat(".").concat(program_info.name()).concat(".dat");
+        final String file_path = PathUtils.concat(ROOT_REGISTRY, file_name);
+        FileUtils.mkdirs(file_path);
+        final byte[] bytes = ByteUtils.getBytes(program_info);
+        FileUtils.copy(bytes, new FileOutputStream(new File(file_path)));
 
-            // clear cache
-            OSEProgram.clearCache(program_info.installationRoot());
+        // clear cache
+        OSEProgram.clearCache(root);
 
-            // remove singleton instance
-            if (program_info.singleton()) {
-                final OSEProgramInfo old_info = _programs.get(program_info.uid());
-                if(null!=old_info){
-                    final String program_session_id = (String) old_info.data().get(OSEProgramInfo.FLD_SESSION_ID);
-                    if (StringUtils.hasText(program_session_id)) {
-                        final OSEProgram program = OSEProgramSessions.instance().remove(program_session_id);
-                        if (null != program) {
-                            program.close();
-                        }
+        // remove singleton instance
+        if (program_info.singleton()) {
+            final OSEProgramInfo old_info = _programs.get(program_info.uid());
+            if (null != old_info) {
+                final String program_session_id = (String) old_info.data().get(OSEProgramInfo.FLD_SESSION_ID);
+                if (StringUtils.hasText(program_session_id)) {
+                    final OSEProgram program = OSEProgramSessions.instance().remove(program_session_id);
+                    if (null != program) {
+                        program.close();
                     }
                 }
             }
@@ -196,10 +185,6 @@ public class ProgramsManager
 
     }
 
-    private String toPath(final String namespace) {
-        return StringUtils.replace(namespace, ".", "/");
-    }
-
     private int deployFiles(final String root,
                             final OSEProgramInfo program) {
         final Counter counter = new Counter(0);
@@ -224,6 +209,34 @@ public class ProgramsManager
         });
         return counter.valueAsInt();
     }
+
+    private static String toPath(final String namespace) {
+        return StringUtils.replace(namespace, ".", "/");
+    }
+
+    private static boolean canInstall(final OSEProgramInfo program_info) {
+        final String namespace_path = toPath(program_info.namespace());
+        final String root = PathUtils.concat(ROOT, namespace_path);
+        final String program_root = PathUtils.concat(root, program_info.name());
+
+        if (isProtected(program_root)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static boolean isProtected(final String namespace) {
+        for (final String path : PROTECTED_NAMESPACES) {
+            final String dir = PathUtils.concat(ROOT, path);
+            if (PathUtils.pathMatch(namespace, dir)
+                    || PathUtils.pathMatch(namespace, PathUtils.concat(dir, "*"))) {
+                return !FileUtils.isEmptyDir(namespace, true);
+            }
+        }
+        return false;
+    }
+
 
     // ------------------------------------------------------------------------
     //                     S I N G L E T O N

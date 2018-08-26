@@ -1,0 +1,13 @@
+{
+  "type": "program",
+  "namespace": "system",
+  "name": "license",
+  "description": "Singleton License Manager",
+  "version": "1.0.1",
+  "author": "Gian Angelo Geminiani",
+  "session_timeout": 0,
+  "loop_interval": 0,
+  "singleton":true,
+  "log_level":"severe"
+
+}

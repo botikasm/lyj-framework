@@ -9,6 +9,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.*;
 
+/**
+ * Licences Registry contains all enabled licences.
+ * Each licence has an UID that identify the Licence unique ID and the owner of the licence.
+ *
+ */
 public class LicenseRegistry
         extends AbstractLogEmitter {
 
