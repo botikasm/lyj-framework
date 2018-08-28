@@ -259,6 +259,7 @@ public class OSEProgram {
         _program.context().put(ensureScriptPrefix(Tool_error.NAME), new Tool_error(this));
         _program.context().put(ensureScriptPrefix(Tool_fs.NAME), new Tool_fs(this));
         _program.context().put(ensureScriptPrefix(Tool_date.NAME), new Tool_date(this));
+        _program.context().put(ensureScriptPrefix(Tool_format.NAME), new Tool_format(this));
 
         // request tools
         _program.context().put(ensureScriptPrefix(Tool_request.NAME), new Tool_request(this)); // all request

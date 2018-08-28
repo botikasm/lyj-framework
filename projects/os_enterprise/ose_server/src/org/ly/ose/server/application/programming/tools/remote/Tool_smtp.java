@@ -84,11 +84,19 @@ public class Tool_smtp
         public String send(final String subject,
                            final String message,
                            final Object raw_target) {
+            return send(subject, message, message, raw_target);
+        }
+
+        public String send(final String subject,
+                           final String message_txt,
+                           final String message_html,
+                           final Object raw_target) {
             try {
-                if (StringUtils.hasText(subject) && StringUtils.hasText(message)) {
+                if (StringUtils.hasText(subject)
+                        && (StringUtils.hasText(message_txt) || StringUtils.hasText(message_html))) {
                     final String[] target = Converter.toStringArray(raw_target);
                     if (target.length > 0) {
-                        send(_config, subject, message, message, target, "");
+                        send(_config, subject, message_txt, message_html, target, "");
                     } else {
                         return "Missing target. Cannot send email to nobody.";
                     }
@@ -101,18 +109,27 @@ public class Tool_smtp
             return null;
         }
 
-        /**
-         * Send message async and return error if any into callback
-         */
         public void sendAsync(final String subject,
                               final String message,
                               final Object raw_target,
                               final JSObject callback) {
+            this.sendAsync(subject, message, message, raw_target, callback);
+        }
+
+        /**
+         * Send message async and return error if any into callback
+         */
+        public void sendAsync(final String subject,
+                              final String message_txt,
+                              final String message_html,
+                              final Object raw_target,
+                              final JSObject callback) {
             try {
-                if (StringUtils.hasText(subject) && StringUtils.hasText(message)) {
+                if (StringUtils.hasText(subject)
+                        && (StringUtils.hasText(message_txt) || StringUtils.hasText(message_html))) {
                     final String[] target = Converter.toStringArray(raw_target);
                     if (target.length > 0) {
-                        send(_config, subject, message, message, target, "");
+                        send(_config, subject, message_txt, message_html, target, "");
 
                         invoke(null, callback);
                     } else {

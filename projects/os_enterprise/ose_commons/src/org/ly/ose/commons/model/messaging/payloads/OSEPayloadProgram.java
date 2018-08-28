@@ -138,7 +138,8 @@ public class OSEPayloadProgram
             if (s_params.contains("&") && s_params.contains("=")) {
                 return Arrays.asList(MapConverter.toMap(s_params));
             } else if (s_params.startsWith("array:")) {
-                final String[] array = StringUtils.split((String) params, ",;", true);
+                final String s_array = s_params.replace("array:", "");
+                final String[] array = StringUtils.split(s_array, ",;", true);
                 return Arrays.asList(array);
             } else if (s_params.startsWith("base64:")) {
                 final String base64 = s_params.replace("base64:", "");

@@ -28,7 +28,20 @@ module.exports = (function () {
     var instance = {};
 
     /**
-     *
+     * https://localhost:4000/api/program/invoke/iuhdiu87w23ruh897dfyc2w3r/it/session_12234/system.license/templates.resource/array:email_admin,html
+     */
+    instance.resource = function (name, extension) {
+        try {
+            console.info(FILE + '#resource', name, extension);
+            return get(name, extension); // get localized resource
+        } catch (err) {
+            console.error(FILE + '#resource', err);
+            return err;
+        }
+    };
+
+    /**
+     * https://localhost:4000/api/program/invoke/iuhdiu87w23ruh897dfyc2w3r/it/session_12234/system.license/templates.email_admin/null
      */
     instance.email_admin = function () {
         try {
@@ -45,9 +58,11 @@ module.exports = (function () {
     //              p r i v a t e
     // ------------------------------------------------------------------------
 
-    function get(name) {
+    function get(name, extension) {
         try {
-            return $i18n.load('/html/' + name, '.html').content();
+            extension = extension || '.html';
+            console.info(FILE + '#get', name, extension);
+            return $i18n.load('/html/' + name, extension).content();
         } catch (err) {
             console.error(FILE + '#get("' + name + '")', err);
             return err;

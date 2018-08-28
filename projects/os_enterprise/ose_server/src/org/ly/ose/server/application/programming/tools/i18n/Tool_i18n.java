@@ -163,7 +163,7 @@ public class Tool_i18n
         private Object getData(final String lang) throws Exception {
             if (!_resources.containsKey(lang)) {
                 // lookup for resource
-                final String content = this.read(PathUtils.concat(_root_dir, lang.concat(_extension)));
+                final String content = this.read(PathUtils.concat(_root_dir, concatExt(lang, _extension)));
                 if (StringUtils.hasText(content)) {
                     if (StringUtils.isJSONArray(content)) {
                         _resources.put(lang, new JSONArray(content));
@@ -185,6 +185,13 @@ public class Tool_i18n
             return "";
         }
 
+
+        private String concatExt(final String name, final String extension){
+            if(extension.startsWith(".")){
+               return name.concat(extension);
+            }
+            return name.concat(".").concat(extension);
+        }
 
     }
 
