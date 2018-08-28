@@ -10,8 +10,13 @@ import java.io.FileOutputStream;
 import java.util.*;
 
 /**
- * Licences Registry contains all enabled licences.
+ *
+ * Licences Registry contains all enabled licenses.
+ *
  * Each licence has an UID that identify the Licence unique ID and the owner of the licence.
+ *
+ * Registries are stored into LicenseController with a unique ID for each project.
+ * Each project has its own registry of licenses
  *
  */
 public class LicenseRegistry

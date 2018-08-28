@@ -114,6 +114,10 @@ public class LicenseItem
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public void refresh() {
+        this.recalculate();
+    }
+
     public void postpone(final int days) {
         final int duration = this.durationDays();
         this.durationDays(duration + days);
@@ -139,6 +143,10 @@ public class LicenseItem
         final int duration_day = MathUtils.floor(duration_ms / DateUtils.ONE_DAY_MS);
 
         this.durationDays(duration_day);
+    }
+
+    public String getExpirationDate() {
+        return FormatUtils.formatDate(new Date(this.expirationTime()));
     }
 
     public boolean expired() {
