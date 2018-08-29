@@ -36,6 +36,7 @@ public class OSEProgramInfo
     private int _session_timeout;
     private int _loop_interval;
     private boolean _singleton;
+    private boolean _autostart;
     private String _log_level; // SEVERE, INFO, ERROR,...
 
     private String _installation_root;
@@ -69,6 +70,7 @@ public class OSEProgramInfo
         _session_timeout = info._session_timeout;
         _loop_interval = info._loop_interval;
         _singleton = info._singleton;
+        _autostart = info._autostart;
         _log_level = info._log_level;
 
         _installation_root = info._installation_root;
@@ -92,6 +94,7 @@ public class OSEProgramInfo
         sb.put("author", _author);
         sb.put("session_timeout", _session_timeout);
         sb.put("singleton", _singleton);
+        sb.put("autostart", _autostart);
         sb.put("logging", _log_level);
         sb.put("loop_interval", _loop_interval);
         sb.put("files", _files.size());
@@ -200,6 +203,15 @@ public class OSEProgramInfo
 
     public OSEProgramInfo singleton(final boolean value) {
         _singleton = value;
+        return this;
+    }
+
+    public boolean autostart() {
+        return _autostart;
+    }
+
+    public OSEProgramInfo autostart(final boolean value) {
+        _autostart = value;
         return this;
     }
 

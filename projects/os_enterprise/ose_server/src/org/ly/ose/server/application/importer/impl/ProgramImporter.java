@@ -59,6 +59,7 @@ public class ProgramImporter
             info.sessionTimeout(config.getInt("session_timeout"));  // session duration
             info.singleton(config.getBoolean("singleton", false));
             info.logLevel(config.getString("log_level"));
+            info.autostart(config.getBoolean("autostart"));
 
             // add files
             for (final File file : super.files()) {

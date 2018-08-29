@@ -8,6 +8,7 @@
   "session_timeout": 0,
   "loop_interval": 0,
   "singleton":true,
+  "autostart":true,
   "log_level":"severe"
 
 }

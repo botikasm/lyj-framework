@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "connection": {
+    "host": "smtp.funnygain.com",
+    "port": "587",
+    "is_tls": true,
+    "is_ssl": false,
+    "username": "support@yourcompany.com",
+    "password": "**********"
+  },
+  "info": {
+    "admin_addresses": [
+      "angelo.geminiani@yourcompany.com"
+    ],
+    "from": "Support<support@yourcompany.com>",
+    "reply_to": "Support<support@yourcompany.com>"
+  }
+}
