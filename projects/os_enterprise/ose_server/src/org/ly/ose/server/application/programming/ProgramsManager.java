@@ -26,7 +26,6 @@ public class ProgramsManager
     private static final String ROOT_REGISTRY = PathUtils.concat(ROOT, "_registry");
 
     private static final String[] PROTECTED_NAMESPACES = IConstants.PROTECTED_NAMESPACES;
-    private static final String[] ALLOWED_NAMESPACES = IConstants.ALLOWED_NAMESPACES;
     private static final String[] TEXT_FILES = IConstants.TEXT_FILES;
 
     // ------------------------------------------------------------------------
