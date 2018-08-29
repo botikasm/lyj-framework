@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import org.ly.ose.server.application.controllers.email.smtp.MailSender;
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
+import org.lyj.commons.async.Async;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.utils.Converter;
 
@@ -124,23 +125,25 @@ public class Tool_smtp
                               final String message_html,
                               final Object raw_target,
                               final JSObject callback) {
-            try {
-                if (StringUtils.hasText(subject)
-                        && (StringUtils.hasText(message_txt) || StringUtils.hasText(message_html))) {
-                    final String[] target = Converter.toStringArray(raw_target);
-                    if (target.length > 0) {
-                        send(_config, subject, message_txt, message_html, target, "");
+            Async.invoke((args) -> {
+                try {
+                    if (StringUtils.hasText(subject)
+                            && (StringUtils.hasText(message_txt) || StringUtils.hasText(message_html))) {
+                        final String[] target = Converter.toStringArray(raw_target);
+                        if (target.length > 0) {
+                            send(_config, subject, message_txt, message_html, target, "");
 
-                        invoke(null, callback);
+                            invoke(null, callback);
+                        } else {
+                            invoke(new Exception("Missing target. Cannot send email to nobody."), callback);
+                        }
                     } else {
-                        invoke(new Exception("Missing target. Cannot send email to nobody."), callback);
+                        invoke(new Exception("Missing subject or message body."), callback);
                     }
-                } else {
-                    invoke(new Exception("Missing subject or message body."), callback);
+                } catch (Throwable t) {
+                    invoke(t, callback);
                 }
-            } catch (Throwable t) {
-                invoke(t, callback);
-            }
+            });
         }
 
         // ------------------------------------------------------------------------
