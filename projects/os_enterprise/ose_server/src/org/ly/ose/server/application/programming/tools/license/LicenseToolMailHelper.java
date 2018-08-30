@@ -10,6 +10,9 @@ import org.lyj.commons.async.Async;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ *
+ */
 public class LicenseToolMailHelper {
 
 
@@ -30,7 +33,7 @@ public class LicenseToolMailHelper {
     public void notify(final LicenseItem license) {
         if (null != license
                 && _sender.config().infoAdminAddresses().length > 0) {
-            this.notifyRegister(license, _sender.config().infoAdminAddresses());
+            // this.notifyRegister(license, _sender.config().infoAdminAddresses());
         }
     }
 

@@ -45,6 +45,7 @@ module.exports = (function () {
     instance.init = function () {
         // INITIALIZE EMAIL FOR ADMINS
         $license.smtp = require('/config/smtp.json');
+        $license.trialDays = 30;
     };
 
     instance.register = function (license_uid, email, name) {
@@ -87,7 +88,7 @@ module.exports = (function () {
         var license = $license.getLicense(license_uid);
         days = $convert.toInt(days);
         if (!!license) {
-            license.postone(days);
+            license.postpone(days);
             return license.data;
         }
         return false;

@@ -150,7 +150,7 @@ public class Tool_license
     /**
      * L I C E N S E    W R A P P E R
      */
-    private static class LicenseWrapper {
+    public static class LicenseWrapper {
 
         // ------------------------------------------------------------------------
         //                      f i e l d s
@@ -174,7 +174,7 @@ public class Tool_license
 
         public Object getData() {
             try {
-                return null != _item ? JavascriptConverter.toScriptObject(_item) : null;
+                return null != _item ? JavascriptConverter.toScriptObject(_item.json()) : null;
             } catch (Throwable ignored) {
                 // ignoed
             }
