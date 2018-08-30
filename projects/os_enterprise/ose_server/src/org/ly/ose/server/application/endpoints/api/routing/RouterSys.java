@@ -60,6 +60,7 @@ public class RouterSys
         super.all(PATH_API_UTIL.concat("/ping")).handler(ApiUtil::ping);
         super.post(PATH_API_UTIL.concat("/md5")).handler(ApiUtil::md5);
         super.get(PATH_API_UTIL.concat("/log/:app_token/:name")).handler(ApiUtil::log);
+        super.get(PATH_API_UTIL.concat("/download/:app_token/:cache_id")).handler(ApiUtil::download);
 
         //-- program --//
         super.post(PATH_API_PROGRAM.concat("/invoke")).handler(ApiProgram::invoke);

@@ -1,9 +1,12 @@
 package org.ly.ose.server.application.programming.tools.fs;
 
+import org.ly.ose.server.IConstants;
 import org.ly.ose.server.application.controllers.fs.cloud.FSCloud;
 import org.ly.ose.server.application.controllers.fs.temp.FSTemp;
+import org.ly.ose.server.application.endpoints.api.routing.RouterSys;
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
+import org.lyj.commons.util.RandomUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +73,23 @@ public class Tool_fs
 
     public File get(final String file_id) throws Exception {
         return this.lookupFile(file_id);
+    }
+
+    /**
+     * Prepare a file for download putting it into temp cache
+     *
+     * @param file_id FS id
+     */
+    public String downloadLink(final String file_id) throws Exception {
+        final File file = this.get(file_id);
+        if (null != file) {
+            // put to cache
+            final String key = RandomUtils.randomUUID();
+            FSTemp.instance().put(key, file);
+
+            return RouterSys.urlApi("/util/download/" + IConstants.APP_TOKEN + "/" + key);
+        }
+        return "";
     }
 
     // ------------------------------------------------------------------------

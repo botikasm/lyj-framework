@@ -3,6 +3,7 @@ package org.ly.ose.server.application.endpoints.api.routing.impl;
 
 import org.json.JSONObject;
 import org.ly.ose.server.IConstants;
+import org.ly.ose.server.application.controllers.fs.temp.FSTemp;
 import org.ly.ose.server.application.endpoints.api.ApiHelper;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.commons.logging.LoggingRepository;
@@ -41,7 +42,7 @@ public class ApiUtil {
 
                         ApiHelper.writeJSON(context, md5);
                     } catch (Throwable t) {
-                        ApiHelper.writeError(context, t, "login");
+                        ApiHelper.writeError(context, t, "md5");
                     }
 
                 } else {
@@ -73,13 +74,41 @@ public class ApiUtil {
 
                     ApiHelper.writeHTML(context, text);
                 } catch (Throwable t) {
-                    ApiHelper.writeError(context, t, "login");
+                    ApiHelper.writeError(context, t, "log");
                 }
             } else {
                 ApiHelper.writeError(context, err);
             }
         });
     }
+
+    public static void download(final HttpServerContext context) {
+        final String token = ApiHelper.getParamToken(context);
+
+        ApiHelper.auth(token, (err, valid) -> {
+            if (null == err) {
+                final String cache_id = context.getParam("cache_id");
+                if (StringUtils.hasText(cache_id)) {
+                    try {
+                        final File file = FSTemp.instance().getFile(cache_id);
+                        if (null != file && file.exists()) {
+                            ApiHelper.writeFile(context, file);
+                        } else {
+                            throw new Exception("Cache not found: " + cache_id);
+                        }
+                    } catch (Throwable t) {
+                        ApiHelper.writeError(context, t, "download");
+                    }
+
+                } else {
+                    ApiHelper.writeErroMissingParams(context, "cache_id");
+                }
+            } else {
+                ApiHelper.writeError(context, err);
+            }
+        });
+    }
+
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
