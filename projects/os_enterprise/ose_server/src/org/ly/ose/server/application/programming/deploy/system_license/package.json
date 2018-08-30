@@ -6,8 +6,8 @@
   "version": "1.0.1",
   "author": "Gian Angelo Geminiani",
   "session_timeout": 0,
-  "loop_interval": 1000,
+  "loop_interval": 0,
   "singleton": true,
-  "autostart": true,
+  "autostart": false,
   "log_level": "severe"
 }

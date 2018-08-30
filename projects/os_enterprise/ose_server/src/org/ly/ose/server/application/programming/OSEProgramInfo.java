@@ -24,6 +24,26 @@ public class OSEProgramInfo
     // custom data fields
     public static final String FLD_SESSION_ID = "session_id";
     public static final String FLD_CLIENT_ID = "client_id";
+
+    public enum FieldName {
+        type,
+        namespace,
+        name,
+        description,
+        version,
+        author,
+        session_timeout,
+        loop_interval,
+        singleton,
+        autostart,
+        microservice,
+        logging,
+
+        // added from deployer
+        files,
+        api_host
+    }
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
@@ -37,7 +57,9 @@ public class OSEProgramInfo
     private int _loop_interval;
     private boolean _singleton;
     private boolean _autostart;
+    private boolean _microservice;
     private String _log_level; // SEVERE, INFO, ERROR,...
+    private String _api_host;
 
     private String _installation_root;
 
@@ -71,7 +93,9 @@ public class OSEProgramInfo
         _loop_interval = info._loop_interval;
         _singleton = info._singleton;
         _autostart = info._autostart;
+        _microservice = info._microservice;
         _log_level = info._log_level;
+        _api_host = info._api_host;
 
         _installation_root = info._installation_root;
     }
@@ -87,17 +111,19 @@ public class OSEProgramInfo
 
     public JSONObject toJson() {
         final JSONObject sb = new JSONObject();
-        sb.put("namespace", _namespace);
-        sb.put("name", _name);
-        sb.put("version", _version);
-        sb.put("description", _description);
-        sb.put("author", _author);
-        sb.put("session_timeout", _session_timeout);
-        sb.put("singleton", _singleton);
-        sb.put("autostart", _autostart);
-        sb.put("logging", _log_level);
-        sb.put("loop_interval", _loop_interval);
-        sb.put("files", _files.size());
+        sb.put(FieldName.namespace.toString(), _namespace);
+        sb.put(FieldName.name.toString(), _name);
+        sb.put(FieldName.version.toString(), _version);
+        sb.put(FieldName.description.toString(), _description);
+        sb.put(FieldName.author.toString(), _author);
+        sb.put(FieldName.session_timeout.toString(), _session_timeout);
+        sb.put(FieldName.singleton.toString(), _singleton);
+        sb.put(FieldName.autostart.toString(), _autostart);
+        sb.put(FieldName.microservice.toString(), _microservice);
+        sb.put(FieldName.logging.toString(), _log_level);
+        sb.put(FieldName.loop_interval.toString(), _loop_interval);
+        sb.put(FieldName.files.toString(), _files.size());
+        sb.put(FieldName.api_host.toString(), _api_host);
         return sb;
     }
 
@@ -117,11 +143,11 @@ public class OSEProgramInfo
         return _custom_data;
     }
 
-    public String fullName(){
+    public String fullName() {
         return StringUtils.replace(this.namespace() + "." + this.name(), ".", "_");
     }
 
-    public String className(){
+    public String className() {
         return StringUtils.replace(this.namespace() + "_" + this.name(), "_", ".");
     }
 
@@ -215,12 +241,30 @@ public class OSEProgramInfo
         return this;
     }
 
+    public boolean microservice() {
+        return _microservice;
+    }
+
+    public OSEProgramInfo microservice(final boolean value) {
+        _microservice = value;
+        return this;
+    }
+
     public String logLevel() {
         return _log_level;
     }
 
     public OSEProgramInfo logLevel(final String value) {
         _log_level = value;
+        return this;
+    }
+
+    public String apiHost() {
+        return _api_host;
+    }
+
+    public OSEProgramInfo apiHost(final String value) {
+        _api_host = value;
         return this;
     }
 

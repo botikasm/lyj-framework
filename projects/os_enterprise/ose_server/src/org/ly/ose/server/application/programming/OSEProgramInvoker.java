@@ -38,13 +38,21 @@ public class OSEProgramInvoker {
     //                     p u b l i c
     // ------------------------------------------------------------------------
 
+    public boolean isMicroservice(final String namespace) {
+        final OSEProgramInfo info = ProgramsManager.instance().getInfo(getClassName(namespace));
+        if (null != info) {
+            return info.microservice();
+        }
+        return false;
+    }
+
     public Object callMember(final OSERequest request,
                              final String client_session_id,
                              final long session_timeout,
                              final String namespace,
                              final String function,
                              final Collection<Object> payload_params) throws Exception {
-        final String class_name = StringUtils.replace(namespace, "_", ".");
+        final String class_name = getClassName(namespace);
         final OSEProgramInfo info = ProgramsManager.instance().getInfo(class_name);
         if (null == info) {
             throw new Exception(FormatUtils.format("Invalid Program Exception: Namespace '%s' not found!",
@@ -237,6 +245,10 @@ public class OSEProgramInvoker {
 
     private static String getSingletonSessionId(final OSEProgramInfo info) {
         return "singleton_" + info.fullName();
+    }
+
+    private static String getClassName(final String namespace) {
+        return StringUtils.replace(namespace, "_", ".");
     }
 
     // ------------------------------------------------------------------------

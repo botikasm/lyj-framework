@@ -26,6 +26,10 @@ public class MailSender {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
+    public MailConfigSmtp config() {
+        return _config;
+    }
+
     public boolean isReady() {
         return _config.enabled();
     }

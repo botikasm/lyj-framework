@@ -12,7 +12,7 @@ ly.new(function () {
     var _SESSION = require('/scripts/session');
     var _HTTP = require('/scripts/http');
     var _OSE = require('/scripts/ose');
-
+    var _TEMPLATES = require('/scripts/templates');
 
     var _OBJECT = require('/scripts/object.json');
     var _ARRAY = require('/scripts/array.json');
@@ -73,6 +73,10 @@ ly.new(function () {
 
     this.ose = function () {
         return _OSE;
+    };
+
+    this.templates = function () {
+        return _TEMPLATES;
     };
 
     // ------------------------------------------------------------------------

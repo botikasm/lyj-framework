@@ -24,7 +24,8 @@ ly.new(function () {
 
     this._init = function (program) {
         try {
-            //console.log("_init: ", "PROGRAM: " + program);
+
+            _FUNCTIONS.init();
 
             // no return expected
             return {
@@ -62,5 +63,36 @@ ly.new(function () {
         return _FUNCTIONS.version();
     };
 
+    this.register = function (license_uid, email, name) {
+        return _FUNCTIONS.register(license_uid, email, name);
+    };
+
+    /**
+     * Return a License, if already stored into internal registry.
+     * @param license_uid  UID of a license
+     * @return License object or False if license does not exists.
+     */
+    this.get = function (license_uid) {
+        return _FUNCTIONS.get(license_uid);
+    };
+
+    /**
+     * Return true if a License exists.
+     * @param license_uid  UID of a license
+     * @return True if exists.
+     */
+    this.has = function (license_uid) {
+        return _FUNCTIONS.has(license_uid);
+    };
+
+    /**
+     * Add (or subtract if days is a negative number) days from licence time.
+     * @param license_uid UID of a license
+     * @param days Positive or negative number
+     * @return License object or False if license does not exists.
+     */
+    this.postpone = function (license_uid, days) {
+        return _FUNCTIONS.postpone(license_uid, days);
+    };
 
 });

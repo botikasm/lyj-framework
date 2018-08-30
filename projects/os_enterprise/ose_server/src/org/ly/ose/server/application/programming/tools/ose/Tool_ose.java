@@ -49,15 +49,19 @@ public class Tool_ose
     }
 
     /**
-     * Invoke a function declared in another program.
+     * Invoke a function declared in another program (NOTE: Programs must be declared as a "microservice").
      * NOTE: Each program works in a different virtual machine.
-     * @param namespace ex: "com.drillio.server"
-     * @param function  ex: "version"
+     *
+     * @param namespace  ex: "com.drillio.server"
+     * @param function   ex: "version"
      * @param raw_params Optional parameters
      */
     public Object callMember(final String namespace,
                              final String function,
                              final Object... raw_params) throws Exception {
+        if (!OSEProgramInvoker.instance().isMicroservice(namespace)) {
+            throw new Exception("Only micoservices can be invoked from programs.");
+        }
         final OSERequest request = this.request();
         if (!request.hasPayload()) {
             final OSEPayloadProgram payload = new OSEPayloadProgram();

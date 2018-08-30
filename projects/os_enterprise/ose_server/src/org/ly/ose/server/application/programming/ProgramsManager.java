@@ -206,9 +206,9 @@ public class ProgramsManager
     }
 
     private int deployFiles(final String root,
-                            final OSEProgramInfo program) {
+                            final OSEProgramInfo program_info) {
         final Counter counter = new Counter(0);
-        program.files().forEach((file, relative_path) -> {
+        program_info.files().forEach((file, relative_path) -> {
             try {
                 final String target_path = PathUtils.concat(root, relative_path);
                 FileUtils.tryMkdirs(target_path);
@@ -216,7 +216,10 @@ public class ProgramsManager
                 // read file to get and substitute internal valiables
                 if (CollectionUtils.contains(TEXT_FILES, PathUtils.getFilenameExtension(file.getAbsolutePath(), false))) {
                     final String content = FileUtils.readFileToString(file);
-                    final String text = FormatUtils.formatTemplate(content, "*|", "|*", program.toMap());
+
+                    // format content adding variables
+                    final String text = FormatUtils.formatTemplate(content, "*|", "|*", program_info.toMap());
+
                     FileUtils.writeStringToFile(new File(target_path), text, CharEncoding.getDefault());
                 } else {
                     FileUtils.copy(file, new File(target_path));

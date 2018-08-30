@@ -1,5 +1,7 @@
 package org.ly.ose.server.application.programming.tools.license;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import org.json.JSONObject;
 import org.ly.ose.server.application.controllers.license.LicenseController;
 import org.ly.ose.server.application.controllers.license.LicenseItem;
 import org.ly.ose.server.application.controllers.license.LicenseRegistry;
@@ -27,6 +29,8 @@ public class Tool_license
     private String _project_uid;
     private int _trial_days;
 
+    private JSONObject _smtp_config;
+
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
@@ -52,10 +56,6 @@ public class Tool_license
         return _project_uid;
     }
 
-    public void setProjectUid(final String value) {
-        _project_uid = value;
-    }
-
     public int getTrialDays() {
         return _trial_days;
     }
@@ -64,6 +64,18 @@ public class Tool_license
         _trial_days = value;
     }
 
+    public void setSmtp(final Object config) {
+        _smtp_config = JavascriptConverter.forceJSONObject((ScriptObjectMirror) config);
+    }
+
+    public Object getSmtp() {
+        try {
+            return JavascriptConverter.toScriptObject(_smtp_config);
+        } catch (Throwable ignored) {
+            // ignored
+        }
+        return false;
+    }
 
     //-- m e t h o d s  --//
 
@@ -71,10 +83,24 @@ public class Tool_license
         return LicenseController.instance().registry(_project_uid).exists(uid);
     }
 
-    public LicenseWrapper getLicense(final String uid) {
+    public LicenseWrapper getLicense(final String license_uid) {
+        return this.getLicense(_project_uid, license_uid);
+    }
+
+    public LicenseWrapper createLicense(final String license_uid,
+                                        final String email,
+                                        final String name) {
+        return this.createLicense(_project_uid, license_uid, name, email);
+    }
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
+    private LicenseWrapper getLicense(final String project_uid, final String license_uid) {
         try {
-            final LicenseRegistry registry = LicenseController.instance().registry(_project_uid);
-            final LicenseItem license = registry.getLicense(uid);
+            final LicenseRegistry registry = LicenseController.instance().registry(project_uid);
+            final LicenseItem license = registry.getLicense(license_uid);
             if (null != license) {
                 return new LicenseWrapper(registry, license);
             }
@@ -84,15 +110,20 @@ public class Tool_license
         return null;
     }
 
-    public LicenseWrapper createLicense(final String uid,
-                                        final String email,
-                                        final String name) {
+    private LicenseWrapper createLicense(final String project_uid,
+                                         final String license_uid,
+                                         final String email,
+                                         final String name) {
         try {
             final String lang = super.getLang();
-            final LicenseRegistry registry = LicenseController.instance().registry(_project_uid);
+            final LicenseRegistry registry = LicenseController.instance().registry(project_uid);
             registry.trialDays(_trial_days);
-            final LicenseItem license = registry.register(uid, email, name, lang);
+            final LicenseItem license = registry.register(license_uid, email, name, lang);
             if (null != license) {
+
+                // notify admins
+                this.sendEmail(license);
+
                 return new LicenseWrapper(registry, license);
             }
         } catch (Throwable ignored) {
@@ -101,10 +132,16 @@ public class Tool_license
         return null;
     }
 
-    // ------------------------------------------------------------------------
-    //                      p r i v a t e
-    // ------------------------------------------------------------------------
-
+    private void sendEmail(final LicenseItem license) {
+        try {
+            if (null != _smtp_config) {
+                final LicenseToolMailHelper helper = new LicenseToolMailHelper(_smtp_config);
+                helper.notify(license);
+            }
+        } catch (Throwable ignored) {
+            // failed send notification email to admins
+        }
+    }
 
     // ------------------------------------------------------------------------
     //                      E M B E D D E D

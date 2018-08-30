@@ -5,6 +5,7 @@ import org.ly.ose.server.application.importer.ImportConfig;
 import org.ly.ose.server.application.programming.IConstants;
 import org.ly.ose.server.application.programming.OSEProgramInfo;
 import org.ly.ose.server.application.programming.ProgramsManager;
+import org.ly.ose.server.deploy.config.ConfigHelper;
 import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.PathUtils;
 
@@ -65,6 +66,9 @@ public class ProgramImporter
             for (final File file : super.files()) {
                 info.files().put(file, PathUtils.subtract(super.root(), file.getPath()));
             }
+
+            // add further params
+            info.apiHost(ConfigHelper.instance().apiHost());
 
             ProgramsManager.instance().install(info);
         }catch(Throwable t){

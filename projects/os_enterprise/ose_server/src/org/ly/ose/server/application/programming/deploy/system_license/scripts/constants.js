@@ -7,6 +7,7 @@ module.exports = {
     author:'*|author|*',
     name:'*|name|*',
     description:'*|description|*',
+    api_host:'*|api_host|*',
 
     //-- errors --//
     ERRORS: {

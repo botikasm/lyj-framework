@@ -37,6 +37,7 @@ public class MailConfigSmtp
     private static final String FLD_ENABLED = "enabled";
     private static final String FLD_INFO_FROM = "info.from";
     private static final String FLD_INFO_REPLY_TO = "info.reply_to";
+    private static final String FLD_INFO_ADMIN_ADDRESSES = "info.admin_addresses";
 
     private static final String FLD_CONNECTION_HOST = "connection.host";
     private static final String FLD_CONNECTION_PORT = "connection.port";
@@ -53,6 +54,8 @@ public class MailConfigSmtp
 
     private String _info_from;
     private String _info_reply_to;
+
+    private String[] _info_admin_addresses;
 
     private String _connection_host;
     private int _connection_port;
@@ -90,6 +93,10 @@ public class MailConfigSmtp
 
     public String infoReplyTo() {
         return _info_reply_to;
+    }
+
+    public String[] infoAdminAddresses() {
+        return _info_admin_addresses;
     }
 
     public String connectionHost() {
@@ -136,6 +143,7 @@ public class MailConfigSmtp
 
             _info_from = config.deepString(FLD_INFO_FROM);
             _info_reply_to = config.deepString(FLD_INFO_REPLY_TO);
+            _info_admin_addresses = JsonWrapper.toArrayOfString(config.deepJSONArray(FLD_INFO_ADMIN_ADDRESSES));
 
             _connection_host = config.deepString(FLD_CONNECTION_HOST);
             _connection_port = config.deepInteger(FLD_CONNECTION_PORT);
