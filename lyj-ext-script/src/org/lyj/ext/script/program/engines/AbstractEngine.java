@@ -4,6 +4,8 @@ import org.lyj.commons.util.ClassLoaderUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.ScriptLogger;
 import org.lyj.ext.script.program.Program;
+import org.lyj.ext.script.program.exceptions.NullScriptException;
+import org.lyj.ext.script.program.exceptions.ScriptEvalException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +41,7 @@ public abstract class AbstractEngine
 
     public abstract Object eval(final String script) throws Exception;
 
-    public abstract Object eval(final String script, final Map<String, Object> context) throws Exception;
+    public abstract Object eval(final String script, final Map<String, Object> context) throws ScriptEvalException;
 
     public abstract void addRuntimeAttribute(final String key, final Object value);
 
@@ -65,15 +67,16 @@ public abstract class AbstractEngine
         return this.eval(new HashMap<>());
     }
 
+    /**
+     * Evaluate a script passing a context.
+     * If script is not found, returns Exception.
+     */
     public Object eval(final Map<String, Object> context) throws Exception {
         final String script = _program.script();
         if (StringUtils.hasText(script)) {
             return this.eval(script, context);
-        } else {
-            // nothing to evaluate in a script program without a script
-            _program.logger().warn("Cannot run a program with no script or files to execute!");
         }
-        return null;
+        throw new NullScriptException(this);
     }
 
 }

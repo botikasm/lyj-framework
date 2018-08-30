@@ -168,6 +168,10 @@ public class Program
         return this.getEngine();
     }
 
+    /**
+     * Start the program
+     * @return Return ScriptObjectMirror or throw a NullScriptException
+     */
     public synchronized Object run() throws Exception {
         return this.engine().eval();
     }

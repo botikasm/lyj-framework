@@ -4,6 +4,7 @@ import org.lyj.commons.util.CollectionUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.program.Program;
 import org.lyj.ext.script.program.engines.AbstractEngine;
+import org.lyj.ext.script.program.exceptions.ScriptEvalException;
 
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -73,10 +74,14 @@ public class EngineJavascript
     }
 
     @Override
-    public Object eval(String script, final Map<String, Object> context) throws Exception {
-        this.mergeContext(context);
-        this.init();
-        return _engine.eval(script);
+    public Object eval(String script, final Map<String, Object> context) throws ScriptEvalException {
+        try {
+            this.mergeContext(context);
+            this.init();
+            return _engine.eval(script);
+        } catch (Exception t) {
+            throw new ScriptEvalException(t);
+        }
     }
 
     // ------------------------------------------------------------------------

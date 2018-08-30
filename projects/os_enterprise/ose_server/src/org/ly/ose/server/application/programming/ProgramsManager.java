@@ -79,9 +79,15 @@ public class ProgramsManager
 
     private void init() {
         this.clean();
-        this.loadFromRegistry();
+
+        // initialize sessions
         OSEProgramSessions.instance().start();
+
+        // initialize invoker monitor
         OSEProgramInvokerMonitor.instance().open();
+
+        // load programs from internal registry
+        this.loadFromRegistry();
     }
 
     private void finish() {
@@ -163,8 +169,8 @@ public class ProgramsManager
         }
 
         // add to memory register
-        _programs.put(program_info.uid(), program_info);
-
+        // _programs.put(program_info.uid(), program_info);
+        this.putIntoProgramsMap(program_info);
     }
 
     private void loadFromRegistry() {
@@ -176,12 +182,27 @@ public class ProgramsManager
                 final byte[] bytes = FileUtils.copyToByteArray(file);
                 final OSEProgramInfo info = (OSEProgramInfo) ByteUtils.getObject(bytes);
                 // add to memory register
-                _programs.put(info.uid(), info);
+                // _programs.put(info.uid(), info);
+                this.putIntoProgramsMap(info);
             } catch (Throwable t) {
-
+                // schema updated: need to redeploy the package
+                super.error("loadFromRegistry", FormatUtils.format("Unable to generate info file from '%s': %s", file.getName(), t));
             }
         }
 
+    }
+
+    private void putIntoProgramsMap(final OSEProgramInfo program_info) {
+        if (null != program_info) {
+            // add to memory
+            _programs.put(program_info.uid(), program_info);
+            try {
+                // evaluate autostart for singletons
+                OSEProgramInvoker.instance().autostartSingleton(program_info);
+            }catch(Throwable t){
+                super.error("putIntoProgramsMap", FormatUtils.format("Unable to start sigleton '%s': %s", program_info.fullName(), t));
+            }
+        }
     }
 
     private int deployFiles(final String root,

@@ -12,6 +12,10 @@ import org.lyj.commons.util.StringUtils;
 
 import java.util.Set;
 
+/**
+ * Monitor and validate request that invoke a micro-service from another one.
+ * This is done to avoid infinite loop that can compromise JVM
+ */
 public class OSEProgramInvokerMonitor {
 
     // ------------------------------------------------------------------------
@@ -28,7 +32,7 @@ public class OSEProgramInvokerMonitor {
     //                     f i e l d s
     // ------------------------------------------------------------------------
 
-    private final MemoryCache<OSERequest> _cache;
+    private final MemoryCache<OSERequest> _cache;  // cached request to check call frequency
     private final Loop _loop;
 
     // ------------------------------------------------------------------------
@@ -135,10 +139,10 @@ public class OSEProgramInvokerMonitor {
         } else {
             final OSEPayloadProgram payload = new OSEPayloadProgram(original.payload());
             final String app_token = payload.appToken();
-            if(!StringUtils.hasText(app_token)){
+            if (!StringUtils.hasText(app_token)) {
                 throw new ImproperUseException();
             } else {
-                
+
             }
         }
     }

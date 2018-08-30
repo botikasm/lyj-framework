@@ -21,6 +21,7 @@ import org.lyj.commons.util.FormatUtils;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.ext.script.ScriptController;
 import org.lyj.ext.script.program.Program;
+import org.lyj.ext.script.program.exceptions.NullScriptException;
 import org.lyj.ext.script.utils.Converter;
 
 import java.util.HashMap;
@@ -299,6 +300,8 @@ public class OSEProgram {
             } else {
                 _logger.error("OSEProgram.createScriptObject", new Exception("Program is malformed. It should return a valid program instance."));
             }
+        } catch (NullScriptException ignored) {
+            // no script to evaluate
         } catch (Throwable t) {
             _logger.error("OSEProgram.createScriptObject", t);
         }

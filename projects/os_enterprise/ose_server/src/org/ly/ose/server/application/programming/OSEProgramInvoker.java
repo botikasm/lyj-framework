@@ -16,7 +16,6 @@ import java.util.Collection;
  * - Exception
  * - HTML
  * - XML
- * 
  */
 public class OSEProgramInvoker {
 
@@ -112,6 +111,19 @@ public class OSEProgramInvoker {
         }
     }
 
+    public synchronized void autostartSingleton(final OSEProgramInfo info) throws Exception {
+        if (null != info && info.autostart()) {
+            final String session_id = getSingletonSessionId(info);
+            // ensure program is not stillin session
+            if (!OSEProgramSessions.instance().containsKey(session_id)) {
+                final OSEProgram program = this.get(info, session_id, 0);
+                if (null == program) {
+                    // something wrong in program creation
+                    throw new Exception("Abnormal program state for: " + info.toString());
+                }
+            }
+        }
+    }
     // ------------------------------------------------------------------------
     //                     p r i v a t e
     // ------------------------------------------------------------------------
@@ -181,14 +193,12 @@ public class OSEProgramInvoker {
                            final String client_session_id,
                            final long session_timeout) throws Exception {
         if (null != info) {
-            final String full_name = info.fullName();
-
             // init session and timeout
             final long program_timeout;
             final String program_session_id;
             if (info.singleton()) {
                 program_timeout = DateUtils.infinite().getTime(); // INFINITE (never expires)
-                program_session_id = "singleton_" + full_name;
+                program_session_id = getSingletonSessionId(info);
             } else {
                 program_timeout = session_timeout > -1 ? session_timeout : info.sessionTimeout();
                 program_session_id = StringUtils.hasText(client_session_id) ? client_session_id : RandomUtils.randomUUID();
@@ -219,6 +229,14 @@ public class OSEProgramInvoker {
         } else {
             throw new Exception("Invalid ProgramInfo Exception: info cannot be NULL");
         }
+    }
+
+    // ------------------------------------------------------------------------
+    //                     S T A T I C
+    // ------------------------------------------------------------------------
+
+    private static String getSingletonSessionId(final OSEProgramInfo info) {
+        return "singleton_" + info.fullName();
     }
 
     // ------------------------------------------------------------------------
