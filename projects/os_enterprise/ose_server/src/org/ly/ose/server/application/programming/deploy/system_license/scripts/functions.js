@@ -78,6 +78,15 @@ module.exports = (function () {
         return $license.hasLicense(license_uid);
     };
 
+    instance.expired = function (license_uid) {
+        var license = $license.getLicense(license_uid);
+        if (!!license) {
+            return license.expired;
+        }
+        return true;
+    };
+
+
     /**
      * Add (or subtract if days is a negative number) days from licence time.
      * @param license_uid UID of a license
@@ -90,6 +99,23 @@ module.exports = (function () {
         if (!!license) {
             license.postpone(days);
             return license.data;
+        }
+        return false;
+    };
+
+    this.setAttribute = function (license_uid, attr_name, attr_value) {
+        var license = $license.getLicense(license_uid);
+        if (!!license) {
+            license.attribute(attr_name, attr_value);
+            return license.attribute(attr_name);
+        }
+        return false;
+    };
+
+    this.getAttribute = function (license_uid, attr_name) {
+        var license = $license.getLicense(license_uid);
+        if (!!license) {
+            return license.attribute(attr_name);
         }
         return false;
     };

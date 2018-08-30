@@ -5,14 +5,14 @@
     "port": "587",
     "is_tls": true,
     "is_ssl": false,
-    "username": "support@yourcompany.com",
-    "password": "**********"
+    "username": "support@funnygain.com",
+    "password": "Hkj<t!1f5s"
   },
   "info": {
     "admin_addresses": [
-      "angelo.geminiani@yourcompany.com"
+      "angelo.geminiani@gmail.com"
     ],
-    "from": "Support<support@yourcompany.com>",
-    "reply_to": "Support<support@yourcompany.com>"
+    "from": "Support<support@funnygain.com>",
+    "reply_to": "Support<support@funnygain.com>"
   }
 }

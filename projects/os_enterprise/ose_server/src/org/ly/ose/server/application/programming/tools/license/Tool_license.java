@@ -90,7 +90,7 @@ public class Tool_license
     public LicenseWrapper createLicense(final String license_uid,
                                         final String email,
                                         final String name) {
-        return this.createLicense(_project_uid, license_uid, name, email);
+        return this.createLicense(_project_uid, license_uid, email, name);
     }
 
     // ------------------------------------------------------------------------
@@ -187,7 +187,6 @@ public class Tool_license
             }
             return "";
         }
-
 
         public boolean getExpired() {
             if (null != _item) {

@@ -249,17 +249,22 @@ public class UploadHandler
                                   final FileUpload fileUpload) {
         final Params response = new Params(params);
 
-        try {
-            if (!fileUpload.isInMemory() && !StringUtils.hasText(response.fileName())) {
-                final String file_name = fileUpload.getFilename(); // fileUpload.getFile().getName();
-                final String ext = PathUtils.getFilenameExtension(file_name, true);
-                response.fileName(StringUtils.hasText(ext)
-                        ? file_name
-                        : file_name.concat(".upload"));
-            }
-        } catch (Throwable t) {
-        }
         // file name is required
+        try {
+            if (!StringUtils.hasText(response.fileName())) {
+                if (StringUtils.hasText(fileUpload.getFilename())) {
+                    final String file_name = fileUpload.getFilename(); // fileUpload.getFile().getName();
+                    final String ext = PathUtils.getFilenameExtension(file_name, true);
+                    response.fileName(StringUtils.hasText(ext)
+                            ? file_name
+                            : file_name.concat(".upload"));
+                }
+            }
+        } catch (Throwable ignored) {
+            // ignored
+        }
+
+        // add default filename
         if (!StringUtils.hasText(response.fileName())) {
             response.fileName(RandomUtils.randomUUID() + ".jpg");
         }

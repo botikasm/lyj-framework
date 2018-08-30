@@ -33,7 +33,7 @@ public class LicenseToolMailHelper {
     public void notify(final LicenseItem license) {
         if (null != license
                 && _sender.config().infoAdminAddresses().length > 0) {
-            // this.notifyRegister(license, _sender.config().infoAdminAddresses());
+            this.notifyRegister(license, _sender.config().infoAdminAddresses());
         }
     }
 

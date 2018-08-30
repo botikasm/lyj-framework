@@ -85,6 +85,10 @@ ly.new(function () {
         return _FUNCTIONS.has(license_uid);
     };
 
+    this.expired = function (license_uid) {
+        return _FUNCTIONS.expired(license_uid);
+    };
+
     /**
      * Add (or subtract if days is a negative number) days from licence time.
      * @param license_uid UID of a license
@@ -93,6 +97,14 @@ ly.new(function () {
      */
     this.postpone = function (license_uid, days) {
         return _FUNCTIONS.postpone(license_uid, days);
+    };
+
+    this.setAttribute = function (license_uid, attr_name, attr_value) {
+        return _FUNCTIONS.setAttribute(license_uid, attr_name, attr_value);
+    };
+
+    this.getAttribute = function (license_uid, attr_name) {
+        return _FUNCTIONS.getAttribute(license_uid, attr_name);
     };
 
 });
