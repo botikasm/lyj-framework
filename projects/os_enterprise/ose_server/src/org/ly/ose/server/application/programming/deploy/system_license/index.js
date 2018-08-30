@@ -8,7 +8,6 @@ ly.new(function () {
     // ------------------------------------------------------------------------
 
     var _FUNCTIONS = require('/scripts/functions');
-    var _TEMPLATES = require('/scripts/templates');
 
     // ------------------------------------------------------------------------
     //              c o n s t
@@ -106,5 +105,10 @@ ly.new(function () {
     this.getAttribute = function (license_uid, attr_name) {
         return _FUNCTIONS.getAttribute(license_uid, attr_name);
     };
+
+    this.lookup = function (name) {
+        return _FUNCTIONS.lookup(name);
+    };
+
 
 });

@@ -103,7 +103,13 @@ module.exports = (function () {
         return false;
     };
 
-    this.setAttribute = function (license_uid, attr_name, attr_value) {
+    /**
+     * Set custom attribute
+     * @param license_uid UID of a license
+     * @param attr_name Attribute name. ex: "disk_quota"
+     * @param attr_value Attribute value. ex: "100"
+     */
+    instance.setAttribute = function (license_uid, attr_name, attr_value) {
         var license = $license.getLicense(license_uid);
         if (!!license) {
             license.attribute(attr_name, attr_value);
@@ -112,12 +118,32 @@ module.exports = (function () {
         return false;
     };
 
-    this.getAttribute = function (license_uid, attr_name) {
+    /**
+     * Retrieve custom Attribute value
+     * @param license_uid  UID of a license
+     * @param attr_name Attribute name. ex: "disk_quota"
+     */
+    instance.getAttribute = function (license_uid, attr_name) {
         var license = $license.getLicense(license_uid);
         if (!!license) {
             return license.attribute(attr_name);
         }
         return false;
+    };
+
+    instance.lookup = function (name) {
+        var response = [];
+        $license.forEach(function (license) {
+            try{
+                var license_name = license.name;
+                if (name === license_name) {
+                    response.push(license.data);
+                }  
+            }catch(err){
+               console.error(FILE + "#lookup", err.message);
+            }
+        });
+        return response;
     };
 
     // ------------------------------------------------------------------------

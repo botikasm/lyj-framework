@@ -1,5 +1,6 @@
 package org.ly.ose.server.application.programming.tools.license;
 
+import jdk.nashorn.api.scripting.JSObject;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.json.JSONObject;
 import org.ly.ose.server.application.controllers.license.LicenseController;
@@ -7,6 +8,7 @@ import org.ly.ose.server.application.controllers.license.LicenseItem;
 import org.ly.ose.server.application.controllers.license.LicenseRegistry;
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.tools.OSEProgramToolRequest;
+import org.lyj.commons.Delegates;
 import org.lyj.commons.cryptograph.MD5;
 import org.lyj.ext.script.program.engines.javascript.utils.JavascriptConverter;
 
@@ -93,9 +95,36 @@ public class Tool_license
         return this.createLicense(_project_uid, license_uid, email, name);
     }
 
+    public String[] licenseKeys() {
+        return this.getLicenseKeys(_project_uid);
+    }
+
+    public void forEach(final Object raw_callback) {
+        if (raw_callback instanceof JSObject) {
+            final JSObject callback = (JSObject) raw_callback;
+            forEach(_project_uid, (license) -> {
+                try {
+                    callback.call(null, license);
+                } catch (Throwable ignored) {
+                    // js error
+                }
+            });
+        }
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private String[] getLicenseKeys(final String project_uid) {
+        try {
+            final LicenseRegistry registry = LicenseController.instance().registry(project_uid);
+            return registry.keys();
+        } catch (Throwable ignored) {
+            // problem searching license
+        }
+        return null;
+    }
 
     private LicenseWrapper getLicense(final String project_uid, final String license_uid) {
         try {
@@ -130,6 +159,19 @@ public class Tool_license
             // problem creating license
         }
         return null;
+    }
+
+    private void forEach(final String project_uid, Delegates.Callback<LicenseWrapper> callback) {
+        if (null != callback) {
+            final LicenseRegistry registry = LicenseController.instance().registry(project_uid);
+            final String[] keys = registry.keys();
+            for (final String key : keys) {
+                final LicenseItem license = registry.getLicense(key);
+                if (null != license) {
+                    Delegates.invoke(callback, new LicenseWrapper(registry, license));
+                }
+            }
+        }
     }
 
     private void sendEmail(final LicenseItem license) {
@@ -219,6 +261,20 @@ public class Tool_license
         public void setEmail(final String value) {
             if (null != _item) {
                 _item.email(value);
+                _registry.update(_item);
+            }
+        }
+
+        public String getName() {
+            if (null != _item) {
+                return _item.name();
+            }
+            return "";
+        }
+
+        public void setName(final String value) {
+            if (null != _item) {
+                _item.name(value);
                 _registry.update(_item);
             }
         }
