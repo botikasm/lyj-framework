@@ -1,11 +1,14 @@
 package org.ly.ose.server.application.programming.tools.utils;
 
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import jdk.nashorn.api.scripting.ScriptUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.StringUtils;
+import org.lyj.ext.script.program.engines.javascript.EngineJavascript;
 import org.lyj.ext.script.program.engines.javascript.utils.JavascriptConverter;
+import org.lyj.ext.script.program.engines.javascript.utils.JavascriptUtils;
 import org.lyj.ext.script.utils.Converter;
 
 /**
@@ -73,10 +76,38 @@ public class Tool_convert
         return ConversionUtils.toBoolean(value, ConversionUtils.toBoolean(default_value));
     }
 
+    public Object toArray(final Object value) {
+        if (null != value && !JavascriptUtils.isUndefined(value)) {
+            final JSONArray array = Converter.toJsonArray(value);
+            return eval(array.toString());
+        }
+        return eval("[]");
+    }
+
+    public Object toObject(final Object value) {
+        if (null != value) {
+            final JSONObject object = Converter.toJsonObject(value);
+            return eval(object.toString());
+        }
+        return value;
+    }
+
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private Object eval(final String text) {
+        try {
+            if (StringUtils.isJSONArray(text)) {
+                return EngineJavascript.engine(true).eval(text.trim());
+            }
+            return JavascriptConverter.toScriptObject(text);
+        } catch (Throwable ignored) {
+            // ignored
+        }
+        return false;
+    }
 
 
 }

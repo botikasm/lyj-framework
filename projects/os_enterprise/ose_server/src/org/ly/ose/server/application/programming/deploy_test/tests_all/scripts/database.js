@@ -54,14 +54,22 @@ module.exports = (function () {
             };
             var items = $db.collection(COLLECTION).find(query, args);
             var counter = 0;
+            var empty;
             items.forEach(function (item) {
                 counter++;
 
-                item['array'] = item['array'].length === 0 ? [] : item['array'];
+                item['array'] = $convert.toArray(item['array']);
 
                 item['bool_val_2'] = true;
                 item['time_val_1'] = (new Date()).getTime();
-                item['array'].push({id: counter});
+
+                item['array'].push($convert.toObject({id: counter}));
+                item['array'].push($convert.toObject(true));
+                item['array'].push($convert.toArray(false));
+                item['array'].push($convert.toArray(undefined));
+                item['array'].push($convert.toArray(empty));
+                
+                item['array'] = $convert.toArray(item['array']);
 
                 $db.collection(COLLECTION).upsert(item);
             });

@@ -49,17 +49,13 @@ public class JavascriptConverter {
 
     public static Object toScriptObject(final Object item) throws Exception {
         if (null != item) {
-            final String text = StringEscapeUtils.escapeJavaScript(item.toString());
+            final String raw_text = item.toString();
+            final String text = StringEscapeUtils.escapeJavaScript(raw_text);
             final Object response = EngineJavascript.engine(true).eval("JSON.parse(\"" + text + "\")");
             return null != response ? response : false;
         }
         return false;
     }
-
-    public static boolean isError(final ScriptObjectMirror item) {
-        return null != item && item.getClassName().equalsIgnoreCase("Error");
-    }
-
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
@@ -67,7 +63,7 @@ public class JavascriptConverter {
 
     private static JSONObject toObject(final ScriptObjectMirror item) {
         final JSONObject result = new JSONObject();
-        if (!isError(item)) {
+        if (!JavascriptUtils.isError(item)) {
             final Set<String> keys = item.keySet();
             for (final String key : keys) {
                 final Object value = item.get(key);

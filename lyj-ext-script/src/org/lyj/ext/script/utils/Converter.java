@@ -134,7 +134,7 @@ public class Converter {
 
     public static JSONObject toJsonObject(final Object value) {
         if (null != value) {
-            return toJsonItem(value).json();
+            return JsonConverter.toObject(value);
         }
         return new JSONObject();
     }
