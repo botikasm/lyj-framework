@@ -60,6 +60,7 @@ public class JavascriptConverter {
         return null != item && item.getClassName().equalsIgnoreCase("Error");
     }
 
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------

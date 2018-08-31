@@ -56,9 +56,13 @@ module.exports = (function () {
             var counter = 0;
             items.forEach(function (item) {
                 counter++;
+
+                item['array'] = item['array'].length === 0 ? [] : item['array'];
+
                 item['bool_val_2'] = true;
                 item['time_val_1'] = (new Date()).getTime();
                 item['array'].push({id: counter});
+
                 $db.collection(COLLECTION).upsert(item);
             });
 

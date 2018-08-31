@@ -1,8 +1,12 @@
 package org.ly.ose.server.application.programming.tools.utils;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.api.scripting.ScriptUtils;
 import org.ly.ose.server.application.programming.OSEProgram;
 import org.ly.ose.server.application.programming.tools.OSEProgramTool;
 import org.lyj.commons.util.ConversionUtils;
+import org.lyj.ext.script.program.engines.javascript.utils.JavascriptConverter;
+import org.lyj.ext.script.utils.Converter;
 
 /**
  *
@@ -68,5 +72,11 @@ public class Tool_convert
     public boolean toBoolean(final Object value, final Object default_value) {
         return ConversionUtils.toBoolean(value, ConversionUtils.toBoolean(default_value));
     }
+
+
+    // ------------------------------------------------------------------------
+    //                      p r i v a t e
+    // ------------------------------------------------------------------------
+
 
 }
