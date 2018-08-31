@@ -41,7 +41,11 @@ public class Tool_date
 
     }
 
-    public String timestamp() {
+    public long timestamp() {
+        return DateUtils.timestamp();
+    }
+
+    public String timestampStr() {
         return DateUtils.timestamp() + "";
     }
 
