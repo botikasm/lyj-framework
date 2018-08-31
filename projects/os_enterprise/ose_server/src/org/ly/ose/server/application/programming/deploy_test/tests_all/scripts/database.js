@@ -43,19 +43,22 @@ module.exports = (function () {
 
     instance.upsert2 = function () {
         try {
-            //addItems(20);
+            addItems(20);
 
             // get some items to change
             var query = "FOR t IN " + COLLECTION + "\n" +
                 "  FILTER t.index > @index\n" +
                 "  RETURN t";
             var args = {
-                index:3
+                index: 5
             };
             var items = $db.collection(COLLECTION).find(query, args);
-            items.forEach(function(item){
+            var counter = 0;
+            items.forEach(function (item) {
+                counter++;
                 item['bool_val_2'] = true;
                 item['time_val_1'] = (new Date()).getTime();
+                item['array'].push({id: counter});
                 $db.collection(COLLECTION).upsert(item);
             });
 
@@ -77,11 +80,11 @@ module.exports = (function () {
                 "  FILTER t.index > @index\n" +
                 "  RETURN t";
             var args = {
-                index:3
+                index: 3
             };
-            var out=[];
+            var out = [];
             var response = $db.collection(COLLECTION).find(query, args);
-            response.forEach(function(item){
+            response.forEach(function (item) {
                 //console.info(FILE + '#find.forEach', item._key);
                 out.push(item._key);
             });
@@ -97,7 +100,7 @@ module.exports = (function () {
             addItems(20);
 
             var args = {
-                _key:'sample_item_10'
+                _key: 'sample_item_10'
             };
 
             return $db.collection(COLLECTION).findEqual(args);
@@ -112,7 +115,7 @@ module.exports = (function () {
             var items = addItems(20);
 
             var args = {
-                rnd:1
+                rnd: 1
             };
 
             // log a parameter, just for testing pompous
@@ -130,7 +133,7 @@ module.exports = (function () {
             var items = addItems(20);
 
             var args = {
-                rnd:1
+                rnd: 1
             };
 
             // log a parameter, just for testing pompous
@@ -138,7 +141,7 @@ module.exports = (function () {
 
             var response = [];
 
-            $db.collection(COLLECTION).forEachEqual(args, function(item){
+            $db.collection(COLLECTION).forEachEqual(args, function (item) {
 
                 console.log(FILE + '#forEach', item);
 
@@ -167,9 +170,10 @@ module.exports = (function () {
                 "_key": "sample_item_" + i,
                 "name": "This is a sample entity to store into database",
                 "timestamp": (new Date()).getTime(),
-                "index":(i===17?"🤘":i),
+                "index": (i === 17 ? "🤘" : i),
                 "rnd": 1,
-                "bool_val": true
+                "bool_val": true,
+                "array": []
             };
             response.push($db.collection(COLLECTION).upsert(model));
         }
@@ -178,7 +182,7 @@ module.exports = (function () {
         return response;
     }
 
-    function addIndexes(){
+    function addIndexes() {
         $db.collection(COLLECTION).addIndex(['index'], false);
         $db.collection(COLLECTION).addIndex(['rnd'], false);
     }
@@ -188,7 +192,7 @@ module.exports = (function () {
     // ------------------------------------------------------------------------
 
     addIndexes();
-    
+
     return instance;
 
 

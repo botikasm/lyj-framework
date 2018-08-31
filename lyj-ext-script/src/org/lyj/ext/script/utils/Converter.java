@@ -168,6 +168,8 @@ public class Converter {
         Object result;
         if (value instanceof ScriptObjectMirror) {
             result = JavascriptConverter.toJSON((ScriptObjectMirror) value);
+        } else if (null != value && value.getClass().isArray()) {
+            result = toJsonCompatible((Object[]) value);
         } else {
             result = JsonConverter.toJsonCompatible(value);
         }
@@ -183,6 +185,14 @@ public class Converter {
         }
 
         return result;
+    }
+
+    public static Object toJsonCompatible(final Object[] values) {
+        final JSONArray response = new JSONArray();
+        for (final Object value : values) {
+            response.put(toJsonCompatible(value));
+        }
+        return response;
     }
 
     public static String[] toStringArray(final Object value) {

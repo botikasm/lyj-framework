@@ -1,8 +1,10 @@
 package org.ly.ose.server.application.persistence;
 
 import jdk.nashorn.api.scripting.JSObject;
+import org.json.JSONArray;
 import org.lyj.commons.util.ConversionUtils;
 import org.lyj.commons.util.StringEscapeUtils;
+import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.ext.db.IDatabase;
 import org.lyj.ext.db.IDatabaseCollection;
@@ -491,7 +493,8 @@ public class DBHelper {
         private Object convert(final Collection<PersistentModel> data) {
             try {
                 if (_auto_convert_to_jsobjects) {
-                    return JavascriptConverter.toScriptObject(data);
+                    final JSONArray array = JsonConverter.toArray(data);
+                    return JavascriptConverter.toScriptObject(array);
                 }
             } catch (Throwable ignored) {
                 // ignored

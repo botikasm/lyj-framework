@@ -50,9 +50,14 @@ public class JavascriptConverter {
     public static Object toScriptObject(final Object item) throws Exception {
         if (null != item) {
             final String text = StringEscapeUtils.escapeJavaScript(item.toString());
-            return EngineJavascript.engine(true).eval("JSON.parse(\"" + text + "\")");
+            final Object response = EngineJavascript.engine(true).eval("JSON.parse(\"" + text + "\")");
+            return null != response ? response : false;
         }
         return false;
+    }
+
+    public static boolean isError(final ScriptObjectMirror item) {
+        return null != item && item.getClassName().equalsIgnoreCase("Error");
     }
 
     // ------------------------------------------------------------------------
@@ -61,20 +66,26 @@ public class JavascriptConverter {
 
     private static JSONObject toObject(final ScriptObjectMirror item) {
         final JSONObject result = new JSONObject();
-        final Set<String> keys = item.keySet();
-        for (final String key : keys) {
-            final Object value = item.get(key);
-            if (value instanceof ScriptObjectMirror) {
-                final ScriptObjectMirror svalue = (ScriptObjectMirror) value;
-                if (svalue.isArray()) {
-                    result.put(key, toArray(svalue));
+        if (!isError(item)) {
+            final Set<String> keys = item.keySet();
+            for (final String key : keys) {
+                final Object value = item.get(key);
+                if (value instanceof ScriptObjectMirror) {
+                    final ScriptObjectMirror svalue = (ScriptObjectMirror) value;
+                    if (svalue.isArray()) {
+                        result.put(key, toArray(svalue));
+                    } else {
+                        result.put(key, toObject(svalue));
+                    }
                 } else {
-                    result.put(key, toObject(svalue));
+                    // primitive value
+                    result.put(key, value);
                 }
-            } else {
-                // primitive value
-                result.put(key, value);
             }
+        } else {
+            // error
+            result.put("type", "error");
+            result.put("message", item.get("message"));
         }
         return result;
     }
