@@ -1,7 +1,0 @@
-{
-  "enabled": true,
-  "port": 4199,
-  "use_ssl": true,
-  "404": "",
-  "host": "https://api.conversacon.com:4199"
-}

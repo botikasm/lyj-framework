@@ -1,7 +1,0 @@
-{
-  "enabled": true,
-  "domain": "api.conversacon.com",
-  "port": 8099,
-  "use_ssl": true,
-  "404": "404.html"
-}
