@@ -20,22 +20,37 @@ public class HttpClientTest {
     @Test
     public void getTest() throws Exception {
 
-        String url = "http://httpbin.org/get";
+        final String url = "http://httpbin.org/get";
 
         System.out.println("GET: " + url);
         Task<HttpClientResponse> task = new Task<>((t) -> {
             final HttpClient client = this.client(url);
+            client.method("get");
             client.fail(t::fail);
             client.success(t::success);
 
             client.execute();
         });
         task.run();
-        final HttpClientResponse response = task.get();
+        HttpClientResponse response = task.get();
         assertNotNull(response);
         System.out.println(response);
 
+        final String urls = "https://httpbin.org/get";
 
+        System.out.println("GET: " + urls);
+        task = new Task<>((t) -> {
+            final HttpClient client = this.client(urls);
+            client.method("get");
+            client.fail(t::fail);
+            client.success(t::success);
+
+            client.execute();
+        });
+        task.run();
+        response = task.get();
+        assertNotNull(response);
+        System.out.println(response);
     }
 
     // ------------------------------------------------------------------------

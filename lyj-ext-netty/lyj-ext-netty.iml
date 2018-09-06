@@ -13,25 +13,6 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/vendor/netty-4.1.25/netty-all-4.1.25.Final.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/vendor/async-http-client-2.1.0a" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/vendor/async-http-client-2.1.0a" recursive="false" />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
           <root url="jar://$MODULE_DIR$/vendor/slf4j-1.7.21/slf4j-api-1.7.21.jar!/" />
         </CLASSES>
         <JAVADOC />
@@ -42,6 +23,64 @@
       <library>
         <CLASSES>
           <root url="jar://$MODULE_DIR$/vendor/slf4j-1.7.21/slf4j-nop-1.7.21.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/vendor/netty-4.1.29" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/vendor/netty-4.1.29" />
+        </SOURCES>
+        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.29" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/vendor/netty-4.1.29" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/vendor/asynchttpclient-2.5.4/async-http-client-2.5.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/vendor/asynchttpclient-2.5.4/async-http-client-netty-utils-2.5.3.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/vendor/asynchttpclient-2.5.4/reactive-streams-1.0.2.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/vendor/asynchttpclient-2.5.4/netty-reactive-streams-2.0.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/vendor/asynchttpclient-2.5.4/javax.activation-1.2.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -1,9 +1,6 @@
 package org.lyj.ext.netty.client.web.executor;
 
-import org.asynchttpclient.AsyncHttpClient;
-import org.asynchttpclient.BoundRequestBuilder;
-import org.asynchttpclient.DefaultAsyncHttpClient;
-import org.asynchttpclient.Response;
+import org.asynchttpclient.*;
 import org.lyj.commons.network.http.IHttpConstants;
 import org.lyj.commons.util.FormatUtils;
 import org.lyj.ext.netty.client.web.HttpClient;
@@ -50,7 +47,13 @@ public class HttpClientExecutor {
 
 
     private String executeRequest() throws Exception {
-        final AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient();
+        // creates configuration
+        final DefaultAsyncHttpClientConfig.Builder builder =  new DefaultAsyncHttpClientConfig.Builder();
+        // allow insecure certificates
+        builder.setUseInsecureTrustManager(true);
+
+        final DefaultAsyncHttpClientConfig config =  builder.build();
+        final AsyncHttpClient asyncHttpClient = new DefaultAsyncHttpClient(config);
         try {
             final BoundRequestBuilder request = this.prepareRequest(asyncHttpClient);
             Future<Response> f = request.execute();
@@ -96,6 +99,7 @@ public class HttpClientExecutor {
                 request.addHeader(key, info.headers().get(key));
             }
         }
+
 
         return request;
     }
