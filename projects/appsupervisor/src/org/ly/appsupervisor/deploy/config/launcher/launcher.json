@@ -22,6 +22,15 @@
         },
         {
           "enabled": true,
+          "name": "restart server expression is validated",
+          "type": "http",
+          "host": "https://127.0.0.1:4000/api/util/ping",
+          "timeout_sec": 60,
+          "expression": "!=.[\"true\"]",
+          "action": "default"
+        },
+        {
+          "enabled": true,
           "name": "restart server if not launched",
           "type": "null",
           "action": "default"

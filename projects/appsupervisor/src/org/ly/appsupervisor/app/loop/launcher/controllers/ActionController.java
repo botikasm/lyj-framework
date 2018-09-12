@@ -77,7 +77,7 @@ public class ActionController
                            final String action_name) throws Exception {
         // get rules and check what to do next
         try {
-            if (launcher.actions().containsKey(action_name)) {
+            if (null!=launcher && launcher.enabled() && launcher.actions().containsKey(action_name)) {
                 final ModelAction action = launcher.actions().get(action_name);
                 // commands
                 final String[] action_commands = action.commands();

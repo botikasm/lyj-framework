@@ -17,9 +17,12 @@ public class URLUtilsTest {
 
     @Test
     public void testGetUrlContent() throws Exception {
-        String url = "http://www.smartfeeling.org";
+        String url = "http://www.gianangelogeminiani.me";
         String result = URLUtils.getUrlContent(url, 3000, URLUtils.TYPE_JSON);
+        System.out.println(result);
 
+        url = "https://gianangelogeminiani.me/";
+        result = URLUtils.getUrlContent(url, 3000, URLUtils.TYPE_JSON);
         System.out.println(result);
     }
 }

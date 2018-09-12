@@ -235,4 +235,29 @@ public class HttpClient {
         return StringUtils.hasText(method) && method.toUpperCase().equals(GET);
     }
 
+    public static String get (final String url) throws Exception {
+        return get(url, null, 60*1000);
+    }
+
+    public static String get (final String url,
+                              final Map<String, Object> params,
+                              final int connection_timeout) throws Exception{
+        final Task<String> task = new Task<String>(t -> {
+
+            final HttpClient client = new HttpClient();
+            client.setDefaultConnectionTimeout(connection_timeout);
+            client.get(url, params, (err, result) -> {
+                if (null != err) {
+                    t.fail(err);
+                    //System.out.println(err);
+                } else {
+                    t.success(result);
+                    //System.out.println(result);
+                }
+            });
+
+        }).run();
+        return task.get();
+    }
+
 }

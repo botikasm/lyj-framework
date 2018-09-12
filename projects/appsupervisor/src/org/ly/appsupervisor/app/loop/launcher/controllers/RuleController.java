@@ -4,10 +4,9 @@ import org.ly.appsupervisor.app.IConstants;
 import org.ly.appsupervisor.app.model.ModelLauncher;
 import org.ly.appsupervisor.app.model.ModelRule;
 import org.ly.appsupervisor.deploy.config.ConfigHelper;
-import org.lyj.commons.network.URLUtils;
+import org.lyj.commons.network.http.client.HttpClient;
 import org.lyj.commons.util.*;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -24,6 +23,7 @@ public class RuleController {
     private static final String TYPE_CLOCK = IConstants.TYPE_CLOCK;  // check date time
     private static final String TYPE_PING = IConstants.TYPE_PING;   // check a ping response timeout
     private static final String TYPE_NULL = IConstants.TYPE_NULL;
+    private static final String TYPE_HTTP = IConstants.TYPE_HTTP;
 
     private static final String MU_DATE = IConstants.MU_DATE; // check datetime
     private static final String MU_TIME = IConstants.MU_TIME; // check time
@@ -58,15 +58,18 @@ public class RuleController {
     public Map<String, Set<String>> check() {
         final Map<String, Set<String>> response = new HashMap<>();
         LAUNCHERS.forEach((uid, launcher) -> {
-            launcher.rules().forEach((rule) -> {
-                final String action_name = this.validateRule(uid, rule);
-                if (StringUtils.hasText(action_name)) {
-                    if (!response.containsKey(uid)) {
-                        response.put(uid, new HashSet<>());
+            // is laucher enabled?
+            if (launcher.enabled()) {
+                launcher.rules().forEach((rule) -> {
+                    final String action_name = this.validateRule(uid, rule);
+                    if (StringUtils.hasText(action_name)) {
+                        if (!response.containsKey(uid)) {
+                            response.put(uid, new HashSet<>());
+                        }
+                        response.get(uid).add(action_name);
                     }
-                    response.get(uid).add(action_name);
-                }
-            });
+                });
+            }
         });
         return response;
     }
@@ -96,6 +99,8 @@ public class RuleController {
                 return this.validateClockRule(rule);
             } else if (TYPE_PING.equalsIgnoreCase(type)) {
                 return this.validatePingRule(rule);
+            } else if (TYPE_HTTP.equalsIgnoreCase(type)) {
+                return this.validateHttpRule(rule);
             } else if (TYPE_NULL.equalsIgnoreCase(type)) {
                 return this.validateNullRule(uid, rule);
             }
@@ -161,10 +166,29 @@ public class RuleController {
 
         if (StringUtils.hasText(host) && timeout > 0) {
             // perform GET
-            try (final InputStream is = URLUtils.getInputStream(host, timeout)) {
-                final byte[] bytes = ByteUtils.getBytes(is);
-                // got response and return action name
+            try {
+                final String response = HttpClient.get(host, null, timeout * 1000);
                 return "";
+            } catch (Throwable t) {
+                // timeout
+                return rule.action();
+            }
+        }
+
+        return "";
+    }
+
+    private String validateHttpRule(final ModelRule rule) {
+        final String host = rule.host();
+        final String raw_expression = rule.expression();
+        final int timeout = rule.timeout();
+
+        if (StringUtils.hasText(host) && timeout > 0 && StringUtils.hasText(raw_expression)) {
+            // perform GET
+            try {
+                final RuleExpression expression = new RuleExpression(raw_expression);
+                final String response = HttpClient.get(host, null, timeout * 1000);
+                return expression.validate(response) ? rule.action() : "";
             } catch (Throwable t) {
                 // timeout
                 return rule.action();

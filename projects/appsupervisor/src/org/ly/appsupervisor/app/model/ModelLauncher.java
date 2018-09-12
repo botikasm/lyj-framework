@@ -14,6 +14,7 @@ public class ModelLauncher extends JsonItem {
     // ------------------------------------------------------------------------
 
     private static final String FLD_UID = "uid";
+    private static final String FLD_ENABLED = "enabled";
     private static final String FLD_EXEC = "exec";
     private static final String FLD_RULES = "rules";
     private static final String FLD_ACTIONS = "actions";
@@ -49,6 +50,10 @@ public class ModelLauncher extends JsonItem {
 
     public String uid() {
         return super.getString(FLD_UID);
+    }
+
+    public boolean enabled() {
+        return super.getBoolean(FLD_ENABLED, true);
     }
 
     public String exec() {

@@ -10,6 +10,7 @@ public interface IConstants {
     String TYPE_CLOCK = "clock";  // check date time
     String TYPE_PING = "ping";    // check a ping response timeout
     String TYPE_NULL = "null";    // check if application is running
+    String TYPE_HTTP = "http";    // check http response value
 
     String MU_DATE = "date";
     String MU_TIME = "time"; // check time

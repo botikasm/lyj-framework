@@ -252,6 +252,7 @@ public class HttpRequest {
                 // SSL CONNECTION
                 SSLSocketFactory sslSocketFactory = getFactorySimple();
                 tls.setSSLSocketFactory(sslSocketFactory);
+                tls.setHostnameVerifier(trustAllHosts);
             }
 
         } else {
@@ -275,9 +276,17 @@ public class HttpRequest {
         }
     }};
 
+    // Create all-trusting host name verifier
+    private static HostnameVerifier trustAllHosts =  new HostnameVerifier() {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    };
+
     private static SSLSocketFactory getFactorySimple() throws Exception {
         final SSLContext context = SSLContext.getInstance("TLS");
         context.init(null, trustAllCerts, new SecureRandom());
+        
         return context.getSocketFactory();
     }
 

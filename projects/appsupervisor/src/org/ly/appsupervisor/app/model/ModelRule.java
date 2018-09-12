@@ -14,6 +14,7 @@ public class ModelRule
     private static final String FLD_MU = "mu";
     private static final String FLD_LOWER_THAN = "lower_than";
     private static final String FLD_GREATER_THAN = "greater_than";
+    private static final String FLD_EXPRESSION = "expression";
     private static final String FLD_HOST = "host";
     private static final String FLD_TIMEOUT_SEC = "timeout_sec";
     private static final String FLD_ACTION = "action";
@@ -57,6 +58,10 @@ public class ModelRule
 
     public String greaterThan() {
         return super.getString(FLD_GREATER_THAN);
+    }
+
+    public String expression() {
+        return super.getString(FLD_EXPRESSION);
     }
 
     public String host() {
