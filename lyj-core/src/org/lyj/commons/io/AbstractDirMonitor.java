@@ -4,12 +4,10 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.async.future.Timed;
+import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.lang.Counter;
 import org.lyj.commons.logging.AbstractLogEmitter;
-import org.lyj.commons.util.FileUtils;
-import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.ZipUtils;
+import org.lyj.commons.util.*;
 
 import java.io.File;
 import java.util.*;
@@ -30,6 +28,8 @@ public class AbstractDirMonitor
 
     private static final int DEFAULT_LOOP_INTERVAL = 15000;
 
+    private static final String EXT_ERROR = ".error";
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
@@ -44,6 +44,7 @@ public class AbstractDirMonitor
 
     // properties
     private long _task_interval = DEFAULT_LOOP_INTERVAL;
+    private boolean _generate_error_file;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
@@ -58,6 +59,7 @@ public class AbstractDirMonitor
         _root_monitor = PathUtils.getAbsolutePath(path);
         _working_files = new HashSet<>();
         _task_interval = task_interval;
+        _generate_error_file = false;
     }
 
 
@@ -78,6 +80,15 @@ public class AbstractDirMonitor
         return this;
     }
 
+    public boolean generateErrorFile() {
+        return _generate_error_file;
+    }
+
+    public AbstractDirMonitor generateErrorFile(final boolean value) {
+        _generate_error_file = value;
+        return this;
+    }
+
     public void onBeforeDeleteFile(final Delegates.Callback<File> callback) {
         _callback_on_before_delete = callback;
     }
@@ -85,6 +96,7 @@ public class AbstractDirMonitor
     public void onFile(final Delegates.CallbackThrowable<File> callback) {
         _callback = callback;
     }
+
 
     // ------------------------------------------------------------------------
     //                      p u b l i c
@@ -134,6 +146,21 @@ public class AbstractDirMonitor
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
+    protected void generateError(final Exception error,
+                                 final File file) {
+        try {
+            final String dir = file.isDirectory() ? file.getAbsolutePath() : file.getParent();
+            final String name = file.isDirectory() ? file.getName() : file.getName();
+            if (StringUtils.hasText(name)) {
+                final String error_file_name = PathUtils.concat(dir, name.concat(EXT_ERROR));
+                final String error_message = error.toString();
+                FileUtils.writeStringToFile(new File(error_file_name), error_message, CharEncoding.UTF_8);
+            }
+        } catch (Throwable ignored) {
+            // ignored
+        }
+    }
+
     private void initWatchdog() {
         try {
             this.close();
@@ -169,7 +196,8 @@ public class AbstractDirMonitor
 
             _timed_task = new MonitorTask(this,
                     new File(_root_monitor),
-                    _task_interval);
+                    _task_interval,
+                    new String[]{EXT_ERROR});
 
         } catch (Throwable t) {
             super.error("initTask", t);
@@ -264,12 +292,20 @@ public class AbstractDirMonitor
     }
 
     private void handleTypes(final File file) throws Exception {
-        if (file.isDirectory()) {
-            this.handleDir(file);
-        } else if (this.isZip(file)) {
-            this.handleZip(file);
-        } else {
-            this.handleFile(file);
+        try {
+            if (file.isDirectory()) {
+                this.handleDir(file);
+            } else if (this.isZip(file)) {
+                this.handleZip(file);
+            } else {
+                this.handleFile(file);
+            }
+        } catch (Exception e) {
+            // creates an error file
+            if (_generate_error_file) {
+                generateError(e, file);
+            }
+            throw e;
         }
     }
 
@@ -339,16 +375,19 @@ public class AbstractDirMonitor
 
         private AbstractDirMonitor _owner;
         private final File _root;
+        private final String[] _exclude_extensions;
         private boolean _busy;
 
         public MonitorTask(final AbstractDirMonitor owner,
                            final File root,
-                           final long loop_interval) {
+                           final long loop_interval,
+                           final String[] exclude_extensions) {
             super(TimeUnit.MILLISECONDS, 0, loop_interval, 0, 0);
             super.setDaemon(true);
 
             _owner = owner;
             _root = root;
+            _exclude_extensions = exclude_extensions;
 
             // start
             super.start(this::handle);
@@ -367,9 +406,9 @@ public class AbstractDirMonitor
 
                         // some errors occurred
                         // wait a little before restart the task
-                        try{
+                        try {
                             Thread.sleep(RETRY_IDLE);
-                        } catch(Throwable ignored){
+                        } catch (Throwable ignored) {
                         }
                     }
                 } finally {
@@ -382,6 +421,14 @@ public class AbstractDirMonitor
         //                      p r i v a t e
         // ------------------------------------------------------------------------
 
+        private boolean isAllowed(final File file) {
+            if (file.exists()) {
+                final String ext = PathUtils.getFilenameExtension(file.getAbsolutePath(), true);
+                return !CollectionUtils.contains(_exclude_extensions, ext);
+            }
+            return false;
+        }
+
         private List<Exception> checkRoot() {
             final List<Exception> errors = new LinkedList<>();
             final List<File> files = new LinkedList<>();
@@ -390,7 +437,9 @@ public class AbstractDirMonitor
 
             for (final File file : files) {
                 try {
-                    this.checkFile(file);
+                    if (this.isAllowed(file)) {
+                        this.checkFile(file);
+                    }
                 } catch (Exception e) {
                     errors.add(e);
                 }

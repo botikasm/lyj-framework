@@ -116,9 +116,12 @@ public abstract class FileUtils {
         //if directory, go inside and call recursively
         if (file.isDirectory()) {
             try {
-                for (final File f : file.listFiles()) {
-                    //call recursively
-                    delete(f);
+                final File[] files = file.listFiles();
+                if (null != files) {
+                    for (final File f : files) {
+                        //call recursively
+                        delete(f);
+                    }
                 }
             } catch (Throwable ignored) {
 
