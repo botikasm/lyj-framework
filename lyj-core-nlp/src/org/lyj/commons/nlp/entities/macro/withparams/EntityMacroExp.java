@@ -9,36 +9,33 @@ import java.util.LinkedList;
 
 /**
  * Rule:
- * - Starts with x
- * - if condition is respected, RegExp is applied
+ * - RegExp is applied
  * <p>
  * Usage:
- * #startsWithExp#VEN-#([0-9a-zA-Z-])
+ * #exp#([0-9a-zA-Z-])
  */
-public class EntityMacroStartsWithExp
+public class EntityMacroExp
         extends AbstractEntityMacro {
 
     // ------------------------------------------------------------------------
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    public static final String NAME = "startsWithExp";
+    public static final String NAME = "exp";
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
 
-    private final String _start_text;
     private final String _regex_pattern;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public EntityMacroStartsWithExp(final String[] args) {
+    public EntityMacroExp(final String[] args) {
         super(NAME, args);
-        _start_text = args.length > 0 ? args[0] : "";
-        _regex_pattern = args.length > 1 ? args[1] : "";
+        _regex_pattern = args.length > 0 ? args[0] : "";
     }
 
     // ------------------------------------------------------------------------
@@ -52,15 +49,13 @@ public class EntityMacroStartsWithExp
         final Collection<String> result = new LinkedList<>();
         for (int i = start_index; i < phrase.length; i++) {
             final String word = phrase[i];
-            if (StringUtils.hasText(_start_text) && word.startsWith(_start_text)) {
-                if (StringUtils.hasText(_regex_pattern)) {
-                    final String value = RegExpUtils.matches(_regex_pattern, word);
-                    if(StringUtils.hasText(value)){
-                        result.add(value);
-                    }
-                } else {
-                    result.add(word);
+            if (StringUtils.hasText(_regex_pattern)) {
+                final String value = RegExpUtils.matches(_regex_pattern, word);
+                if (StringUtils.hasText(value)) {
+                    result.add(value);
                 }
+            } else {
+                result.add(word);
             }
         }
         return result.toArray(new String[0]);

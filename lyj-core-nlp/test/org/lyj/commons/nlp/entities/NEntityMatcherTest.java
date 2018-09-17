@@ -19,7 +19,8 @@ public class NEntityMatcherTest {
         final String phrase = "Ciao, vorrei che tu prendessi " +
                 "un po' di dati. Io sono " +
                 "Mario Rossi ed il mio telefono è 347 78587 oppure via emal a angelo@gmail.com. Anche se non ti frega niente, mia moglie si chiama Marisa Semprini" +
-                " Il mio ordine è VEN-1234..";
+                " Il mio ordine è VEN-1234.." +
+                " MY95762512 AS62716632 RL66791012";
         final NEntitySchema schema = new NEntitySchema(this.schema());
 
         final NEntityMatcher.Entity[] response = NEntityMatcher.instance().match("it", phrase, schema, this::expressionCallback);

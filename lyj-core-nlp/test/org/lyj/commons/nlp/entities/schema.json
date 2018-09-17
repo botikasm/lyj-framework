@@ -45,5 +45,11 @@
       "#integerLen#5",
       "#startsWithExp#VEN-#([0-9a-zA-Z-])"
     ]
+  },
+  "regexp": {
+    "start": [],
+    "rules": [
+      "#exp#([a-zA-Z]{2})+([0-9]{8})"
+    ]
   }
 }

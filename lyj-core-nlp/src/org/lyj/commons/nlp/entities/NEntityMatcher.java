@@ -138,6 +138,7 @@ public class NEntityMatcher {
         _macros.register(EntityMacroLen.NAME, EntityMacroLen.class);
         _macros.register(EntityMacroLenG.NAME, EntityMacroLenG.class);
         _macros.register(EntityMacroLenL.NAME, EntityMacroLenL.class);
+        _macros.register(EntityMacroExp.NAME, EntityMacroExp.class);
     }
 
     private Entity parse(final String lang,

@@ -6,6 +6,14 @@ import org.lyj.commons.util.StringUtils;
 import java.util.Collection;
 import java.util.LinkedList;
 
+/**
+ * Rule:
+ * - Starts with x
+ *
+ * <p>
+ * Usage:
+ * #startsWithExp#VEN-
+ */
 public class EntityMacroStartsWith
         extends AbstractEntityMacro {
 
@@ -13,7 +21,7 @@ public class EntityMacroStartsWith
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    public static final String NAME = "startsWith"; // detects names of persons (first should be Uppercase)
+    public static final String NAME = "startsWith"; //
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
