@@ -117,13 +117,20 @@ public class UploadHandler
     // ------------------------------------------------------------------------
 
     private boolean canHandle(final HttpServerRequest request) {
+        final String method = request.method();
         // only POST method is supported for upload
-        if (IHttpConstants.METHOD_POST.equalsIgnoreCase(request.method())) {
+        if (IHttpConstants.METHOD_POST.equalsIgnoreCase(method)) {
             // is it a valid upload route?
             final String uri = request.uri();
             if (_route.parse(uri).matchTemplate()) {
 
                 return true;
+            }
+        }  else if(IHttpConstants.METHOD_GET.equalsIgnoreCase(method)){
+             // GET method is invoked for multichunk
+            final Map<String, Object> params = request.params();
+            if(null!=params){
+
             }
         }
         return false;
