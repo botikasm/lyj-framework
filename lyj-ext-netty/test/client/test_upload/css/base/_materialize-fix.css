@@ -1,0 +1,14 @@
+/*
+    Light grey wave effect to flat button
+ */
+.waves-effect.waves-grey .waves-ripple {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/*
+    Adapted FAB position to fit in the app container
+ */
+
+.fixed-action-btn {
+    bottom: calc( 23px + 64px );
+}

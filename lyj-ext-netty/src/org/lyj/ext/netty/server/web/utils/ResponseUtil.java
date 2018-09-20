@@ -29,12 +29,12 @@ public class ResponseUtil
     // ------------------------------------------------------------------------
 
 
-
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public static void sendError(final ChannelHandlerContext ctx, final HttpResponseStatus status) {
+    public static void sendError(final ChannelHandlerContext ctx,
+                                 final HttpResponseStatus status) {
         FullHttpResponse response = new DefaultFullHttpResponse(
                 HTTP_1_1, status, Unpooled.copiedBuffer("Failure: " + status + "\r\n", CharsetUtil.UTF_8));
         response.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
@@ -51,11 +51,16 @@ public class ResponseUtil
         ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
     }
 
+    public static void sendStatus(final ChannelHandlerContext ctx,
+                                  final HttpResponseStatus status) {
+        final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, status);
+        ctx.write(response);
+    }
+
     /**
      * When file timestamp is the same as what the browser is sending up, send a "304 Not Modified"
      *
-     * @param ctx
-     *            Context
+     * @param ctx Context
      */
     public static void sendNotModified(ChannelHandlerContext ctx) {
         FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NOT_MODIFIED);
@@ -70,6 +75,21 @@ public class ResponseUtil
         ctx.write(response);
     }
 
+    public static void send200Ok(ChannelHandlerContext ctx) {
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK);
+        ctx.write(response);
+    }
+
+    public static void send204NoContent(ChannelHandlerContext ctx) {
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NO_CONTENT);
+        ctx.write(response);
+    }
+
+    public static void send404NotFound(ChannelHandlerContext ctx) {
+        FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, NOT_FOUND);
+        ctx.write(response);
+    }
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
@@ -77,8 +97,7 @@ public class ResponseUtil
     /**
      * Sets the Date header for the HTTP response
      *
-     * @param response
-     *            HTTP response
+     * @param response HTTP response
      */
     private static void setDateHeader(FullHttpResponse response) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat(HTTP_DATE_FORMAT, Locale.US);

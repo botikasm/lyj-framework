@@ -125,6 +125,12 @@ public class HttpServerRequestContext {
         }
     }
 
+    public void status(final HttpResponseStatus status) {
+        if(null!=_native_context){
+           ResponseUtil.sendStatus(_native_context, status);
+        }
+    }
+
     public boolean isSuccess() {
         try {
             return _request.decoderResult().isSuccess();

@@ -1,4 +1,4 @@
-package org.lyj.ext.netty.server.web.handlers.impl;
+package org.lyj.ext.netty.server.web.handlers.impl.upload;
 
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.LastHttpContent;
@@ -8,6 +8,7 @@ import org.lyj.commons.util.*;
 import org.lyj.ext.netty.server.web.*;
 import org.lyj.ext.netty.server.web.controllers.routing.RouteUrl;
 import org.lyj.ext.netty.server.web.handlers.AbstractRequestHandler;
+import org.lyj.ext.netty.server.web.handlers.impl.upload.resumablejs.ResumableJsParams;
 
 import java.io.File;
 import java.io.IOException;
@@ -72,36 +73,13 @@ public class UploadHandler
     public void handle(final HttpServerRequest request,
                        final HttpServerResponse response) {
         if (canHandle(request)) {
-
-            try {
-                // initialize decoder
-                if (request.isHttpRequest()) {
-                    _decoder = request.createDecoder(_factory);
-                    if (null != _decoder) {
-                        _reading_chunks = request.isTransferEncodingChunked();
-                    }
-                }
-                // read content
-                if (request.isHttpContent()) {
-                    if (null != _decoder) {
-                        // New chunk is received
-                        HttpContent chunk = request.nativeHttpContent();
-                        _decoder.offer(chunk);
-
-                        readHttpDataChunkByChunk(new HttpServerContext(config(), request, response));
-                        // example of reading only if at the end
-                        if (chunk instanceof LastHttpContent) {
-                            //writeResponse(ctx.channel());
-                            _reading_chunks = false;
-
-                            reset();
-                        }
-                    }
-                }
-
-            } catch (Throwable t) {
-                response.writeErrorINTERNAL_SERVER_ERROR(t);
+            final String method = request.method();
+            if (IHttpConstants.METHOD_POST.equalsIgnoreCase(method)) {
+                handlePOST(request, response);
+            } else if (IHttpConstants.METHOD_GET.equalsIgnoreCase(method)) {
+                handleGET(request, response);
             }
+
             response.handled(true); // exit chain
         } else {
             response.handled(false);
@@ -118,22 +96,99 @@ public class UploadHandler
 
     private boolean canHandle(final HttpServerRequest request) {
         final String method = request.method();
+        final String uri = request.uri();
         // only POST method is supported for upload
         if (IHttpConstants.METHOD_POST.equalsIgnoreCase(method)) {
             // is it a valid upload route?
-            final String uri = request.uri();
             if (_route.parse(uri).matchTemplate()) {
 
                 return true;
             }
-        }  else if(IHttpConstants.METHOD_GET.equalsIgnoreCase(method)){
-             // GET method is invoked for multichunk
-            final Map<String, Object> params = request.params();
-            if(null!=params){
+        } else if (IHttpConstants.METHOD_GET.equalsIgnoreCase(method)) {
+            // GET method is invoked for multichunk
+            if (_route.parse(uri).matchTemplate()) {
 
+                return true;
             }
+        } else {
+            return false;
         }
         return false;
+    }
+
+    private void handlePOST(final HttpServerRequest request,
+                            final HttpServerResponse response) {
+        try {
+            final ResumableJsParams r = new ResumableJsParams(request);
+            if (r.isValid() && r.totalChunks() > 1) {
+                // resumable.js file upload
+                readResumable(new HttpServerContext(config(), request, response), r);
+            } else {
+                // standard file upload
+                readFile(new HttpServerContext(config(), request, response));
+            }
+
+        } catch (Throwable t) {
+            response.writeErrorINTERNAL_SERVER_ERROR(t);
+        }
+    }
+
+    private void handleGET(final HttpServerRequest request,
+                           final HttpServerResponse response) {
+        if (ResumableJsParams.isResumableRequest(request)) {
+            final ResumableJsParams params = new ResumableJsParams(request);
+            if (params.totalChunks() > 1) {
+                final HttpServerContext context = new HttpServerContext(config(), request, response);
+                // context.write("success");
+                response.write204NoContent();
+            } else {
+                response.write200OK();
+            }
+        }
+    }
+
+    private void readFile(final HttpServerContext context) {
+        final HttpServerRequest request = context.request();
+
+        // initialize decoder
+        if (request.isHttpRequest()) {
+            _decoder = request.createDecoder(_factory);
+            if (null != _decoder) {
+                _reading_chunks = request.isTransferEncodingChunked();
+            }
+        }
+
+        // read content
+        if (request.isHttpContent()) {
+            if (null != _decoder) {
+                // New chunk is received
+                HttpContent chunk = request.nativeHttpContent();
+                _decoder.offer(chunk);
+
+                readHttpDataChunkByChunk(context);
+                // example of reading only if at the end
+                if (chunk instanceof LastHttpContent) {
+                    //writeResponse(ctx.channel());
+                    _reading_chunks = false;
+
+                    reset();
+                }
+            }
+        }
+    }
+
+    private void readResumable(final HttpServerContext context,
+                               final ResumableJsParams params) {
+        final HttpServerRequest request = context.request();
+
+        // initialize decoder
+        if (request.isHttpRequest()) {
+            _decoder = request.createDecoder(_factory);
+            if (null != _decoder) {
+                _reading_chunks = request.isTransferEncodingChunked();
+            }
+        }
+
     }
 
     private void reset() {

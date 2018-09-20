@@ -85,6 +85,11 @@ public class HttpServerResponse
         return this;
     }
 
+    public void write(final HttpResponseStatus status,
+                      final String content) {
+        this.writeStatus(status, content);
+    }
+
     /**
      * Write and flush everything from buffer to response.
      * Close connection if not 'keep-alive'.
@@ -172,8 +177,20 @@ public class HttpServerResponse
         }
     }
 
-    public void writeOK() {
+    public void write200OK() {
         this.writeStatus(HttpResponseStatus.OK);
+    }
+
+    public void write204NoContent() {
+        this.writeStatus(HttpResponseStatus.NO_CONTENT);
+    }
+
+    public void write204NoContent(final String response_content) {
+        this.writeStatus(HttpResponseStatus.NO_CONTENT, response_content);
+    }
+
+    public void write404NotFound() {
+        this.writeStatus(HttpResponseStatus.NOT_FOUND);
     }
 
     public void writeErrorINTERNAL_SERVER_ERROR() {
@@ -243,12 +260,12 @@ public class HttpServerResponse
         this.removeContentLength();
 
         final FullHttpResponse response;
-        if(StringUtils.hasText(content)){
-            response = new DefaultFullHttpResponse( HTTP_1_1, status, Unpooled.copiedBuffer(content.getBytes()) );
+        if (StringUtils.hasText(content)) {
+            response = new DefaultFullHttpResponse(HTTP_1_1, status, Unpooled.copiedBuffer(content.getBytes()));
             _headers.put(CONTENT_TYPE.toString(), "text/plain; charset=UTF-8");
             _buffer.write(content);
         } else {
-            response = new DefaultFullHttpResponse( HTTP_1_1, status );
+            response = new DefaultFullHttpResponse(HTTP_1_1, status);
         }
 
         // Close the connection as soon as the error message is sent.
@@ -292,7 +309,6 @@ public class HttpServerResponse
             _context.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
         }
     }
-
 
 
 }

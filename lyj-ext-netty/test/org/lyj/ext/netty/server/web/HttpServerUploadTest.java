@@ -6,7 +6,7 @@ import org.lyj.Lyj;
 import org.lyj.ext.netty.TestInitializer;
 import org.lyj.ext.netty.server.web.handlers.impl.ResourceHandler;
 import org.lyj.ext.netty.server.web.handlers.impl.RoutingHandler;
-import org.lyj.ext.netty.server.web.handlers.impl.UploadHandler;
+import org.lyj.ext.netty.server.web.handlers.impl.upload.UploadHandler;
 
 
 public class HttpServerUploadTest {

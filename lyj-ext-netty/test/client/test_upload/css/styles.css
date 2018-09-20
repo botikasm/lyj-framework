@@ -1,0 +1,48 @@
+/* Base */
+@import url('base/_normalize.css?v=1.0.0');
+
+/* App Base */
+@import url('base/_base.css?v=1.0.1');
+
+/* Animations */
+@import url('animations/_rotations.css?v=1.0.1');
+
+/* App Pages */
+/*@import url('pages/dashboardPage.css?v=1.0.1');*/
+/*@import url('pages/loginPage.css?v=1.0.1');*/
+/*@import url('pages/appPage.css?v=1.0.1');*/
+@import url('pages/loaderPage.css?v=1.0.1');
+
+/* App Components */
+/*@import url('components/_modal.css?v=1.0.1');*/
+
+/* FONTS */
+@font-face {
+    font-family: NunitoExtraBold;
+    src: url('../assets/fonts/nunito/Nunito-ExtraBold.ttf');
+}
+
+@font-face {
+    font-family: RobotoBold;
+    src: url('../assets/fonts/roboto/Roboto-Bold.ttf');
+}
+
+@font-face {
+    font-family: RobotoRegular;
+    src: url('../assets/fonts/roboto/Roboto-Regular.ttf');
+}
+
+@font-face {
+    font-family: GothamBold;
+    src: url('../assets/fonts/gotham/GOTHAM-BOLD.TTF');
+}
+
+@font-face {
+    font-family: GothamBlack;
+    src: url('../assets/fonts/gotham/GOTHAM-BLACK.TTF');
+}
+
+@font-face {
+    font-family: GothamLight;
+    src: url('../assets/fonts/gotham/GOTHAM-LIGHT.TTF');
+}
