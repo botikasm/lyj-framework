@@ -1,5 +1,6 @@
 package org.lyj.ext.netty.server.web;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.json.JSONObject;
 import org.lyj.commons.util.*;
 import org.lyj.commons.util.converters.JsonConverter;
@@ -105,20 +106,20 @@ public class HttpServerContext
     public String getLang() {
         String langCode = "";
         final String accept_language = this.requestHeaders().get(ACCEPT_LANGUAGE);
-        if(StringUtils.hasText(accept_language)){
-           final String[] tokens = StringUtils.split(accept_language, ",");
-           if(tokens.length>0){
-               langCode = CollectionUtils.get(StringUtils.split(tokens[0], ";"), 0);
-           }
+        if (StringUtils.hasText(accept_language)) {
+            final String[] tokens = StringUtils.split(accept_language, ",");
+            if (tokens.length > 0) {
+                langCode = CollectionUtils.get(StringUtils.split(tokens[0], ";"), 0);
+            }
         }
 
-        if(!StringUtils.hasText(langCode)){
+        if (!StringUtils.hasText(langCode)) {
             langCode = this.getParam("lang");
         }
-        if(!StringUtils.hasText(langCode)){
+        if (!StringUtils.hasText(langCode)) {
             langCode = this.getParam("locale");
         }
-        
+
         return StringUtils.hasText(langCode) ? LocaleUtils.getLanguage(langCode) : LocaleUtils.getCurrent().getLanguage();
     }
 
@@ -209,18 +210,15 @@ public class HttpServerContext
     }
 
     public void removeHeaderAccessControlAllowOrigin() {
-        this.removeHeader(ACCESS_CONTROL_ALLOW_ORIGIN);
+        _response.removeHeader(ACCESS_CONTROL_ALLOW_ORIGIN);
     }
 
     public void addHeaderAccessControlAllowOriginAll() {
-        this.addHeaderAccessControlAllowOrigin("*");
+        _response.addHeaderAccessControlAllowOrigin("*");
     }
 
     public void addHeaderAccessControlAllowOrigin(final String value) {
-        this.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, value);
-        this.addHeader(ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, OPTIONS");
-        this.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, "access-control-allow-origin, content-type, " +
-                "Access-Control-Request-Method, Cache-Control, User-Agent, Origin, Connection, Accept-Encoding, content-length");
+        _response.addHeaderAccessControlAllowOrigin(value);
     }
 
     // ------------------------------------------------------------------------
@@ -231,11 +229,24 @@ public class HttpServerContext
         this.write(content, "");
     }
 
+    public void writeStatus(final HttpResponseStatus status) {
+        this.addCORSHeaders();
+        _response.write(status, null);
+    }
+
+    public void writeStatus(final HttpResponseStatus status,
+                            final String content) {
+        this.addCORSHeaders();
+        _response.write(status, content);
+    }
+
     public void writeInternalServerError(final Throwable t) {
+        this.addCORSHeaders();
         _response.writeErrorINTERNAL_SERVER_ERROR(t);
     }
 
     public void writeInternalServerError() {
+        this.addCORSHeaders();
         _response.writeErrorINTERNAL_SERVER_ERROR();
     }
 

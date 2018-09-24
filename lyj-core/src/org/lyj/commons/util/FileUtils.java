@@ -129,7 +129,9 @@ public abstract class FileUtils {
         }
 
         //call delete to delete files and empty directory
-        file.delete();
+        if(!file.delete()){
+            file.deleteOnExit();
+        }
     }
 
     public static boolean tryDelete(final String path) {

@@ -122,6 +122,14 @@ public class FileTokenizer {
             appendBytesTo(bytes, fos);
         }
     }
+
+    public static void append(final byte[] bytes,
+                              final File output_file) throws Exception {
+        try (final FileOutputStream fos = new FileOutputStream(output_file, true)) {
+            appendBytesTo(bytes, fos);
+        }
+    }
+
     // --------------------------------------------------------------------
     //               p r i v a t e
     // --------------------------------------------------------------------

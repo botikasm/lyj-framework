@@ -21,7 +21,6 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.netty.handler.codec.http.HttpHeaderNames.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.FOUND;
 import static io.netty.handler.codec.http.HttpResponseStatus.NOT_MODIFIED;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -30,7 +29,8 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  *
  */
 public class HttpServerResponse
-        extends AbstractLogEmitter {
+        extends AbstractLogEmitter
+        implements IHeaderNames {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -75,6 +75,33 @@ public class HttpServerResponse
         return _headers;
     }
 
+    public void addHeader(final String name, final String value) {
+        this.headers().put(name, value);
+    }
+
+    public void removeHeader(final String name) {
+        this.headers().remove(name);
+    }
+
+    public boolean hasHeader(final String name) {
+        return this.headers().containsKey(name);
+    }
+
+    public void removeHeaderAccessControlAllowOrigin() {
+        this.removeHeader(ACCESS_CONTROL_ALLOW_ORIGIN);
+    }
+
+    public void addHeaderAccessControlAllowOriginAll() {
+        this.addHeaderAccessControlAllowOrigin("*");
+    }
+
+    public void addHeaderAccessControlAllowOrigin(final String value) {
+        this.addHeader(ACCESS_CONTROL_ALLOW_ORIGIN, value);
+        this.addHeader(ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, OPTIONS");
+        this.addHeader(ACCESS_CONTROL_ALLOW_HEADERS, "access-control-allow-origin, content-type, " +
+                "Access-Control-Request-Method, Cache-Control, User-Agent, Origin, Connection, Accept-Encoding, content-length");
+    }
+
     public HttpServerResponse write(final String text) {
         _buffer.write(text);
         return this;
@@ -96,7 +123,7 @@ public class HttpServerResponse
      * Set response as 'handled': no further chain handlers will be invoked.
      */
     public void flush() {
-        this.writeAndFlushBuffer();
+        this.writeAndFlushBuffer(null);
         this.handled(true);
     }
 
@@ -259,27 +286,27 @@ public class HttpServerResponse
         _buffer.clear();
         this.removeContentLength();
 
-        final FullHttpResponse response;
         if (StringUtils.hasText(content)) {
-            response = new DefaultFullHttpResponse(HTTP_1_1, status, Unpooled.copiedBuffer(content.getBytes()));
             _headers.put(CONTENT_TYPE.toString(), "text/plain; charset=UTF-8");
             _buffer.write(content);
-        } else {
-            response = new DefaultFullHttpResponse(HTTP_1_1, status);
         }
 
         // Close the connection as soon as the error message is sent.
-        _context.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        //_context.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        this.writeAndFlushBuffer(status);
     }
 
 
-    private void writeAndFlushBuffer() {
+    private void writeAndFlushBuffer(final HttpResponseStatus status) {
 
         final boolean keep_alive = _context.keepAlive();
 
         // Build the response object.
-        final FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, _context.status(),
-                Unpooled.copiedBuffer(_buffer.readBytes()));
+        final FullHttpResponse response = new DefaultFullHttpResponse(
+                HTTP_1_1,
+                null != status ? status : _context.status(),
+                Unpooled.copiedBuffer(_buffer.readBytes())
+        );
 
         if (keep_alive) {
             // Add 'Content-Length' header only for a keep-alive connection.

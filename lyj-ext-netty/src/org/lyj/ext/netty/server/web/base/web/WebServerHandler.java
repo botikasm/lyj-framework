@@ -32,7 +32,7 @@ import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpResponseStatus.INTERNAL_SERVER_ERROR;
 
 public class WebServerHandler
-        extends SimpleChannelInboundHandler<HttpObject> {
+        extends SimpleChannelInboundHandler<Object> {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
@@ -64,7 +64,7 @@ public class WebServerHandler
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx,
                                 final Throwable cause) {
-        if(cause instanceof NotSslRecordException){
+        if (cause instanceof NotSslRecordException) {
             // request is not SSL
         } else {
             this.logger().debug(FormatUtils.format("[%s.%s]: %s", this.getClass().getName(), "exceptionCaught", cause.toString()));
@@ -91,16 +91,22 @@ public class WebServerHandler
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx,
-                                final HttpObject msg) {
+                                final Object msg) {
+        if (msg instanceof HttpObject) {
+            HttpObject http_msg = (HttpObject) msg;
+            if (!http_msg.decoderResult().isSuccess()) {
+                ResponseUtil.sendError(ctx, BAD_REQUEST);
+                return;
+            }
 
-        if (!msg.decoderResult().isSuccess()) {
-            ResponseUtil.sendError(ctx, BAD_REQUEST);
-            return;
+            //_handlers.handle(_context.handle(ctx, msg));
+
+            _handlers.handle(new HttpServerRequestContext(_config).handle(ctx, http_msg));
+        } else {
+            if (null != msg) {
+                this.logger().warning("Unhandled request type in channelRead0: " + msg.getClass().getName());
+            }
         }
-
-        //_handlers.handle(_context.handle(ctx, msg));
-
-        _handlers.handle(new HttpServerRequestContext(_config).handle(ctx, msg));
     }
 
     // ------------------------------------------------------------------------

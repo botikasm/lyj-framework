@@ -39,7 +39,7 @@ public class ResumableJsParams {
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public ResumableJsParams(final HttpServerRequest request) {
+    ResumableJsParams(final HttpServerRequest request) {
 
         this.init(request);
 

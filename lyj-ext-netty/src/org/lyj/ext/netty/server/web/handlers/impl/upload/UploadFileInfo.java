@@ -1,0 +1,70 @@
+package org.lyj.ext.netty.server.web.handlers.impl.upload;
+
+import org.lyj.commons.util.ConversionUtils;
+
+import java.util.HashMap;
+
+public class UploadFileInfo extends HashMap<String, String> {
+
+    private static final String FLD_LOCALE_ROOT = "local_root";
+    private static final String FLD_LOCALE_RELATIVE = "local_relative";
+    private static final String FLD_LOCALE_ABSOLUTE = "local_full";
+    private static final String FLD_CONTENT_TYPE = "content_type";
+    private static final String FLD_CONTENT_LENGTH = "content_length";
+    private static final String FLD_ERROR_MESSAGE = "error_message";
+
+    public String localeRoot() {
+        return super.get(FLD_LOCALE_ROOT);
+    }
+
+    public UploadFileInfo localeRoot(final String value) {
+        super.put(FLD_LOCALE_ROOT, value);
+        return this;
+    }
+
+    public String localeRelative() {
+        return super.get(FLD_LOCALE_RELATIVE);
+    }
+
+    public UploadFileInfo localeRelative(final String value) {
+        super.put(FLD_LOCALE_RELATIVE, value);
+        return this;
+    }
+
+    public String localeAbsolute() {
+        return super.get(FLD_LOCALE_ABSOLUTE);
+    }
+
+    public UploadFileInfo localeAbsolute(final String value) {
+        super.put(FLD_LOCALE_ABSOLUTE, value);
+        return this;
+    }
+
+    public String contentType() {
+        return super.get(FLD_CONTENT_TYPE);
+    }
+
+    public UploadFileInfo contentType(final String value) {
+        super.put(FLD_CONTENT_TYPE, value);
+        return this;
+    }
+
+    public long contentLength() {
+        return ConversionUtils.toLong(super.get(FLD_CONTENT_LENGTH), 0L);
+    }
+
+    public UploadFileInfo contentLength(final String value) {
+        super.put(FLD_CONTENT_LENGTH, value);
+        return this;
+    }
+
+    public String errorMessage() {
+        return super.get(FLD_ERROR_MESSAGE);
+    }
+
+    public UploadFileInfo errorMessage(final String value) {
+        super.put(FLD_ERROR_MESSAGE, value);
+        return this;
+    }
+
+}

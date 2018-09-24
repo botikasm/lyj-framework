@@ -6,6 +6,7 @@ import org.lyj.Lyj;
 import org.lyj.ext.netty.TestInitializer;
 import org.lyj.ext.netty.server.web.handlers.impl.ResourceHandler;
 import org.lyj.ext.netty.server.web.handlers.impl.RoutingHandler;
+import org.lyj.ext.netty.server.web.handlers.impl.upload.UploadFileInfo;
 import org.lyj.ext.netty.server.web.handlers.impl.upload.UploadHandler;
 
 
@@ -68,7 +69,7 @@ public class HttpServerUploadTest {
         }
     }
 
-    private String onUpload(final UploadHandler.FileInfo fileInfo) {
+    private String onUpload(final UploadFileInfo fileInfo) {
         System.out.println("UPLOADED: " + fileInfo.toString());
         return ""; // no error
     }

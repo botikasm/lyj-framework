@@ -164,9 +164,8 @@ public class CacheFiles
 
     public boolean remove(final String key) {
         try {
-            if (this.registry().has(key)) {
-                return this.registry().removeItem(key);
-            }
+            super.registryRemoveItem(key);
+            return true;
         } catch (Throwable t) {
             super.logger().error("remove", t);
         }

@@ -55,16 +55,21 @@ public class HttpServerRequestDelegates
         return this;
     }
 
-    public void handle(final HttpServerRequestContext context) {
+    public boolean handle(final HttpServerRequestContext context) {
         final HttpServerRequest request = new HttpServerRequest(context);
         final HttpServerResponse response = new HttpServerResponse(context);
 
-        this.handle(request, response);
+        final boolean handled = this.handle(request, response);
+
+        //if (handled) {
 
         // time to write response?
         if (request.hasLastHttpContent()) {
             response.flush();
         }
+
+        //}
+        return handled;
     }
 
     public void close() {
