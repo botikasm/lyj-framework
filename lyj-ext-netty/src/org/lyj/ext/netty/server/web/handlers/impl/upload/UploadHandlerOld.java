@@ -195,6 +195,10 @@ public class UploadHandlerOld
 
                         // all chunks are ready
                         if (resumable.compose(file_info)) {
+
+                            // remove cached
+                            resumable.remove(file_info);
+
                             return file_info;
                         }
                     }

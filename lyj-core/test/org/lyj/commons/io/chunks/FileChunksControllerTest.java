@@ -27,6 +27,20 @@ public class FileChunksControllerTest {
     // ------------------------------------------------------------------------
 
     @Test
+    public void contains() throws Exception {
+        final FileChunksController chunks = FileChunksController.instance().open();
+        final String chunk_id = "chunk_test_01";
+
+        chunks.add(chunk_id, 1, 2, new byte[0]);
+        chunks.add(chunk_id, 1, 2, new byte[0]);
+        chunks.add(chunk_id, 1, 2, new byte[0]);
+
+        int count = chunks.count(chunk_id);
+
+        assertTrue(count==1);
+    }
+
+    @Test
     public void open() throws Exception {
 
         final FileChunksController chunks = FileChunksController.instance().open();

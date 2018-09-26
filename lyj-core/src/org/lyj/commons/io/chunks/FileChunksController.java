@@ -89,7 +89,7 @@ public class FileChunksController {
     }
 
     public boolean has(final String uid,
-                       final int index){
+                       final int index) {
         synchronized (_chunks_map) {
             if (!_chunks_map.containsKey(uid)) {
                 return false;
@@ -110,8 +110,8 @@ public class FileChunksController {
 
     public int count(final String uid) {
         synchronized (_chunks_map) {
-            if(_chunks_map.containsKey(uid)){
-               return _chunks_map.get(uid).count();
+            if (_chunks_map.containsKey(uid)) {
+                return _chunks_map.get(uid).count();
             }
             return 0;
         }

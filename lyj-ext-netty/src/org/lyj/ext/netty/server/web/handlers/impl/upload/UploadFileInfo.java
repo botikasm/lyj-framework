@@ -1,17 +1,55 @@
 package org.lyj.ext.netty.server.web.handlers.impl.upload;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.StringUtils;
 
 import java.util.HashMap;
 
 public class UploadFileInfo extends HashMap<String, String> {
 
+    private static final String FLD_STATUS = "status";
     private static final String FLD_LOCALE_ROOT = "local_root";
     private static final String FLD_LOCALE_RELATIVE = "local_relative";
     private static final String FLD_LOCALE_ABSOLUTE = "local_full";
     private static final String FLD_CONTENT_TYPE = "content_type";
     private static final String FLD_CONTENT_LENGTH = "content_length";
     private static final String FLD_ERROR_MESSAGE = "error_message";
+
+    // ------------------------------------------------------------------------
+    //                      c o n s t r u c t o r
+    // ------------------------------------------------------------------------
+
+    public UploadFileInfo() {
+        this.status(HttpResponseStatus.CREATED); // default status
+    }
+
+
+    // ------------------------------------------------------------------------
+    //                      p r o p e r t i e s
+    // ------------------------------------------------------------------------
+
+    public HttpResponseStatus status() {
+        final String s = super.get(FLD_STATUS);
+        return StringUtils.hasText(s) ? HttpResponseStatus.valueOf(ConversionUtils.toInteger(s)) : HttpResponseStatus.CREATED;
+    }
+
+    /**
+     * Default status is:
+     *      HttpResponseStatus.CREATED
+     */
+    public UploadFileInfo status(final HttpResponseStatus value) {
+        if (null != value) {
+            this.status(value.codeAsText().toString());
+        }
+
+        return this;
+    }
+
+    public UploadFileInfo status(final String value) {
+        super.put(FLD_STATUS, value);
+        return this;
+    }
 
     public String localeRoot() {
         return super.get(FLD_LOCALE_ROOT);

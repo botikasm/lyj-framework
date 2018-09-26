@@ -47,7 +47,9 @@ public class FileChunks {
                          final int index,
                          final int total) {
         final ChunkInfo info = new ChunkInfo(cache_key, index, total);
-        _chunks.add(info);
+        if(!_chunks.contains(info)){
+            _chunks.add(info);
+        }
         return info;
     }
 
@@ -105,7 +107,13 @@ public class FileChunks {
 
         @Override
         public int hashCode() {
-            return _cache_key.hashCode();
+            final int hash = 31*_cache_key.hashCode();
+            return hash;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            return (this.hashCode() == obj.hashCode());
         }
 
         public String cacheKey() {

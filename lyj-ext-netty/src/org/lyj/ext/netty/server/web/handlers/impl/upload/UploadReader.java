@@ -1,6 +1,7 @@
 package org.lyj.ext.netty.server.web.handlers.impl.upload;
 
 import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.multipart.*;
 import org.lyj.commons.logging.AbstractLogEmitter;
@@ -74,27 +75,40 @@ public class UploadReader
             // initialize decoder
             this.initRequestDecoder(request);
 
+            // get file_info. Never null.
+            // Status:
+            //  HttpResponseStatus.CREATED:     not initialized
+            //  HttpResponseStatus.OK:          file is found
+            //  HttpResponseStatus.NO_CONTENT:  content not found
             final UploadFileInfo file_info = readFileInfo(request, context.params());
 
             final ResumableJs resumable = new ResumableJs(request);
             if (resumable.isValid() && resumable.totalChunks() > 1) {
+
                 // resumable must store data into FileChunkController
                 if (resumable.store(file_info)) {
                     if (resumable.isComplete()) {
 
                         // all chunks are ready
                         if (resumable.compose(file_info)) {
-                            return file_info;
+                            // ready
+                            file_info.status(HttpResponseStatus.OK);
+                        } else {
+                            // next
+                            file_info.status(HttpResponseStatus.NOT_FOUND);  // cannot compose file
                         }
+
+                    } else {
+                        file_info.status(HttpResponseStatus.CONTINUE); // next chunk
                     }
                 } else {
-                    // error storing file.
-                    // may be file does not exists
+                    file_info.status(HttpResponseStatus.NO_CONTENT); // retry
                 }
-                return null;
             } else {
-                return file_info;
+                file_info.status(HttpResponseStatus.OK);
             }
+            // no resumable response
+            return file_info;
         } catch (Exception ex) {
             throw ex;
         }
@@ -142,31 +156,31 @@ public class UploadReader
     }
 
     private UploadFileInfo readFileInfo(final HttpServerRequest request,
-                                        final HttpParams http_params) throws Exception {
-        try {
-            // read content
-            if (request.isHttpContent()) {
-                if (null != _decoder) {
-                    // New chunk is received
-                    HttpContent chunk = request.nativeHttpContent();
-                    _decoder.offer(chunk);
+                                        final HttpParams http_params) {
+        UploadFileInfo file_info = null;
 
-                    final UploadFileInfo file_info = readHttpDataChunkByChunk(http_params);
+        // read content
+        if (request.isHttpContent()) {
+            if (null != _decoder) {
+                // New chunk is received
+                HttpContent chunk = request.nativeHttpContent();
+                _decoder.offer(chunk);
 
-                    // example of reading only if at the end
-                    if (chunk instanceof LastHttpContent) {
-                        //writeResponse(ctx.channel());
-                        _reading_chunks = false;
+                file_info = readHttpDataChunkByChunk(http_params); // HttpResponseStatus.CREATED by default
 
-                        resetPostRequestDecoder(chunk);
-                    }
-                    return file_info;
+                // example of reading only if at the end
+                if (chunk instanceof LastHttpContent) {
+                    //writeResponse(ctx.channel());
+                    _reading_chunks = false;
+
+                    resetPostRequestDecoder(chunk);
+
+                    file_info.status(HttpResponseStatus.OK);
                 }
             }
-            return null;
-        } catch (Throwable ex) {
-            throw ex;
         }
+
+        return null != file_info ? file_info : new UploadFileInfo();
     }
 
     /**

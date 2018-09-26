@@ -119,22 +119,34 @@ public class UploadHandler
         try {
             final UploadReader reader = new UploadReader(config());
             final UploadFileInfo file_info = reader.read(context);
-            // write response
-            if (null != file_info) {
+            final HttpResponseStatus status = file_info.status();
 
-                // callback to handler
-                if (null != _callback) {
-                    try {
-                        final String error_message = Delegates.invoke(_callback, file_info);
-                        file_info.errorMessage(error_message);
-                    } catch (Throwable t) {
-                        file_info.errorMessage(ExceptionUtils.getRealMessage(t));
-                    }
+            // callback to handler
+            if (null != _callback && HttpResponseStatus.OK.equals(status)) {
+                try {
+                    final String error_message = Delegates.invoke(_callback, file_info);
+                    file_info.errorMessage(error_message);
+                } catch (Throwable t) {
+                    file_info.errorMessage(ExceptionUtils.getRealMessage(t));
                 }
+            }
 
-                context.writeJson(file_info);
-            } else {
+
+            if (HttpResponseStatus.CREATED.equals(status)) {
+                // undefined
+                context.writeStatus(HttpResponseStatus.NO_CONTENT);
+            } else if (HttpResponseStatus.NO_CONTENT.equals(status)) {
+                // no content
+                context.writeStatus(HttpResponseStatus.NO_CONTENT);
+            } else if (HttpResponseStatus.NOT_FOUND.equals(status)) {
+                // error composing file
+                context.writeStatus(HttpResponseStatus.NO_CONTENT);
+            } else if (HttpResponseStatus.CONTINUE.equals(status)) {
+                // continue
                 context.writeStatus(HttpResponseStatus.OK);
+            } else if (HttpResponseStatus.OK.equals(status)) {
+                // ready
+                context.writeJson(file_info);
             }
 
         } catch (Throwable t) {
