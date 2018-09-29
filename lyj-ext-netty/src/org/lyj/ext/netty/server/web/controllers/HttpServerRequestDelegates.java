@@ -1,9 +1,8 @@
 package org.lyj.ext.netty.server.web.controllers;
 
+import io.netty.handler.codec.http.HttpResponseStatus;
 import org.lyj.commons.logging.AbstractLogEmitter;
-import org.lyj.ext.netty.server.web.HttpServerConfig;
-import org.lyj.ext.netty.server.web.HttpServerRequest;
-import org.lyj.ext.netty.server.web.HttpServerResponse;
+import org.lyj.ext.netty.server.web.*;
 import org.lyj.ext.netty.server.web.handlers.AbstractRequestHandler;
 
 import java.util.LinkedList;
@@ -123,7 +122,24 @@ public class HttpServerRequestDelegates
             }
         }
 
+        if (!handled) {
+            handled = handleOPTIONS(request, response);
+        }
+
         return handled;
+    }
+
+    private boolean handleOPTIONS(final HttpServerRequest request, final HttpServerResponse response) {
+        if (request.method().equalsIgnoreCase(IHttpConstants.METHOD_OPTIONS)) {
+            // this is an options request not handled by routing or other handlers.
+            
+            // add CORS
+            final HttpServerContext context = new HttpServerContext(_config, request, response);
+            context.writeStatus(HttpResponseStatus.OK);
+
+            return true;
+        }
+        return false;
     }
 
 }
