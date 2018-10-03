@@ -13,6 +13,12 @@ import java.util.Set;
  */
 public class JavascriptConverter {
 
+    public static Object toJSON(final Object item) {
+        if (item instanceof ScriptObjectMirror) {
+            return toObject((ScriptObjectMirror) item);
+        }
+        return null;
+    }
 
     public static Object toJSON(final ScriptObjectMirror item) {
         if (null != item) {
@@ -23,6 +29,13 @@ public class JavascriptConverter {
             }
         }
         return null;
+    }
+
+    public static JSONArray forceJSONArray(final Object item) {
+        if (item instanceof ScriptObjectMirror) {
+            return forceJSONArray((ScriptObjectMirror) item);
+        }
+        return new JSONArray();
     }
 
     public static JSONArray forceJSONArray(final ScriptObjectMirror item) {
@@ -55,6 +68,14 @@ public class JavascriptConverter {
             return null != response ? response : false;
         }
         return false;
+    }
+
+    public static String toString(final Object item) throws Exception {
+        if (null != item) {
+            final Object json = toJSON(item);
+            return null != json ? json.toString() : null;
+        }
+        return "";
     }
 
     // ------------------------------------------------------------------------

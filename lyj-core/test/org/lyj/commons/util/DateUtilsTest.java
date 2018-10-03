@@ -16,6 +16,13 @@ public class DateUtilsTest {
     }
 
     @Test
+    public void postponeEndOfMonth() throws Exception {
+        Date now = DateUtils.now();
+        Date date = DateUtils.postponeEndOfMonth(now);
+        System.out.println(date.toString());
+    }
+
+    @Test
     public void testPostponeWorkingDay() throws Exception {
         Date now = DateUtils.now();
         Date date = DateUtils.postponeWorkingDay(now, DateUtils.DAY, 30, new Long[0]);

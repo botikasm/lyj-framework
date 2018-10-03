@@ -275,6 +275,22 @@ public abstract class DateUtils {
         return result;
     }
 
+    public static Date postponeEndOfMonth(final Date date) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        return postponeEndOfMonth(calendar);
+    }
+
+    public static Date postponeEndOfMonth(final Calendar calendar) {
+        final int last_day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        if (last_day != calendar.get(Calendar.DAY_OF_MONTH)) {
+            calendar.set(Calendar.DAY_OF_MONTH, last_day);
+        }
+
+        return calendar.getTime();
+    }
+
     public static Date postpone(final Date date, final int measureUnit, final int amount) {
         final Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
