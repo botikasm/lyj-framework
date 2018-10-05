@@ -45,7 +45,8 @@ public class EntityMacroName
             final String word = phrase[i];
             last_ending_dot = endsWithDot(word) ? i : last_ending_dot;
             // get uppercase (not starting word that usually is uppercase)
-            if (i > 0 && last_ending_dot != i - 1 && RegExpUtils.isFirstUppercase(word)) {
+            if (i > 0 && last_ending_dot != i - 1 && RegExpUtils.isFirstUppercase(word)
+                    && !StringUtils.contains(word, new String[]{"-", ":", "="})) {
                 // check contiguous
                 if (last_i > 0) {
                     if (StringUtils.hasText(last_name)) {

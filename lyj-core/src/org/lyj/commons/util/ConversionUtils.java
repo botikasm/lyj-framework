@@ -43,6 +43,7 @@ public abstract class ConversionUtils {
 
     public static final double KBYTE = 1024L;
     public static final double MBYTE = KBYTE * 1024L;
+    public static final double GBYTE = MBYTE * 1024L;
 
     private static final int STYLE_NUMBER = 0;
     private static final int STYLE_CURRENCY = 1;
@@ -275,16 +276,20 @@ public abstract class ConversionUtils {
         if (null == val) {
             return defValue;
         }
-        String s = val.toString();
-        int i = s.indexOf('.');
-        if (i > 0) {
-            s = s.substring(0, i);
-        }
+        if(val instanceof Number){
+             return ((Number)val).longValue();
+        } else {
+            String s = val.toString();
+            int i = s.indexOf('.');
+            if (i > 0) {
+                s = s.substring(0, i);
+            }
 
-        try {
-            return Long.parseLong(s);
-        } catch (Throwable t) {
-            return defValue;
+            try {
+                return Long.parseLong(s);
+            } catch (Throwable t) {
+                return defValue;
+            }
         }
     }
 
@@ -750,12 +755,20 @@ public abstract class ConversionUtils {
     }
 
 
+    public static double bytesToGbyte(long bytes) {
+        return (double) bytes / GBYTE;
+    }
+
     public static double bytesToMbyte(long bytes) {
         return (double) bytes / MBYTE;
     }
 
     public static double bytesToKbyte(long bytes) {
         return (double) bytes / KBYTE;
+    }
+
+    public static double bytesToGbyte(long bytes, final int decimals) {
+        return MathUtils.round((double) bytes / GBYTE, decimals);
     }
 
     public static double bytesToMbyte(long bytes, final int decimals) {
