@@ -155,10 +155,18 @@ public class AbstractDirMonitor
                 final String error_file_name = PathUtils.concat(dir, name.concat(EXT_ERROR));
                 final String error_message = error.toString();
 
+                final StringBuilder text = new StringBuilder();
+                text.append("-----------------").append("\n");
+                text.append("\t ERROR").append("\n");
+                text.append("-----------------").append("\n");
+                text.append(error_message).append("\n");
+                text.append(SystemUtils.printSystemStatus()).append("\n");
 
-                FileUtils.writeStringToFile(new File(error_file_name),
-                        error_message.concat("\n").concat(SystemUtils.printSystemStatus()),
-                        CharEncoding.UTF_8);
+                FileUtils.writeStringToFile(
+                        new File(error_file_name),
+                        text.toString(),
+                        CharEncoding.UTF_8
+                );
             }
         } catch (Throwable ignored) {
             // ignored
