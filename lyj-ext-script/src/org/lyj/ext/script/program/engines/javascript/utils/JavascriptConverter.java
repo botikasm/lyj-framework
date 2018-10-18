@@ -15,7 +15,7 @@ public class JavascriptConverter {
 
     public static Object toJSON(final Object item) {
         if (item instanceof ScriptObjectMirror) {
-            return toObject((ScriptObjectMirror) item);
+            return toJSON((ScriptObjectMirror) item);
         }
         return null;
     }
