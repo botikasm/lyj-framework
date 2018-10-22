@@ -23,4 +23,11 @@ public class ConversionUtilsTest {
         
     }
 
+    @Test
+    public void toNumbers() throws Exception {
+
+        Number[] numbers = ConversionUtils.toNumbers(1,2,3, "12.5", new Object[]{4,5,6,7.8});
+        assertTrue(numbers.length==8);
+        assertEquals(numbers[3], 12.5);
+    }
 }

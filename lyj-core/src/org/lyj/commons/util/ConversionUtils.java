@@ -204,8 +204,13 @@ public abstract class ConversionUtils {
             return date.getTime();
         }
         if (handleStrings) {
-            // try parsing with default format and locale
-            return toNumber(obj.toString(), "default", Locale.getDefault());
+            final String str_number = obj.toString();
+            if (StringUtils.contains(str_number, new String[]{".", ","})) {
+                return toDouble(str_number);
+            } else {
+                // try parsing with default format and locale
+                return toNumber(obj.toString(), "default", Locale.getDefault());
+            }
         }
         return null;
     }
@@ -255,6 +260,25 @@ public abstract class ConversionUtils {
         return toNumber(String.valueOf(value), format, locale);
     }
 
+    public static Number[] toNumbers(final Object... values) {
+        final Collection<Number> numbers = new LinkedList<>();
+        for (final Object value : values) {
+            if (value.getClass().isArray()) {
+                final Number[] value_array = toNumbers((Object[]) value);
+                for (final Number num : value_array) {
+                    numbers.add(num);
+                }
+            } else {
+                try {
+                    numbers.add(ConversionUtils.toNumber(value));
+                } catch (Throwable ignored) {
+                    // ignored
+                }
+            }
+        }
+        return numbers.toArray(new Number[0]);
+    }
+
     /**
      * Convert any value in a "long" number
      *
@@ -276,8 +300,8 @@ public abstract class ConversionUtils {
         if (null == val) {
             return defValue;
         }
-        if(val instanceof Number){
-             return ((Number)val).longValue();
+        if (val instanceof Number) {
+            return ((Number) val).longValue();
         } else {
             String s = val.toString();
             int i = s.indexOf('.');
