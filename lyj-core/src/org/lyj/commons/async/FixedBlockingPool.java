@@ -5,7 +5,7 @@ import org.lyj.commons.Delegates;
 import java.util.concurrent.*;
 
 /**
- * Execute threads in a fixed pool with a bounded queue to avoid memory consuption.
+ * Execute threads in a fixed pool with a bounded queue to avoid memory consumption.
  * One queue is full, the queue is blocked until next action.
  */
 public class FixedBlockingPool {
