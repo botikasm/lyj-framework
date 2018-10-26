@@ -1,5 +1,4 @@
 {
-
   "default": {
     "token": "your-app-token-if-any",
     "http": {
@@ -8,5 +7,4 @@
       "root": "api/"
     }
   }
-
 }

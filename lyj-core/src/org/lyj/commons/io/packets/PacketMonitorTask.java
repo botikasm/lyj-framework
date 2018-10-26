@@ -94,7 +94,7 @@ public class PacketMonitorTask
     /**
      * Force execution
      */
-    public void force(){
+    public void force() {
         this.handle(null);
     }
 
@@ -125,7 +125,7 @@ public class PacketMonitorTask
                 }
             } catch (Throwable t) {
                 super.error("handle", t);
-                if (_stop_on_error && null!=interruptor) {
+                if (_stop_on_error && null != interruptor) {
                     interruptor.stop();
                 }
             } finally {

@@ -8,7 +8,7 @@ import org.lyj.ext.db.configuration.DatabaseConfiguration;
  *
  */
 public abstract class AbstractDatabaseConnection
-        implements IDatabaseConnection{
+        implements IDatabaseConnection {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s

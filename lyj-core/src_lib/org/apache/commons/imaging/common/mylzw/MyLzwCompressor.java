@@ -35,12 +35,12 @@ public class MyLzwCompressor {
     private final Listener listener;
 
     public MyLzwCompressor(final int initialCodeSize, final ByteOrder byteOrder,
-            final boolean earlyLimit) {
+                           final boolean earlyLimit) {
         this(initialCodeSize, byteOrder, earlyLimit, null);
     }
 
     public MyLzwCompressor(final int initialCodeSize, final ByteOrder byteOrder,
-            final boolean earlyLimit, final Listener listener) {
+                           final boolean earlyLimit, final Listener listener) {
         this.listener = listener;
         this.byteOrder = byteOrder;
         this.earlyLimit = earlyLimit;
@@ -86,7 +86,7 @@ public class MyLzwCompressor {
     }
 
     private final ByteArray arrayToKey(final byte b) {
-        return arrayToKey(new byte[] { b, }, 0, 1);
+        return arrayToKey(new byte[]{b,}, 0, 1);
     }
 
     private final static class ByteArray {
@@ -186,7 +186,7 @@ public class MyLzwCompressor {
     }
 
     private final boolean addTableEntry(final MyBitOutputStream bos, final byte bytes[],
-            final int start, final int length) throws IOException {
+                                        final int start, final int length) throws IOException {
         final ByteArray key = arrayToKey(bytes, start, length);
         return addTableEntry(bos, key);
     }

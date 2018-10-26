@@ -33,6 +33,7 @@ public class PaletteFactory {
      * Builds an exact complete opaque palette containing all the colors in {@code src},
      * using an algorithm that is faster than {@linkplain #makeExactRgbPaletteSimple} for large images
      * but uses 2 mebibytes of working memory. Treats all the colors as opaque.
+     *
      * @param src the image whose palette to build
      * @return the palette
      */
@@ -101,7 +102,7 @@ public class PaletteFactory {
     }
 
     private int getFrequencyTotal(final int table[], final int mins[], final int maxs[],
-            final int precision) {
+                                  final int precision) {
         int sum = 0;
 
         for (int blue = mins[2]; blue <= maxs[2]; blue++) {
@@ -120,8 +121,8 @@ public class PaletteFactory {
     }
 
     private DivisionCandidate finishDivision(final int table[],
-            final ColorSpaceSubset subset, final int component, final int precision, final int sum,
-            final int slice) {
+                                             final ColorSpaceSubset subset, final int component, final int precision, final int sum,
+                                             final int slice) {
         if (debug) {
             subset.dump("trying (" + component + "): ");
         }
@@ -170,7 +171,7 @@ public class PaletteFactory {
     }
 
     private List<DivisionCandidate> divideSubset2(final int table[],
-            final ColorSpaceSubset subset, final int component, final int precision) {
+                                                  final ColorSpaceSubset subset, final int component, final int precision) {
         if (debug) {
             subset.dump("trying (" + component + "): ");
         }
@@ -222,7 +223,7 @@ public class PaletteFactory {
     }
 
     private DivisionCandidate divideSubset2(final int table[],
-            final ColorSpaceSubset subset, final int precision) {
+                                            final ColorSpaceSubset subset, final int precision) {
         final List<DivisionCandidate> dcs = new ArrayList<DivisionCandidate>();
 
         dcs.addAll(divideSubset2(table, subset, 0, precision));
@@ -263,7 +264,7 @@ public class PaletteFactory {
         private final ColorSpaceSubset dst_a, dst_b;
 
         public DivisionCandidate(final ColorSpaceSubset src, final ColorSpaceSubset dst_a,
-                final ColorSpaceSubset dst_b) {
+                                 final ColorSpaceSubset dst_b) {
             // this.src = src;
             this.dst_a = dst_a;
             this.dst_b = dst_b;
@@ -271,7 +272,7 @@ public class PaletteFactory {
     }
 
     private List<ColorSpaceSubset> divide(final List<ColorSpaceSubset> v,
-            final int desired_count, final int table[], final int precision) {
+                                          final int desired_count, final int table[], final int precision) {
         final List<ColorSpaceSubset> ignore = new ArrayList<ColorSpaceSubset>();
 
         while (true) {
@@ -322,6 +323,7 @@ public class PaletteFactory {
      * using a variation of the Median Cut algorithm. Accurate to 6 bits per component,
      * and works by splitting the color bounding box most heavily populated by colors
      * along the component which splits the colors in that box most evenly.
+     *
      * @param src the image whose palette to build
      * @param max the maximum number of colors the palette can contain
      * @return the palette of at most {@code max} colors
@@ -383,15 +385,16 @@ public class PaletteFactory {
 
         return new QuantizedPalette(subsets, precision);
     }
-    
+
     /**
      * Builds an inexact possibly translucent palette of at most {@code max} colors in {@code src}
      * using the traditional Median Cut algorithm. Color bounding boxes are split along the
      * longest axis, with each step splitting the box. All bits in each component are used.
      * The Algorithm is slower and seems exact than {@linkplain #makeQuantizedRgbPalette(BufferedImage, int)}.
-     * @param src the image whose palette to build
+     *
+     * @param src         the image whose palette to build
      * @param transparent whether to consider the alpha values
-     * @param max the maximum number of colors the palette can contain
+     * @param max         the maximum number of colors the palette can contain
      * @return the palette of at most {@code max} colors
      */
     public Palette makeQuantizedRgbaPalette(final BufferedImage src, final boolean transparent, final int max) throws ImageWriteException {
@@ -402,6 +405,7 @@ public class PaletteFactory {
     /**
      * Builds an exact complete opaque palette containing all the colors in {@code src},
      * and fails by returning {@code null} if there are more than {@code max} colors necessary to do this.
+     *
      * @param src the image whose palette to build
      * @param max the maximum number of colors the palette can contain
      * @return the complete palette of {@code max} or less colors, or {@code null} if more than {@code max} colors are necessary
@@ -423,7 +427,7 @@ public class PaletteFactory {
                 }
             }
         }
-        
+
         final int result[] = new int[rgbs.size()];
         int next = 0;
         for (final int rgb : rgbs) {

@@ -1,107 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="module_lyj-core" default="compile.module.lyj-core">
-  <dirname property="module.lyj-core.basedir" file="${ant.file.module_lyj-core}"/>
-  
-  <property name="module.jdk.home.lyj-core" value="${project.jdk.home}"/>
-  <property name="module.jdk.bin.lyj-core" value="${project.jdk.bin}"/>
-  <property name="module.jdk.classpath.lyj-core" value="${project.jdk.classpath}"/>
-  
-  <property name="compiler.args.lyj-core" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
-  
-  <property name="lyj-core.output.dir" value="${module.lyj-core.basedir}/../../funny_gain_gui/out/production/lyj-core"/>
-  <property name="lyj-core.testoutput.dir" value="${module.lyj-core.basedir}/../../funny_gain_gui/out/test/lyj-core"/>
-  
-  <path id="lyj-core.module.bootclasspath">
-    <!-- Paths to be included in compilation bootclasspath -->
-  </path>
-  
-  <path id="lyj-core.module.production.classpath">
-    <path refid="${module.jdk.classpath.lyj-core}"/>
-  </path>
-  
-  <path id="lyj-core.runtime.production.module.classpath">
-    <pathelement location="${lyj-core.output.dir}"/>
-  </path>
-  
-  <path id="lyj-core.module.classpath">
-    <path refid="${module.jdk.classpath.lyj-core}"/>
-    <pathelement location="${lyj-core.output.dir}"/>
-    <path refid="library.junit:junit:4.12.classpath"/>
-  </path>
-  
-  <path id="lyj-core.runtime.module.classpath">
-    <pathelement location="${lyj-core.testoutput.dir}"/>
-    <pathelement location="${lyj-core.output.dir}"/>
-    <path refid="library.junit:junit:4.12.classpath"/>
-  </path>
-  
-  
-  <patternset id="excluded.from.module.lyj-core">
-    <patternset refid="ignored.files"/>
-  </patternset>
-  
-  <patternset id="excluded.from.compilation.lyj-core">
-    <patternset refid="excluded.from.module.lyj-core"/>
-  </patternset>
-  
-  <path id="lyj-core.module.sourcepath">
-    <dirset dir="${module.lyj-core.basedir}">
-      <include name="src"/>
-      <include name="src_lib"/>
-    </dirset>
-  </path>
-  
-  <path id="lyj-core.module.test.sourcepath">
-    <dirset dir="${module.lyj-core.basedir}">
-      <include name="test"/>
-    </dirset>
-  </path>
-  
-  
-  <target name="compile.module.lyj-core" depends="compile.module.lyj-core.production,compile.module.lyj-core.tests" description="Compile module lyj-core"/>
-  
-  <target name="compile.module.lyj-core.production" depends="register.custom.compilers" description="Compile module lyj-core; production classes">
-    <mkdir dir="${lyj-core.output.dir}"/>
-    <javac2 destdir="${lyj-core.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.lyj-core}/javac">
-      <compilerarg line="${compiler.args.lyj-core}"/>
-      <bootclasspath refid="lyj-core.module.bootclasspath"/>
-      <classpath refid="lyj-core.module.production.classpath"/>
-      <src refid="lyj-core.module.sourcepath"/>
-      <patternset refid="excluded.from.compilation.lyj-core"/>
-    </javac2>
-    
-    <copy todir="${lyj-core.output.dir}">
-      <fileset dir="${module.lyj-core.basedir}/src">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-      <fileset dir="${module.lyj-core.basedir}/src_lib">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile.module.lyj-core.tests" depends="register.custom.compilers,compile.module.lyj-core.production" description="compile module lyj-core; test classes" unless="skip.tests">
-    <mkdir dir="${lyj-core.testoutput.dir}"/>
-    <javac2 destdir="${lyj-core.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.lyj-core}/javac">
-      <compilerarg line="${compiler.args.lyj-core}"/>
-      <bootclasspath refid="lyj-core.module.bootclasspath"/>
-      <classpath refid="lyj-core.module.classpath"/>
-      <src refid="lyj-core.module.test.sourcepath"/>
-      <patternset refid="excluded.from.compilation.lyj-core"/>
-    </javac2>
-    
-    <copy todir="${lyj-core.testoutput.dir}">
-      <fileset dir="${module.lyj-core.basedir}/test">
-        <patternset refid="compiler.resources"/>
-        <type type="file"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="clean.module.lyj-core" description="cleanup module">
-    <delete dir="${lyj-core.output.dir}"/>
-    <delete dir="${lyj-core.testoutput.dir}"/>
-  </target>
+    <dirname property="module.lyj-core.basedir" file="${ant.file.module_lyj-core}"/>
+
+    <property name="module.jdk.home.lyj-core" value="${project.jdk.home}"/>
+    <property name="module.jdk.bin.lyj-core" value="${project.jdk.bin}"/>
+    <property name="module.jdk.classpath.lyj-core" value="${project.jdk.classpath}"/>
+
+    <property name="compiler.args.lyj-core" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+
+    <property name="lyj-core.output.dir"
+              value="${module.lyj-core.basedir}/../../funny_gain_gui/out/production/lyj-core"/>
+    <property name="lyj-core.testoutput.dir" value="${module.lyj-core.basedir}/../../funny_gain_gui/out/test/lyj-core"/>
+
+    <path id="lyj-core.module.bootclasspath">
+        <!-- Paths to be included in compilation bootclasspath -->
+    </path>
+
+    <path id="lyj-core.module.production.classpath">
+        <path refid="${module.jdk.classpath.lyj-core}"/>
+    </path>
+
+    <path id="lyj-core.runtime.production.module.classpath">
+        <pathelement location="${lyj-core.output.dir}"/>
+    </path>
+
+    <path id="lyj-core.module.classpath">
+        <path refid="${module.jdk.classpath.lyj-core}"/>
+        <pathelement location="${lyj-core.output.dir}"/>
+        <path refid="library.junit:junit:4.12.classpath"/>
+    </path>
+
+    <path id="lyj-core.runtime.module.classpath">
+        <pathelement location="${lyj-core.testoutput.dir}"/>
+        <pathelement location="${lyj-core.output.dir}"/>
+        <path refid="library.junit:junit:4.12.classpath"/>
+    </path>
+
+
+    <patternset id="excluded.from.module.lyj-core">
+        <patternset refid="ignored.files"/>
+    </patternset>
+
+    <patternset id="excluded.from.compilation.lyj-core">
+        <patternset refid="excluded.from.module.lyj-core"/>
+    </patternset>
+
+    <path id="lyj-core.module.sourcepath">
+        <dirset dir="${module.lyj-core.basedir}">
+            <include name="src"/>
+            <include name="src_lib"/>
+        </dirset>
+    </path>
+
+    <path id="lyj-core.module.test.sourcepath">
+        <dirset dir="${module.lyj-core.basedir}">
+            <include name="test"/>
+        </dirset>
+    </path>
+
+
+    <target name="compile.module.lyj-core" depends="compile.module.lyj-core.production,compile.module.lyj-core.tests"
+            description="Compile module lyj-core"/>
+
+    <target name="compile.module.lyj-core.production" depends="register.custom.compilers"
+            description="Compile module lyj-core; production classes">
+        <mkdir dir="${lyj-core.output.dir}"/>
+        <javac2 destdir="${lyj-core.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
+                memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.lyj-core}/javac">
+            <compilerarg line="${compiler.args.lyj-core}"/>
+            <bootclasspath refid="lyj-core.module.bootclasspath"/>
+            <classpath refid="lyj-core.module.production.classpath"/>
+            <src refid="lyj-core.module.sourcepath"/>
+            <patternset refid="excluded.from.compilation.lyj-core"/>
+        </javac2>
+
+        <copy todir="${lyj-core.output.dir}">
+            <fileset dir="${module.lyj-core.basedir}/src">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+            <fileset dir="${module.lyj-core.basedir}/src_lib">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compile.module.lyj-core.tests" depends="register.custom.compilers,compile.module.lyj-core.production"
+            description="compile module lyj-core; test classes" unless="skip.tests">
+        <mkdir dir="${lyj-core.testoutput.dir}"/>
+        <javac2 destdir="${lyj-core.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}"
+                memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.lyj-core}/javac">
+            <compilerarg line="${compiler.args.lyj-core}"/>
+            <bootclasspath refid="lyj-core.module.bootclasspath"/>
+            <classpath refid="lyj-core.module.classpath"/>
+            <src refid="lyj-core.module.test.sourcepath"/>
+            <patternset refid="excluded.from.compilation.lyj-core"/>
+        </javac2>
+
+        <copy todir="${lyj-core.testoutput.dir}">
+            <fileset dir="${module.lyj-core.basedir}/test">
+                <patternset refid="compiler.resources"/>
+                <type type="file"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean.module.lyj-core" description="cleanup module">
+        <delete dir="${lyj-core.output.dir}"/>
+        <delete dir="${lyj-core.testoutput.dir}"/>
+    </target>
 </project>

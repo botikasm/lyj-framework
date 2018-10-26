@@ -42,12 +42,12 @@ public class IccProfileInfo implements IccConstants {
     public final IccTag tags[];
 
     public IccProfileInfo(final byte data[], final int ProfileSize, final int CMMTypeSignature,
-            final int ProfileVersion, final int ProfileDeviceClassSignature,
-            final int ColorSpace, final int ProfileConnectionSpace,
-            final int ProfileFileSignature, final int PrimaryPlatformSignature,
-            final int VariousFlags, final int DeviceManufacturer, final int DeviceModel,
-            final int RenderingIntent, final int ProfileCreatorSignature, final byte ProfileID[],
-            final IccTag tags[]) {
+                          final int ProfileVersion, final int ProfileDeviceClassSignature,
+                          final int ColorSpace, final int ProfileConnectionSpace,
+                          final int ProfileFileSignature, final int PrimaryPlatformSignature,
+                          final int VariousFlags, final int DeviceManufacturer, final int DeviceModel,
+                          final int RenderingIntent, final int ProfileCreatorSignature, final byte ProfileID[],
+                          final IccTag tags[]) {
         this.data = data;
 
         this.ProfileSize = ProfileSize;

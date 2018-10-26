@@ -516,12 +516,12 @@ public class TiffImageMetadata extends ImageMetadata implements
         public final RationalNumber longitudeSeconds;
 
         public GPSInfo(final String latitudeRef, final String longitudeRef,
-                final RationalNumber latitudeDegrees,
-                final RationalNumber latitudeMinutes,
-                final RationalNumber latitudeSeconds,
-                final RationalNumber longitudeDegrees,
-                final RationalNumber longitudeMinutes,
-                final RationalNumber longitudeSeconds) {
+                       final RationalNumber latitudeDegrees,
+                       final RationalNumber latitudeMinutes,
+                       final RationalNumber latitudeSeconds,
+                       final RationalNumber longitudeDegrees,
+                       final RationalNumber longitudeMinutes,
+                       final RationalNumber longitudeSeconds) {
             this.latitudeRef = latitudeRef;
             this.longitudeRef = longitudeRef;
             this.latitudeDegrees = latitudeDegrees;

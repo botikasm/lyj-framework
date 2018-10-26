@@ -78,7 +78,7 @@ public class Cookie {
      *
      * @param string The cookie specification string.
      * @return A JSONObject containing "name", "value", and possibly other
-     *         members.
+     * members.
      * @throws JSONException
      */
     public static JSONObject toJSONObject(String string) throws JSONException {

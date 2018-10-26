@@ -2,7 +2,10 @@ package org.lyj.commons.util;
 
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -21,7 +24,7 @@ public class CollectionUtilsTest {
         assertTrue(arr3.length == arr1.length + arr2.length);
         assertEquals(arr1[0], arr3[0]);
         assertEquals(arr2[3], arr3[6]);
-        assertEquals(arr4[arr4.length-1], 9);
+        assertEquals(arr4[arr4.length - 1], 9);
     }
 
     @Test
@@ -100,22 +103,22 @@ public class CollectionUtilsTest {
         final Collection<Map<String, Integer>> c_map_2 = new ArrayList<>();
         c_map_2.add(new MapBuilder<String, Integer>().put("a", 2).toMap());
 
-        final Collection<Map<String, Integer>> c_map_common_unique = CollectionUtils.matchAllUnique((item1, item2)->{
-           final Set<String> keys = item1.keySet();
-           for(final String key:keys){
-               if(item2.containsKey(key)){
+        final Collection<Map<String, Integer>> c_map_common_unique = CollectionUtils.matchAllUnique((item1, item2) -> {
+            final Set<String> keys = item1.keySet();
+            for (final String key : keys) {
+                if (item2.containsKey(key)) {
                     return true;
-               }
-           }
-           return false;
+                }
+            }
+            return false;
         }, c_map_1, c_map_2);
         assertTrue(c_map_common_unique.size() == 1);
         System.out.println(c_map_common_unique);
 
-        final Collection<Map<String, Integer>> c_map_common_all = CollectionUtils.matchAll((item1, item2)->{
+        final Collection<Map<String, Integer>> c_map_common_all = CollectionUtils.matchAll((item1, item2) -> {
             final Set<String> keys = item1.keySet();
-            for(final String key:keys){
-                if(item2.containsKey(key)){
+            for (final String key : keys) {
+                if (item2.containsKey(key)) {
                     return true;
                 }
             }

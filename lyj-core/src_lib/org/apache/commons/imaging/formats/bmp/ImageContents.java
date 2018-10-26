@@ -25,7 +25,7 @@ class ImageContents {
     public final PixelParser pixelParser;
 
     public ImageContents(final BmpHeaderInfo bhi, final byte ColorTable[],
-            final byte ImageData[], final PixelParser fPixelParser) {
+                         final byte ImageData[], final PixelParser fPixelParser) {
         this.bhi = bhi;
         this.colorTable = ColorTable;
         this.imageData = ImageData;

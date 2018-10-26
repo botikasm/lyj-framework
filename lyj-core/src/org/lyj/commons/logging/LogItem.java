@@ -24,13 +24,14 @@
 package org.lyj.commons.logging;
 
 import org.lyj.IConstants;
-import org.lyj.commons.cryptograph.MD5;
-import org.lyj.commons.util.*;
+import org.lyj.commons.util.DateUtils;
+import org.lyj.commons.util.ExceptionUtils;
+import org.lyj.commons.util.FormatUtils;
+import org.lyj.commons.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Map;
 
 /**
  * @author angelo.geminiani

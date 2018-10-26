@@ -36,7 +36,7 @@ public class UncompressedDataReader extends DataReader {
 
     @Override
     public void readData(final InputStream is, final BufferedImage bi,
-            final ImageContents imageContents, final BinaryFileParser bfp)
+                         final ImageContents imageContents, final BinaryFileParser bfp)
             throws ImageReadException, IOException {
         final PsdHeaderInfo header = imageContents.header;
         final int width = header.Columns;
@@ -57,12 +57,12 @@ public class UncompressedDataReader extends DataReader {
                 for (int y = 0; y < height; y++) {
                     for (int x = 0; x < width; x++) {
                         final int b = bbis.readBits(depth);
-    
+
                         data[channel][y][x] = (byte) b;
                     }
                 }
             }
-    
+
             dataParser.parseData(data, bi, imageContents);
         } finally {
             if (bbis != null) {

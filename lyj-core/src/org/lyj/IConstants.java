@@ -63,5 +63,5 @@ public interface IConstants {
     String TYPE_HTML = "text/html;charset=UTF-8";
     String TYPE_ZIP = "application/zip";
     String TYPE_XML = "application/xml";
-    String TYPE_ALL ="text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+    String TYPE_ALL = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
 }

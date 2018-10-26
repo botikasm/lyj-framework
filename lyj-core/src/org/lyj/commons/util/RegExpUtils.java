@@ -110,7 +110,7 @@ public abstract class RegExpUtils {
         return emailMatcher.find();
     }
 
-    public static boolean isNumeric(final String str){
+    public static boolean isNumeric(final String str) {
         return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
 

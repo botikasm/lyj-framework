@@ -33,7 +33,7 @@ public class MedianCutQuantizer {
     }
 
     private Map<Integer, ColorCount> groupColors1(final BufferedImage image, final int max,
-            final int mask) {
+                                                  final int mask) {
         final Map<Integer, ColorCount> color_map = new HashMap<Integer, ColorCount>();
 
         final int width = image.getWidth();
@@ -66,7 +66,7 @@ public class MedianCutQuantizer {
     }
 
     public Map<Integer, ColorCount> groupColors(final BufferedImage image,
-            final int max_colors) {
+                                                final int max_colors) {
         final int max = Integer.MAX_VALUE;
 
         for (int i = 0; i < 8; i++) {
@@ -83,9 +83,9 @@ public class MedianCutQuantizer {
         }
         throw new Error("");
     }
-    
+
     public Palette process(final BufferedImage image, final int max_colors,
-            final MedianCutImplementation medianCutImplementation, final boolean verbose)
+                           final MedianCutImplementation medianCutImplementation, final boolean verbose)
             throws ImageWriteException {
         final Map<Integer, ColorCount> color_map = groupColors(image, max_colors);
 

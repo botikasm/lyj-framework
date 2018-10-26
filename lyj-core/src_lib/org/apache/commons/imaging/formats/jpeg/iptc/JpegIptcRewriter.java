@@ -40,12 +40,9 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
      * leaves the other data in that segment (if present) unchanged and writes
      * the result to a stream.
      * <p>
-     * 
-     * @param src
-     *            Image file.
-     * @param os
-     *            OutputStream to write the image to.
-     * 
+     *
+     * @param src Image file.
+     * @param os  OutputStream to write the image to.
      * @see File
      * @see OutputStream
      */
@@ -60,11 +57,9 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
      * leaves the other data in that segment (if present) unchanged and writes
      * the result to a stream.
      * <p>
-     * 
-     * @param src
-     *            Byte array containing Jpeg image data.
-     * @param os
-     *            OutputStream to write the image to.
+     *
+     * @param src Byte array containing Jpeg image data.
+     * @param os  OutputStream to write the image to.
      */
     public void removeIPTC(final byte src[], final OutputStream os)
             throws ImageReadException, IOException, ImageWriteException {
@@ -77,11 +72,9 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
      * leaves the other data in that segment (if present) unchanged and writes
      * the result to a stream.
      * <p>
-     * 
-     * @param src
-     *            InputStream containing Jpeg image data.
-     * @param os
-     *            OutputStream to write the image to.
+     *
+     * @param src InputStream containing Jpeg image data.
+     * @param os  OutputStream to write the image to.
      */
     public void removeIPTC(final InputStream src, final OutputStream os)
             throws ImageReadException, IOException, ImageWriteException {
@@ -94,11 +87,9 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
      * leaves the other data in that segment (if present) unchanged and writes
      * the result to a stream.
      * <p>
-     * 
-     * @param byteSource
-     *            ByteSource containing Jpeg image data.
-     * @param os
-     *            OutputStream to write the image to.
+     *
+     * @param byteSource ByteSource containing Jpeg image data.
+     * @param os         OutputStream to write the image to.
      */
     public void removeIPTC(final ByteSource byteSource, final OutputStream os)
             throws ImageReadException, IOException, ImageWriteException {
@@ -114,7 +105,7 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
         if (photoshopApp13Segments.size() == 1) {
             final JFIFPieceSegment oldSegment = (JFIFPieceSegment) photoshopApp13Segments
                     .get(0);
-            final Map<String,Object> params = new HashMap<String,Object>();
+            final Map<String, Object> params = new HashMap<String, Object>();
             final PhotoshopApp13Data oldData = new IptcParser()
                     .parsePhotoshopSegment(oldSegment.segmentData, params);
             final List<IptcBlock> newBlocks = oldData.getNonIptcBlocks();
@@ -134,16 +125,13 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
      * Reads a Jpeg image, replaces the IPTC data in the App13 segment but
      * leaves the other data in that segment (if present) unchanged and writes
      * the result to a stream.
-     * 
-     * @param src
-     *            Byte array containing Jpeg image data.
-     * @param os
-     *            OutputStream to write the image to.
-     * @param newData
-     *            structure containing IPTC data.
+     *
+     * @param src     Byte array containing Jpeg image data.
+     * @param os      OutputStream to write the image to.
+     * @param newData structure containing IPTC data.
      */
     public void writeIPTC(final byte src[], final OutputStream os,
-            final PhotoshopApp13Data newData) throws ImageReadException, IOException,
+                          final PhotoshopApp13Data newData) throws ImageReadException, IOException,
             ImageWriteException {
         final ByteSource byteSource = new ByteSourceArray(src);
         writeIPTC(byteSource, os, newData);
@@ -153,16 +141,13 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
      * Reads a Jpeg image, replaces the IPTC data in the App13 segment but
      * leaves the other data in that segment (if present) unchanged and writes
      * the result to a stream.
-     * 
-     * @param src
-     *            InputStream containing Jpeg image data.
-     * @param os
-     *            OutputStream to write the image to.
-     * @param newData
-     *            structure containing IPTC data.
+     *
+     * @param src     InputStream containing Jpeg image data.
+     * @param os      OutputStream to write the image to.
+     * @param newData structure containing IPTC data.
      */
     public void writeIPTC(final InputStream src, final OutputStream os,
-            final PhotoshopApp13Data newData) throws ImageReadException, IOException,
+                          final PhotoshopApp13Data newData) throws ImageReadException, IOException,
             ImageWriteException {
         final ByteSource byteSource = new ByteSourceInputStream(src, null);
         writeIPTC(byteSource, os, newData);
@@ -172,13 +157,10 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
      * Reads a Jpeg image, replaces the IPTC data in the App13 segment but
      * leaves the other data in that segment (if present) unchanged and writes
      * the result to a stream.
-     * 
-     * @param src
-     *            Image file.
-     * @param os
-     *            OutputStream to write the image to.
-     * @param newData
-     *            structure containing IPTC data.
+     *
+     * @param src     Image file.
+     * @param os      OutputStream to write the image to.
+     * @param newData structure containing IPTC data.
      */
     public void writeIPTC(final File src, final OutputStream os, final PhotoshopApp13Data newData)
             throws ImageReadException, IOException, ImageWriteException {
@@ -190,16 +172,13 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
      * Reads a Jpeg image, replaces the IPTC data in the App13 segment but
      * leaves the other data in that segment (if present) unchanged and writes
      * the result to a stream.
-     * 
-     * @param byteSource
-     *            ByteSource containing Jpeg image data.
-     * @param os
-     *            OutputStream to write the image to.
-     * @param newData
-     *            structure containing IPTC data.
+     *
+     * @param byteSource ByteSource containing Jpeg image data.
+     * @param os         OutputStream to write the image to.
+     * @param newData    structure containing IPTC data.
      */
     public void writeIPTC(final ByteSource byteSource, final OutputStream os,
-            PhotoshopApp13Data newData) throws ImageReadException, IOException,
+                          PhotoshopApp13Data newData) throws ImageReadException, IOException,
             ImageWriteException {
         final JFIFPieces jfifPieces = analyzeJFIF(byteSource);
         final List<JFIFPiece> oldPieces = jfifPieces.pieces;
@@ -231,7 +210,7 @@ public class JpegIptcRewriter extends JpegRewriter implements IptcConstants {
                     JPEG_APP13_Marker, segmentBytes);
 
             newPieces = insertAfterLastAppSegments(newPieces,
-                    Arrays.asList(new JFIFPieceSegment[] { newSegment, }));
+                    Arrays.asList(new JFIFPieceSegment[]{newSegment,}));
         }
 
         writeSegments(os, newPieces);

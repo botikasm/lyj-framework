@@ -67,7 +67,7 @@ public final class FileDB
         }
     }
 
-    public FileDBCollection[] collections(){
+    public FileDBCollection[] collections() {
         synchronized (_collections) {
             final Collection<FileDBCollection> values = _collections.values();
             return values.toArray(new FileDBCollection[values.size()]);

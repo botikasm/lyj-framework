@@ -53,6 +53,7 @@ public class MessageListener {
 
     /**
      * Listener unique identifier
+     *
      * @return Unique Identifier
      */
     public String getId() {
@@ -61,6 +62,7 @@ public class MessageListener {
 
     /**
      * Set filter for events. Tag Filter
+     *
      * @param value The Event Tag to filter
      * @return this
      */
@@ -74,11 +76,11 @@ public class MessageListener {
         return this;
     }
 
-    public String[] getEventTags(){
+    public String[] getEventTags() {
         return _event_tags.toArray(new String[_event_tags.size()]);
     }
 
-    public boolean hasTag(final String tag){
+    public boolean hasTag(final String tag) {
         return _event_tags.contains(tag);
     }
 
@@ -88,6 +90,7 @@ public class MessageListener {
 
     /**
      * Set filter for events. Name Filter
+     *
      * @param value The Event Name to filter
      * @return this
      */
@@ -108,6 +111,7 @@ public class MessageListener {
 
     /**
      * Add a callback listener to internal queue.
+     *
      * @param callback The listener implementing Handle interface.
      */
     public void on(final IEventListener callback) {
@@ -117,16 +121,16 @@ public class MessageListener {
         }
     }
 
-    public boolean isEmpty(){
-        return _initialized && _listeners.size()==0;
+    public boolean isEmpty() {
+        return _initialized && _listeners.size() == 0;
     }
 
     // ------------------------------------------------------------------------
     //                      p a c k a g e
     // ------------------------------------------------------------------------
 
-    public IEventListener[] listeners(){
-        synchronized (_listeners){
+    public IEventListener[] listeners() {
+        synchronized (_listeners) {
             return _listeners.toArray();
         }
     }

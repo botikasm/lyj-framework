@@ -231,7 +231,7 @@ public class KnownHosts implements HostKeyRepository {
         if (result == NOT_INCLUDED &&
                 host.startsWith("[") &&
                 host.indexOf("]:") > 1
-                ) {
+        ) {
             return check(host.substring(1, host.indexOf("]:")), key);
         }
 

@@ -74,12 +74,12 @@ public class ImageInfo {
     private final String compressionAlgorithm;
 
     public ImageInfo(final String formatDetails, final int bitsPerPixel,
-            final List<String> comments, final ImageFormat format, final String formatName,
-            final int height, final String mimeType, final int numberOfImages,
-            final int physicalHeightDpi, final float physicalHeightInch,
-            final int physicalWidthDpi, final float physicalWidthInch, final int width,
-            final boolean isProgressive, final boolean isTransparent, final boolean usesPalette,
-            final int colorType, final String compressionAlgorithm) {
+                     final List<String> comments, final ImageFormat format, final String formatName,
+                     final int height, final String mimeType, final int numberOfImages,
+                     final int physicalHeightDpi, final float physicalHeightInch,
+                     final int physicalWidthDpi, final float physicalWidthInch, final int width,
+                     final boolean isProgressive, final boolean isTransparent, final boolean usesPalette,
+                     final int colorType, final String compressionAlgorithm) {
         this.formatDetails = formatDetails;
 
         this.bitsPerPixel = bitsPerPixel;
@@ -125,7 +125,7 @@ public class ImageInfo {
      * Returns the image file format, ie. ImageFormat.IMAGE_FORMAT_PNG.
      * <p/>
      * Returns ImageFormat.IMAGE_FORMAT_UNKNOWN if format is unknown.
-     * 
+     *
      * @return A constant defined in ImageFormat.
      * @see ImageFormat
      */
@@ -135,7 +135,7 @@ public class ImageInfo {
 
     /**
      * Returns a string with the name of the image file format.
-     * 
+     *
      * @see #getFormat()
      */
     public String getFormatName() {
@@ -144,7 +144,7 @@ public class ImageInfo {
 
     /**
      * Returns the height of the image in pixels.
-     * 
+     *
      * @see #getWidth()
      */
     public int getHeight() {
@@ -153,7 +153,7 @@ public class ImageInfo {
 
     /**
      * Returns the MIME type of the image.
-     * 
+     *
      * @see #getFormat()
      */
     public String getMimeType() {
@@ -176,7 +176,7 @@ public class ImageInfo {
      * Applies to TIFF (optional), BMP (always), GIF (constant: 72), Jpeg
      * (optional), PNG (optional), PNM (constant: 72), PSD/Photoshop (constant:
      * 72).
-     * 
+     *
      * @return returns -1 if not present.
      */
     public int getPhysicalHeightDpi() {
@@ -189,7 +189,7 @@ public class ImageInfo {
      * Applies to TIFF (optional), BMP (always), GIF (constant: 72), Jpeg
      * (optional), PNG (optional), PNM (constant: 72), PSD/Photoshop (constant:
      * 72).
-     * 
+     *
      * @return returns -1 if not present.
      */
     public float getPhysicalHeightInch() {
@@ -202,7 +202,7 @@ public class ImageInfo {
      * Applies to TIFF (optional), BMP (always), GIF (constant: 72), Jpeg
      * (optional), PNG (optional), PNM (constant: 72), PSD/Photoshop (constant:
      * 72).
-     * 
+     *
      * @return returns -1 if not present.
      */
     public int getPhysicalWidthDpi() {
@@ -215,7 +215,7 @@ public class ImageInfo {
      * Applies to TIFF (optional), BMP (always), GIF (constant: 72), Jpeg
      * (optional), PNG (optional), PNM (constant: 72), PSD/Photoshop (constant:
      * 72).
-     * 
+     *
      * @return returns -1 if not present.
      */
     public float getPhysicalWidthInch() {
@@ -224,7 +224,7 @@ public class ImageInfo {
 
     /**
      * Returns the width of the image in pixels.
-     * 
+     *
      * @see #getHeight()
      */
     public int getWidth() {
@@ -241,7 +241,7 @@ public class ImageInfo {
     /**
      * Returns the color type of the image, as a constant (ie.
      * ImageFormat.COLOR_TYPE_CMYK).
-     * 
+     *
      * @see #getColorTypeDescription()
      */
     public int getColorType() {
@@ -250,32 +250,32 @@ public class ImageInfo {
 
     /**
      * Returns a description of the color type of the image.
-     * 
+     *
      * @see #getColorType()
      */
     public String getColorTypeDescription() {
         switch (colorType) {
-        case COLOR_TYPE_BW:
-            return "Black and White";
-        case COLOR_TYPE_GRAYSCALE:
-            return "Grayscale";
-        case COLOR_TYPE_RGB:
-            return "RGB";
-        case COLOR_TYPE_CMYK:
-            return "CMYK";
-        case COLOR_TYPE_YCbCr:
-            return "YCbCr";
-        case COLOR_TYPE_YCCK:
-            return "YCCK";
-        case COLOR_TYPE_YCC:
-            return "YCC";
-        case COLOR_TYPE_OTHER:
-            return "Other";
-        case COLOR_TYPE_UNKNOWN:
-            return "Unknown";
+            case COLOR_TYPE_BW:
+                return "Black and White";
+            case COLOR_TYPE_GRAYSCALE:
+                return "Grayscale";
+            case COLOR_TYPE_RGB:
+                return "RGB";
+            case COLOR_TYPE_CMYK:
+                return "CMYK";
+            case COLOR_TYPE_YCbCr:
+                return "YCbCr";
+            case COLOR_TYPE_YCCK:
+                return "YCCK";
+            case COLOR_TYPE_YCC:
+                return "YCC";
+            case COLOR_TYPE_OTHER:
+                return "Other";
+            case COLOR_TYPE_UNKNOWN:
+                return "Unknown";
 
-        default:
-            return "Unknown";
+            default:
+                return "Unknown";
         }
 
     }

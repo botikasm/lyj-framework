@@ -114,7 +114,7 @@ public class MessageBus {
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
-    private void init(){
+    private void init() {
 
     }
 

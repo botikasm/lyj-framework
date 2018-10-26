@@ -29,7 +29,7 @@ public class PbmWriter extends PnmWriter implements PnmConstants {
     }
 
     @Override
-    public void writeImage(final BufferedImage src, final OutputStream os, final Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, final Map<String, Object> params)
             throws ImageWriteException, IOException {
         os.write(PNM_PREFIX_BYTE);
         os.write(RAWBITS ? PBM_RAW_CODE : PBM_TEXT_CODE);
@@ -71,8 +71,8 @@ public class PbmWriter extends PnmWriter implements PnmConstants {
                     }
                 } else {
                     os.write(("" + sample).getBytes("US-ASCII")); // max
-                                                                  // component
-                                                                  // value
+                    // component
+                    // value
                     os.write(PNM_SEPARATOR);
                 }
             }

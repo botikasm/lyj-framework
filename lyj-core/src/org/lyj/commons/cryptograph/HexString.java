@@ -47,8 +47,8 @@ public class HexString {
      * charset explicit could be accomplished by just adding a parameter
      * here and passing it through to getBytes().
      *
+     * @param s a string to convert to hex
      * @return the hex string version of the input string
-     * @param    s    a string to convert to hex
      */
     public static String stringToHex(String s) {
         byte[] stringBytes = s.getBytes();
@@ -62,8 +62,8 @@ public class HexString {
      * two-digit hexadecimal value. Thus the returned string is twice the
      * length of the input byte array. The output hex characters are upper case.
      *
+     * @param buffer a buffer to convert to hex
      * @return the hex string version of the input buffer
-     * @param    buffer    a buffer to convert to hex
      */
     public static String bufferToHex(byte buffer[]) {
         return HexString.bufferToHex(buffer, 0, buffer.length);
@@ -76,10 +76,10 @@ public class HexString {
      * length of the specified amount of the input byte array. The output
      * hex characters are upper case.
      *
+     * @param buffer      a buffer to convert to hex
+     * @param startOffset the offset of the first byte in the buffer to process
+     * @param length      the number of bytes in the buffer to process
      * @return the hex string version of the input buffer
-     * @param    buffer        a buffer to convert to hex
-     * @param    startOffset    the offset of the first byte in the buffer to process
-     * @param    length        the number of bytes in the buffer to process
      */
     public static String bufferToHex(byte buffer[], int startOffset, int length) {
         StringBuffer hexString = new StringBuffer(2 * length);
@@ -106,9 +106,9 @@ public class HexString {
      * be accomplished by just adding a parameter here and passing it through to
      * the String constructor.
      *
+     * @param hexString a string of hexadecimal characters
      * @return a String built from the bytes indicated by the input string
      * @throws NumberFormatException
-     * @param    hexString    a string of hexadecimal characters
      */
     public static String hexToString(String hexString) throws NumberFormatException {
         byte[] bytes = HexString.hexToBuffer(hexString);
@@ -127,9 +127,9 @@ public class HexString {
      * a valid hexadecimal digit, it throws a NumberFormatException, in keeping
      * with the behavior of Java functions like Integer.parseInt().
      *
+     * @param hexString a string of hexadecimal characters
      * @return a byte array built from the bytes indicated by the input string
      * @throws NumberFormatException
-     * @param    hexString    a string of hexadecimal characters
      */
     public static byte[] hexToBuffer(String hexString) throws NumberFormatException {
         int length = hexString.length();
@@ -181,8 +181,8 @@ public class HexString {
      * to a string buffer. That is, two hexadecimal digits are appended
      * to the string.
      *
-     * @param    b            a byte whose hex representation is to be obtained
-     * @param    hexString    the string to append the hex digits to
+     * @param b         a byte whose hex representation is to be obtained
+     * @param hexString the string to append the hex digits to
      */
     private static void appendHexPair(byte b, StringBuffer hexString) {
         char highNibble = kHexChars[(b & 0xF0) >> 4];

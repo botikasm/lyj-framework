@@ -8,11 +8,11 @@ import org.junit.Test;
 public class LoopTest {
 
     @Test
-    public void timeoutTest(){
-        Loop l = new Loop(0,1000);
-        l.start((i)->{
+    public void timeoutTest() {
+        Loop l = new Loop(0, 1000);
+        l.start((i) -> {
             System.out.println("count: " + i.count());
-            if (i.count()>1){
+            if (i.count() > 1) {
                 i.stop();
             }
         });

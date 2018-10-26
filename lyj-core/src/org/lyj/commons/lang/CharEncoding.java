@@ -197,7 +197,7 @@ public class CharEncoding {
         if (isSupported(charset)) {
             return Charset.forName(charset);
         }
-        return nullable ? null: getDefaultCharset();
+        return nullable ? null : getDefaultCharset();
     }
 
 }

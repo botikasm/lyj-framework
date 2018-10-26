@@ -46,7 +46,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
     }
 
     private TiffHeader readTiffHeader(final ByteSource byteSource,
-            final FormatCompliance formatCompliance) throws ImageReadException,
+                                      final FormatCompliance formatCompliance) throws ImageReadException,
             IOException {
         InputStream is = null;
         try {
@@ -62,7 +62,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
             }
         }
     }
-    
+
     private ByteOrder getTiffByteOrder(final int byteOrderByte) throws ImageReadException {
         if (byteOrderByte == 'I') {
             return ByteOrder.INTEL;
@@ -74,7 +74,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
     }
 
     private TiffHeader readTiffHeader(final InputStream is,
-            final FormatCompliance formatCompliance) throws ImageReadException,
+                                      final FormatCompliance formatCompliance) throws ImageReadException,
             IOException {
         final int BYTE_ORDER_1 = readByte("BYTE_ORDER_1", is, "Not a Valid TIFF File");
         final int BYTE_ORDER_2 = readByte("BYTE_ORDER_2", is, "Not a Valid TIFF File");
@@ -104,7 +104,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
     }
 
     private void readDirectories(final ByteSource byteSource,
-            final FormatCompliance formatCompliance, final Listener listener)
+                                 final FormatCompliance formatCompliance, final Listener listener)
             throws ImageReadException, IOException {
         final TiffHeader tiffHeader = readTiffHeader(byteSource, formatCompliance);
         if (!listener.setTiffHeader(tiffHeader)) {
@@ -120,16 +120,16 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
     }
 
     private boolean readDirectory(final ByteSource byteSource, final long offset,
-            final int dirType, final FormatCompliance formatCompliance, final Listener listener,
-            final List<Number> visited) throws ImageReadException, IOException {
+                                  final int dirType, final FormatCompliance formatCompliance, final Listener listener,
+                                  final List<Number> visited) throws ImageReadException, IOException {
         final boolean ignoreNextDirectory = false;
         return readDirectory(byteSource, offset, dirType, formatCompliance,
                 listener, ignoreNextDirectory, visited);
     }
 
     private boolean readDirectory(final ByteSource byteSource, final long directoryOffset,
-            final int dirType, final FormatCompliance formatCompliance, final Listener listener,
-            final boolean ignoreNextDirectory, final List<Number> visited)
+                                  final int dirType, final FormatCompliance formatCompliance, final Listener listener,
+                                  final boolean ignoreNextDirectory, final List<Number> visited)
             throws ImageReadException, IOException {
 
         if (visited.contains(directoryOffset)) {
@@ -175,7 +175,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
                     // which can cause OOM problems.
                     continue;
                 }
-                
+
                 final FieldType fieldType;
                 try {
                     fieldType = FieldType.getFieldType(type);
@@ -201,7 +201,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
                             continue;
                         }
                     }
-                    value = byteSource.getBlock(offset, (int)valueLength);
+                    value = byteSource.getBlock(offset, (int) valueLength);
                 } else {
                     value = offsetBytes;
                 }
@@ -263,7 +263,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
                             subDirectoryRead = readDirectory(byteSource,
                                     subDirectoryOffset, subDirectoryType,
                                     formatCompliance, listener, true, visited);
-    
+
                         } catch (final ImageReadException imageReadException) {
                             if (strict) {
                                 throw imageReadException;
@@ -316,7 +316,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
             this(null);
         }
 
-        public Collector(final Map<String,Object> params) {
+        public Collector(final Map<String, Object> params) {
             boolean readThumbnails = true;
             if (params != null && params.containsKey(PARAM_KEY_READ_THUMBNAILS)) {
                 readThumbnails = Boolean.TRUE.equals(params
@@ -391,8 +391,8 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
         }
     }
 
-    public TiffContents readFirstDirectory(final ByteSource byteSource, final Map<String,Object> params,
-            final boolean readImageData, final FormatCompliance formatCompliance)
+    public TiffContents readFirstDirectory(final ByteSource byteSource, final Map<String, Object> params,
+                                           final boolean readImageData, final FormatCompliance formatCompliance)
             throws ImageReadException, IOException {
         final Collector collector = new FirstDirectoryCollector(readImageData);
         read(byteSource, params, formatCompliance, collector);
@@ -405,7 +405,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
     }
 
     public TiffContents readDirectories(final ByteSource byteSource,
-            final boolean readImageData, final FormatCompliance formatCompliance)
+                                        final boolean readImageData, final FormatCompliance formatCompliance)
             throws ImageReadException, IOException {
         final Collector collector = new Collector(null);
         readDirectories(byteSource, formatCompliance, collector);
@@ -417,8 +417,8 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
         return contents;
     }
 
-    public TiffContents readContents(final ByteSource byteSource, final Map<String,Object> params,
-            final FormatCompliance formatCompliance) throws ImageReadException,
+    public TiffContents readContents(final ByteSource byteSource, final Map<String, Object> params,
+                                     final FormatCompliance formatCompliance) throws ImageReadException,
             IOException {
 
         final Collector collector = new Collector(params);
@@ -427,15 +427,15 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
         return contents;
     }
 
-    public void read(final ByteSource byteSource, final Map<String,Object> params,
-            final FormatCompliance formatCompliance, final Listener listener)
+    public void read(final ByteSource byteSource, final Map<String, Object> params,
+                     final FormatCompliance formatCompliance, final Listener listener)
             throws ImageReadException, IOException {
         // TiffContents contents =
         readDirectories(byteSource, formatCompliance, listener);
     }
 
     private TiffImageData getTiffRawImageData(final ByteSource byteSource,
-            final TiffDirectory directory) throws ImageReadException, IOException {
+                                              final TiffDirectory directory) throws ImageReadException, IOException {
 
         final List<ImageDataElement> elements = directory
                 .getTiffRawImageDataElements();
@@ -496,7 +496,7 @@ public class TiffReader extends BinaryFileParser implements TiffConstants {
     }
 
     private JpegImageData getJpegRawImageData(final ByteSource byteSource,
-            final TiffDirectory directory) throws ImageReadException, IOException {
+                                              final TiffDirectory directory) throws ImageReadException, IOException {
         final ImageDataElement element = directory.getJpegRawImageDataElement();
         final long offset = element.offset;
         int length = element.length;

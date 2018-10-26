@@ -34,7 +34,7 @@ public class ScanlineFilterSub extends ScanlineFilter {
             final int prev_index = i - BytesPerPixel;
             if (prev_index >= 0) {
                 dst[i] = (byte) ((src[i] + dst[prev_index]) % 256);
-            // dst[i] = 0xff & (src[i] + src[prev_index]);
+                // dst[i] = 0xff & (src[i] + src[prev_index]);
             } else {
                 dst[i] = src[i];
             }

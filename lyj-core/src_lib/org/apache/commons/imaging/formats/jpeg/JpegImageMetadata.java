@@ -39,7 +39,7 @@ public class JpegImageMetadata implements IImageMetadata {
     private final TiffImageMetadata exif;
 
     public JpegImageMetadata(final JpegPhotoshopMetadata photoshop,
-            final TiffImageMetadata exif) {
+                             final TiffImageMetadata exif) {
         this.photoshop = photoshop;
         this.exif = exif;
     }
@@ -78,7 +78,7 @@ public class JpegImageMetadata implements IImageMetadata {
 
     /**
      * Returns the size of the first JPEG thumbnail found in the EXIF metadata.
-     * 
+     *
      * @return Thumbnail width and height or null if no thumbnail.
      * @throws ImageReadException
      * @throws IOException
@@ -126,7 +126,7 @@ public class JpegImageMetadata implements IImageMetadata {
      * Get the thumbnail image if available.
      *
      * @return the thumbnail image. May be <code>null</code> if no image could
-     *         be found.
+     * be found.
      * @throws ImageReadException
      * @throws IOException
      */

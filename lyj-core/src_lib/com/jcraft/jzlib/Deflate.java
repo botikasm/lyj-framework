@@ -1051,7 +1051,7 @@ final class Deflate implements Cloneable {
 
             if (hash_head != 0L &&
                     ((strstart - hash_head) & 0xffff) <= w_size - MIN_LOOKAHEAD
-                    ) {
+            ) {
                 // To simplify the code, we prevent matches with the string
                 // of window index 0 (in particular we have to avoid a match
                 // of the string with itself at the start of the input file).
@@ -1158,7 +1158,7 @@ final class Deflate implements Cloneable {
 
             if (hash_head != 0 && prev_length < max_lazy_match &&
                     ((strstart - hash_head) & 0xffff) <= w_size - MIN_LOOKAHEAD
-                    ) {
+            ) {
                 // To simplify the code, we prevent matches with the string
                 // of window index 0 (in particular we have to avoid a match
                 // of the string with itself at the start of the input file).

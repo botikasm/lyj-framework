@@ -35,6 +35,6 @@ public class AvatarUtilsTest {
 
         // 404
         final byte[] bytes = AvatarUtils.getGravatar("foo", false, 200, 0);
-        assertTrue(bytes.length==0);
+        assertTrue(bytes.length == 0);
     }
 }

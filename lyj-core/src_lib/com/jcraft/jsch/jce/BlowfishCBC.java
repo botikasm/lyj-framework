@@ -65,8 +65,8 @@ public class BlowfishCBC implements Cipher {
             SecretKeySpec skeySpec = new SecretKeySpec(key, "Blowfish");
             cipher = javax.crypto.Cipher.getInstance("Blowfish/CBC/" + pad);
             cipher.init((mode == ENCRYPT_MODE ?
-                    javax.crypto.Cipher.ENCRYPT_MODE :
-                    javax.crypto.Cipher.DECRYPT_MODE),
+                            javax.crypto.Cipher.ENCRYPT_MODE :
+                            javax.crypto.Cipher.DECRYPT_MODE),
                     skeySpec, new IvParameterSpec(iv));
         } catch (Exception e) {
             throw e;

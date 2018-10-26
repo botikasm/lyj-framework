@@ -74,7 +74,7 @@ public class MemoryCacheItem<T> {
 
     public MemoryCacheItem<T> item(final T item, final boolean wakeup) {
         _data.put(ITEM, item);
-        if(wakeup){
+        if (wakeup) {
             _data.put(TIMESTAMP, System.currentTimeMillis());
         }
         return this;

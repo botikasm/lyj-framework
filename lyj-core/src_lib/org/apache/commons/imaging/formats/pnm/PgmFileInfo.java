@@ -26,7 +26,7 @@ import java.io.InputStream;
 public class PgmFileInfo extends FileInfo {
     private final int max;
     private final float scale;
-    private final int bytesPerSample; 
+    private final int bytesPerSample;
 
     public PgmFileInfo(final int width, final int height, final boolean RAWBITS, final int max) throws ImageReadException {
         super(width, height, RAWBITS);
@@ -45,7 +45,7 @@ public class PgmFileInfo extends FileInfo {
         }
         this.max = max;
     }
-    
+
     @Override
     public boolean hasAlpha() {
         return false;
@@ -84,7 +84,7 @@ public class PgmFileInfo extends FileInfo {
     @Override
     public int getRGB(final InputStream is) throws IOException {
         int sample = readSample(is, bytesPerSample);
-        
+
         sample = scaleSample(sample, scale, max);
 
         final int alpha = 0xff;
@@ -100,7 +100,7 @@ public class PgmFileInfo extends FileInfo {
         int sample = Integer.parseInt(wsr.readtoWhiteSpace());
 
         sample = scaleSample(sample, scale, max);
-        
+
         final int alpha = 0xff;
 
         final int rgb = ((0xff & alpha) << 24) | ((0xff & sample) << 16)

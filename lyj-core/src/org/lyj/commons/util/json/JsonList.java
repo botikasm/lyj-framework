@@ -64,7 +64,7 @@ public class JsonList
         for (int i = 0; i < length; i++) {
             try {
                 final Object item = items.opt(i);
-                super.add((JSONObject)item);
+                super.add((JSONObject) item);
             } catch (Throwable ignored) {
             }
         }

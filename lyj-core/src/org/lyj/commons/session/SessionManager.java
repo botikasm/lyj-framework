@@ -76,11 +76,11 @@ public final class SessionManager
             if (StringUtils.hasText(opt_key)) {
                 if (_sessions.containsKey(opt_key)) {
                     final Session session = _sessions.get(opt_key);
-                    if(null!=session){
-                       if(!session.closed()){
-                           session.wakeUp();
-                           return session;
-                       }
+                    if (null != session) {
+                        if (!session.closed()) {
+                            session.wakeUp();
+                            return session;
+                        }
                     }
                     return this.create(opt_key);
                 } else {

@@ -22,7 +22,10 @@ package org.lyj.commons.io;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lyj.commons.util.*;
+import org.lyj.commons.util.ConversionUtils;
+import org.lyj.commons.util.FileUtils;
+import org.lyj.commons.util.PathUtils;
+import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.json.JsonWrapper;
 
 import java.io.File;
@@ -101,7 +104,7 @@ public final class FileWrapper
     }
 
     public FileWrapper setName(final String value) {
-        if(StringUtils.hasText(PathUtils.getFilenameExtension(value))){
+        if (StringUtils.hasText(PathUtils.getFilenameExtension(value))) {
             JsonWrapper.put(this, NAME, PathUtils.getFilename(value, false));
             this.setExt(PathUtils.getFilenameExtension(value, true));
         } else {

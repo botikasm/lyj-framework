@@ -4,7 +4,8 @@ import org.junit.Test;
 
 import java.util.Date;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * User: angelo.geminiani
@@ -66,24 +67,24 @@ public class DateUtilsTest {
         Date d = now.getDateTime();
 
         // valid range is 10:30-11:30
-        assertFalse( DateUtils.isWithinThreashold("7:10", d, 60) );
-        assertFalse( DateUtils.isWithinThreashold("11:40", d, 60) );
-        assertTrue( DateUtils.isWithinThreashold("10:30", d, 60) );
-        assertTrue( DateUtils.isWithinThreashold("11:30", d, 60) );
-        assertTrue( DateUtils.isWithinThreashold("11:00", d, 60) );
+        assertFalse(DateUtils.isWithinThreashold("7:10", d, 60));
+        assertFalse(DateUtils.isWithinThreashold("11:40", d, 60));
+        assertTrue(DateUtils.isWithinThreashold("10:30", d, 60));
+        assertTrue(DateUtils.isWithinThreashold("11:30", d, 60));
+        assertTrue(DateUtils.isWithinThreashold("11:00", d, 60));
 
         now.setHour(22);
         now.setMinute(30);
         d = now.getDateTime();
 
         // valid range is 10:30-11:30
-        assertFalse( DateUtils.isWithinThreashold("7:10", d, 60) );
-        assertFalse( DateUtils.isWithinThreashold("11:40", d, 60) );
-        assertFalse( DateUtils.isWithinThreashold("10:30", d, 60) );
-        assertFalse( DateUtils.isWithinThreashold("11:30", d, 60) );
-        assertFalse( DateUtils.isWithinThreashold("11:00", d, 60) );
-        assertTrue( DateUtils.isWithinThreashold("23:00", d, 60) );
-        assertFalse( DateUtils.isWithinThreashold("24:00", d, 60) );
+        assertFalse(DateUtils.isWithinThreashold("7:10", d, 60));
+        assertFalse(DateUtils.isWithinThreashold("11:40", d, 60));
+        assertFalse(DateUtils.isWithinThreashold("10:30", d, 60));
+        assertFalse(DateUtils.isWithinThreashold("11:30", d, 60));
+        assertFalse(DateUtils.isWithinThreashold("11:00", d, 60));
+        assertTrue(DateUtils.isWithinThreashold("23:00", d, 60));
+        assertFalse(DateUtils.isWithinThreashold("24:00", d, 60));
     }
 
     // ------------------------------------------------------------------------

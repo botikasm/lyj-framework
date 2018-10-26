@@ -23,7 +23,6 @@
  */
 package org.lyj.commons.network;
 
-import com.sun.net.httpserver.HttpServer;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.StringUtils;

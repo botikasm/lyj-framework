@@ -16,7 +16,7 @@ public class StringUtilsTest {
     public void chunk() throws Exception {
         String[] array = StringUtils.chunk("questa aaaaa aaaa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga ", 128);
         System.out.println(array.length);
-        for(final String line:array){
+        for (final String line : array) {
             System.out.println(line);
         }
     }
@@ -25,7 +25,7 @@ public class StringUtilsTest {
     public void splitLines() throws Exception {
         String[] array = StringUtils.splitLines("questa aaaaa aaaa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga questa è una frase lunga ", 128);
         System.out.println(array.length);
-        for(final String line:array){
+        for (final String line : array) {
             System.out.println(line);
         }
     }

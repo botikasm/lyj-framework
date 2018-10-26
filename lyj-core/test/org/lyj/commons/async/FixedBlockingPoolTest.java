@@ -12,7 +12,7 @@ public class FixedBlockingPoolTest {
     public void test() throws Exception {
 
         System.out.println(AsyncUtils.reportActiveThreads());
-        
+
         FixedBlockingPool pool = new FixedBlockingPool();
         pool.capacity(5); // 20 threads
         pool.corePoolSize(3);
@@ -24,7 +24,7 @@ public class FixedBlockingPoolTest {
             Async.loop(() -> {
                 try {
                     Thread.sleep(10);
-                }catch(Throwable t){
+                } catch (Throwable t) {
 
                 }
                 return counter.value() > 900;
@@ -33,7 +33,7 @@ public class FixedBlockingPoolTest {
                 try {
                     System.out.println(Thread.currentThread().getName() + ": " + AsyncUtils.countThreads());
                     Thread.sleep(100);
-                }catch(Throwable t){
+                } catch (Throwable t) {
 
                 }
             });

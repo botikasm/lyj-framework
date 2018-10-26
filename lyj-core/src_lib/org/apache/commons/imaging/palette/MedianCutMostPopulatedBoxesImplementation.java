@@ -27,7 +27,7 @@ import java.util.List;
 public class MedianCutMostPopulatedBoxesImplementation extends MedianCutImplementation {
     @Override
     public boolean performNextMedianCut(final List<ColorGroup> colorGroups,
-            final boolean ignoreAlpha) throws ImageWriteException {
+                                        final boolean ignoreAlpha) throws ImageWriteException {
         int maxPoints = 0;
         ColorGroup colorGroup = null;
         for (int i = 0; i < colorGroups.size(); i++) {
@@ -42,9 +42,8 @@ public class MedianCutMostPopulatedBoxesImplementation extends MedianCutImplemen
         if (colorGroup == null) {
             return false;
         }
-        
-        
-        
+
+
         double bestScore = Double.MAX_VALUE;
         ColorComponent bestColorComponent = null;
         int bestMedianIndex = -1;
@@ -58,9 +57,9 @@ public class MedianCutMostPopulatedBoxesImplementation extends MedianCutImplemen
             int median_index;
             for (median_index = 0; median_index < colorGroup.color_counts.size(); median_index++) {
                 final ColorCount color_count = colorGroup.color_counts.get(median_index);
-    
+
                 new_count += color_count.count;
-    
+
                 if (new_count < count_half) {
                     old_count = new_count;
                     continue;
@@ -88,7 +87,7 @@ public class MedianCutMostPopulatedBoxesImplementation extends MedianCutImplemen
             final ColorGroup lowerGroup = new ColorGroup(lowerColors, ignoreAlpha);
             final ColorGroup upperGroup = new ColorGroup(upperColors, ignoreAlpha);
             final int diff = Math.abs(lowerGroup.totalPoints - upperGroup.totalPoints);
-            final double score = diff / (double)Math.max(lowerGroup.totalPoints, upperGroup.totalPoints);
+            final double score = diff / (double) Math.max(lowerGroup.totalPoints, upperGroup.totalPoints);
             if (score < bestScore) {
                 bestScore = score;
                 bestColorComponent = colorComponent;
@@ -99,7 +98,7 @@ public class MedianCutMostPopulatedBoxesImplementation extends MedianCutImplemen
         if (bestColorComponent == null) {
             return false;
         }
-        
+
         Collections.sort(colorGroup.color_counts, new ColorComparer(bestColorComponent));
         final List<ColorCount> lowerColors = new ArrayList<ColorCount>(
                 colorGroup.color_counts.subList(0, bestMedianIndex + 1));
@@ -111,39 +110,39 @@ public class MedianCutMostPopulatedBoxesImplementation extends MedianCutImplemen
         colorGroups.remove(colorGroup);
         colorGroups.add(lowerGroup);
         colorGroups.add(upperGroup);
-        
+
         final ColorCount median_value = colorGroup.color_counts
                 .get(bestMedianIndex);
         int limit;
         switch (bestColorComponent) {
-        case ALPHA:
-            limit = median_value.alpha;
-            break;
-        case RED:
-            limit = median_value.red;
-            break;
-        case GREEN:
-            limit = median_value.green;
-            break;
-        case BLUE:
-            limit = median_value.blue;
-            break;
-        default:
-            throw new Error("Bad mode.");
+            case ALPHA:
+                limit = median_value.alpha;
+                break;
+            case RED:
+                limit = median_value.red;
+                break;
+            case GREEN:
+                limit = median_value.green;
+                break;
+            case BLUE:
+                limit = median_value.blue;
+                break;
+            default:
+                throw new Error("Bad mode.");
         }
         colorGroup.cut = new ColorGroupCut(lowerGroup, upperGroup, bestColorComponent, limit);
         return true;
     }
-    
+
     private static class ColorComparer implements Comparator<ColorCount>, Serializable {
         private static final long serialVersionUID = 1L;
-        
+
         private final ColorComponent colorComponent;
-        
+
         public ColorComparer(final ColorComponent colorComponent) {
             this.colorComponent = colorComponent;
         }
-        
+
         public int compare(final ColorCount c1, final ColorCount c2) {
             switch (colorComponent) {
                 case ALPHA:

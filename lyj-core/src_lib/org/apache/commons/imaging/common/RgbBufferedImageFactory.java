@@ -21,7 +21,7 @@ import java.awt.image.BufferedImage;
 
 public class RgbBufferedImageFactory implements IBufferedImageFactory {
     public BufferedImage getColorBufferedImage(final int width, final int height,
-            final boolean hasAlpha) {
+                                               final boolean hasAlpha) {
         if (hasAlpha) {
             return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         }
@@ -29,7 +29,7 @@ public class RgbBufferedImageFactory implements IBufferedImageFactory {
     }
 
     public BufferedImage getGrayscaleBufferedImage(final int width, final int height,
-            final boolean hasAlpha) {
+                                                   final boolean hasAlpha) {
         // always use color.
         return getColorBufferedImage(width, height, hasAlpha);
     }

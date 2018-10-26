@@ -33,7 +33,7 @@ public abstract class FileInfo {
     }
 
     public abstract boolean hasAlpha();
-    
+
     public abstract int getNumComponents();
 
     public abstract int getBitDepth();
@@ -53,7 +53,7 @@ public abstract class FileInfo {
     protected void newline() {
         // do nothing by default.
     }
-    
+
     protected static int readSample(final InputStream is, final int bytesPerSample) throws IOException {
         int sample = 0;
         for (int i = 0; i < bytesPerSample; i++) {
@@ -66,7 +66,7 @@ public abstract class FileInfo {
         }
         return sample;
     }
-    
+
     protected static int scaleSample(int sample, final float scale, final int max) throws IOException {
         if (sample < 0) {
             // Even netpbm tools break for files like this
@@ -75,7 +75,7 @@ public abstract class FileInfo {
             // invalid values -> black
             sample = 0;
         }
-        return (int)((sample * scale / max) + 0.5f);
+        return (int) ((sample * scale / max) + 0.5f);
     }
 
     public void readImage(final ImageBuilder imageBuilder, final InputStream is)

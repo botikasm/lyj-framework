@@ -22,6 +22,7 @@ import java.util.Map;
 public abstract class IptcTypeLookup implements IptcConstants {
 
     private static final Map<Integer, IptcType> IPTC_TYPE_MAP = new HashMap<Integer, IptcType>();
+
     static {
         for (final IptcType iptcType : IptcTypes.values()) {
             IPTC_TYPE_MAP.put(iptcType.getType(), iptcType);

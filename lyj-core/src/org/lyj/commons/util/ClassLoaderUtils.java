@@ -183,12 +183,11 @@ public class ClassLoaderUtils {
      * @param argTypes the argument types of the constructor to inovke
      * @param args     the arguments to initialize the instance
      * @return the new instance
-     * @throws NoSuchMethodException  if a matching method is not found
-     * @throws InstantiationException if the class that declares the
-     *                                underlying constructor represents an abstract class
-     * @throws InvocationTargetException
-     *                                if the underlying constructor throws
-     *                                an exception
+     * @throws NoSuchMethodException     if a matching method is not found
+     * @throws InstantiationException    if the class that declares the
+     *                                   underlying constructor represents an abstract class
+     * @throws InvocationTargetException if the underlying constructor throws
+     *                                   an exception
      * @see #newInstance(String, Class[], Object[])
      */
     @SuppressWarnings("unchecked")
@@ -216,7 +215,7 @@ public class ClassLoaderUtils {
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
         if (null != args && args.length > 0) {
             Constructor ctor = getConstructor(cls, args);
-            if(null==ctor){
+            if (null == ctor) {
                 final Class[] types = getTypes(args);
                 ctor = cls.getConstructor(types);
             }
@@ -354,13 +353,13 @@ public class ClassLoaderUtils {
 
     private static Constructor getConstructor(final Class aclass,
                                               final Object[] args) throws NoSuchMethodException {
-        if(!CollectionUtils.isEmpty(args)) {
+        if (!CollectionUtils.isEmpty(args)) {
             final Constructor[] constructors = aclass.getConstructors();
-            for(final Constructor constructor:constructors){
+            for (final Constructor constructor : constructors) {
                 final Class[] types = constructor.getParameterTypes();
-                if(types.length==args.length) {
+                if (types.length == args.length) {
                     final Class[] args_types = getTypes(args);
-                    if(CollectionUtils.equals(types, args_types)){
+                    if (CollectionUtils.equals(types, args_types)) {
                         return constructor;
                     }
                 }

@@ -9,7 +9,7 @@ public class NetworkUtilsTest {
         int port = NetworkUtils.getFreePort(80);
         System.out.println(port);
 
-        port = NetworkUtils.getFreePort(port+1000);
+        port = NetworkUtils.getFreePort(port + 1000);
         System.out.println(port);
     }
 

@@ -50,7 +50,7 @@ public class JpegRewriter extends BinaryFileParser implements JpegConstants {
         public final List<JFIFPiece> segmentPieces;
 
         public JFIFPieces(final List<JFIFPiece> pieces,
-                final List<JFIFPiece> segmentPieces) {
+                          final List<JFIFPiece> segmentPieces) {
             this.pieces = pieces;
             this.segmentPieces = segmentPieces;
         }
@@ -80,7 +80,7 @@ public class JpegRewriter extends BinaryFileParser implements JpegConstants {
         }
 
         public JFIFPieceSegment(final int marker, final byte[] markerBytes,
-                final byte[] segmentLengthBytes, final byte[] segmentData) {
+                                final byte[] segmentLengthBytes, final byte[] segmentData) {
             this.marker = marker;
             this.markerBytes = markerBytes;
             this.segmentLengthBytes = segmentLengthBytes;
@@ -145,7 +145,7 @@ public class JpegRewriter extends BinaryFileParser implements JpegConstants {
         public final byte imageData[];
 
         public JFIFPieceImageData(final byte[] markerBytes,
-                final byte[] imageData) {
+                                  final byte[] imageData) {
             super();
             this.markerBytes = markerBytes;
             this.imageData = imageData;
@@ -172,14 +172,14 @@ public class JpegRewriter extends BinaryFileParser implements JpegConstants {
             }
 
             public void visitSOS(final int marker, final byte markerBytes[],
-                    final byte imageData[]) {
+                                 final byte imageData[]) {
                 pieces.add(new JFIFPieceImageData(markerBytes, imageData));
             }
 
             // return false to exit traversal.
             public boolean visitSegment(final int marker, final byte markerBytes[],
-                    final int segmentLength, final byte segmentLengthBytes[],
-                    final byte segmentData[]) throws ImageReadException, IOException {
+                                        final int segmentLength, final byte segmentLengthBytes[],
+                                        final byte segmentData[]) throws ImageReadException, IOException {
                 final JFIFPiece piece = new JFIFPieceSegment(marker, markerBytes,
                         segmentLengthBytes, segmentData);
                 pieces.add(piece);
@@ -235,12 +235,12 @@ public class JpegRewriter extends BinaryFileParser implements JpegConstants {
     }
 
     protected <T extends JFIFPiece> List<T> filterSegments(final List<T> segments,
-            final SegmentFilter filter) {
+                                                           final SegmentFilter filter) {
         return filterSegments(segments, filter, false);
     }
 
     protected <T extends JFIFPiece> List<T> filterSegments(final List<T> segments,
-            final SegmentFilter filter, final boolean reverse) {
+                                                           final SegmentFilter filter, final boolean reverse) {
         final List<T> result = new ArrayList<T>();
 
         for (int i = 0; i < segments.size(); i++) {
@@ -311,7 +311,7 @@ public class JpegRewriter extends BinaryFileParser implements JpegConstants {
     }
 
     protected void writeSegments(OutputStream os,
-            final List<? extends JFIFPiece> segments) throws IOException {
+                                 final List<? extends JFIFPiece> segments) throws IOException {
         try {
             SOI.writeTo(os);
 

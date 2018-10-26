@@ -34,7 +34,7 @@ public class PsdConstants {
         ImageResourceType temp[] = null;
 
         try {
-            temp = new ImageResourceType[] {
+            temp = new ImageResourceType[]{
                     new ImageResourceType(
                             0x03E8,
                             1000,
@@ -188,7 +188,7 @@ public class PsdConstants {
                     new ImageResourceType(
                             0x2710,
                             10000,
-                            "Print flags information. 2 bytes version (=1), 1 byte center crop marks, 1 byte (=0), 4 bytes bleed width value, 2 bytes bleed width scale."), };
+                            "Print flags information. 2 bytes version (=1), 1 byte center crop marks, 1 byte (=0), 4 bytes bleed width value, 2 bytes bleed width scale."),};
         } catch (final Exception e) {
             Debug.debug(PsdConstants.class, e);
         }

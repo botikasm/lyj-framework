@@ -49,8 +49,8 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
 
     private static final String DEFAULT_EXTENSION = ".pnm";
 
-    private static final String ACCEPTED_EXTENSIONS[] = { ".pbm", ".pgm",
-            ".ppm", ".pnm", ".pam" };
+    private static final String ACCEPTED_EXTENSIONS[] = {".pbm", ".pgm",
+            ".ppm", ".pnm", ".pam"};
 
     @Override
     protected String[] getAcceptedExtensions() {
@@ -59,7 +59,7 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
 
     @Override
     protected ImageFormat[] getAcceptedTypes() {
-        return new ImageFormat[] {
+        return new ImageFormat[]{
                 ImageFormat.IMAGE_FORMAT_PBM, //
                 ImageFormat.IMAGE_FORMAT_PGM, //
                 ImageFormat.IMAGE_FORMAT_PPM, //
@@ -76,19 +76,19 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
         if (identifier1 != PNM_PREFIX_BYTE) {
             throw new ImageReadException("PNM file has invalid prefix byte 1");
         }
-        
+
         final WhiteSpaceReader wsr = new WhiteSpaceReader(is);
-        
+
         if (identifier2 == PBM_TEXT_CODE ||
                 identifier2 == PBM_RAW_CODE ||
                 identifier2 == PGM_TEXT_CODE ||
                 identifier2 == PGM_RAW_CODE ||
                 identifier2 == PPM_TEXT_CODE ||
                 identifier2 == PPM_RAW_CODE) {
-            
+
             final int width = Integer.parseInt(wsr.readtoWhiteSpace());
             final int height = Integer.parseInt(wsr.readtoWhiteSpace());
-    
+
             if (identifier2 == PBM_TEXT_CODE) {
                 return new PbmFileInfo(width, height, false);
             } else if (identifier2 == PBM_RAW_CODE) {
@@ -119,7 +119,7 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
             boolean seenMaxVal = false;
             String tupleType = "";
             boolean seenTupleType = false;
-            
+
             // Advance to next line
             wsr.readLine();
             String line;
@@ -151,7 +151,7 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
                     throw new ImageReadException("Invalid PAM file header type " + type);
                 }
             }
-            
+
             if (!seenWidth) {
                 throw new ImageReadException("PAM header has no WIDTH");
             } else if (!seenHeight) {
@@ -163,7 +163,7 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
             } else if (!seenTupleType) {
                 throw new ImageReadException("PAM header has no TUPLTYPE");
             }
-            
+
             return new PamFileInfo(width, height, depth, maxVal, tupleType);
         } else {
             throw new ImageReadException("PNM file has invalid prefix byte 2");
@@ -190,13 +190,13 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
     }
 
     @Override
-    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String,Object> params)
+    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
 
     @Override
-    public Dimension getImageSize(final ByteSource byteSource, final Map<String,Object> params)
+    public Dimension getImageSize(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final FileInfo info = readHeader(byteSource);
 
@@ -217,13 +217,13 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
     }
 
     @Override
-    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String,Object> params)
+    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
 
     @Override
-    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String,Object> params)
+    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final FileInfo info = readHeader(byteSource);
 
@@ -282,7 +282,7 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
     }
 
     @Override
-    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String,Object> params)
+    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         InputStream is = null;
 
@@ -316,7 +316,7 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
     public static final String PARAM_VALUE_PNM_RAWBITS_NO = "NO";
 
     @Override
-    public void writeImage(final BufferedImage src, final OutputStream os, Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, Map<String, Object> params)
             throws ImageWriteException, IOException {
         PnmWriter writer = null;
         boolean useRawbits = true;
@@ -338,7 +338,7 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
                     writer = new PgmWriter(useRawbits);
                 } else if (subtype.equals(ImageFormat.IMAGE_FORMAT_PPM)) {
                     writer = new PpmWriter(useRawbits);
-                } else if (subtype.equals(ImageFormat.IMAGE_FORMAT_PAM)) { 
+                } else if (subtype.equals(ImageFormat.IMAGE_FORMAT_PAM)) {
                     writer = new PamWriter();
                 }
             }
@@ -347,23 +347,23 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
         if (writer == null) {
             if (hasAlpha) {
                 writer = new PamWriter();
-            } else {   
+            } else {
                 writer = new PpmWriter(useRawbits);
             }
         }
 
         // make copy of params; we'll clear keys as we consume them.
         if (params != null) {
-            params = new HashMap<String,Object>(params);
+            params = new HashMap<String, Object>(params);
         } else {
-            params = new HashMap<String,Object>();
+            params = new HashMap<String, Object>();
         }
 
         // clear format key.
         if (params.containsKey(PARAM_KEY_FORMAT)) {
             params.remove(PARAM_KEY_FORMAT);
         }
-        
+
         if (params.size() > 0) {
             final Object firstKey = params.keySet().iterator().next();
             throw new ImageWriteException("Unknown parameter: " + firstKey);
@@ -375,15 +375,13 @@ public class PnmImageParser extends ImageParser implements PnmConstants {
     /**
      * Extracts embedded XML metadata as XML string.
      * <p>
-     * 
-     * @param byteSource
-     *            File containing image data.
-     * @param params
-     *            Map of optional parameters, defined in SanselanConstants.
+     *
+     * @param byteSource File containing image data.
+     * @param params     Map of optional parameters, defined in SanselanConstants.
      * @return Xmp Xml as String, if present. Otherwise, returns null.
      */
     @Override
-    public String getXmpXml(final ByteSource byteSource, final Map<String,Object> params)
+    public String getXmpXml(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }

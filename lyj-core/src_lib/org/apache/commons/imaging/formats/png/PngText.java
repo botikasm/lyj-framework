@@ -53,7 +53,7 @@ public abstract class PngText {
         public final String translatedKeyword;
 
         public Itxt(final String keyword, final String text, final String languageTag,
-                final String translatedKeyword) {
+                    final String translatedKeyword) {
             super(keyword, text);
             this.languageTag = languageTag;
             this.translatedKeyword = translatedKeyword;

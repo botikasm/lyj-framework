@@ -2,8 +2,6 @@ package org.lyj.commons.i18n.countrycode;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  *
  *

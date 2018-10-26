@@ -9,7 +9,7 @@ public class SampleListenerClass {
 
     private MessageListener _listener;
 
-    public SampleListenerClass(){
+    public SampleListenerClass() {
         _listener = MessageBus.getInstance().createListener();
         _listener.on(this::handle);
     }
@@ -24,7 +24,7 @@ public class SampleListenerClass {
         _listener.clear();
     }
 
-    private void handle(final Event event){
+    private void handle(final Event event) {
         System.out.println("SampleListenerClass: " + event.getTag());
     }
 

@@ -23,7 +23,7 @@ import java.io.IOException;
 
 public class PixelParserRgb extends PixelParserSimple {
     public PixelParserRgb(final BmpHeaderInfo bhi, final byte ColorTable[],
-            final byte ImageData[]) {
+                          final byte ImageData[]) {
         super(bhi, ColorTable, ImageData);
 
     }
@@ -38,7 +38,7 @@ public class PixelParserRgb extends PixelParserSimple {
     public int getNextRGB() throws ImageReadException, IOException {
         pixelCount++;
 
-        if ((bhi.bitsPerPixel == 1) 
+        if ((bhi.bitsPerPixel == 1)
                 || (bhi.bitsPerPixel == 4)) { // always grayscale?
             if (cached_bit_count < bhi.bitsPerPixel) {
                 if (cached_bit_count != 0) {

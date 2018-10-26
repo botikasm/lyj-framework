@@ -125,7 +125,9 @@ public class Task<T>
         return _id;
     }
 
-    public String getName() { return _name; }
+    public String getName() {
+        return _name;
+    }
 
     public TaskState getState() {
         return _state;
@@ -155,7 +157,7 @@ public class Task<T>
     }
 
     protected Task<T> run(final ActionCallback<T> callback_action) {
-        if(null!=callback_action){
+        if (null != callback_action) {
             _callback_action = callback_action;
         }
         if (!this.threadRunning()) {
@@ -257,8 +259,8 @@ public class Task<T>
         }
     }
 
-    private void log(final String methodName, final String message){
-        if(_debug){
+    private void log(final String methodName, final String message) {
+        if (_debug) {
             super.info(methodName, message);
         }
     }
@@ -298,7 +300,7 @@ public class Task<T>
         private boolean _stopped = false;
 
 
-        private TaskInterruptor(){
+        private TaskInterruptor() {
 
         }
 

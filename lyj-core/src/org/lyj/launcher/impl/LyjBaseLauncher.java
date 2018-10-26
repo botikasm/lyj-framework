@@ -48,7 +48,7 @@ public class LyjBaseLauncher
     }
 
     @Override
-    public void shutdown(){
+    public void shutdown() {
 
     }
 

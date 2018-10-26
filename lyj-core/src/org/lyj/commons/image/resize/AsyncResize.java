@@ -90,7 +90,7 @@ public class AsyncResize {
      * tasks.
      *
      * @return the current {@link ExecutorService} used by this class to process
-     *         scale operations.
+     * scale operations.
      */
     public static ExecutorService getService() {
         return service;
@@ -283,7 +283,7 @@ public class AsyncResize {
 
     /**
      * @see Resize#resize(BufferedImage, Method, Mode, int, int,
-     *      BufferedImageOp...)
+     * BufferedImageOp...)
      */
     public static Future<BufferedImage> resize(final BufferedImage src,
                                                final Method scalingMethod, final Mode resizeMode,
@@ -344,9 +344,9 @@ public class AsyncResize {
         if (service == null || service.isShutdown() || service.isTerminated()) {
             /*
              * If service was shutdown or terminated, assigning a new value will
-			 * free the reference to the instance, allowing it to be GC'ed when
-			 * it is done shutting down (assuming it hadn't already).
-			 */
+             * free the reference to the instance, allowing it to be GC'ed when
+             * it is done shutting down (assuming it hadn't already).
+             */
             service = createService();
         }
     }
@@ -374,17 +374,17 @@ public class AsyncResize {
         DefaultThreadFactory() {
             SecurityManager manager = System.getSecurityManager();
 
-			/*
-			 * Determine the group that threads created by this factory will be
-			 * in.
-			 */
+            /*
+             * Determine the group that threads created by this factory will be
+             * in.
+             */
             group = (manager == null ? Thread.currentThread().getThreadGroup()
                     : manager.getThreadGroup());
 
-			/*
-			 * Define a common name prefix for the threads created by this
-			 * factory.
-			 */
+            /*
+             * Define a common name prefix for the threads created by this
+             * factory.
+             */
             namePrefix = "pool-" + poolNumber.getAndIncrement() + "-thread-";
         }
 
@@ -396,10 +396,10 @@ public class AsyncResize {
          * {@link ExecutorService} when processing queued up scale operations.
          */
         public Thread newThread(Runnable r) {
-			/*
-			 * Create a new thread in our specified group with a meaningful
-			 * thread name so it is easy to identify.
-			 */
+            /*
+             * Create a new thread in our specified group with a meaningful
+             * thread name so it is easy to identify.
+             */
             Thread thread = new Thread(group, r, namePrefix
                     + threadNumber.getAndIncrement(), 0);
 

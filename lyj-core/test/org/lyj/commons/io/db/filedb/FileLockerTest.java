@@ -12,7 +12,7 @@ public class FileLockerTest {
         System.out.println("lock A");
         Locker.instance().lock("A");
 
-        Async.delay((args)->{
+        Async.delay((args) -> {
             System.out.println("release A");
             Locker.instance().unlock("A");
         }, 1000);

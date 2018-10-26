@@ -56,7 +56,7 @@ public final class ZipRepository extends AbstractRepository {
      *
      * @param path path to zip file
      * @throws ZipException a zip encoding related error occurred
-     * @throws IOException        an I/O error occurred
+     * @throws IOException  an I/O error occurred
      */
     public ZipRepository(String path)
             throws ZipException, IOException {
@@ -68,7 +68,7 @@ public final class ZipRepository extends AbstractRepository {
      *
      * @param file zip file
      * @throws ZipException a zip encoding related error occurred
-     * @throws IOException        an I/O error occurred
+     * @throws IOException  an I/O error occurred
      */
     public ZipRepository(File file)
             throws ZipException, IOException {
@@ -93,7 +93,7 @@ public final class ZipRepository extends AbstractRepository {
      * @param parent    repository
      * @param entryPath the entry path name
      * @throws ZipException a zip encoding related error occurred
-     * @throws IOException        an I/O error occurred
+     * @throws IOException  an I/O error occurred
      */
     private ZipRepository(File file, ZipRepository parent, String entryPath)
             throws ZipException, IOException {

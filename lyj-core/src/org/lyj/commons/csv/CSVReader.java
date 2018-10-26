@@ -147,7 +147,7 @@ public class CSVReader implements ICSVConstants {
      * tokens.
      *
      * @return a List of String[], with each String[] representing a line of the
-     *         file.
+     * file.
      * @throws IOException if bad things happen during the read
      */
     public List<String[]> readAll() throws IOException {
@@ -193,7 +193,7 @@ public class CSVReader implements ICSVConstants {
      * Reads the next line from the buffer and converts to a string array.
      *
      * @return a string array with each comma-separated element as a separate
-     *         entry.
+     * entry.
      * @throws IOException if bad things happen during the read
      */
     private String[] readNext() throws IOException {
@@ -267,7 +267,7 @@ public class CSVReader implements ICSVConstants {
                                 && nextLine.charAt(i - 1) != _separator //not at the begining of an escape sequence
                                 && nextLine.length() > (i + 1)
                                 && nextLine.charAt(i + 1) != _separator //not at the	end of an escape sequence
-                                ) {
+                        ) {
                             sb.append(c);
                         }
                     }

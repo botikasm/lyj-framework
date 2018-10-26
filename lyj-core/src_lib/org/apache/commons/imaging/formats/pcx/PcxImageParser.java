@@ -55,7 +55,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
     }
 
     private static final String DEFAULT_EXTENSION = ".pcx";
-    private static final String ACCEPTED_EXTENSIONS[] = { ".pcx", ".pcc", };
+    private static final String ACCEPTED_EXTENSIONS[] = {".pcx", ".pcc",};
 
     @Override
     protected String[] getAcceptedExtensions() {
@@ -64,7 +64,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
 
     @Override
     protected ImageFormat[] getAcceptedTypes() {
-        return new ImageFormat[] { ImageFormat.IMAGE_FORMAT_PCX, //
+        return new ImageFormat[]{ImageFormat.IMAGE_FORMAT_PCX, //
         };
     }
 
@@ -74,13 +74,13 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
     }
 
     @Override
-    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String,Object> params)
+    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
 
     @Override
-    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String,Object> params)
+    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final PcxHeader pcxHeader = readPcxHeader(byteSource);
         final Dimension size = getImageSize(byteSource, params);
@@ -107,7 +107,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
     }
 
     @Override
-    public Dimension getImageSize(final ByteSource byteSource, final Map<String,Object> params)
+    public Dimension getImageSize(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final PcxHeader pcxHeader = readPcxHeader(byteSource);
         final int xSize = pcxHeader.xMax - pcxHeader.xMin + 1;
@@ -122,7 +122,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
     }
 
     @Override
-    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String,Object> params)
+    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
@@ -135,12 +135,12 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
         public static final int PALETTE_INFO_GRAYSCALE = 2;
         public final int manufacturer; // Always 10 = ZSoft .pcx
         public final int version; // 0 = PC Paintbrush 2.5
-                                  // 2 = PC Paintbrush 2.8 with palette
-                                  // 3 = PC Paintbrush 2.8 w/o palette
-                                  // 4 = PC Paintbrush for Windows
-                                  // 5 = PC Paintbrush >= 3.0
+        // 2 = PC Paintbrush 2.8 with palette
+        // 3 = PC Paintbrush 2.8 w/o palette
+        // 4 = PC Paintbrush for Windows
+        // 5 = PC Paintbrush >= 3.0
         public final int encoding; // 0 = very old uncompressed format, 1 = .pcx
-                                   // run length encoding
+        // run length encoding
         public final int bitsPerPixel; // Bits ***PER PLANE*** for each pixel
         public final int xMin; // window
         public final int yMin;
@@ -152,21 +152,21 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
         public final int reserved; // Always 0
         public final int nPlanes; // Number of color planes
         public final int bytesPerLine; // Number of bytes per scanline plane,
-                                       // must be an even number.
+        // must be an even number.
         public final int paletteInfo; // 1 = Color/BW, 2 = Grayscale, ignored in
-                                      // Paintbrush IV/IV+
+        // Paintbrush IV/IV+
         public final int hScreenSize; // horizontal screen size, in pixels.
-                                      // PaintBrush >= IV only.
+        // PaintBrush >= IV only.
         public final int vScreenSize; // vertical screen size, in pixels.
-                                      // PaintBrush >= IV only.
+        // PaintBrush >= IV only.
 
         public PcxHeader(final int manufacturer, final int version,
-                final int encoding, final int bitsPerPixel, final int xMin,
-                final int yMin, final int xMax, final int yMax, final int hDpi,
-                final int vDpi, final int[] colormap, final int reserved,
-                final int nPlanes, final int bytesPerLine,
-                final int paletteInfo, final int hScreenSize,
-                final int vScreenSize) {
+                         final int encoding, final int bitsPerPixel, final int xMin,
+                         final int yMin, final int xMax, final int yMax, final int hDpi,
+                         final int vDpi, final int[] colormap, final int reserved,
+                         final int nPlanes, final int bytesPerLine,
+                         final int paletteInfo, final int hScreenSize,
+                         final int vScreenSize) {
             this.manufacturer = manufacturer;
             this.version = version;
             this.encoding = encoding;
@@ -288,7 +288,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
     }
 
     private void readScanLine(final PcxHeader pcxHeader, final InputStream is,
-            final byte[] samples) throws IOException, ImageReadException {
+                              final byte[] samples) throws IOException, ImageReadException {
         if (pcxHeader.encoding == PcxHeader.ENCODING_UNCOMPRESSED) {
             int r;
             for (int bytesRead = 0; bytesRead < samples.length; bytesRead += r) {
@@ -300,7 +300,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
             }
         } else {
             if (pcxHeader.encoding == PcxHeader.ENCODING_RLE) {
-                for (int bytesRead = 0; bytesRead < samples.length;) {
+                for (int bytesRead = 0; bytesRead < samples.length; ) {
                     final byte b = readByte("Pixel", is, "Error reading image data");
                     int count;
                     byte sample;
@@ -358,7 +358,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
     }
 
     private BufferedImage readImage(final PcxHeader pcxHeader, final InputStream is,
-            final ByteSource byteSource) throws ImageReadException, IOException {
+                                    final ByteSource byteSource) throws ImageReadException, IOException {
         final int xSize = pcxHeader.xMax - pcxHeader.xMin + 1;
         if (xSize < 0) {
             throw new ImageReadException("Image width is negative");
@@ -383,7 +383,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
             final DataBufferByte dataBuffer = new DataBufferByte(image, image.length);
             int[] palette;
             if (pcxHeader.bitsPerPixel == 1) {
-                palette = new int[] { 0x000000, 0xffffff };
+                palette = new int[]{0x000000, 0xffffff};
             } else if (pcxHeader.bitsPerPixel == 8) {
                 // Normally the palette is read 769 bytes from the end of the
                 // file.
@@ -405,7 +405,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
             WritableRaster raster;
             if (pcxHeader.bitsPerPixel == 8) {
                 raster = WritableRaster.createInterleavedRaster(dataBuffer,
-                        xSize, ySize, bytesPerImageRow, 1, new int[] { 0 },
+                        xSize, ySize, bytesPerImageRow, 1, new int[]{0},
                         null);
             } else {
                 raster = WritableRaster.createPackedRaster(dataBuffer, xSize,
@@ -455,8 +455,8 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
             final DataBufferByte dataBuffer = new DataBufferByte(image,
                     image[0].length);
             final WritableRaster raster = WritableRaster.createBandedRaster(
-                    dataBuffer, xSize, ySize, xSize, new int[] { 0, 1, 2 },
-                    new int[] { 0, 0, 0 }, null);
+                    dataBuffer, xSize, ySize, xSize, new int[]{0, 1, 2},
+                    new int[]{0, 0, 0}, null);
             final ColorModel colorModel = new ComponentColorModel(
                     ColorSpace.getInstance(ColorSpace.CS_sRGB), false, false,
                     Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
@@ -482,7 +482,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
             final DataBufferByte dataBuffer = new DataBufferByte(image, image.length);
             final WritableRaster raster = WritableRaster.createInterleavedRaster(
                     dataBuffer, xSize, ySize, rowLength, 3,
-                    new int[] { 2, 1, 0 }, null);
+                    new int[]{2, 1, 0}, null);
             final ColorModel colorModel = new ComponentColorModel(
                     ColorSpace.getInstance(ColorSpace.CS_sRGB), false, false,
                     Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
@@ -498,8 +498,8 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
 
     @Override
     public final BufferedImage getBufferedImage(final ByteSource byteSource,
-            Map<String,Object> params) throws ImageReadException, IOException {
-        params = (params == null) ? new HashMap<String,Object>() : new HashMap<String,Object>(params);
+                                                Map<String, Object> params) throws ImageReadException, IOException {
+        params = (params == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(params);
         boolean isStrict = false;
         final Object strictness = params.get(PARAM_KEY_STRICT);
         if (strictness != null) {
@@ -522,7 +522,7 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
     }
 
     @Override
-    public void writeImage(final BufferedImage src, final OutputStream os, final Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, final Map<String, Object> params)
             throws ImageWriteException, IOException {
         new PcxWriter(params).writeImage(src, os);
     }
@@ -530,15 +530,13 @@ public class PcxImageParser extends ImageParser implements PcxConstants {
     /**
      * Extracts embedded XML metadata as XML string.
      * <p>
-     * 
-     * @param byteSource
-     *            File containing image data.
-     * @param params
-     *            Map of optional parameters, defined in SanselanConstants.
+     *
+     * @param byteSource File containing image data.
+     * @param params     Map of optional parameters, defined in SanselanConstants.
      * @return Xmp Xml as String, if present. Otherwise, returns null.
      */
     @Override
-    public String getXmpXml(final ByteSource byteSource, final Map<String,Object> params)
+    public String getXmpXml(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }

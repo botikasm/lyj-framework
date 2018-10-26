@@ -17,10 +17,10 @@
 package org.apache.commons.imaging;
 
 /**
- * Defines constants that may be used in passing options to 
+ * Defines constants that may be used in passing options to
  * ImageParser read/write implementations, the utility routines
  * implemented in the Imaging class, and throughout the
- * Apache Commons Imaging package.  Individual ImageParser 
+ * Apache Commons Imaging package.  Individual ImageParser
  * implementations may define their own format-specific options.
  */
 public interface ImagingConstants {
@@ -40,7 +40,7 @@ public interface ImagingConstants {
      * <p>
      * Valid values: filename as string
      * <p>
-     * 
+     *
      * @see java.io.InputStream
      */
     public static final String PARAM_KEY_FILENAME = "FILENAME";
@@ -51,7 +51,7 @@ public interface ImagingConstants {
      * Valid values: Any format defined in ImageFormat, such as
      * ImageFormat.IMAGE_FORMAT_PNG.
      * <p>
-     * 
+     *
      * @see ImageFormat
      */
     public static final String PARAM_KEY_FORMAT = "FORMAT";
@@ -67,7 +67,7 @@ public interface ImagingConstants {
      * TiffConstants.TIFF_COMPRESSION_LZW,
      * TiffConstants.TIFF_COMPRESSION_PACKBITS.
      * <p>
-     * 
+     *
      * @see org.apache.commons.imaging.formats.tiff.constants.TiffConstants
      */
     public static final String PARAM_KEY_COMPRESSION = "COMPRESSION";
@@ -81,7 +81,7 @@ public interface ImagingConstants {
      * <p>
      * Valid values: Boolean.TRUE and Boolean.FALSE.
      * <p>
-     * 
+     *
      * @see org.apache.commons.imaging.formats.tiff.constants.TiffConstants
      */
     public static final String PARAM_KEY_READ_THUMBNAILS = "READ_THUMBNAILS";
@@ -93,26 +93,26 @@ public interface ImagingConstants {
      * Valid values: Boolean.TRUE and Boolean.FALSE. Default value:
      * Boolean.FALSE.
      * <p>
-     * 
+     *
      * @see org.apache.commons.imaging.formats.tiff.constants.TiffConstants
      */
     public static final String PARAM_KEY_STRICT = "STRICT";
 
     /**
      * Parameter key.
-     * 
+     * <p>
      * Only used when writing images.
      * <p>
      * Valid values: TiffOutputSet to write into the image's EXIF metadata.
      * <p>
-     * 
+     *
      * @see org.apache.commons.imaging.formats.tiff.write.TiffOutputSet
      */
     public static final String PARAM_KEY_EXIF = "EXIF";
 
     /**
      * Parameter key.
-     * 
+     * <p>
      * Only used when writing images.
      * <p>
      * Valid values: String of XMP XML.
@@ -126,7 +126,7 @@ public interface ImagingConstants {
      * <p>
      * Valid values: PixelDensity
      * <p>
-     * 
+     *
      * @see PixelDensity
      */
     public static final String PARAM_KEY_PIXEL_DENSITY = "PIXEL_DENSITY";

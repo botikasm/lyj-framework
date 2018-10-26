@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.io.serialization.json.serializer;
 
@@ -28,7 +28,6 @@ import org.json.JSONObject;
 import java.lang.reflect.Method;
 
 /**
- *
  * @author angelo.geminiani
  */
 public class BeanProcessed {
@@ -83,7 +82,7 @@ public class BeanProcessed {
     }
 
     private Object getId(final Object bean, final BeanData data,
-            final Object defaultValue) {
+                         final Object defaultValue) {
         if (null != data
                 && data.getReadableProps().containsKey("id")) {
             final Method method = data.getReadableProps().get("id");

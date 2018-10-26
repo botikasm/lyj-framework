@@ -598,32 +598,32 @@ public class Resize {
 
         int type = src.getType();
 
-		/*
+        /*
          * Ensure the src image is in the best supported image type before we
-		 * continue, otherwise it is possible our calls below to getBounds2D and
-		 * certainly filter(...) may fail if not.
-		 * 
-		 * Java2D makes an attempt at applying most BufferedImageOps using
-		 * hardware acceleration via the ImagingLib internal library.
-		 * 
-		 * Unfortunately may of the BufferedImageOp are written to simply fail
-		 * with an ImagingOpException if the operation cannot be applied with no
-		 * additional information about what went wrong or attempts at
-		 * re-applying it in different ways.
-		 * 
-		 * This is assuming the failing BufferedImageOp even returns a null
-		 * image after failing to apply; some simply return a corrupted/black
-		 * image that result in no exception and it is up to the user to
-		 * discover this.
-		 * 
-		 * In internal testing, EVERY failure I've ever seen was the result of
-		 * the source image being in a poorly-supported BufferedImage Type like
-		 * BGR or ABGR (even though it was loaded with ImageIO).
-		 * 
-		 * To avoid this nasty/stupid surprise with BufferedImageOps, we always
-		 * ensure that the src image starts in an optimally supported format
-		 * before we try and apply the filter.
-		 */
+         * continue, otherwise it is possible our calls below to getBounds2D and
+         * certainly filter(...) may fail if not.
+         *
+         * Java2D makes an attempt at applying most BufferedImageOps using
+         * hardware acceleration via the ImagingLib internal library.
+         *
+         * Unfortunately may of the BufferedImageOp are written to simply fail
+         * with an ImagingOpException if the operation cannot be applied with no
+         * additional information about what went wrong or attempts at
+         * re-applying it in different ways.
+         *
+         * This is assuming the failing BufferedImageOp even returns a null
+         * image after failing to apply; some simply return a corrupted/black
+         * image that result in no exception and it is up to the user to
+         * discover this.
+         *
+         * In internal testing, EVERY failure I've ever seen was the result of
+         * the source image being in a poorly-supported BufferedImage Type like
+         * BGR or ABGR (even though it was loaded with ImageIO).
+         *
+         * To avoid this nasty/stupid surprise with BufferedImageOps, we always
+         * ensure that the src image starts in an optimally supported format
+         * before we try and apply the filter.
+         */
         if (!(type == BufferedImage.TYPE_INT_RGB || type == BufferedImage.TYPE_INT_ARGB))
             src = copyToOptimalImage(src);
 
@@ -644,13 +644,13 @@ public class Resize {
                 log(1, "Applying BufferedImageOp [class=%s, toString=%s]...",
                         op.getClass(), op.toString());
 
-			/*
+            /*
              * Must use op.getBounds instead of src.getWidth and src.getHeight
-			 * because we are trying to create an image big enough to hold the
-			 * result of this operation (which may be to scale the image
-			 * smaller), in that case the bounds reported by this op and the
-			 * bounds reported by the source image will be different.
-			 */
+             * because we are trying to create an image big enough to hold the
+             * result of this operation (which may be to scale the image
+             * smaller), in that case the bounds reported by this op and the
+             * bounds reported by the source image will be different.
+             */
             Rectangle2D resultBounds = op.getBounds2D(src);
 
             // Watch out for flaky/misbehaving ops that fail to work right.
@@ -660,13 +660,13 @@ public class Resize {
                                 + op.toString()
                                 + "] getBounds2D(src) returned null bounds for the target image; this should not happen and indicates a problem with application of this type of op.");
 
-			/*
+            /*
              * We must manually create the target image; we cannot rely on the
-			 * null-destination filter() method to create a valid destination
-			 * for us thanks to this JDK bug that has been filed for almost a
-			 * decade:
-			 * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4965606
-			 */
+             * null-destination filter() method to create a valid destination
+             * for us thanks to this JDK bug that has been filed for almost a
+             * decade:
+             * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4965606
+             */
             BufferedImage dest = createOptimalImage(src,
                     (int) Math.round(resultBounds.getWidth()),
                     (int) Math.round(resultBounds.getHeight()));
@@ -674,27 +674,27 @@ public class Resize {
             // Perform the operation, update our result to return.
             BufferedImage result = op.filter(src, dest);
 
-			/*
-			 * Flush the 'src' image ONLY IF it is one of our interim temporary
-			 * images being used when applying 2 or more operations back to
-			 * back. We never want to flush the original image passed in.
-			 */
+            /*
+             * Flush the 'src' image ONLY IF it is one of our interim temporary
+             * images being used when applying 2 or more operations back to
+             * back. We never want to flush the original image passed in.
+             */
             if (hasReassignedSrc)
                 src.flush();
 
-			/*
-			 * Incase there are more operations to perform, update what we
-			 * consider the 'src' reference to our last result so on the next
-			 * iteration the next op is applied to this result and not back
-			 * against the original src passed in.
-			 */
+            /*
+             * Incase there are more operations to perform, update what we
+             * consider the 'src' reference to our last result so on the next
+             * iteration the next op is applied to this result and not back
+             * against the original src passed in.
+             */
             src = result;
 
-			/*
-			 * Keep track of when we re-assign 'src' to an interim temporary
-			 * image, so we know when we can explicitly flush it and clean up
-			 * references on future iterations.
-			 */
+            /*
+             * Keep track of when we re-assign 'src' to an interim temporary
+             * image, so we know when we can explicitly flush it and clean up
+             * references on future iterations.
+             */
             hasReassignedSrc = true;
 
             if (DEBUG)
@@ -822,11 +822,11 @@ public class Resize {
         BufferedImage result = createOptimalImage(src, width, height);
         Graphics g = result.getGraphics();
 
-		/*
-		 * Render the region specified by our crop bounds from the src image
-		 * directly into our result image (which is the exact size of the crop
-		 * region).
-		 */
+        /*
+         * Render the region specified by our crop bounds from the src image
+         * directly into our result image (which is the exact size of the crop
+         * region).
+         */
         g.drawImage(src, 0, 0, width, height, x, y, (x + width), (y + height),
                 null);
         g.dispose();
@@ -944,12 +944,12 @@ public class Resize {
         int srcWidth = src.getWidth();
         int srcHeight = src.getHeight();
 
-		/*
-		 * Double the padding to account for all sides of the image. More
-		 * specifically, if padding is "1" we add 2 pixels to width and 2 to
-		 * height, so we have 1 new pixel of padding all the way around our
-		 * image.
-		 */
+        /*
+         * Double the padding to account for all sides of the image. More
+         * specifically, if padding is "1" we add 2 pixels to width and 2 to
+         * height, so we have 1 new pixel of padding all the way around our
+         * image.
+         */
         int sizeDiff = (padding * 2);
         int newWidth = srcWidth + sizeDiff;
         int newHeight = srcHeight + sizeDiff;
@@ -964,11 +964,11 @@ public class Resize {
 
         BufferedImage result;
 
-		/*
-		 * We need to make sure our resulting image that we render into contains
-		 * alpha if either our original image OR the padding color we are using
-		 * contain it.
-		 */
+        /*
+         * We need to make sure our resulting image that we render into contains
+         * alpha if either our original image OR the padding color we are using
+         * contain it.
+         */
         if (colorHasAlpha || imageHasAlpha) {
             if (DEBUG)
                 log(1,
@@ -1456,23 +1456,23 @@ public class Resize {
                     (ratio <= 1 ? "Landscape/Square" : "Portrait"), ratio,
                     targetWidth, targetHeight);
 
-		/*
-		 * First determine if ANY size calculation needs to be done, in the case
-		 * of FIT_EXACT, ignore image proportions and orientation and just use
-		 * what the user sent in, otherwise the proportion of the picture must
-		 * be honored.
-		 * 
-		 * The way that is done is to figure out if the image is in a
-		 * LANDSCAPE/SQUARE or PORTRAIT orientation and depending on its
-		 * orientation, use the primary dimension (width for LANDSCAPE/SQUARE
-		 * and height for PORTRAIT) to recalculate the alternative (height and
-		 * width respectively) value that adheres to the existing ratio.
-		 * 
-		 * This helps make life easier for the caller as they don't need to
-		 * pre-compute proportional dimensions before calling the API, they can
-		 * just specify the dimensions they would like the image to roughly fit
-		 * within and it will do the right thing without mangling the result.
-		 */
+        /*
+         * First determine if ANY size calculation needs to be done, in the case
+         * of FIT_EXACT, ignore image proportions and orientation and just use
+         * what the user sent in, otherwise the proportion of the picture must
+         * be honored.
+         *
+         * The way that is done is to figure out if the image is in a
+         * LANDSCAPE/SQUARE or PORTRAIT orientation and depending on its
+         * orientation, use the primary dimension (width for LANDSCAPE/SQUARE
+         * and height for PORTRAIT) to recalculate the alternative (height and
+         * width respectively) value that adheres to the existing ratio.
+         *
+         * This helps make life easier for the caller as they don't need to
+         * pre-compute proportional dimensions before calling the API, they can
+         * just specify the dimensions they would like the image to roughly fit
+         * within and it will do the right thing without mangling the result.
+         */
         if (resizeMode != Mode.FIT_EXACT) {
             if ((ratio <= 1 && resizeMode == Mode.AUTOMATIC)
                     || (resizeMode == Mode.FIT_TO_WIDTH)) {
@@ -1483,11 +1483,11 @@ public class Resize {
                 // Save for detailed logging (this is cheap).
                 int originalTargetHeight = targetHeight;
 
-				/*
-				 * Landscape or Square Orientation: Ignore the given height and
-				 * re-calculate a proportionally correct value based on the
-				 * targetWidth.
-				 */
+                /*
+                 * Landscape or Square Orientation: Ignore the given height and
+                 * re-calculate a proportionally correct value based on the
+                 * targetWidth.
+                 */
                 targetHeight = Math.round((float) targetWidth * ratio);
 
                 if (DEBUG && originalTargetHeight != targetHeight)
@@ -1502,10 +1502,10 @@ public class Resize {
                 // Save for detailed logging (this is cheap).
                 int originalTargetWidth = targetWidth;
 
-				/*
-				 * Portrait Orientation: Ignore the given width and re-calculate
-				 * a proportionally correct value based on the targetHeight.
-				 */
+                /*
+                 * Portrait Orientation: Ignore the given width and re-calculate
+                 * a proportionally correct value based on the targetHeight.
+                 */
                 targetWidth = Math.round((float) targetHeight / ratio);
 
                 if (DEBUG && originalTargetWidth != targetWidth)
@@ -1536,29 +1536,29 @@ public class Resize {
                     RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         } else if (scalingMethod == Method.QUALITY
                 || scalingMethod == Method.ULTRA_QUALITY) {
-			/*
-			 * If we are scaling up (in either width or height - since we know
-			 * the image will stay proportional we just check if either are
-			 * being scaled up), directly using a single BICUBIC will give us
-			 * better results then using Chris Campbell's incremental scaling
-			 * operation (and take a lot less time).
-			 * 
-			 * If we are scaling down, we must use the incremental scaling
-			 * algorithm for the best result.
-			 */
+            /*
+             * If we are scaling up (in either width or height - since we know
+             * the image will stay proportional we just check if either are
+             * being scaled up), directly using a single BICUBIC will give us
+             * better results then using Chris Campbell's incremental scaling
+             * operation (and take a lot less time).
+             *
+             * If we are scaling down, we must use the incremental scaling
+             * algorithm for the best result.
+             */
             if (targetWidth > currentWidth || targetHeight > currentHeight) {
                 if (DEBUG)
                     log(1,
                             "QUALITY scale-up, a single BICUBIC scale operation will be used...");
 
-				/*
-				 * BILINEAR and BICUBIC look similar the smaller the scale jump
-				 * upwards is, if the scale is larger BICUBIC looks sharper and
-				 * less fuzzy. But most importantly we have to use BICUBIC to
-				 * match the contract of the QUALITY rendering scalingMethod.
-				 * This note is just here for anyone reading the code and
-				 * wondering how they can speed their own calls up.
-				 */
+                /*
+                 * BILINEAR and BICUBIC look similar the smaller the scale jump
+                 * upwards is, if the scale is larger BICUBIC looks sharper and
+                 * less fuzzy. But most importantly we have to use BICUBIC to
+                 * match the contract of the QUALITY rendering scalingMethod.
+                 * This note is just here for anyone reading the code and
+                 * wondering how they can speed their own calls up.
+                 */
                 result = scaleImage(src, targetWidth, targetHeight,
                         RenderingHints.VALUE_INTERPOLATION_BICUBIC);
             } else {
@@ -1566,16 +1566,16 @@ public class Resize {
                     log(1,
                             "QUALITY scale-down, incremental scaling will be used...");
 
-				/*
-				 * Originally we wanted to use BILINEAR interpolation here
-				 * because it takes 1/3rd the time that the BICUBIC
-				 * interpolation does, however, when scaling large images down
-				 * to most sizes bigger than a thumbnail we witnessed noticeable
-				 * "softening" in the resultant image with BILINEAR that would
-				 * be unexpectedly annoying to a user expecting a "QUALITY"
-				 * scale of their original image. Instead BICUBIC was chosen to
-				 * honor the contract of a QUALITY scale of the original image.
-				 */
+                /*
+                 * Originally we wanted to use BILINEAR interpolation here
+                 * because it takes 1/3rd the time that the BICUBIC
+                 * interpolation does, however, when scaling large images down
+                 * to most sizes bigger than a thumbnail we witnessed noticeable
+                 * "softening" in the resultant image with BILINEAR that would
+                 * be unexpectedly annoying to a user expecting a "QUALITY"
+                 * scale of their original image. Instead BICUBIC was chosen to
+                 * honor the contract of a QUALITY scale of the original image.
+                 */
                 result = scaleImageIncrementally(src, targetWidth,
                         targetHeight, scalingMethod,
                         RenderingHints.VALUE_INTERPOLATION_BICUBIC);
@@ -1635,51 +1635,51 @@ public class Resize {
         if (DEBUG)
             log(0, "Rotating Image [%s]...", rotation);
 
-		/*
-		 * Setup the default width/height values from our image.
-		 * 
-		 * In the case of a 90 or 270 (-90) degree rotation, these two values
-		 * flip-flop and we will correct those cases down below in the switch
-		 * statement.
-		 */
+        /*
+         * Setup the default width/height values from our image.
+         *
+         * In the case of a 90 or 270 (-90) degree rotation, these two values
+         * flip-flop and we will correct those cases down below in the switch
+         * statement.
+         */
         int newWidth = src.getWidth();
         int newHeight = src.getHeight();
 
-		/*
-		 * We create a transform per operation request as (oddly enough) it ends
-		 * up being faster for the VM to create, use and destroy these instances
-		 * than it is to re-use a single AffineTransform per-thread via the
-		 * AffineTransform.setTo(...) methods which was my first choice (less
-		 * object creation); after benchmarking this explicit case and looking
-		 * at just how much code gets run inside of setTo() I opted for a new AT
-		 * for every rotation.
-		 * 
-		 * Besides the performance win, trying to safely reuse AffineTransforms
-		 * via setTo(...) would have required ThreadLocal instances to avoid
-		 * race conditions where two or more resize threads are manipulating the
-		 * same transform before applying it.
-		 * 
-		 * Misusing ThreadLocals are one of the #1 reasons for memory leaks in
-		 * server applications and since we have no nice way to hook into the
-		 * init/destroy Servlet cycle or any other initialization cycle for this
-		 * library to automatically call ThreadLocal.remove() to avoid the
-		 * memory leak, it would have made using this library *safely* on the
-		 * server side much harder.
-		 * 
-		 * So we opt for creating individual transforms per rotation op and let
-		 * the VM clean them up in a GC. I only clarify all this reasoning here
-		 * for anyone else reading this code and being tempted to reuse the AT
-		 * instances of performance gains; there aren't any AND you get a lot of
-		 * pain along with it.
-		 */
+        /*
+         * We create a transform per operation request as (oddly enough) it ends
+         * up being faster for the VM to create, use and destroy these instances
+         * than it is to re-use a single AffineTransform per-thread via the
+         * AffineTransform.setTo(...) methods which was my first choice (less
+         * object creation); after benchmarking this explicit case and looking
+         * at just how much code gets run inside of setTo() I opted for a new AT
+         * for every rotation.
+         *
+         * Besides the performance win, trying to safely reuse AffineTransforms
+         * via setTo(...) would have required ThreadLocal instances to avoid
+         * race conditions where two or more resize threads are manipulating the
+         * same transform before applying it.
+         *
+         * Misusing ThreadLocals are one of the #1 reasons for memory leaks in
+         * server applications and since we have no nice way to hook into the
+         * init/destroy Servlet cycle or any other initialization cycle for this
+         * library to automatically call ThreadLocal.remove() to avoid the
+         * memory leak, it would have made using this library *safely* on the
+         * server side much harder.
+         *
+         * So we opt for creating individual transforms per rotation op and let
+         * the VM clean them up in a GC. I only clarify all this reasoning here
+         * for anyone else reading this code and being tempted to reuse the AT
+         * instances of performance gains; there aren't any AND you get a lot of
+         * pain along with it.
+         */
         AffineTransform tx = new AffineTransform();
 
         switch (rotation) {
             case CW_90:
-			/*
-			 * A 90 or -90 degree rotation will cause the height and width to
-			 * flip-flop from the original image to the rotated one.
-			 */
+                /*
+                 * A 90 or -90 degree rotation will cause the height and width to
+                 * flip-flop from the original image to the rotated one.
+                 */
                 newWidth = src.getHeight();
                 newHeight = src.getWidth();
 
@@ -1690,10 +1690,10 @@ public class Resize {
                 break;
 
             case CW_270:
-			/*
-			 * A 90 or -90 degree rotation will cause the height and width to
-			 * flip-flop from the original image to the rotated one.
-			 */
+                /*
+                 * A 90 or -90 degree rotation will cause the height and width to
+                 * flip-flop from the original image to the rotated one.
+                 */
                 newWidth = src.getHeight();
                 newHeight = src.getWidth();
 
@@ -1722,12 +1722,12 @@ public class Resize {
         BufferedImage result = createOptimalImage(src, newWidth, newHeight);
         Graphics2D g2d = (Graphics2D) result.createGraphics();
 
-		/*
-		 * Render the resultant image to our new rotatedImage buffer, applying
-		 * the AffineTransform that we calculated above during rendering so the
-		 * pixels from the old position are transposed to the new positions in
-		 * the resulting image correctly.
-		 */
+        /*
+         * Render the resultant image to our new rotatedImage buffer, applying
+         * the AffineTransform that we calculated above during rendering so the
+         * pixels from the old position are transposed to the new positions in
+         * the resulting image correctly.
+         */
         g2d.drawImage(src, tx, null);
         g2d.dispose();
 
@@ -2009,86 +2009,86 @@ public class Resize {
         int currentWidth = src.getWidth();
         int currentHeight = src.getHeight();
 
-		/*
-		 * The original QUALITY mode, representing Chris Campbell's algorithm,
-		 * is to step down by 1/2s every time when scaling the image
-		 * incrementally. Users pointed out that using this method to scale
-		 * images with noticeable straight lines left them really jagged in
-		 * smaller thumbnail format.
-		 * 
-		 * After investigation it was discovered that scaling incrementally by
-		 * smaller increments was the ONLY way to make the thumbnail sized
-		 * images look less jagged and more accurate; almost matching the
-		 * accuracy of Mac's built in thumbnail generation which is the highest
-		 * quality resize I've come across (better than GIMP Lanczos3 and
-		 * Windows 7).
-		 * 
-		 * A divisor of 7 was chose as using 5 still left some jaggedness in the
-		 * image while a divisor of 8 or higher made the resulting thumbnail too
-		 * soft; like our OP_ANTIALIAS convolve op had been forcibly applied to
-		 * the result even if the user didn't want it that soft.
-		 * 
-		 * Using a divisor of 7 for the ULTRA_QUALITY seemed to be the sweet
-		 * spot.
-		 * 
-		 * NOTE: Below when the actual fraction is used to calculate the small
-		 * portion to subtract from the current dimension, this is a
-		 * progressively smaller and smaller chunk. When the code was changed to
-		 * do a linear reduction of the image of equal steps for each
-		 * incremental resize (e.g. say 50px each time) the result was
-		 * significantly worse than the progressive approach used below; even
-		 * when a very high number of incremental steps (13) was tested.
-		 */
+        /*
+         * The original QUALITY mode, representing Chris Campbell's algorithm,
+         * is to step down by 1/2s every time when scaling the image
+         * incrementally. Users pointed out that using this method to scale
+         * images with noticeable straight lines left them really jagged in
+         * smaller thumbnail format.
+         *
+         * After investigation it was discovered that scaling incrementally by
+         * smaller increments was the ONLY way to make the thumbnail sized
+         * images look less jagged and more accurate; almost matching the
+         * accuracy of Mac's built in thumbnail generation which is the highest
+         * quality resize I've come across (better than GIMP Lanczos3 and
+         * Windows 7).
+         *
+         * A divisor of 7 was chose as using 5 still left some jaggedness in the
+         * image while a divisor of 8 or higher made the resulting thumbnail too
+         * soft; like our OP_ANTIALIAS convolve op had been forcibly applied to
+         * the result even if the user didn't want it that soft.
+         *
+         * Using a divisor of 7 for the ULTRA_QUALITY seemed to be the sweet
+         * spot.
+         *
+         * NOTE: Below when the actual fraction is used to calculate the small
+         * portion to subtract from the current dimension, this is a
+         * progressively smaller and smaller chunk. When the code was changed to
+         * do a linear reduction of the image of equal steps for each
+         * incremental resize (e.g. say 50px each time) the result was
+         * significantly worse than the progressive approach used below; even
+         * when a very high number of incremental steps (13) was tested.
+         */
         int fraction = (scalingMethod == Method.ULTRA_QUALITY ? 7 : 2);
 
         do {
             int prevCurrentWidth = currentWidth;
             int prevCurrentHeight = currentHeight;
 
-			/*
-			 * If the current width is bigger than our target, cut it in half
-			 * and sample again.
-			 */
+            /*
+             * If the current width is bigger than our target, cut it in half
+             * and sample again.
+             */
             if (currentWidth > targetWidth) {
                 currentWidth -= (currentWidth / fraction);
 
-				/*
-				 * If we cut the width too far it means we are on our last
-				 * iteration. Just set it to the target width and finish up.
-				 */
+                /*
+                 * If we cut the width too far it means we are on our last
+                 * iteration. Just set it to the target width and finish up.
+                 */
                 if (currentWidth < targetWidth)
                     currentWidth = targetWidth;
             }
 
-			/*
-			 * If the current height is bigger than our target, cut it in half
-			 * and sample again.
-			 */
+            /*
+             * If the current height is bigger than our target, cut it in half
+             * and sample again.
+             */
 
             if (currentHeight > targetHeight) {
                 currentHeight -= (currentHeight / fraction);
 
-				/*
-				 * If we cut the height too far it means we are on our last
-				 * iteration. Just set it to the target height and finish up.
-				 */
+                /*
+                 * If we cut the height too far it means we are on our last
+                 * iteration. Just set it to the target height and finish up.
+                 */
 
                 if (currentHeight < targetHeight)
                     currentHeight = targetHeight;
             }
 
-			/*
-			 * Stop when we cannot incrementally step down anymore.
-			 * 
-			 * This used to use a || condition, but that would cause problems
-			 * when using FIT_EXACT such that sometimes the width OR height
-			 * would not change between iterations, but the other dimension
-			 * would (e.g. resizing 500x500 to 500x250).
-			 * 
-			 * Now changing this to an && condition requires that both
-			 * dimensions do not change between a resize iteration before we
-			 * consider ourselves done.
-			 */
+            /*
+             * Stop when we cannot incrementally step down anymore.
+             *
+             * This used to use a || condition, but that would cause problems
+             * when using FIT_EXACT such that sometimes the width OR height
+             * would not change between iterations, but the other dimension
+             * would (e.g. resizing 500x500 to 500x250).
+             *
+             * Now changing this to an && condition requires that both
+             * dimensions do not change between a resize iteration before we
+             * consider ourselves done.
+             */
             if (prevCurrentWidth == currentWidth
                     && prevCurrentHeight == currentHeight)
                 break;
@@ -2101,31 +2101,31 @@ public class Resize {
             BufferedImage incrementalImage = scaleImage(src, currentWidth,
                     currentHeight, interpolationHintValue);
 
-			/*
-			 * Before re-assigning our interim (partially scaled)
-			 * incrementalImage to be the new src image before we iterate around
-			 * again to process it down further, we want to flush() the previous
-			 * src image IF (and only IF) it was one of our own temporary
-			 * BufferedImages created during this incremental down-sampling
-			 * cycle. If it wasn't one of ours, then it was the original
-			 * caller-supplied BufferedImage in which case we don't want to
-			 * flush() it and just leave it alone.
-			 */
+            /*
+             * Before re-assigning our interim (partially scaled)
+             * incrementalImage to be the new src image before we iterate around
+             * again to process it down further, we want to flush() the previous
+             * src image IF (and only IF) it was one of our own temporary
+             * BufferedImages created during this incremental down-sampling
+             * cycle. If it wasn't one of ours, then it was the original
+             * caller-supplied BufferedImage in which case we don't want to
+             * flush() it and just leave it alone.
+             */
             if (hasReassignedSrc)
                 src.flush();
 
-			/*
-			 * Now treat our incremental partially scaled image as the src image
-			 * and cycle through our loop again to do another incremental
-			 * scaling of it (if necessary).
-			 */
+            /*
+             * Now treat our incremental partially scaled image as the src image
+             * and cycle through our loop again to do another incremental
+             * scaling of it (if necessary).
+             */
             src = incrementalImage;
 
-			/*
-			 * Keep track of us re-assigning the original caller-supplied source
-			 * image with one of our interim BufferedImages so we know when to
-			 * explicitly flush the interim "src" on the next cycle through.
-			 */
+            /*
+             * Keep track of us re-assigning the original caller-supplied source
+             * image with one of our interim BufferedImages so we know when to
+             * explicitly flush the interim "src" on the next cycle through.
+             */
             hasReassignedSrc = true;
 
             // Track how many times we go through this cycle to scale the image.
@@ -2135,10 +2135,10 @@ public class Resize {
         if (DEBUG)
             log(2, "Incrementally Scaled Image in %d steps.", incrementCount);
 
-		/*
-		 * Once the loop has exited, the src image argument is now our scaled
-		 * result image that we want to return.
-		 */
+        /*
+         * Once the loop has exited, the src image argument is now our scaled
+         * result image that we want to return.
+         */
         return src;
     }
 }

@@ -31,9 +31,8 @@ public class IoUtils implements ImagingConstants {
     /**
      * Reads an InputStream to the end.
      * <p>
-     * 
-     * @param is
-     *            The InputStream to read.
+     *
+     * @param is The InputStream to read.
      * @return A byte array containing the contents of the InputStream
      * @see InputStream
      */
@@ -69,8 +68,7 @@ public class IoUtils implements ImagingConstants {
      * Reads a File into memory.
      * <p>
      *
-     * @param file
-     *            The File to read.
+     * @param file The File to read.
      * @return A byte array containing the contents of the File
      * @see InputStream
      */
@@ -117,7 +115,7 @@ public class IoUtils implements ImagingConstants {
 
         try {
             if (file.getParentFile() != null && !file.getParentFile().exists() &&
-                !file.getParentFile().mkdirs()) {
+                    !file.getParentFile().mkdirs()) {
                 throw new IOException(
                         "Could not create directory for file " + file);
             }
@@ -141,7 +139,7 @@ public class IoUtils implements ImagingConstants {
     }
 
     public static void copyStreamToStream(final InputStream src, final OutputStream dst,
-            final boolean close_streams) throws IOException {
+                                          final boolean close_streams) throws IOException {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
 

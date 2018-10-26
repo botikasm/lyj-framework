@@ -26,24 +26,22 @@ import java.io.InputStream;
 
 public class ScanExpediterInterlaced extends ScanExpediter {
     public ScanExpediterInterlaced(final int width, final int height, final InputStream is,
-            final BufferedImage bi, final int color_type, final int BitDepth, final int bits_per_pixel,
-            final PngChunkPlte fPNGChunkPLTE, final GammaCorrection fGammaCorrection,
-            final TransparencyFilter fTransparencyFilter)
-
-    {
+                                   final BufferedImage bi, final int color_type, final int BitDepth, final int bits_per_pixel,
+                                   final PngChunkPlte fPNGChunkPLTE, final GammaCorrection fGammaCorrection,
+                                   final TransparencyFilter fTransparencyFilter) {
         super(width, height, is, bi, color_type, BitDepth, bits_per_pixel,
                 fPNGChunkPLTE, fGammaCorrection, fTransparencyFilter);
     }
 
     private void visit(final int x, final int y, final BufferedImage bi, final BitParser fBitParser,
-            final int color_type, final int pixel_index_in_scanline,
-            final PngChunkPlte fPNGChunkPLTE, final GammaCorrection fGammaCorrection)
+                       final int color_type, final int pixel_index_in_scanline,
+                       final PngChunkPlte fPNGChunkPLTE, final GammaCorrection fGammaCorrection)
             throws ImageReadException, IOException {
         final int rgb = getRGB(fBitParser,
-        // color_type,
+                // color_type,
                 pixel_index_in_scanline
-        // ,
-        // fPNGChunkPLTE, fGammaCorrection
+                // ,
+                // fPNGChunkPLTE, fGammaCorrection
         );
 
         bi.setRGB(x, y, rgb);
@@ -52,10 +50,10 @@ public class ScanExpediterInterlaced extends ScanExpediter {
 
     }
 
-    private static final int Starting_Row[] = { 0, 0, 4, 0, 2, 0, 1 };
-    private static final int Starting_Col[] = { 0, 4, 0, 2, 0, 1, 0 };
-    private static final int Row_Increment[] = { 8, 8, 8, 4, 4, 2, 2 };
-    private static final int Col_Increment[] = { 8, 8, 4, 4, 2, 2, 1 };
+    private static final int Starting_Row[] = {0, 0, 4, 0, 2, 0, 1};
+    private static final int Starting_Col[] = {0, 4, 0, 2, 0, 1, 0};
+    private static final int Row_Increment[] = {8, 8, 8, 4, 4, 2, 2};
+    private static final int Col_Increment[] = {8, 8, 4, 4, 2, 2, 1};
 //    private static final int Block_Height[] = { 8, 8, 4, 4, 2, 2, 1 };
 //    private static final int Block_Width[] = { 8, 4, 4, 2, 2, 1, 1 };
 

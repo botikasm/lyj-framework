@@ -103,7 +103,7 @@ class T4_T6_Tables {
             new Entry("01001011", Integer.valueOf(60)),
             new Entry("00110010", Integer.valueOf(61)),
             new Entry("00110011", Integer.valueOf(62)),
-            new Entry("00110100", Integer.valueOf(63)), };
+            new Entry("00110100", Integer.valueOf(63)),};
 
     public static final Entry[] blackTerminatingCodes = {
             new Entry("0000110111", Integer.valueOf(0)),
@@ -169,7 +169,7 @@ class T4_T6_Tables {
             new Entry("000000101100", Integer.valueOf(60)),
             new Entry("000001011010", Integer.valueOf(61)),
             new Entry("000001100110", Integer.valueOf(62)),
-            new Entry("000001100111", Integer.valueOf(63)), };
+            new Entry("000001100111", Integer.valueOf(63)),};
 
     public static final Entry[] whiteMakeUpCodes = {
             new Entry("11011", Integer.valueOf(64)),
@@ -198,7 +198,7 @@ class T4_T6_Tables {
             new Entry("010011001", Integer.valueOf(1536)),
             new Entry("010011010", Integer.valueOf(1600)),
             new Entry("011000", Integer.valueOf(1664)),
-            new Entry("010011011", Integer.valueOf(1728)), };
+            new Entry("010011011", Integer.valueOf(1728)),};
 
     public static final Entry[] blackMakeUpCodes = {
             new Entry("0000001111", Integer.valueOf(64)),
@@ -227,7 +227,7 @@ class T4_T6_Tables {
             new Entry("0000001011010", Integer.valueOf(1536)),
             new Entry("0000001011011", Integer.valueOf(1600)),
             new Entry("0000001100100", Integer.valueOf(1664)),
-            new Entry("0000001100101", Integer.valueOf(1728)), };
+            new Entry("0000001100101", Integer.valueOf(1728)),};
 
     public static final Entry[] additionalMakeUpCodes = {
             new Entry("00000001000", Integer.valueOf(1792)),
@@ -242,7 +242,7 @@ class T4_T6_Tables {
             new Entry("000000011100", Integer.valueOf(2368)),
             new Entry("000000011101", Integer.valueOf(2432)),
             new Entry("000000011110", Integer.valueOf(2496)),
-            new Entry("000000011111", Integer.valueOf(2560)), };
+            new Entry("000000011111", Integer.valueOf(2560)),};
 
     public static final Entry EOL = new Entry("000000000001",
             Integer.valueOf(0));

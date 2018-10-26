@@ -41,6 +41,6 @@ enum ColorComponent {
             return (argb & 0xff);
         }
     };
-    
+
     public abstract int argbComponent(int argb);
 }

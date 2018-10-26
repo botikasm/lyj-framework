@@ -46,7 +46,7 @@ public final class MyLzwDecompressor {
     }
 
     public MyLzwDecompressor(final int initialCodeSize, final ByteOrder byteOrder,
-            final Listener listener) {
+                             final Listener listener) {
         this.listener = listener;
         this.byteOrder = byteOrder;
 
@@ -69,7 +69,7 @@ public final class MyLzwDecompressor {
         final int intial_entries_count = 1 << codeSize + 2;
 
         for (int i = 0; i < intial_entries_count; i++) {
-            table[i] = new byte[] { (byte) i, };
+            table[i] = new byte[]{(byte) i,};
         }
     }
 

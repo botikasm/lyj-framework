@@ -26,21 +26,21 @@ public class FileUtilsTest {
         final List<Thread> thlist = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
             //thlist.add(Async.invoke((args)->{
-                for (final File file : files) {
-                    try{
-                        final String ext = PathUtils.getFilenameExtension(file.getAbsolutePath(), true);
-                        if (null != ext && ext.equalsIgnoreCase(".java")) {
-                            final String content = FileUtils.readFileToString(file);
-                            if (StringUtils.hasText(content)) {
-                                count.inc();
-                            }
+            for (final File file : files) {
+                try {
+                    final String ext = PathUtils.getFilenameExtension(file.getAbsolutePath(), true);
+                    if (null != ext && ext.equalsIgnoreCase(".java")) {
+                        final String content = FileUtils.readFileToString(file);
+                        if (StringUtils.hasText(content)) {
+                            count.inc();
                         }
-                    }catch(Throwable t){
                     }
+                } catch (Throwable t) {
                 }
+            }
             //}));
         }
-        
+
         Async.joinAllThreads(thlist);
 
         System.out.println("READ FILES: " + count.value());

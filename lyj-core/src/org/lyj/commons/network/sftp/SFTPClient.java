@@ -520,7 +520,7 @@ public class SFTPClient {
                 cmd.equals("get-resume") || cmd.equals("get-append") ||
                 cmd.equals("put") ||
                 cmd.equals("put-resume") || cmd.equals("put-append")
-                ) {
+        ) {
             if (cmds.size() != 2 && cmds.size() != 3) return;
             String p1 = (String) cmds.elementAt(1);
 //	  String p2=p1;

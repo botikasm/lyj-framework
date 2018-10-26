@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.logging;
 
@@ -47,12 +47,12 @@ public class Logger {
 
     public void setName(final String name) {
         this._name = name;
-        if (StringUtils.hasText(name) && StringUtils.contains(name, ".")){
+        if (StringUtils.hasText(name) && StringUtils.contains(name, ".")) {
             _short_name = CollectionUtils.getLast(name, ".");
         }
     }
 
-    public String getShortName(){
+    public String getShortName() {
         return _short_name;
     }
 

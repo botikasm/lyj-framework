@@ -37,7 +37,7 @@ public class FileChunksControllerTest {
 
         int count = chunks.count(chunk_id);
 
-        assertTrue(count==1);
+        assertTrue(count == 1);
     }
 
     @Test
@@ -60,8 +60,8 @@ public class FileChunksControllerTest {
 
 
         final String out_filename = PathUtils.concat(PathUtils.getTemporaryDirectory(), "ARCHIVIO_out.zip");
-        if(FileUtils.exists(out_filename)){
-            System.out.println(out_filename + ": " + FileUtils.getSize(out_filename) );
+        if (FileUtils.exists(out_filename)) {
+            System.out.println(out_filename + ": " + FileUtils.getSize(out_filename));
             FileUtils.delete(out_filename);
         }
 

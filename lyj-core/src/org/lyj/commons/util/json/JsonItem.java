@@ -3,7 +3,6 @@ package org.lyj.commons.util.json;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.lyj.commons.Delegates;
 import org.lyj.commons.logging.AbstractLogEmitter;
 import org.lyj.commons.util.*;
 
@@ -225,12 +224,12 @@ public class JsonItem
 
     public byte getByte(final String key) throws JSONException {
         final String value = this.getString(key);
-        return (byte)ConversionUtils.toInteger(value, 0);
+        return (byte) ConversionUtils.toInteger(value, 0);
     }
 
     public byte getByte(final String key, final byte defVal) throws JSONException {
         final String value = this.getString(key);
-        return (byte)ConversionUtils.toInteger(value, (int)defVal);
+        return (byte) ConversionUtils.toInteger(value, (int) defVal);
     }
 
     public boolean getBoolean(final String key) throws JSONException {

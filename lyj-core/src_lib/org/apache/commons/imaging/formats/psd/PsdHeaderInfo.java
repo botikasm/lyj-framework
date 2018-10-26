@@ -30,7 +30,7 @@ public class PsdHeaderInfo {
     public final int Mode;
 
     public PsdHeaderInfo(final int Version, final byte Reserved[], final int Channels, final int Rows,
-            final int Columns, final int Depth, final int Mode) {
+                         final int Columns, final int Depth, final int Mode) {
         this.Version = Version;
         this.Reserved = Reserved;
         this.Channels = Channels;

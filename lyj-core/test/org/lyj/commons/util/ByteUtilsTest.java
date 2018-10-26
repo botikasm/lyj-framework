@@ -21,7 +21,7 @@ public class ByteUtilsTest {
         final File file = new File(PathUtils.getAbsolutePath("./sample_file.txt"));
 
         int count = 0;
-        final TokenInfo ti = new TokenInfo(file.length(), (long)10000);
+        final TokenInfo ti = new TokenInfo(file.length(), (long) 10000);
         for (int i = 0; i < ti.getChunkCount(); i++) {
             final int off = (int) ti.getChunkOffsets()[i];
             byte[] data = ByteUtils.getBytes(file, off, 10000);

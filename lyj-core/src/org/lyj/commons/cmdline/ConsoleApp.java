@@ -101,8 +101,8 @@ public abstract class ConsoleApp {
         try {
             while (true) {
                 final String key = read();
-                if(null==key){
-                   break;
+                if (null == key) {
+                    break;
                 } else if (!StringUtils.hasText(key)) {
                     this.reset();
                 } else {

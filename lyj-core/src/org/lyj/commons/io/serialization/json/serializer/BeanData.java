@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.io.serialization.json.serializer;
 

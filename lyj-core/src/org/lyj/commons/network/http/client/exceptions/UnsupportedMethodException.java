@@ -7,7 +7,7 @@ import org.lyj.commons.util.FormatUtils;
  */
 public class UnsupportedMethodException extends Exception {
 
-    public UnsupportedMethodException(final String method){
+    public UnsupportedMethodException(final String method) {
         super(FormatUtils.format("Method not supported: '%s'", method));
     }
 

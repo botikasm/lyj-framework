@@ -7,7 +7,6 @@ import org.lyj.commons.util.StringUtils;
 
 /**
  * Utility abstract class for Log Emitters (all classes needing a logger)
- *
  */
 public class AbstractLogEmitter
         implements ILogEmitter {
@@ -22,11 +21,11 @@ public class AbstractLogEmitter
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
-    public AbstractLogEmitter(){
+    public AbstractLogEmitter() {
         _logger = LoggingUtils.getLogger(this);
     }
 
-    public AbstractLogEmitter(final Logger logger){
+    public AbstractLogEmitter(final Logger logger) {
         _logger = logger;
     }
 
@@ -47,7 +46,7 @@ public class AbstractLogEmitter
 
         final String pattern;
         final Object[] params;
-        if(StringUtils.hasText(methodName)){
+        if (StringUtils.hasText(methodName)) {
             final String name = logger.getShortName().concat(".").concat(methodName);
             pattern = null == t ? "[%s] %s" : "[%s] %s: %s";
             params = null == t ? new Object[]{name, message} : new Object[]{name, message, t};
@@ -75,7 +74,7 @@ public class AbstractLogEmitter
         this.log(Level.SEVERE, methodName, ExceptionUtils.getMessage(error));
     }
 
-    public void error(final String methodName, final String template, final Object...args) {
+    public void error(final String methodName, final String template, final Object... args) {
         this.log(Level.SEVERE, methodName, FormatUtils.format(template, args));
     }
 

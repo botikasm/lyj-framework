@@ -94,7 +94,7 @@ public class BinaryInputStream extends InputStream {
     }
 
     public final void readAndVerifyBytes(final String name, final byte expected[],
-            final String exception) throws ImageReadException, IOException {
+                                         final String exception) throws ImageReadException, IOException {
         BinaryFunctions.readAndVerifyBytes(name, is, expected, exception);
     }
 
@@ -134,7 +134,7 @@ public class BinaryInputStream extends InputStream {
     }
 
     public final boolean compareBytes(final byte a[], final int aStart, final byte b[],
-            final int bStart, final int length) {
+                                      final int bStart, final int length) {
         return BinaryFunctions.compareBytes(a, aStart, b, bStart, length);
     }
 
@@ -142,7 +142,7 @@ public class BinaryInputStream extends InputStream {
             throws IOException {
         return BinaryFunctions.read4Bytes(name, is, exception, byteOrder);
     }
-    
+
     public final int read4Bytes(final String exception) throws IOException {
         return BinaryFunctions.read4Bytes("", is, exception, byteOrder);
     }
@@ -151,7 +151,7 @@ public class BinaryInputStream extends InputStream {
             throws IOException {
         return BinaryFunctions.read3Bytes(name, is, exception, byteOrder);
     }
-    
+
     public final int read3Bytes(final String name, final String exception) throws IOException {
         return BinaryFunctions.read3Bytes(name, is, exception, byteOrder);
     }
@@ -195,7 +195,7 @@ public class BinaryInputStream extends InputStream {
     }
 
     public final byte[] getRAFBytes(final RandomAccessFile raf, final long pos,
-            final int length, final String exception) throws IOException {
+                                    final int length, final String exception) throws IOException {
         return BinaryFunctions.getRAFBytes(raf, pos, length, exception);
     }
 

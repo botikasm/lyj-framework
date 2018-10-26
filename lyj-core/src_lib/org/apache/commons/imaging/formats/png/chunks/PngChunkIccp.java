@@ -29,7 +29,7 @@ public class PngChunkIccp extends PngChunk {
     public final byte UncompressedProfile[];
 
     public PngChunkIccp(
-    // PngImageParser parser,
+            // PngImageParser parser,
             final int Length, final int ChunkType, final int CRC, final byte bytes[])
             throws ImageReadException, IOException {
         super(Length, ChunkType, CRC, bytes);
@@ -65,7 +65,7 @@ public class PngChunkIccp extends PngChunk {
         if (getDebug()) {
             System.out.println("UncompressedProfile: "
                     + ((UncompressedProfile == null) ? "null" : ""
-                            + bytes.length));
+                    + bytes.length));
         }
     }
 

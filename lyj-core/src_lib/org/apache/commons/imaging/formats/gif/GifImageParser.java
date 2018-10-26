@@ -55,7 +55,7 @@ public class GifImageParser extends ImageParser {
 
     private static final String DEFAULT_EXTENSION = ".gif";
 
-    private static final String ACCEPTED_EXTENSIONS[] = { DEFAULT_EXTENSION, };
+    private static final String ACCEPTED_EXTENSIONS[] = {DEFAULT_EXTENSION,};
 
     @Override
     protected String[] getAcceptedExtensions() {
@@ -64,14 +64,14 @@ public class GifImageParser extends ImageParser {
 
     @Override
     protected ImageFormat[] getAcceptedTypes() {
-        return new ImageFormat[] { ImageFormat.IMAGE_FORMAT_GIF, //
+        return new ImageFormat[]{ImageFormat.IMAGE_FORMAT_GIF, //
         };
     }
 
-    private static final byte GIF_HEADER_SIGNATURE[] = { 71, 73, 70 };
+    private static final byte GIF_HEADER_SIGNATURE[] = {71, 73, 70};
 
     private GifHeaderInfo readHeader(final InputStream is,
-            final FormatCompliance formatCompliance) throws ImageReadException,
+                                     final FormatCompliance formatCompliance) throws ImageReadException,
             IOException {
         final byte identifier1 = readByte("identifier1", is, "Not a Valid GIF File");
         final byte identifier2 = readByte("identifier2", is, "Not a Valid GIF File");
@@ -83,10 +83,10 @@ public class GifImageParser extends ImageParser {
 
         if (formatCompliance != null) {
             formatCompliance.compare_bytes("Signature", GIF_HEADER_SIGNATURE,
-                    new byte[] { identifier1, identifier2, identifier3, });
+                    new byte[]{identifier1, identifier2, identifier3,});
             formatCompliance.compare("version", 56, version1);
             formatCompliance
-                    .compare("version", new int[] { 55, 57, }, version2);
+                    .compare("version", new int[]{55, 57,}, version2);
             formatCompliance.compare("version", 97, version3);
         }
 
@@ -154,7 +154,7 @@ public class GifImageParser extends ImageParser {
     }
 
     private GraphicControlExtension readGraphicControlExtension(final int code,
-            final InputStream is) throws ImageReadException, IOException {
+                                                                final InputStream is) throws ImageReadException, IOException {
         readByte("block_size", is, "GIF: corrupt GraphicControlExt");
         final int packed = readByte("packed fields", is,
                 "GIF: corrupt GraphicControlExt");
@@ -187,7 +187,7 @@ public class GifImageParser extends ImageParser {
     }
 
     protected GenericGifBlock readGenericGIFBlock(final InputStream is, final int code,
-            final byte first[]) throws IOException {
+                                                  final byte first[]) throws IOException {
         final List<byte[]> subblocks = new ArrayList<byte[]>();
 
         if (first != null) {
@@ -217,7 +217,7 @@ public class GifImageParser extends ImageParser {
             | XMP_EXTENSION;
 
     private List<GifBlock> readBlocks(final GifHeaderInfo ghi, final InputStream is,
-            final boolean stopBeforeImageData, final FormatCompliance formatCompliance)
+                                      final boolean stopBeforeImageData, final FormatCompliance formatCompliance)
             throws ImageReadException, IOException {
         final List<GifBlock> result = new ArrayList<GifBlock>();
 
@@ -225,95 +225,95 @@ public class GifImageParser extends ImageParser {
             final int code = is.read();
 
             switch (code) {
-            case -1:
-                throw new ImageReadException("GIF: unexpected end of data");
+                case -1:
+                    throw new ImageReadException("GIF: unexpected end of data");
 
-            case IMAGE_SEPARATOR:
-                final ImageDescriptor id = readImageDescriptor(ghi, code, is,
-                        stopBeforeImageData, formatCompliance);
-                result.add(id);
-                // if(stopBeforeImageData)
-                // return result;
+                case IMAGE_SEPARATOR:
+                    final ImageDescriptor id = readImageDescriptor(ghi, code, is,
+                            stopBeforeImageData, formatCompliance);
+                    result.add(id);
+                    // if(stopBeforeImageData)
+                    // return result;
 
-                break;
-
-            case EXTENSION_CODE: // extension
-            {
-                final int extensionCode = is.read();
-                final int completeCode = ((0xff & code) << 8)
-                        | (0xff & extensionCode);
-
-                switch (extensionCode) {
-                case 0xf9:
-                    final GraphicControlExtension gce = readGraphicControlExtension(
-                            completeCode, is);
-                    result.add(gce);
                     break;
 
-                case COMMENT_EXTENSION:
-                case PLAIN_TEXT_EXTENSION: {
-                    final GenericGifBlock block = readGenericGIFBlock(is,
-                            completeCode);
-                    result.add(block);
-                    break;
-                }
-
-                case APPLICATION_EXTENSION_LABEL: // 255 (hex 0xFF) Application
-                    // Extension Label
+                case EXTENSION_CODE: // extension
                 {
-                    final byte label[] = readSubBlock(is);
+                    final int extensionCode = is.read();
+                    final int completeCode = ((0xff & code) << 8)
+                            | (0xff & extensionCode);
 
-                    if (formatCompliance != null) {
-                        formatCompliance.addComment(
-                                "Unknown Application Extension ("
-                                        + new String(label, "US-ASCII") + ")",
-                                completeCode);
-                    }
+                    switch (extensionCode) {
+                        case 0xf9:
+                            final GraphicControlExtension gce = readGraphicControlExtension(
+                                    completeCode, is);
+                            result.add(gce);
+                            break;
 
-                    // if (label == new String("ICCRGBG1"))
-                    {
-                        // GIF's can have embedded ICC Profiles - who knew?
-                    }
+                        case COMMENT_EXTENSION:
+                        case PLAIN_TEXT_EXTENSION: {
+                            final GenericGifBlock block = readGenericGIFBlock(is,
+                                    completeCode);
+                            result.add(block);
+                            break;
+                        }
 
-                    if ((label != null) && (label.length > 0)) {
-                        final GenericGifBlock block = readGenericGIFBlock(is,
-                                completeCode, label);
-                        result.add(block);
+                        case APPLICATION_EXTENSION_LABEL: // 255 (hex 0xFF) Application
+                            // Extension Label
+                        {
+                            final byte label[] = readSubBlock(is);
+
+                            if (formatCompliance != null) {
+                                formatCompliance.addComment(
+                                        "Unknown Application Extension ("
+                                                + new String(label, "US-ASCII") + ")",
+                                        completeCode);
+                            }
+
+                            // if (label == new String("ICCRGBG1"))
+                            {
+                                // GIF's can have embedded ICC Profiles - who knew?
+                            }
+
+                            if ((label != null) && (label.length > 0)) {
+                                final GenericGifBlock block = readGenericGIFBlock(is,
+                                        completeCode, label);
+                                result.add(block);
+                            }
+                            break;
+                        }
+
+                        default: {
+
+                            if (formatCompliance != null) {
+                                formatCompliance.addComment("Unknown block",
+                                        completeCode);
+                            }
+
+                            final GenericGifBlock block = readGenericGIFBlock(is,
+                                    completeCode);
+                            result.add(block);
+                            break;
+                        }
                     }
-                    break;
                 }
-
-                default: {
-
-                    if (formatCompliance != null) {
-                        formatCompliance.addComment("Unknown block",
-                                completeCode);
-                    }
-
-                    final GenericGifBlock block = readGenericGIFBlock(is,
-                            completeCode);
-                    result.add(block);
-                    break;
-                }
-                }
-            }
                 break;
 
-            case TERMINATOR_BYTE:
-                return result;
+                case TERMINATOR_BYTE:
+                    return result;
 
-            case 0x00: // bad byte, but keep going and see what happens
-                break;
+                case 0x00: // bad byte, but keep going and see what happens
+                    break;
 
-            default:
-                throw new ImageReadException("GIF: unknown code: " + code);
+                default:
+                    throw new ImageReadException("GIF: unknown code: " + code);
             }
         }
     }
 
     private ImageDescriptor readImageDescriptor(final GifHeaderInfo ghi,
-            final int blockCode, final InputStream is, final boolean stopBeforeImageData,
-            final FormatCompliance formatCompliance) throws ImageReadException,
+                                                final int blockCode, final InputStream is, final boolean stopBeforeImageData,
+                                                final FormatCompliance formatCompliance) throws ImageReadException,
             IOException {
         final int ImageLeftPosition = read2Bytes("Image Left Position", is,
                 "Not a Valid GIF File");
@@ -408,7 +408,7 @@ public class GifImageParser extends ImageParser {
     }
 
     private byte[] readColorTable(final InputStream is, final int ct_size,
-            final FormatCompliance formatCompliance) throws IOException {
+                                  final FormatCompliance formatCompliance) throws IOException {
         final int actual_size = convertColorTableSize(ct_size);
 
         final byte bytes[] = readBytes("block", is, actual_size,
@@ -428,13 +428,13 @@ public class GifImageParser extends ImageParser {
     }
 
     private ImageContents readFile(final ByteSource byteSource,
-            final boolean stopBeforeImageData) throws ImageReadException, IOException {
+                                   final boolean stopBeforeImageData) throws ImageReadException, IOException {
         return readFile(byteSource, stopBeforeImageData,
                 FormatCompliance.getDefault());
     }
 
     private ImageContents readFile(final ByteSource byteSource,
-            final boolean stopBeforeImageData, final FormatCompliance formatCompliance)
+                                   final boolean stopBeforeImageData, final FormatCompliance formatCompliance)
             throws ImageReadException, IOException {
         InputStream is = null;
         try {
@@ -468,13 +468,13 @@ public class GifImageParser extends ImageParser {
     }
 
     @Override
-    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String,Object> params)
+    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
 
     @Override
-    public Dimension getImageSize(final ByteSource byteSource, final Map<String,Object> params)
+    public Dimension getImageSize(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final ImageContents blocks = readFile(byteSource, false);
 
@@ -509,7 +509,7 @@ public class GifImageParser extends ImageParser {
     }
 
     @Override
-    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String,Object> params)
+    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
@@ -530,7 +530,7 @@ public class GifImageParser extends ImageParser {
     }
 
     @Override
-    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String,Object> params)
+    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final ImageContents blocks = readFile(byteSource, false);
 
@@ -605,14 +605,14 @@ public class GifImageParser extends ImageParser {
         }
 
         imageData.toString(pw, "");
-        
+
         final ImageContents blocks = readFile(byteSource, false);
 
         pw.println("gif.blocks: " + blocks.blocks.size());
         for (int i = 0; i < blocks.blocks.size(); i++) {
             final GifBlock gifBlock = blocks.blocks.get(i);
             this.debugNumber(pw, "\t" + i + " ("
-                    + gifBlock.getClass().getName() + ")",
+                            + gifBlock.getClass().getName() + ")",
                     gifBlock.blockCode, 4);
         }
 
@@ -656,7 +656,7 @@ public class GifImageParser extends ImageParser {
     }
 
     @Override
-    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String,Object> params)
+    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final ImageContents imageContents = readFile(byteSource, false);
 
@@ -775,10 +775,10 @@ public class GifImageParser extends ImageParser {
     private static final int SORT_FLAG_MASK = 1 << 5;
 
     @Override
-    public void writeImage(final BufferedImage src, final OutputStream os, Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, Map<String, Object> params)
             throws ImageWriteException, IOException {
         // make copy of params; we'll clear keys as we consume them.
-        params = new HashMap<String,Object>(params);
+        params = new HashMap<String, Object>(params);
 
         final boolean verbose = ParamMap.getParamBoolean(params, PARAM_KEY_VERBOSE,
                 false);
@@ -848,9 +848,9 @@ public class GifImageParser extends ImageParser {
 
         final int colorTableScaleLessOne = (palette_size > 128) ? 7
                 : (palette_size > 64) ? 6 : (palette_size > 32) ? 5
-                        : (palette_size > 16) ? 4 : (palette_size > 8) ? 3
-                                : (palette_size > 4) ? 2
-                                        : (palette_size > 2) ? 1 : 0;
+                : (palette_size > 16) ? 4 : (palette_size > 8) ? 3
+                : (palette_size > 4) ? 2
+                : (palette_size > 2) ? 1 : 0;
 
         final int colorTableSizeInFormat = 1 << (colorTableScaleLessOne + 1);
         {
@@ -1017,7 +1017,7 @@ public class GifImageParser extends ImageParser {
         os.close();
     }
 
-    private static final byte XMP_APPLICATION_ID_AND_AUTH_CODE[] = { 0x58, // X
+    private static final byte XMP_APPLICATION_ID_AND_AUTH_CODE[] = {0x58, // X
             0x4D, // M
             0x50, // P
             0x20, //
@@ -1033,15 +1033,13 @@ public class GifImageParser extends ImageParser {
     /**
      * Extracts embedded XML metadata as XML string.
      * <p>
-     * 
-     * @param byteSource
-     *            File containing image data.
-     * @param params
-     *            Map of optional parameters, defined in SanselanConstants.
+     *
+     * @param byteSource File containing image data.
+     * @param params     Map of optional parameters, defined in SanselanConstants.
      * @return Xmp Xml as String, if present. Otherwise, returns null.
      */
     @Override
-    public String getXmpXml(final ByteSource byteSource, final Map<String,Object> params)
+    public String getXmpXml(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
 
         InputStream is = null;
@@ -1087,7 +1085,7 @@ public class GifImageParser extends ImageParser {
                     continue;
                 }
                 if (!compareBytes(blockBytes, blockBytes.length
-                        - GIF_MAGIC_TRAILER.length, GIF_MAGIC_TRAILER, 0,
+                                - GIF_MAGIC_TRAILER.length, GIF_MAGIC_TRAILER, 0,
                         GIF_MAGIC_TRAILER.length)) {
                     throw new ImageReadException(
                             "XMP block in GIF missing magic trailer.");

@@ -48,6 +48,7 @@ public class MapMarker {
     /**
      * size: (optional) specifies the size of marker from the set {tiny, mid, small}.
      * If no size parameter is set, the marker will appear in its default (normal) size.
+     *
      * @param value size of marker from the set {tiny, mid, small}
      * @return this instance
      */
@@ -85,6 +86,7 @@ public class MapMarker {
      * Note that default and mid sized markers are the only markers capable of displaying
      * an alphanumeric-character parameter. tiny and small markers are not capable of
      * displaying an alphanumeric-character.
+     *
      * @param value Single uppercase character.
      * @return this instance
      */
@@ -122,24 +124,24 @@ public class MapMarker {
 
     private void appendField(final StringBuilder sb,
                              final String prefix,
-                             final Object value){
-        if(null!=value){
-            if(sb.length()>0) {
+                             final Object value) {
+        if (null != value) {
+            if (sb.length() > 0) {
                 sb.append(SEP);
             }
             sb.append(prefix).append(value);
         }
     }
 
-    private String buildString(){
+    private String buildString() {
         final StringBuilder sb = new StringBuilder();
         this.appendField(sb, "color:", _color);
         this.appendField(sb, "size:", _size);
         this.appendField(sb, "label:", _label);
-        if(sb.length()>0) {
+        if (sb.length() > 0) {
             sb.append(SEP);
         }
-        if(StringUtils.hasText(_address)) {
+        if (StringUtils.hasText(_address)) {
             // address
             sb.append(StringUtils.urlEncodeSpaces(_address));
         } else {

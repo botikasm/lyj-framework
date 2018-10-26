@@ -24,7 +24,7 @@ public class TestInitializer {
 
     private static class Launcher extends LyjLauncher {
 
-        public Launcher(final String[] args){
+        public Launcher(final String[] args) {
             super(args);
         }
 

@@ -2,8 +2,8 @@ package org.lyj.commons.session;
 
 import org.json.JSONObject;
 import org.lyj.commons.async.future.Loop;
-import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.util.*;
 
@@ -117,7 +117,7 @@ public class Session {
     // ------------------------------------------------------------------------
 
     public void addMonitor(final ISessionMonitor monitor) {
-        if (null!=_monitors && null != monitor) {
+        if (null != _monitors && null != monitor) {
             _monitors.add(monitor);
         }
     }

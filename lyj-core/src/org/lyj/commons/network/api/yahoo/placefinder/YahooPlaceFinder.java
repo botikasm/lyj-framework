@@ -27,8 +27,8 @@ import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.network.URLUtils;
 import org.lyj.commons.util.FormatUtils;
-import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -111,12 +111,12 @@ public class YahooPlaceFinder {
      * @param latitude
      * @param longitude
      * @return Address Object:
-     *         {"quality":99,"latitude":"44.005531","longitude":"12.639030","offsetlat":"44.005531",
-     *         "offsetlon":"12.639030","radius":500,"name":"44.00553135 12.63902965",
-     *         "line1":"via Ortles, 5","line2":"47838 Riccione RN","line3":"","line4":"Italy","house":"5",
-     *         "street":"via Ortles","xstreet":"","unittype":"","unit":"","postal":"47838","neighborhood":"",
-     *         "city":"Riccione","county":"Rimini","state":"Emilia Romagna","country":"Italy","countrycode":"IT",
-     *         "statecode":"","countycode":"RN","hash":"","woeid":12846205,"woetype":11,"uzip":"47838"}
+     * {"quality":99,"latitude":"44.005531","longitude":"12.639030","offsetlat":"44.005531",
+     * "offsetlon":"12.639030","radius":500,"name":"44.00553135 12.63902965",
+     * "line1":"via Ortles, 5","line2":"47838 Riccione RN","line3":"","line4":"Italy","house":"5",
+     * "street":"via Ortles","xstreet":"","unittype":"","unit":"","postal":"47838","neighborhood":"",
+     * "city":"Riccione","county":"Rimini","state":"Emilia Romagna","country":"Italy","countrycode":"IT",
+     * "statecode":"","countycode":"RN","hash":"","woeid":12846205,"woetype":11,"uzip":"47838"}
      */
     public JSONObject reverseGeocoding(final double latitude, final double longitude) {
         return this.reverseGeocoding("en_US", latitude, longitude);

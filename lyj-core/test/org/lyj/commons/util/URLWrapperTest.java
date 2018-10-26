@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.net.URL;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by angelogeminiani on 27/02/17.

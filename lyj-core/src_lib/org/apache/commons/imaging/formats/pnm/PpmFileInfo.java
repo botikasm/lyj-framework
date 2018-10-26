@@ -26,7 +26,7 @@ import java.io.InputStream;
 public class PpmFileInfo extends FileInfo {
     private final int max;
     private final float scale;
-    private final int bytesPerSample; 
+    private final int bytesPerSample;
 
     public PpmFileInfo(final int width, final int height, final boolean RAWBITS, final int max) throws ImageReadException {
         super(width, height, RAWBITS);
@@ -45,7 +45,7 @@ public class PpmFileInfo extends FileInfo {
         }
         this.max = max;
     }
-    
+
     @Override
     public boolean hasAlpha() {
         return false;

@@ -59,7 +59,7 @@ public class PngImageParser extends ImageParser implements PngConstants {
 
     private static final String DEFAULT_EXTENSION = ".png";
 
-    private static final String ACCEPTED_EXTENSIONS[] = { DEFAULT_EXTENSION, };
+    private static final String ACCEPTED_EXTENSIONS[] = {DEFAULT_EXTENSION,};
 
     @Override
     protected String[] getAcceptedExtensions() {
@@ -68,7 +68,7 @@ public class PngImageParser extends ImageParser implements PngConstants {
 
     @Override
     protected ImageFormat[] getAcceptedTypes() {
-        return new ImageFormat[] { ImageFormat.IMAGE_FORMAT_PNG, //
+        return new ImageFormat[]{ImageFormat.IMAGE_FORMAT_PNG, //
         };
     }
 
@@ -107,7 +107,7 @@ public class PngImageParser extends ImageParser implements PngConstants {
             List<PngChunk> chunks = null;
 
             readSignature(is);
-            chunks = readChunks(is, new int[] { chunkType, }, true);
+            chunks = readChunks(is, new int[]{chunkType,}, true);
             return chunks.size() > 0;
         } finally {
             try {
@@ -135,7 +135,7 @@ public class PngImageParser extends ImageParser implements PngConstants {
     }
 
     private List<PngChunk> readChunks(final InputStream is, final int chunkTypes[],
-            final boolean returnAfterFirst) throws ImageReadException, IOException {
+                                      final boolean returnAfterFirst) throws ImageReadException, IOException {
         final List<PngChunk> result = new ArrayList<PngChunk>();
 
         while (true) {
@@ -187,7 +187,7 @@ public class PngImageParser extends ImageParser implements PngConstants {
                     result.add(new PngChunkGama(length, chunkType, CRC, bytes));
                 } else if (chunkType == iTXt) {
                     result.add(new PngChunkItxt(length, chunkType, CRC, bytes));
-                } else { 
+                } else {
                     result.add(new PngChunk(length, chunkType, CRC, bytes));
                 }
 
@@ -214,7 +214,7 @@ public class PngImageParser extends ImageParser implements PngConstants {
     }
 
     private List<PngChunk> readChunks(final ByteSource byteSource, final int chunkTypes[],
-            final boolean returnAfterFirst) throws ImageReadException, IOException {
+                                      final boolean returnAfterFirst) throws ImageReadException, IOException {
         InputStream is = null;
 
         try {
@@ -235,9 +235,9 @@ public class PngImageParser extends ImageParser implements PngConstants {
     }
 
     @Override
-    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String,Object> params)
+    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
-        final List<PngChunk> chunks = readChunks(byteSource, new int[] { iCCP, },
+        final List<PngChunk> chunks = readChunks(byteSource, new int[]{iCCP,},
                 true);
 
         if ((chunks == null) || (chunks.size() < 1)) {
@@ -257,9 +257,9 @@ public class PngImageParser extends ImageParser implements PngConstants {
     }
 
     @Override
-    public Dimension getImageSize(final ByteSource byteSource, final Map<String,Object> params)
+    public Dimension getImageSize(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
-        final List<PngChunk> chunks = readChunks(byteSource, new int[] { IHDR, },
+        final List<PngChunk> chunks = readChunks(byteSource, new int[]{IHDR,},
                 true);
 
         if ((chunks == null) || (chunks.size() < 1)) {
@@ -285,10 +285,10 @@ public class PngImageParser extends ImageParser implements PngConstants {
     }
 
     @Override
-    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String,Object> params)
+    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final List<PngChunk> chunks = readChunks(byteSource,
-                new int[] { tEXt, zTXt, }, true);
+                new int[]{tEXt, zTXt,}, true);
 
         if ((chunks == null) || (chunks.size() < 1)) {
             return null;
@@ -335,16 +335,16 @@ public class PngImageParser extends ImageParser implements PngConstants {
         // 6 8,16 Each pixel is an R,G,B triple,
         // followed by an alpha sample.
         switch (colorType) {
-        case COLOR_TYPE_GREYSCALE:
-            return true;
-        case COLOR_TYPE_TRUE_COLOR:
-            return false;
-        case COLOR_TYPE_INDEXED_COLOR:
-            return false;
-        case COLOR_TYPE_GREYSCALE_WITH_ALPHA:
-            return true;
-        case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA:
-            return false;
+            case COLOR_TYPE_GREYSCALE:
+                return true;
+            case COLOR_TYPE_TRUE_COLOR:
+                return false;
+            case COLOR_TYPE_INDEXED_COLOR:
+                return false;
+            case COLOR_TYPE_GREYSCALE_WITH_ALPHA:
+                return true;
+            case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA:
+                return false;
         }
 
         // return -1;
@@ -381,16 +381,16 @@ public class PngImageParser extends ImageParser implements PngConstants {
         // 6 8,16 Each pixel is an R,G,B triple,
         // followed by an alpha sample.
         switch (colorType) {
-        case COLOR_TYPE_GREYSCALE:
-            return 1;
-        case COLOR_TYPE_TRUE_COLOR:
-            return 3;
-        case COLOR_TYPE_INDEXED_COLOR:
-            return 1; // is this accurate ? how may bits per index?
-        case COLOR_TYPE_GREYSCALE_WITH_ALPHA:
-            return 2;
-        case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA:
-            return 4;
+            case COLOR_TYPE_GREYSCALE:
+                return 1;
+            case COLOR_TYPE_TRUE_COLOR:
+                return 3;
+            case COLOR_TYPE_INDEXED_COLOR:
+                return 1; // is this accurate ? how may bits per index?
+            case COLOR_TYPE_GREYSCALE_WITH_ALPHA:
+                return 2;
+            case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA:
+                return 4;
         }
 
         // return -1;
@@ -412,43 +412,43 @@ public class PngImageParser extends ImageParser implements PngConstants {
 
     private boolean hasAlphaChannel(final int ColorType) throws ImageReadException {
         switch (ColorType) {
-        case COLOR_TYPE_GREYSCALE: // 1,2,4,8,16 Each pixel is a grayscale
-            // sample.
-        case COLOR_TYPE_TRUE_COLOR: // 8,16 Each pixel is an R,G,B triple.
-        case COLOR_TYPE_INDEXED_COLOR: // 1,2,4,8 Each pixel is a palette index;
-            return false;
-        case COLOR_TYPE_GREYSCALE_WITH_ALPHA: // 8,16 Each pixel is a grayscale
-            // sample,
-            // followed by an alpha sample.
-        case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA: // 8,16 Each pixel is an R,G,B
-            // triple,
-            // followed by an alpha sample.
-            return true;
-        default:
-            throw new ImageReadException("PNG: unknown color type: "
-                    + ColorType);
+            case COLOR_TYPE_GREYSCALE: // 1,2,4,8,16 Each pixel is a grayscale
+                // sample.
+            case COLOR_TYPE_TRUE_COLOR: // 8,16 Each pixel is an R,G,B triple.
+            case COLOR_TYPE_INDEXED_COLOR: // 1,2,4,8 Each pixel is a palette index;
+                return false;
+            case COLOR_TYPE_GREYSCALE_WITH_ALPHA: // 8,16 Each pixel is a grayscale
+                // sample,
+                // followed by an alpha sample.
+            case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA: // 8,16 Each pixel is an R,G,B
+                // triple,
+                // followed by an alpha sample.
+                return true;
+            default:
+                throw new ImageReadException("PNG: unknown color type: "
+                        + ColorType);
         }
     }
 
     private String getColorTypeDescription(final int ColorType) {
         switch (ColorType) {
-        case COLOR_TYPE_GREYSCALE: // 1,2,4,8,16 Each pixel is a grayscale
-            // sample.
-            return "grayscale";
-        case COLOR_TYPE_TRUE_COLOR: // 8,16 Each pixel is an R,G,B triple.
-            return "rgb";
-        case COLOR_TYPE_INDEXED_COLOR: // 1,2,4,8 Each pixel is a palette index;
-            return "indexed rgb";
-        case COLOR_TYPE_GREYSCALE_WITH_ALPHA: // 8,16 Each pixel is a grayscale
-            // sample,
-            // followed by an alpha sample.
-            return "grayscale w/ alpha";
-        case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA: // 8,16 Each pixel is an R,G,B
-            // triple,
-            // followed by an alpha sample.
-            return "RGB w/ alpha";
-        default:
-            return "Unknown Color Type";
+            case COLOR_TYPE_GREYSCALE: // 1,2,4,8,16 Each pixel is a grayscale
+                // sample.
+                return "grayscale";
+            case COLOR_TYPE_TRUE_COLOR: // 8,16 Each pixel is an R,G,B triple.
+                return "rgb";
+            case COLOR_TYPE_INDEXED_COLOR: // 1,2,4,8 Each pixel is a palette index;
+                return "indexed rgb";
+            case COLOR_TYPE_GREYSCALE_WITH_ALPHA: // 8,16 Each pixel is a grayscale
+                // sample,
+                // followed by an alpha sample.
+                return "grayscale w/ alpha";
+            case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA: // 8,16 Each pixel is an R,G,B
+                // triple,
+                // followed by an alpha sample.
+                return "RGB w/ alpha";
+            default:
+                return "Unknown Color Type";
         }
     }
 
@@ -457,34 +457,34 @@ public class PngImageParser extends ImageParser implements PngConstants {
     // I may not have always preserved byte order correctly.
 
     private TransparencyFilter getTransparencyFilter(final int ColorType,
-            final PngChunk pngChunktRNS) throws ImageReadException, IOException {
+                                                     final PngChunk pngChunktRNS) throws ImageReadException, IOException {
         // this.printCharQuad("pngChunktRNS.ChunkType", pngChunktRNS.ChunkType);
         // this.debugNumber("pngChunktRNS.Length", pngChunktRNS.Length);
 
         switch (ColorType) {
-        case COLOR_TYPE_GREYSCALE: // 1,2,4,8,16 Each pixel is a grayscale
-            // sample.
-            return new TransparencyFilterGrayscale(pngChunktRNS.bytes);
-        case COLOR_TYPE_TRUE_COLOR: // 8,16 Each pixel is an R,G,B triple.
-            return new TransparencyFilterTrueColor(pngChunktRNS.bytes);
-        case COLOR_TYPE_INDEXED_COLOR: // 1,2,4,8 Each pixel is a palette index;
-            return new TransparencyFilterIndexedColor(pngChunktRNS.bytes);
-        case COLOR_TYPE_GREYSCALE_WITH_ALPHA: // 8,16 Each pixel is a grayscale
-            // sample,
-        case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA: // 8,16 Each pixel is an R,G,B
-            // triple,
-        default:
-            throw new ImageReadException(
-                    "Simple Transparency not compatible with ColorType: "
-                            + ColorType);
+            case COLOR_TYPE_GREYSCALE: // 1,2,4,8,16 Each pixel is a grayscale
+                // sample.
+                return new TransparencyFilterGrayscale(pngChunktRNS.bytes);
+            case COLOR_TYPE_TRUE_COLOR: // 8,16 Each pixel is an R,G,B triple.
+                return new TransparencyFilterTrueColor(pngChunktRNS.bytes);
+            case COLOR_TYPE_INDEXED_COLOR: // 1,2,4,8 Each pixel is a palette index;
+                return new TransparencyFilterIndexedColor(pngChunktRNS.bytes);
+            case COLOR_TYPE_GREYSCALE_WITH_ALPHA: // 8,16 Each pixel is a grayscale
+                // sample,
+            case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA: // 8,16 Each pixel is an R,G,B
+                // triple,
+            default:
+                throw new ImageReadException(
+                        "Simple Transparency not compatible with ColorType: "
+                                + ColorType);
         }
     }
 
     @Override
-    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String,Object> params)
+    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
-        final List<PngChunk> chunks = readChunks(byteSource, new int[] { IHDR, pHYs,
-                tEXt, zTXt, tRNS, PLTE, iTXt, }, false);
+        final List<PngChunk> chunks = readChunks(byteSource, new int[]{IHDR, pHYs,
+                tEXt, zTXt, tRNS, PLTE, iTXt,}, false);
 
         // if(chunks!=null)
         // System.out.println("chunks: " + chunks.size());
@@ -592,24 +592,24 @@ public class PngImageParser extends ImageParser implements PngConstants {
 
         int ColorType;
         switch (pngChunkIHDR.colorType) {
-        case COLOR_TYPE_GREYSCALE: // 1,2,4,8,16 Each pixel is a grayscale
-            // sample.
-        case COLOR_TYPE_GREYSCALE_WITH_ALPHA: // 8,16 Each pixel is a
-            // grayscale sample,
-            // followed by an alpha sample.
-            ColorType = ImageInfo.COLOR_TYPE_GRAYSCALE;
-            break;
-        case COLOR_TYPE_TRUE_COLOR: // 8,16 Each pixel is an R,G,B triple.
-        case COLOR_TYPE_INDEXED_COLOR: // 1,2,4,8 Each pixel is a palette
-            // index;
-        case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA: // 8,16 Each pixel is an
-            // R,G,B triple,
-            // followed by an alpha sample.
-            ColorType = ImageInfo.COLOR_TYPE_RGB;
-            break;
-        default:
-            throw new ImageReadException("Png: Unknown ColorType: "
-                    + pngChunkIHDR.colorType);
+            case COLOR_TYPE_GREYSCALE: // 1,2,4,8,16 Each pixel is a grayscale
+                // sample.
+            case COLOR_TYPE_GREYSCALE_WITH_ALPHA: // 8,16 Each pixel is a
+                // grayscale sample,
+                // followed by an alpha sample.
+                ColorType = ImageInfo.COLOR_TYPE_GRAYSCALE;
+                break;
+            case COLOR_TYPE_TRUE_COLOR: // 8,16 Each pixel is an R,G,B triple.
+            case COLOR_TYPE_INDEXED_COLOR: // 1,2,4,8 Each pixel is a palette
+                // index;
+            case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA: // 8,16 Each pixel is an
+                // R,G,B triple,
+                // followed by an alpha sample.
+                ColorType = ImageInfo.COLOR_TYPE_RGB;
+                break;
+            default:
+                throw new ImageReadException("Png: Unknown ColorType: "
+                        + pngChunkIHDR.colorType);
         }
 
         final String compressionAlgorithm = ImageInfo.COMPRESSION_ALGORITHM_PNG_FILTER;
@@ -622,7 +622,7 @@ public class PngImageParser extends ImageParser implements PngConstants {
     }
 
     @Override
-    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String,Object> params)
+    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         ParamMap.getParamBoolean(params, PARAM_KEY_VERBOSE, false);
 
@@ -635,8 +635,8 @@ public class PngImageParser extends ImageParser implements PngConstants {
         // throw new ImageWriteException("Unknown parameter: " + firstKey);
         // }
 
-        final List<PngChunk> chunks = readChunks(byteSource, new int[] { IHDR, PLTE,
-                IDAT, tRNS, iCCP, gAMA, sRGB, }, false);
+        final List<PngChunk> chunks = readChunks(byteSource, new int[]{IHDR, PLTE,
+                IDAT, tRNS, iCCP, gAMA, sRGB,}, false);
 
         if ((chunks == null) || (chunks.size() < 1)) {
             throw new ImageReadException("PNG: no chunks");
@@ -849,7 +849,7 @@ public class PngImageParser extends ImageParser implements PngConstants {
     }
 
     @Override
-    public void writeImage(final BufferedImage src, final OutputStream os, final Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, final Map<String, Object> params)
             throws ImageWriteException, IOException {
         new PngWriter(params).writeImage(src, os, params);
     }
@@ -857,18 +857,16 @@ public class PngImageParser extends ImageParser implements PngConstants {
     /**
      * Extracts embedded XML metadata as XML string.
      * <p>
-     * 
-     * @param byteSource
-     *            File containing image data.
-     * @param params
-     *            Map of optional parameters, defined in SanselanConstants.
+     *
+     * @param byteSource File containing image data.
+     * @param params     Map of optional parameters, defined in SanselanConstants.
      * @return Xmp Xml as String, if present. Otherwise, returns null.
      */
     @Override
-    public String getXmpXml(final ByteSource byteSource, final Map<String,Object> params)
+    public String getXmpXml(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
 
-        final List<PngChunk> chunks = readChunks(byteSource, new int[] { iTXt, },
+        final List<PngChunk> chunks = readChunks(byteSource, new int[]{iTXt,},
                 false);
 
         if ((chunks == null) || (chunks.size() < 1)) {

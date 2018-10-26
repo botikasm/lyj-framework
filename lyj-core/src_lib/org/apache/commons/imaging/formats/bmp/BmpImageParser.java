@@ -60,7 +60,7 @@ public class BmpImageParser extends ImageParser {
 
     private static final String DEFAULT_EXTENSION = ".bmp";
 
-    private static final String ACCEPTED_EXTENSIONS[] = { DEFAULT_EXTENSION, };
+    private static final String ACCEPTED_EXTENSIONS[] = {DEFAULT_EXTENSION,};
 
     @Override
     protected String[] getAcceptedExtensions() {
@@ -69,21 +69,21 @@ public class BmpImageParser extends ImageParser {
 
     @Override
     protected ImageFormat[] getAcceptedTypes() {
-        return new ImageFormat[] { ImageFormat.IMAGE_FORMAT_BMP, //
+        return new ImageFormat[]{ImageFormat.IMAGE_FORMAT_BMP, //
         };
     }
 
-    private static final byte BMP_HEADER_SIGNATURE[] = { 0x42, 0x4d, };
+    private static final byte BMP_HEADER_SIGNATURE[] = {0x42, 0x4d,};
 
     private BmpHeaderInfo readBmpHeaderInfo(final InputStream is,
-            final FormatCompliance formatCompliance, final boolean verbose)
+                                            final FormatCompliance formatCompliance, final boolean verbose)
             throws ImageReadException, IOException {
         final byte identifier1 = readByte("Identifier1", is, "Not a Valid BMP File");
         final byte identifier2 = readByte("Identifier2", is, "Not a Valid BMP File");
 
         if (formatCompliance != null) {
             formatCompliance.compare_bytes("Signature", BMP_HEADER_SIGNATURE,
-                    new byte[] { identifier1, identifier2, });
+                    new byte[]{identifier1, identifier2,});
         }
 
         final int fileSize = read4Bytes("File Size", is, "Not a Valid BMP File");
@@ -266,42 +266,42 @@ public class BmpImageParser extends ImageParser {
 
             if (a == 0) {
                 switch (b) {
-                case 0: // EOL
-                    break;
-                case 1: // EOF
-                    // System.out.println("xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-                    // );
-                    done = true;
-                    break;
-                case 2: {
-                    // System.out.println("xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-                    // );
-                    final int c = 0xff & this.readByte("RLE c", is, "BMP: Bad RLE");
-                    baos.write(c);
-                    final int d = 0xff & this.readByte("RLE d", is, "BMP: Bad RLE");
-                    baos.write(d);
+                    case 0: // EOL
+                        break;
+                    case 1: // EOF
+                        // System.out.println("xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                        // );
+                        done = true;
+                        break;
+                    case 2: {
+                        // System.out.println("xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                        // );
+                        final int c = 0xff & this.readByte("RLE c", is, "BMP: Bad RLE");
+                        baos.write(c);
+                        final int d = 0xff & this.readByte("RLE d", is, "BMP: Bad RLE");
+                        baos.write(d);
 
-                }
+                    }
                     break;
-                default: {
-                    int size = b / RLESamplesPerByte;
-                    if ((b % RLESamplesPerByte) > 0) {
-                        size++;
-                    }
-                    if ((size % 2) != 0) {
-                        size++;
-                    }
+                    default: {
+                        int size = b / RLESamplesPerByte;
+                        if ((b % RLESamplesPerByte) > 0) {
+                            size++;
+                        }
+                        if ((size % 2) != 0) {
+                            size++;
+                        }
 
-                    // System.out.println("b: " + b);
-                    // System.out.println("size: " + size);
-                    // System.out.println("RLESamplesPerByte: " +
-                    // RLESamplesPerByte);
-                    // System.out.println("xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-                    // );
-                    final byte bytes[] = this.readBytes("bytes", is, size,
-                            "RLE: Absolute Mode");
-                    baos.write(bytes);
-                }
+                        // System.out.println("b: " + b);
+                        // System.out.println("size: " + size);
+                        // System.out.println("RLESamplesPerByte: " +
+                        // RLESamplesPerByte);
+                        // System.out.println("xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                        // );
+                        final byte bytes[] = this.readBytes("bytes", is, size,
+                                "RLE: Absolute Mode");
+                        baos.write(bytes);
+                    }
                     break;
                 }
             }
@@ -311,7 +311,7 @@ public class BmpImageParser extends ImageParser {
     }
 
     private ImageContents readImageContents(final InputStream is,
-            final FormatCompliance formatCompliance, final boolean verbose)
+                                            final FormatCompliance formatCompliance, final boolean verbose)
             throws ImageReadException, IOException {
         final BmpHeaderInfo bhi = readBmpHeaderInfo(is, formatCompliance, verbose);
 
@@ -336,61 +336,61 @@ public class BmpImageParser extends ImageParser {
         boolean rle = false;
 
         switch (bhi.compression) {
-        case BI_RGB:
-            if (verbose) {
-                System.out.println("Compression: BI_RGB");
-            }
-            if (bhi.bitsPerPixel <= 8) {
-                paletteLength = 4 * colorTableSize;
-            } else {
-                paletteLength = 0;
-            }
-            // BytesPerPaletteEntry = 0;
-            // System.out.println("Compression: BI_RGBx2: " + bhi.BitsPerPixel);
-            // System.out.println("Compression: BI_RGBx2: " + (bhi.BitsPerPixel
-            // <= 16));
-            break;
+            case BI_RGB:
+                if (verbose) {
+                    System.out.println("Compression: BI_RGB");
+                }
+                if (bhi.bitsPerPixel <= 8) {
+                    paletteLength = 4 * colorTableSize;
+                } else {
+                    paletteLength = 0;
+                }
+                // BytesPerPaletteEntry = 0;
+                // System.out.println("Compression: BI_RGBx2: " + bhi.BitsPerPixel);
+                // System.out.println("Compression: BI_RGBx2: " + (bhi.BitsPerPixel
+                // <= 16));
+                break;
 
-        case BI_RLE4:
-            if (verbose) {
-                System.out.println("Compression: BI_RLE4");
-            }
-            paletteLength = 4 * colorTableSize;
-            rleSamplesPerByte = 2;
-            // ExtraBitsPerPixel = 4;
-            rle = true;
-            // // BytesPerPixel = 2;
-            // // BytesPerPaletteEntry = 0;
-            break;
-        //
-        case BI_RLE8:
-            if (verbose) {
-                System.out.println("Compression: BI_RLE8");
-            }
-            paletteLength = 4 * colorTableSize;
-            rleSamplesPerByte = 1;
-            // ExtraBitsPerPixel = 8;
-            rle = true;
-            // BytesPerPixel = 2;
-            // BytesPerPaletteEntry = 0;
-            break;
-        //
-        case BI_BITFIELDS:
-            if (verbose) {
-                System.out.println("Compression: BI_BITFIELDS");
-            }
-            if (bhi.bitsPerPixel <= 8) {
+            case BI_RLE4:
+                if (verbose) {
+                    System.out.println("Compression: BI_RLE4");
+                }
                 paletteLength = 4 * colorTableSize;
-            } else {
-                paletteLength = 0;
-            }
-            // BytesPerPixel = 2;
-            // BytesPerPaletteEntry = 4;
-            break;
+                rleSamplesPerByte = 2;
+                // ExtraBitsPerPixel = 4;
+                rle = true;
+                // // BytesPerPixel = 2;
+                // // BytesPerPaletteEntry = 0;
+                break;
+            //
+            case BI_RLE8:
+                if (verbose) {
+                    System.out.println("Compression: BI_RLE8");
+                }
+                paletteLength = 4 * colorTableSize;
+                rleSamplesPerByte = 1;
+                // ExtraBitsPerPixel = 8;
+                rle = true;
+                // BytesPerPixel = 2;
+                // BytesPerPaletteEntry = 0;
+                break;
+            //
+            case BI_BITFIELDS:
+                if (verbose) {
+                    System.out.println("Compression: BI_BITFIELDS");
+                }
+                if (bhi.bitsPerPixel <= 8) {
+                    paletteLength = 4 * colorTableSize;
+                } else {
+                    paletteLength = 0;
+                }
+                // BytesPerPixel = 2;
+                // BytesPerPaletteEntry = 4;
+                break;
 
-        default:
-            throw new ImageReadException("BMP: Unknown Compression: "
-                    + bhi.compression);
+            default:
+                throw new ImageReadException("BMP: Unknown Compression: "
+                        + bhi.compression);
         }
 
         byte colorTable[] = null;
@@ -429,7 +429,7 @@ public class BmpImageParser extends ImageParser {
         final int headerSize = BITMAP_FILE_HEADER_SIZE
                 + bhi.bitmapHeaderSize
                 + (bhi.bitmapHeaderSize == 40
-                        && bhi.compression == BI_BITFIELDS ? 3 * 4 : 0);
+                && bhi.compression == BI_BITFIELDS ? 3 * 4 : 0);
         final int expectedDataOffset = headerSize + paletteLength;
 
         if (verbose) {
@@ -468,26 +468,26 @@ public class BmpImageParser extends ImageParser {
         PixelParser pixelParser;
 
         switch (bhi.compression) {
-        case BI_RLE4:
-        case BI_RLE8:
-            pixelParser = new PixelParserRle(bhi, colorTable, imageData);
-            break;
-        case BI_RGB:
-            pixelParser = new PixelParserRgb(bhi, colorTable, imageData);
-            break;
-        case BI_BITFIELDS:
-            pixelParser = new PixelParserBitFields(bhi, colorTable, imageData);
-            break;
-        default:
-            throw new ImageReadException("BMP: Unknown Compression: "
-                    + bhi.compression);
+            case BI_RLE4:
+            case BI_RLE8:
+                pixelParser = new PixelParserRle(bhi, colorTable, imageData);
+                break;
+            case BI_RGB:
+                pixelParser = new PixelParserRgb(bhi, colorTable, imageData);
+                break;
+            case BI_BITFIELDS:
+                pixelParser = new PixelParserBitFields(bhi, colorTable, imageData);
+                break;
+            default:
+                throw new ImageReadException("BMP: Unknown Compression: "
+                        + bhi.compression);
         }
 
         return new ImageContents(bhi, colorTable, imageData, pixelParser);
     }
 
     private BmpHeaderInfo readBmpHeaderInfo(final ByteSource byteSource,
-            final boolean verbose) throws ImageReadException, IOException {
+                                            final boolean verbose) throws ImageReadException, IOException {
         InputStream is = null;
         try {
             is = byteSource.getInputStream();
@@ -507,16 +507,16 @@ public class BmpImageParser extends ImageParser {
     }
 
     @Override
-    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String,Object> params)
+    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
 
     @Override
-    public Dimension getImageSize(final ByteSource byteSource, Map<String,Object> params)
+    public Dimension getImageSize(final ByteSource byteSource, Map<String, Object> params)
             throws ImageReadException, IOException {
         // make copy of params; we'll clear keys as we consume them.
-        params = (params == null) ? new HashMap<String,Object>() : new HashMap<String,Object>(params);
+        params = (params == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(params);
 
         final boolean verbose = ParamMap.getParamBoolean(params, PARAM_KEY_VERBOSE,
                 false);
@@ -550,7 +550,7 @@ public class BmpImageParser extends ImageParser {
     }
 
     @Override
-    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String,Object> params)
+    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
@@ -579,10 +579,10 @@ public class BmpImageParser extends ImageParser {
     }
 
     @Override
-    public ImageInfo getImageInfo(final ByteSource byteSource, Map<String,Object> params)
+    public ImageInfo getImageInfo(final ByteSource byteSource, Map<String, Object> params)
             throws ImageReadException, IOException {
         // make copy of params; we'll clear keys as we consume them.
-        params = (params == null) ? new HashMap<String,Object>() : new HashMap<String,Object>(params);
+        params = (params == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(params);
 
         final boolean verbose = ParamMap.getParamBoolean(params, PARAM_KEY_VERBOSE,
                 false);
@@ -704,7 +704,7 @@ public class BmpImageParser extends ImageParser {
     }
 
     @Override
-    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String,Object> params)
+    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         InputStream is = null;
         try {
@@ -721,10 +721,10 @@ public class BmpImageParser extends ImageParser {
         }
     }
 
-    public BufferedImage getBufferedImage(final InputStream inputStream, Map<String,Object> params)
+    public BufferedImage getBufferedImage(final InputStream inputStream, Map<String, Object> params)
             throws ImageReadException, IOException {
         // make copy of params; we'll clear keys as we consume them.
-        params = (params == null) ? new HashMap<String,Object>() : new HashMap<String,Object>(params);
+        params = (params == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(params);
 
         final boolean verbose = ParamMap.getParamBoolean(params, PARAM_KEY_VERBOSE,
                 false);
@@ -773,10 +773,10 @@ public class BmpImageParser extends ImageParser {
     private static final int BITMAP_INFO_HEADER_SIZE = 40;
 
     @Override
-    public void writeImage(final BufferedImage src, final OutputStream os, Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, Map<String, Object> params)
             throws ImageWriteException, IOException {
         // make copy of params; we'll clear keys as we consume them.
-        params = (params == null) ? new HashMap<String,Object>() : new HashMap<String,Object>(params);
+        params = (params == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(params);
 
         PixelDensity pixelDensity = null;
 
@@ -853,15 +853,13 @@ public class BmpImageParser extends ImageParser {
     /**
      * Extracts embedded XML metadata as XML string.
      * <p>
-     * 
-     * @param byteSource
-     *            File containing image data.
-     * @param params
-     *            Map of optional parameters, defined in SanselanConstants.
+     *
+     * @param byteSource File containing image data.
+     * @param params     Map of optional parameters, defined in SanselanConstants.
      * @return Xmp Xml as String, if present. Otherwise, returns null.
      */
     @Override
-    public String getXmpXml(final ByteSource byteSource, final Map<String,Object> params)
+    public String getXmpXml(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }

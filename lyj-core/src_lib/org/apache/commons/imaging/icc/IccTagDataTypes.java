@@ -27,20 +27,19 @@ public enum IccTagDataTypes implements IccTagDataType {
     DESC_TYPE(
             "descType", 0x64657363) {
         public void dump(final String prefix, final byte bytes[])
-                throws ImageReadException, IOException
-        {
+                throws ImageReadException, IOException {
             BinaryInputStream bis = null;
             try {
                 bis = new BinaryInputStream(
                         new ByteArrayInputStream(bytes),
                         ByteOrder.NETWORK);
                 bis.read4Bytes("type_signature", "ICC: corrupt tag data");
-    
+
                 //            bis.setDebug(true);
                 bis.read4Bytes("ignore", "ICC: corrupt tag data");
                 final int string_length = bis.read4Bytes("string_length",
                         "ICC: corrupt tag data");
-    
+
                 //            bis.readByteArray("ignore", bytes.length -12, "none");
                 final String s = new String(bytes, 12, string_length - 1, "US-ASCII");
                 System.out.println(prefix + "s: '" + s + "'");
@@ -56,8 +55,7 @@ public enum IccTagDataTypes implements IccTagDataType {
     DATA_TYPE(
             "dataType", 0x64617461) {
         public void dump(final String prefix, final byte bytes[])
-                throws ImageReadException, IOException
-        {
+                throws ImageReadException, IOException {
             BinaryInputStream bis = null;
             try {
                 bis = new BinaryInputStream(
@@ -76,8 +74,7 @@ public enum IccTagDataTypes implements IccTagDataType {
     MULTI_LOCALIZED_UNICODE_TYPE(
             "multiLocalizedUnicodeType", (0x6D6C7563)) {
         public void dump(final String prefix, final byte bytes[])
-                throws ImageReadException, IOException
-        {
+                throws ImageReadException, IOException {
             BinaryInputStream bis = null;
             try {
                 bis = new BinaryInputStream(
@@ -96,8 +93,7 @@ public enum IccTagDataTypes implements IccTagDataType {
     SIGNATURE_TYPE(
             "signatureType", ((0x73696720))) {
         public void dump(final String prefix, final byte bytes[])
-                throws ImageReadException, IOException
-        {
+                throws ImageReadException, IOException {
             BinaryInputStream bis = null;
             try {
                 bis = new BinaryInputStream(
@@ -112,10 +108,10 @@ public enum IccTagDataTypes implements IccTagDataType {
                         + Integer.toHexString(thesignature)
                         + " ("
                         + new String(new byte[]{
-                                (byte) (0xff & (thesignature >> 24)),
-                                (byte) (0xff & (thesignature >> 16)),
-                                (byte) (0xff & (thesignature >> 8)),
-                                (byte) (0xff & (thesignature >> 0)), }, "US-ASCII")
+                        (byte) (0xff & (thesignature >> 24)),
+                        (byte) (0xff & (thesignature >> 16)),
+                        (byte) (0xff & (thesignature >> 8)),
+                        (byte) (0xff & (thesignature >> 0)),}, "US-ASCII")
                         + ")");
             } finally {
                 if (bis != null) {
@@ -129,8 +125,7 @@ public enum IccTagDataTypes implements IccTagDataType {
     TEXT_TYPE(
             "textType", 0x74657874) {
         public void dump(final String prefix, final byte bytes[])
-                throws ImageReadException, IOException
-        {
+                throws ImageReadException, IOException {
             BinaryInputStream bis = null;
             try {
                 bis = new BinaryInputStream(
@@ -156,11 +151,11 @@ public enum IccTagDataTypes implements IccTagDataType {
         this.name = name;
         this.signature = signature;
     }
-    
+
     public String getName() {
         return name;
     }
-    
+
     public int getSignature() {
         return signature;
     }

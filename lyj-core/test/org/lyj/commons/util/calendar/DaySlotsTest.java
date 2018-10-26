@@ -1,11 +1,11 @@
 package org.lyj.commons.util.calendar;
 
-import static org.junit.Assert.*;
-
 import org.json.JSONArray;
 import org.junit.Test;
 
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 public class DaySlotsTest {
 
@@ -56,9 +56,9 @@ public class DaySlotsTest {
         assertFalse(day1.outsideOf(day2));
         assertFalse(day2.outsideOf(day1));
         JSONArray inside_array = day2.selectInside(day1);
-        assertTrue(inside_array.length()==day2.slots().length());
+        assertTrue(inside_array.length() == day2.slots().length());
         JSONArray outside_array = day2.selectOuside(day1);
-        assertTrue(outside_array.length()==0);
+        assertTrue(outside_array.length() == 0);
 
         day1.parse("lun 8 13 14 17");
         day2.parse("LUNEDI 8,30 12,00 14.30 17");
@@ -69,7 +69,7 @@ public class DaySlotsTest {
         assertTrue(day1.outsideOf(day2));
         assertFalse(day2.outsideOf(day1));
         inside_array = day2.selectInside(day1);
-        assertTrue(inside_array.length()==day1.slots().length());
+        assertTrue(inside_array.length() == day1.slots().length());
     }
 
 

@@ -55,7 +55,7 @@ class IdentityFile implements Identity {
      *
      * @param passphrase the pass-phrase for this identity.
      * @return <tt>true</tt> if the decryption is succeeded
-     *         or this identity is not cyphered.
+     * or this identity is not cyphered.
      */
     public boolean setPassphrase(byte[] passphrase) throws JSchException {
         return kpair.decrypt(passphrase);

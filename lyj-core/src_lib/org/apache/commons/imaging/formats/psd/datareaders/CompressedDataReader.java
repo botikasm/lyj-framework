@@ -40,7 +40,7 @@ public class CompressedDataReader extends DataReader {
 
     @Override
     public void readData(final InputStream is, final BufferedImage bi,
-            final ImageContents imageContents, final BinaryFileParser bfp)
+                         final ImageContents imageContents, final BinaryFileParser bfp)
             throws ImageReadException, IOException {
         final PsdHeaderInfo header = imageContents.header;
         final int width = header.Columns;

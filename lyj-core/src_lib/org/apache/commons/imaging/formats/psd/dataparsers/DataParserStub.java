@@ -21,7 +21,7 @@ import org.apache.commons.imaging.formats.psd.ImageContents;
 public class DataParserStub extends DataParser {
     @Override
     protected int getRGB(final int data[][][], final int x, final int y,
-            final ImageContents imageContents) {
+                         final ImageContents imageContents) {
         return 0;
     }
 

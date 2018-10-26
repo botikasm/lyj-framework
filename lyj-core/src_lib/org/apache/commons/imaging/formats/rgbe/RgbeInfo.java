@@ -34,7 +34,7 @@ class RgbeInfo extends BinaryFunctions {
     private ImageMetadata metadata;
     private int width = -1;
     private int height = -1;
-    private static final byte[] TWO_TWO = new byte[] { 0x2, 0x2 };
+    private static final byte[] TWO_TWO = new byte[]{0x2, 0x2};
 
     RgbeInfo(final ByteSource byteSource) throws IOException {
         this.in = new BinaryInputStream(byteSource.getInputStream(),
@@ -137,7 +137,7 @@ class RgbeInfo extends BinaryFunctions {
                     "Scan lines must be less than 32768 bytes long");
         }
 
-        final byte[] scanLineBytes = ByteConversions.toBytes((short)width,
+        final byte[] scanLineBytes = ByteConversions.toBytes((short) width,
                 ByteOrder.BIG_ENDIAN);
         final byte[] rgbe = new byte[width * 4];
         final float[][] out = new float[3][width * height];

@@ -30,7 +30,7 @@ public abstract class RationalNumberUtilities extends Number {
         }
 
         public static final Option factory(final RationalNumber rationalNumber,
-                final double value) {
+                                           final double value) {
             return new Option(rationalNumber, Math.abs(rationalNumber
                     .doubleValue() - value));
         }
@@ -91,7 +91,7 @@ public abstract class RationalNumberUtilities extends Number {
         Option bestOption = (low.error < high.error) ? low : high;
 
         final int MAX_ITERATIONS = 100; // value is quite high, actually.
-                                        // shouldn't matter.
+        // shouldn't matter.
         for (int count = 0; bestOption.error > TOLERANCE
                 && count < MAX_ITERATIONS; count++) {
             // Debug.debug("bestOption: " + bestOption + ", left: " + low

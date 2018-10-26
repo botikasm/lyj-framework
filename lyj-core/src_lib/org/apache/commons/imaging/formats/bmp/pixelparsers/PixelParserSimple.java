@@ -24,7 +24,7 @@ import java.io.IOException;
 
 public abstract class PixelParserSimple extends PixelParser {
     public PixelParserSimple(final BmpHeaderInfo bhi, final byte ColorTable[],
-            final byte ImageData[]) {
+                             final byte ImageData[]) {
         super(bhi, ColorTable, ImageData);
     }
 

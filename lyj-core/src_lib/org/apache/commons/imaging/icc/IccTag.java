@@ -51,10 +51,10 @@ public class IccTag implements IccConstants {
         BinaryInputStream bis = null;
         try {
             bis = new BinaryInputStream(new ByteArrayInputStream(
-                bytes), ByteOrder.NETWORK);
+                    bytes), ByteOrder.NETWORK);
             data_type_signature = bis.read4Bytes("data type signature",
                     "ICC: corrupt tag data");
-    
+
             itdt = getIccTagDataType(data_type_signature);
             // if (itdt != null)
             // {
@@ -94,11 +94,11 @@ public class IccTag implements IccConstants {
                 + "tag signature: "
                 + Integer.toHexString(signature)
                 + " ("
-                + new String(new byte[] {
-                        (byte) (0xff & (signature >> 24)),
-                        (byte) (0xff & (signature >> 16)),
-                        (byte) (0xff & (signature >> 8)),
-                        (byte) (0xff & (signature >> 0)), }, "US-ASCII")
+                + new String(new byte[]{
+                (byte) (0xff & (signature >> 24)),
+                (byte) (0xff & (signature >> 16)),
+                (byte) (0xff & (signature >> 8)),
+                (byte) (0xff & (signature >> 0)),}, "US-ASCII")
                 + ")");
 
         if (data == null) {
@@ -110,11 +110,11 @@ public class IccTag implements IccConstants {
                     + "data type signature: "
                     + Integer.toHexString(data_type_signature)
                     + " ("
-                    + new String(new byte[] {
-                            (byte) (0xff & (data_type_signature >> 24)),
-                            (byte) (0xff & (data_type_signature >> 16)),
-                            (byte) (0xff & (data_type_signature >> 8)),
-                            (byte) (0xff & (data_type_signature >> 0)), }, "US-ASCII")
+                    + new String(new byte[]{
+                    (byte) (0xff & (data_type_signature >> 24)),
+                    (byte) (0xff & (data_type_signature >> 16)),
+                    (byte) (0xff & (data_type_signature >> 8)),
+                    (byte) (0xff & (data_type_signature >> 0)),}, "US-ASCII")
                     + ")");
 
             if (itdt == null) {

@@ -28,9 +28,9 @@ import java.io.IOException;
 /**
  * A selection of tools for evaluating and manipulating color
  * spaces, color values, etc.
- * <p>The Javadoc provided in the original code gave the 
+ * <p>The Javadoc provided in the original code gave the
  * following notation:<br><br>
- *
+ * <p>
  * &nbsp;&nbsp;&nbsp; "This class is a mess and needs to be cleaned up."
  */
 public class ColorTools {
@@ -90,12 +90,12 @@ public class ColorTools {
     }
 
     public ColorModel deriveColorModel(final BufferedImage bi, final ColorSpace cs,
-            final boolean force_no_alpha) throws ImagingOpException {
+                                       final boolean force_no_alpha) throws ImagingOpException {
         return deriveColorModel(bi.getColorModel(), cs, force_no_alpha);
     }
 
     public ColorModel deriveColorModel(final ColorModel old_cm, final ColorSpace cs,
-            final boolean force_no_alpha) throws ImagingOpException {
+                                       final boolean force_no_alpha) throws ImagingOpException {
 
         if (old_cm instanceof ComponentColorModel) {
             final ComponentColorModel ccm = (ComponentColorModel) old_cm;
@@ -184,7 +184,7 @@ public class ColorTools {
     }
 
     protected BufferedImage convertFromColorSpace(final BufferedImage bi,
-            final ColorSpace from) {
+                                                  final ColorSpace from) {
         ColorSpace cs_sRGB;
 
         final ColorModel srgbCM = ColorModel.getRGBdefault();
@@ -195,7 +195,7 @@ public class ColorTools {
     }
 
     public BufferedImage convertBetweenICCProfiles(final BufferedImage bi,
-            final ICC_Profile from, final ICC_Profile to) {
+                                                   final ICC_Profile from, final ICC_Profile to) {
         final ICC_ColorSpace cs_from = new ICC_ColorSpace(from);
         final ICC_ColorSpace cs_to = new ICC_ColorSpace(to);
 
@@ -209,7 +209,7 @@ public class ColorTools {
     }
 
     public BufferedImage convertBetweenColorSpacesX2(BufferedImage bi,
-            final ColorSpace from, final ColorSpace to) {
+                                                     final ColorSpace from, final ColorSpace to) {
         final RenderingHints hints = new RenderingHints(RenderingHints.KEY_RENDERING,
                 RenderingHints.VALUE_RENDER_QUALITY);
         hints.put(RenderingHints.KEY_COLOR_RENDERING,
@@ -237,7 +237,7 @@ public class ColorTools {
     }
 
     public BufferedImage convertBetweenColorSpaces(BufferedImage bi,
-            final ColorSpace from, final ColorSpace to) {
+                                                   final ColorSpace from, final ColorSpace to) {
         final RenderingHints hints = new RenderingHints(RenderingHints.KEY_RENDERING,
                 RenderingHints.VALUE_RENDER_QUALITY);
         hints.put(RenderingHints.KEY_COLOR_RENDERING,

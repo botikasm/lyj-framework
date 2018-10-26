@@ -35,11 +35,11 @@ class GifHeaderInfo {
     public final byte sizeOfGlobalColorTable;
 
     public GifHeaderInfo(final byte Identifier1, final byte Identifier2, final byte Identifier3,
-            final byte Version1, final byte Version2, final byte Version3,
-            final int LogicalScreenWidth, final int LogicalScreenHeight, final byte PackedFields,
-            final byte BackgroundColorIndex, final byte PixelAspectRatio,
-            final boolean GlobalColorTableFlag, final byte ColorResolution,
-            final boolean SortFlag, final byte SizeofGlobalColorTable) {
+                         final byte Version1, final byte Version2, final byte Version3,
+                         final int LogicalScreenWidth, final int LogicalScreenHeight, final byte PackedFields,
+                         final byte BackgroundColorIndex, final byte PixelAspectRatio,
+                         final boolean GlobalColorTableFlag, final byte ColorResolution,
+                         final boolean SortFlag, final byte SizeofGlobalColorTable) {
         this.identifier1 = Identifier1;
         this.identifier2 = Identifier2;
         this.identifier3 = Identifier3;

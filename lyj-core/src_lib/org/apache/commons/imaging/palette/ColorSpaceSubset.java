@@ -42,7 +42,7 @@ class ColorSpaceSubset {
     }
 
     public ColorSpaceSubset(final int total, final int precision, final int mins[], final int maxs[],
-            final int table[]) {
+                            final int table[]) {
         this.total = total;
         this.precision = precision;
         this.mins = mins;
@@ -87,11 +87,11 @@ class ColorSpaceSubset {
         final int color_area = rdiff * gdiff * bdiff;
 
         System.out.println(prefix + ": [" + Integer.toHexString(rgb)
-                + "] total : " + total
-        // + " ("
-        // + (100.0 * (double) total / (double) total_area)
-        // + " %)"
-                );
+                        + "] total : " + total
+                // + " ("
+                // + (100.0 * (double) total / (double) total_area)
+                // + " %)"
+        );
         System.out.println("\t" + "rgb: " + Integer.toHexString(rgb) + ", "
                 + "red: " + Integer.toHexString(mins[0] << (8 - precision))
                 + ", " + Integer.toHexString(maxs[0] << (8 - precision)) + ", "
@@ -135,7 +135,7 @@ class ColorSpaceSubset {
             for (int green = mins[1]; green <= maxs[1]; green++) {
                 for (int blue = mins[2]; blue <= maxs[2]; blue++) {
                     // note: order reversed
-                    final int index = (blue << (2 * precision)) 
+                    final int index = (blue << (2 * precision))
                             | (green << (1 * precision))
                             | (red << (0 * precision));
                     final int count = table[index];
@@ -154,7 +154,7 @@ class ColorSpaceSubset {
 
     // the index in the palette.
     private int index;
-    
+
     public final int getIndex() {
         return index;
     }
@@ -170,6 +170,6 @@ class ColorSpaceSubset {
             return c1.rgb - c2.rgb;
         }
     }
-    
+
     public static final RgbComparator rgbComparator = new RgbComparator();
 }

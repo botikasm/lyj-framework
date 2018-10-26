@@ -64,20 +64,20 @@ public class BitInputStream extends InputStream {
             final int bits = cache >> cacheBitsRemaining;
 
             switch (count) {
-            case 1:
-                return bits & 1;
-            case 2:
-                return bits & 3;
-            case 3:
-                return bits & 7;
-            case 4:
-                return bits & 15;
-            case 5:
-                return bits & 31;
-            case 6:
-                return bits & 63;
-            case 7:
-                return bits & 127;
+                case 1:
+                    return bits & 1;
+                case 2:
+                    return bits & 3;
+                case 3:
+                    return bits & 7;
+                case 4:
+                    return bits & 15;
+                case 5:
+                    return bits & 31;
+                case 6:
+                    return bits & 63;
+                case 7:
+                    return bits & 127;
             }
 
         }

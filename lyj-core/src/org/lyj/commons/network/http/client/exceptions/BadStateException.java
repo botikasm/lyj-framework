@@ -5,7 +5,7 @@ package org.lyj.commons.network.http.client.exceptions;
  */
 public class BadStateException extends Exception {
 
-    public BadStateException(final String message){
+    public BadStateException(final String message) {
         super(message);
     }
 

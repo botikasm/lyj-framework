@@ -17,12 +17,12 @@
 package org.apache.commons.imaging.common;
 
 /**
- * Byte orders. 
+ * Byte orders.
  */
 public enum ByteOrder {
     LITTLE_ENDIAN,
     BIG_ENDIAN;
-    
+
     public static final ByteOrder MOTOROLA = BIG_ENDIAN;
     public static final ByteOrder NETWORK = BIG_ENDIAN;
     public static final ByteOrder INTEL = LITTLE_ENDIAN;

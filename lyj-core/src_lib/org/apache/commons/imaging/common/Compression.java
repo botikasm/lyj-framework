@@ -27,7 +27,7 @@ import java.io.InputStream;
 public class Compression {
 
     public byte[] decompressLZW(final byte compressed[], final int LZWMinimumCodeSize,
-            final int expectedSize, final ByteOrder byteOrder) throws IOException {
+                                final int expectedSize, final ByteOrder byteOrder) throws IOException {
         final InputStream is = new ByteArrayInputStream(compressed);
 
         final MyLzwDecompressor decompressor = new MyLzwDecompressor(
@@ -38,15 +38,13 @@ public class Compression {
     }
 
     public byte[] decompressPackBits(final byte compressed[], final int expectedSize,
-            final ByteOrder byteOrder) throws ImageReadException {
+                                     final ByteOrder byteOrder) throws ImageReadException {
         final byte unpacked[] = new PackBits().decompress(compressed, expectedSize);
         return unpacked;
     }
 
     public byte[] compressLZW(final byte src[], final int LZWMinimumCodeSize,
-            final ByteOrder byteOrder, final boolean earlyLimit) throws IOException
-
-    {
+                              final ByteOrder byteOrder, final boolean earlyLimit) throws IOException {
         final MyLzwCompressor compressor = new MyLzwCompressor(LZWMinimumCodeSize,
                 byteOrder, earlyLimit);
 

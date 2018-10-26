@@ -28,7 +28,7 @@ public class PamFileInfo extends FileInfo {
     private final int depth;
     private final int maxval;
     private final float scale;
-    private final int bytesPerSample; 
+    private final int bytesPerSample;
     private final boolean hasAlpha;
     private final TupleReader tupleReader;
 
@@ -61,12 +61,12 @@ public class PamFileInfo extends FileInfo {
             throw new ImageReadException("Unknown PAM tupletype '" + tupleType + "'");
         }
     }
-    
+
     @Override
     public boolean hasAlpha() {
         return hasAlpha;
     }
-    
+
     @Override
     public int getNumComponents() {
         return depth;
@@ -96,7 +96,7 @@ public class PamFileInfo extends FileInfo {
     public int getColorType() {
         return tupleReader.getColorType();
     }
-    
+
     @Override
     public int getRGB(final WhiteSpaceReader wsr) throws IOException {
         throw new UnsupportedOperationException("PAM files are only ever binary");
@@ -109,26 +109,27 @@ public class PamFileInfo extends FileInfo {
 
     private abstract class TupleReader {
         public abstract int getColorType();
+
         public abstract int getRGB(InputStream is) throws IOException;
     }
-    
+
     private class GrayscaleTupleReader extends TupleReader {
         private final int colorType;
-        
+
         public GrayscaleTupleReader(final int colorType) {
             this.colorType = colorType;
         }
-        
+
         @Override
         public int getColorType() {
             return colorType;
         }
-        
+
         @Override
         public int getRGB(final InputStream is) throws IOException {
             int sample = readSample(is, bytesPerSample);
             sample = scaleSample(sample, scale, maxval);
-            
+
             int alpha = 0xff;
             if (hasAlpha) {
                 alpha = readSample(is, bytesPerSample);
@@ -141,13 +142,13 @@ public class PamFileInfo extends FileInfo {
             return rgb;
         }
     }
-    
+
     private class ColorTupleReader extends TupleReader {
         @Override
         public int getColorType() {
             return ImageInfo.COLOR_TYPE_RGB;
         }
-        
+
         @Override
         public int getRGB(final InputStream is) throws IOException {
             int red = readSample(is, bytesPerSample);
@@ -158,7 +159,7 @@ public class PamFileInfo extends FileInfo {
             green = scaleSample(green, scale, maxval);
             blue = scaleSample(blue, scale, maxval);
 
-            int alpha =  0xff;
+            int alpha = 0xff;
             if (hasAlpha) {
                 alpha = readSample(is, bytesPerSample);
                 alpha = scaleSample(alpha, scale, maxval);

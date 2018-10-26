@@ -69,7 +69,7 @@ class HMAC {
             key = tmp;
         }
 
-    /* if key is longer than B bytes reset it to key=MD5(key) */
+        /* if key is longer than B bytes reset it to key=MD5(key) */
         if (key.length > B) {
             md.update(key, 0, key.length);
             key = md.digest();
@@ -80,7 +80,7 @@ class HMAC {
         k_opad = new byte[B];
         System.arraycopy(key, 0, k_opad, 0, key.length);
 
-    /* XOR key with ipad and opad values */
+        /* XOR key with ipad and opad values */
         for (int i = 0; i < B; i++) {
             k_ipad[i] ^= (byte) 0x36;
             k_opad[i] ^= (byte) 0x5c;

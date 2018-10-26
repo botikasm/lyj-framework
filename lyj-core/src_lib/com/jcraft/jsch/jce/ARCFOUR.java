@@ -59,8 +59,8 @@ public class ARCFOUR implements Cipher {
             cipher = javax.crypto.Cipher.getInstance("RC4");
             SecretKeySpec _key = new SecretKeySpec(key, "RC4");
             cipher.init((mode == ENCRYPT_MODE ?
-                    javax.crypto.Cipher.ENCRYPT_MODE :
-                    javax.crypto.Cipher.DECRYPT_MODE),
+                            javax.crypto.Cipher.ENCRYPT_MODE :
+                            javax.crypto.Cipher.DECRYPT_MODE),
                     _key);
         } catch (Exception e) {
             cipher = null;

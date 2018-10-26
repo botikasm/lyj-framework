@@ -58,8 +58,8 @@ public class ARCFOUR128 implements Cipher {
             cipher = javax.crypto.Cipher.getInstance("RC4");
             SecretKeySpec _key = new SecretKeySpec(key, "RC4");
             cipher.init((mode == ENCRYPT_MODE ?
-                    javax.crypto.Cipher.ENCRYPT_MODE :
-                    javax.crypto.Cipher.DECRYPT_MODE),
+                            javax.crypto.Cipher.ENCRYPT_MODE :
+                            javax.crypto.Cipher.DECRYPT_MODE),
                     _key);
             byte[] foo = new byte[1];
             for (int i = 0; i < skip; i++) {

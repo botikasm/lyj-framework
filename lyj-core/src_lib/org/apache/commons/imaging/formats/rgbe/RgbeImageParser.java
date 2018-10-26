@@ -34,7 +34,7 @@ import java.util.Map;
 
 /**
  * Parser for Radiance HDR images
- * 
+ *
  * @author <a href="mailto:peter@electrotank.com">peter royal</a>
  */
 public class RgbeImageParser extends ImageParser {
@@ -55,16 +55,16 @@ public class RgbeImageParser extends ImageParser {
 
     @Override
     protected String[] getAcceptedExtensions() {
-        return new String[] { ".hdr", ".pic" };
+        return new String[]{".hdr", ".pic"};
     }
 
     @Override
     protected ImageFormat[] getAcceptedTypes() {
-        return new ImageFormat[] { ImageFormat.IMAGE_FORMAT_RGBE };
+        return new ImageFormat[]{ImageFormat.IMAGE_FORMAT_RGBE};
     }
 
     @Override
-    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String,Object> params)
+    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final RgbeInfo info = new RgbeInfo(byteSource);
 
@@ -76,7 +76,7 @@ public class RgbeImageParser extends ImageParser {
     }
 
     @Override
-    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String,Object> params)
+    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final RgbeInfo info = new RgbeInfo(byteSource);
 
@@ -94,7 +94,7 @@ public class RgbeImageParser extends ImageParser {
     }
 
     @Override
-    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String,Object> params)
+    public BufferedImage getBufferedImage(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final RgbeInfo info = new RgbeInfo(byteSource);
 
@@ -118,7 +118,7 @@ public class RgbeImageParser extends ImageParser {
     }
 
     @Override
-    public Dimension getImageSize(final ByteSource byteSource, final Map<String,Object> params)
+    public Dimension getImageSize(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final RgbeInfo info = new RgbeInfo(byteSource);
 
@@ -130,7 +130,7 @@ public class RgbeImageParser extends ImageParser {
     }
 
     @Override
-    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String,Object> params)
+    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
@@ -141,7 +141,7 @@ public class RgbeImageParser extends ImageParser {
     }
 
     @Override
-    public String getXmpXml(final ByteSource byteSource, final Map<String,Object> params)
+    public String getXmpXml(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }

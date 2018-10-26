@@ -2,9 +2,9 @@
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -41,7 +41,7 @@ public class XbmImageParser extends ImageParser {
     }
 
     private static final String DEFAULT_EXTENSION = ".xbm";
-    private static final String ACCEPTED_EXTENSIONS[] = { ".xbm", };
+    private static final String ACCEPTED_EXTENSIONS[] = {".xbm",};
 
     @Override
     protected String[] getAcceptedExtensions() {
@@ -50,7 +50,7 @@ public class XbmImageParser extends ImageParser {
 
     @Override
     protected ImageFormat[] getAcceptedTypes() {
-        return new ImageFormat[] { ImageFormat.IMAGE_FORMAT_XBM, //
+        return new ImageFormat[]{ImageFormat.IMAGE_FORMAT_XBM, //
         };
     }
 
@@ -60,13 +60,13 @@ public class XbmImageParser extends ImageParser {
     }
 
     @Override
-    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String,Object> params)
+    public IImageMetadata getMetadata(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
 
     @Override
-    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String,Object> params)
+    public ImageInfo getImageInfo(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final XbmHeader xbmHeader = readXbmHeader(byteSource);
         return new ImageInfo("XBM", 1, new ArrayList<String>(),
@@ -77,14 +77,14 @@ public class XbmImageParser extends ImageParser {
     }
 
     @Override
-    public Dimension getImageSize(final ByteSource byteSource, final Map<String,Object> params)
+    public Dimension getImageSize(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         final XbmHeader xbmHeader = readXbmHeader(byteSource);
         return new Dimension(xbmHeader.width, xbmHeader.height);
     }
 
     @Override
-    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String,Object> params)
+    public byte[] getICCProfileBytes(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }
@@ -137,17 +137,17 @@ public class XbmImageParser extends ImageParser {
             int xHot = -1;
             int yHot = -1;
             for (final Entry<String, String> entry : defines.entrySet()) {
-            final String name = entry.getKey();
-            if (name.endsWith("_width")) {
-            width = Integer.parseInt(entry.getValue());
-            } else if (name.endsWith("_height")) {
-            height = Integer.parseInt(entry.getValue());
-            } else if (name.endsWith("_x_hot")) {
-            xHot = Integer.parseInt(entry.getValue());
-            } else if (name.endsWith("_y_hot")) {
-            yHot = Integer.parseInt(entry.getValue());
+                final String name = entry.getKey();
+                if (name.endsWith("_width")) {
+                    width = Integer.parseInt(entry.getValue());
+                } else if (name.endsWith("_height")) {
+                    height = Integer.parseInt(entry.getValue());
+                } else if (name.endsWith("_x_hot")) {
+                    xHot = Integer.parseInt(entry.getValue());
+                } else if (name.endsWith("_y_hot")) {
+                    yHot = Integer.parseInt(entry.getValue());
+                }
             }
-         }
             if (width == -1) {
                 throw new ImageReadException("width not found");
             }
@@ -263,7 +263,7 @@ public class XbmImageParser extends ImageParser {
             }
         }
 
-        final int[] palette = { 0xffffff, 0x000000 };
+        final int[] palette = {0xffffff, 0x000000};
         final ColorModel colorModel = new IndexColorModel(1, 2, palette, 0, false,
                 -1, DataBuffer.TYPE_BYTE);
         final DataBufferByte dataBuffer = new DataBufferByte(imageData,
@@ -284,7 +284,7 @@ public class XbmImageParser extends ImageParser {
 
     @Override
     public final BufferedImage getBufferedImage(final ByteSource byteSource,
-            final Map<String,Object> params) throws ImageReadException, IOException {
+                                                final Map<String, Object> params) throws ImageReadException, IOException {
         final XbmParseResult result = parseXbmHeader(byteSource);
         return readXbmImage(result.xbmHeader, result.cParser);
     }
@@ -315,10 +315,10 @@ public class XbmImageParser extends ImageParser {
     }
 
     @Override
-    public void writeImage(final BufferedImage src, final OutputStream os, Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, Map<String, Object> params)
             throws ImageWriteException, IOException {
         // make copy of params; we'll clear keys as we consume them.
-        params = (params == null) ? new HashMap<String,Object>() : new HashMap<String,Object>(params);
+        params = (params == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(params);
 
         // clear format key.
         if (params.containsKey(PARAM_KEY_FORMAT)) {
@@ -390,15 +390,13 @@ public class XbmImageParser extends ImageParser {
     /**
      * Extracts embedded XML metadata as XML string.
      * <p>
-     * 
-     * @param byteSource
-     *            File containing image data.
-     * @param params
-     *            Map of optional parameters, defined in SanselanConstants.
+     *
+     * @param byteSource File containing image data.
+     * @param params     Map of optional parameters, defined in SanselanConstants.
      * @return Xmp Xml as String, if present. Otherwise, returns null.
      */
     @Override
-    public String getXmpXml(final ByteSource byteSource, final Map<String,Object> params)
+    public String getXmpXml(final ByteSource byteSource, final Map<String, Object> params)
             throws ImageReadException, IOException {
         return null;
     }

@@ -1088,7 +1088,7 @@ public abstract class PathUtils
                 }
                 return path1.concat(clear_path_2);
             }
-            
+
         } else {
             return path2;
         }

@@ -420,7 +420,7 @@ public class CmdLineParser {
 
     /**
      * @return the parsed value of the given Option, or the given default 'def'
-     *         if the option was not set
+     * if the option was not set
      */
     public final Object getOptionValue(Option o, Object def) {
         Vector<Object> v = values.get(o.longForm());
@@ -439,7 +439,7 @@ public class CmdLineParser {
 
     /**
      * @return A Vector giving the parsed values of all the occurrences of the
-     *         given Option, or an empty Vector if the option was not set.
+     * given Option, or an empty Vector if the option was not set.
      */
     public final Vector getOptionValues(Option option) {
         Vector<Object> result = new Vector<Object>();

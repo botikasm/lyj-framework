@@ -33,21 +33,21 @@ public class ImageDump {
         // System.out.println(prefix + ": " + "type: "
         // + cs.getType() );
         switch (cs.getType()) {
-        case ColorSpace.TYPE_CMYK:
-            return "TYPE_CMYK";
-        case ColorSpace.TYPE_RGB:
-            return "TYPE_RGB";
+            case ColorSpace.TYPE_CMYK:
+                return "TYPE_CMYK";
+            case ColorSpace.TYPE_RGB:
+                return "TYPE_RGB";
 
-        case ColorSpace.CS_sRGB:
-            return "CS_sRGB";
-        case ColorSpace.CS_GRAY:
-            return "CS_GRAY";
-        case ColorSpace.CS_CIEXYZ:
-            return "CS_CIEXYZ";
-        case ColorSpace.CS_LINEAR_RGB:
-            return "CS_LINEAR_RGB";
-        case ColorSpace.CS_PYCC:
-            return "CS_PYCC";
+            case ColorSpace.CS_sRGB:
+                return "CS_sRGB";
+            case ColorSpace.CS_GRAY:
+                return "CS_GRAY";
+            case ColorSpace.CS_CIEXYZ:
+                return "CS_CIEXYZ";
+            case ColorSpace.CS_LINEAR_RGB:
+                return "CS_LINEAR_RGB";
+            case ColorSpace.CS_PYCC:
+                return "CS_PYCC";
         }
 
         return "unknown";

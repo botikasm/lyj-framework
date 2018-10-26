@@ -122,7 +122,7 @@ public class JSONObject {
          *
          * @param object An object to test for nullness.
          * @return true if the object parameter is the JSONObject.NULL object
-         *         or null.
+         * or null.
          */
         public boolean equals(Object object) {
             return object == null || object == this;
@@ -710,7 +710,7 @@ public class JSONObject {
      *
      * @param key A key string.
      * @return true if there is no value associated with the key or if
-     *         the value is the JSONObject.NULL object.
+     * the value is the JSONObject.NULL object.
      */
     public boolean isNull(String key) {
         return JSONObject.NULL.equals(this.opt(key));
@@ -752,7 +752,7 @@ public class JSONObject {
      * JSONObject.
      *
      * @return A JSONArray containing the key strings, or null if the JSONObject
-     *         is empty.
+     * is empty.
      */
     public JSONArray names() {
         JSONArray ja = new JSONArray();
@@ -1284,7 +1284,7 @@ public class JSONObject {
      *
      * @param key The name to be removed.
      * @return The value that was associated with the name,
-     *         or null if there was no value.
+     * or null if there was no value.
      */
     public Object remove(String key) {
         return this.map.remove(key);
@@ -1395,9 +1395,9 @@ public class JSONObject {
      * Warning: This method assumes that the data structure is acyclical.
      *
      * @return a printable, displayable, portable, transmittable
-     *         representation of the object, beginning
-     *         with <code>{</code>&nbsp;<small>(left brace)</small> and ending
-     *         with <code>}</code>&nbsp;<small>(right brace)</small>.
+     * representation of the object, beginning
+     * with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     * with <code>}</code>&nbsp;<small>(right brace)</small>.
      */
     public String toString() {
         try {
@@ -1416,9 +1416,9 @@ public class JSONObject {
      * @param indentFactor The number of spaces to add to each level of
      *                     indentation.
      * @return a printable, displayable, portable, transmittable
-     *         representation of the object, beginning
-     *         with <code>{</code>&nbsp;<small>(left brace)</small> and ending
-     *         with <code>}</code>&nbsp;<small>(right brace)</small>.
+     * representation of the object, beginning
+     * with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     * with <code>}</code>&nbsp;<small>(right brace)</small>.
      * @throws JSONException If the object contains an invalid number.
      */
     public String toString(int indentFactor) throws JSONException {
@@ -1445,9 +1445,9 @@ public class JSONObject {
      *
      * @param value The value to be serialized.
      * @return a printable, displayable, transmittable
-     *         representation of the object, beginning
-     *         with <code>{</code>&nbsp;<small>(left brace)</small> and ending
-     *         with <code>}</code>&nbsp;<small>(right brace)</small>.
+     * representation of the object, beginning
+     * with <code>{</code>&nbsp;<small>(left brace)</small> and ending
+     * with <code>}</code>&nbsp;<small>(right brace)</small>.
      * @throws JSONException If the value is or contains an invalid number.
      */
     public static String valueToString(Object value) throws JSONException {
@@ -1529,7 +1529,7 @@ public class JSONObject {
                     objectPackageName.startsWith("java.") ||
                             objectPackageName.startsWith("javax.") ||
                             object.getClass().getClassLoader() == null
-                    ) {
+            ) {
                 return object.toString();
             }
             return new JSONObject(object);

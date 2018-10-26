@@ -27,7 +27,7 @@ public class PixelDensity {
     private final int unitLength;
 
     private PixelDensity(final double horizontalDensity, final double verticalDensity,
-            final int unitLength) {
+                         final int unitLength) {
         this.horizontalDensity = horizontalDensity;
         this.verticalDensity = verticalDensity;
         this.unitLength = unitLength;

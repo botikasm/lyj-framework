@@ -82,13 +82,13 @@ System.err.println("");
         s += mac;
         s += 32; // margin for deflater; deflater may inflate data
 
-    /**/
+        /**/
         if (buffer.buffer.length < s + buffer.index - 5 - 9 - len) {
             byte[] foo = new byte[s + buffer.index - 5 - 9 - len];
             System.arraycopy(buffer.buffer, 0, foo, 0, buffer.buffer.length);
             buffer.buffer = foo;
         }
-    /**/
+        /**/
 
 //if(buffer.buffer.length<len+5+9)
 //  System.err.println("buffer.buffer.length="+buffer.buffer.length+" len+5+9="+(len+5+9));

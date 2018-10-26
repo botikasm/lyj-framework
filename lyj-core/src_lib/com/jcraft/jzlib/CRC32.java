@@ -123,7 +123,7 @@ final public class CRC32 implements Checksum {
             // if no more bits set, then done
         } while (len2 != 0);
 
-    /* return combined crc */
+        /* return combined crc */
         crc1 ^= crc2;
         return crc1;
     }

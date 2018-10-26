@@ -25,7 +25,7 @@ class ImageContents {
     public final byte globalColorTable[];
 
     public ImageContents(final GifHeaderInfo gifHeaderInfo, final byte globalColorTable[],
-            final List<GifBlock> blocks) {
+                         final List<GifBlock> blocks) {
         this.gifHeaderInfo = gifHeaderInfo;
         this.globalColorTable = globalColorTable;
         this.blocks = blocks;

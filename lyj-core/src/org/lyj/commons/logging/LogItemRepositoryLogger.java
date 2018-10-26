@@ -19,14 +19,12 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.logging;
 
 
 /**
- *
- *
  * @author angelo.geminiani
  */
 public class LogItemRepositoryLogger

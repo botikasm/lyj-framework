@@ -64,8 +64,8 @@ public class AES256CBC implements Cipher {
             SecretKeySpec keyspec = new SecretKeySpec(key, "AES");
             cipher = javax.crypto.Cipher.getInstance("AES/CBC/" + pad);
             cipher.init((mode == ENCRYPT_MODE ?
-                    javax.crypto.Cipher.ENCRYPT_MODE :
-                    javax.crypto.Cipher.DECRYPT_MODE),
+                            javax.crypto.Cipher.ENCRYPT_MODE :
+                            javax.crypto.Cipher.DECRYPT_MODE),
                     keyspec, new IvParameterSpec(iv));
         } catch (Exception e) {
             cipher = null;

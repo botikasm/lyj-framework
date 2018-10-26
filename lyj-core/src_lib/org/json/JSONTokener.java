@@ -398,7 +398,7 @@ public class JSONTokener {
      *
      * @param to A character to skip to.
      * @return The requested character, or zero if the requested character
-     *         is not found.
+     * is not found.
      */
     public char skipTo(char to) throws JSONException {
         char c;

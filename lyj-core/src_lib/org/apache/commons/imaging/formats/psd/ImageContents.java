@@ -30,8 +30,8 @@ public class ImageContents {
 
     public ImageContents(final PsdHeaderInfo header,
 
-    final int ColorModeDataLength, final int ImageResourcesLength,
-            final int LayerAndMaskDataLength, final int Compression) {
+                         final int ColorModeDataLength, final int ImageResourcesLength,
+                         final int LayerAndMaskDataLength, final int Compression) {
         this.header = header;
         this.ColorModeDataLength = ColorModeDataLength;
         this.ImageResourcesLength = ImageResourcesLength;

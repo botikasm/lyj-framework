@@ -58,7 +58,7 @@ public class URLWrapper {
         return _params;
     }
 
-    public boolean hasParams(){
+    public boolean hasParams() {
         return !this.params().isEmpty();
     }
 
@@ -82,7 +82,6 @@ public class URLWrapper {
         _hash = value;
         return this;
     }
-
 
 
     // ------------------------------------------------------------------------

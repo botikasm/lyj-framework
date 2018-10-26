@@ -198,7 +198,7 @@ public class MessageBusEvents {
         public void start() {
             super.start((t) -> {
                 try {
-                    if(null!=_events && _events.size()>0){
+                    if (null != _events && _events.size() > 0) {
                         this.run();
                     } else {
                         t.stop(); // no events, no thread

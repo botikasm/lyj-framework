@@ -2,9 +2,9 @@
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,9 +34,9 @@ public class PcxWriter implements PcxConstants {
     private int bitDepth = -1;
     private PixelDensity pixelDensity = null;
 
-    public PcxWriter(Map<String,Object> params) throws ImageWriteException {
+    public PcxWriter(Map<String, Object> params) throws ImageWriteException {
         // make copy of params; we'll clear keys as we consume them.
-        params = (params == null) ? new HashMap<String,Object>() : new HashMap<String,Object>(params);
+        params = (params == null) ? new HashMap<String, Object>() : new HashMap<String, Object>(params);
 
         // clear format key.
         if (params.containsKey(PARAM_KEY_FORMAT)) {
@@ -252,7 +252,7 @@ public class PcxWriter implements PcxConstants {
     }
 
     private void writeBlackAndWhitePCX(final BufferedImage src,
-            final SimplePalette palette, final BinaryOutputStream bos)
+                                       final SimplePalette palette, final BinaryOutputStream bos)
             throws ImageWriteException, IOException {
         int bytesPerLine = (src.getWidth() + 7) / 8;
         if (bytesPerLine % 2 != 0) {
@@ -302,7 +302,7 @@ public class PcxWriter implements PcxConstants {
     }
 
     private void write16ColorPCX(final BufferedImage src, final SimplePalette palette,
-            final BinaryOutputStream bos) throws ImageWriteException, IOException {
+                                 final BinaryOutputStream bos) throws ImageWriteException, IOException {
         int bytesPerLine = (src.getWidth() + 1) / 2;
         if (bytesPerLine % 2 != 0) {
             ++bytesPerLine;
@@ -355,7 +355,7 @@ public class PcxWriter implements PcxConstants {
     }
 
     private void write256ColorPCX(final BufferedImage src, final SimplePalette palette,
-            final BinaryOutputStream bos) throws ImageWriteException, IOException {
+                                  final BinaryOutputStream bos) throws ImageWriteException, IOException {
         final int bytesPerLine = src.getWidth() % 2 == 0 ? src.getWidth() : src
                 .getWidth() + 1;
 

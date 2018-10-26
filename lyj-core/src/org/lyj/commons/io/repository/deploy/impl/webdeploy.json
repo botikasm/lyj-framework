@@ -3,7 +3,9 @@
     "app": {
       "deploy": {
         "path": "./htdocs",
-        "exclude":["/src/*"]
+        "exclude": [
+          "/src/*"
+        ]
       }
     }
   }

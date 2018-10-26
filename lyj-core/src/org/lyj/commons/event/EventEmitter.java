@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.event;
 
@@ -192,7 +192,7 @@ public class EventEmitter
                     }
                 } catch (Throwable t) {
                     final String msg = String.format("An error occurred in event listener [%s]: {%s}" +
-                            "\nEvent is: [%s]",
+                                    "\nEvent is: [%s]",
                             listener, t, event);
                     logger.log(Level.SEVERE, msg, t);
                 }

@@ -1,7 +1,5 @@
 package org.lyj.commons.io.cache.filecache.registry;
 
-import org.lyj.commons.Delegates;
-
 import java.io.IOException;
 
 public interface IRegistry {
@@ -37,7 +35,6 @@ public interface IRegistry {
     void clear();
 
 
-
     void reloadSettings();
 
     long getCheck();
@@ -63,6 +60,6 @@ public interface IRegistry {
 
     boolean removeItemByPath(final String path) throws Exception;
 
-    String[] removeExpired()  throws Exception;
+    String[] removeExpired() throws Exception;
 
 }

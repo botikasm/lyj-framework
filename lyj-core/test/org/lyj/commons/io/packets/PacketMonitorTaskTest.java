@@ -4,8 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.lyj.TestInitializer;
 
-import static org.junit.Assert.*;
-
 public class PacketMonitorTaskTest {
 
 
@@ -21,18 +19,18 @@ public class PacketMonitorTaskTest {
 
         task.root("./packets");
 
-        task.callback((file, files)->{
+        task.callback((file, files) -> {
             System.out.println(file);
             System.out.println(files);
         });
 
         task.open();
 
-        while (task.isRunning()){
+        while (task.isRunning()) {
             Thread.sleep(1000);
         }
 
-        
+
     }
 
 }

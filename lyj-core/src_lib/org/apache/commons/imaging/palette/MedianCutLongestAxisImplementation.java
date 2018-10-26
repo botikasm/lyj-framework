@@ -57,23 +57,23 @@ public class MedianCutLongestAxisImplementation extends MedianCutImplementation 
         }
         return true;
     }
-    
+
     private void doCut(final ColorGroup color_group, final ColorComponent mode,
-            final List<ColorGroup> color_groups, final boolean ignoreAlpha) throws ImageWriteException {
+                       final List<ColorGroup> color_groups, final boolean ignoreAlpha) throws ImageWriteException {
 
         final Comparator<ColorCount> comparator = new Comparator<ColorCount>() {
             public int compare(final ColorCount c1, final ColorCount c2) {
                 switch (mode) {
-                case ALPHA:
-                    return c1.alpha - c2.alpha;
-                case RED:
-                    return c1.red - c2.red;
-                case GREEN:
-                    return c1.green - c2.green;
-                case BLUE:
-                    return c1.blue - c2.blue;
-                default:
-                    return 0;
+                    case ALPHA:
+                        return c1.alpha - c2.alpha;
+                    case RED:
+                        return c1.red - c2.red;
+                    case GREEN:
+                        return c1.green - c2.green;
+                    case BLUE:
+                        return c1.blue - c2.blue;
+                    default:
+                        return 0;
                 }
             }
         };
@@ -121,20 +121,20 @@ public class MedianCutLongestAxisImplementation extends MedianCutImplementation 
                 .get(median_index);
         int limit;
         switch (mode) {
-        case ALPHA:
-            limit = median_value.alpha;
-            break;
-        case RED:
-            limit = median_value.red;
-            break;
-        case GREEN:
-            limit = median_value.green;
-            break;
-        case BLUE:
-            limit = median_value.blue;
-            break;
-        default:
-            throw new Error("Bad mode.");
+            case ALPHA:
+                limit = median_value.alpha;
+                break;
+            case RED:
+                limit = median_value.red;
+                break;
+            case GREEN:
+                limit = median_value.green;
+                break;
+            case BLUE:
+                limit = median_value.blue;
+                break;
+            default:
+                throw new Error("Bad mode.");
         }
         color_group.cut = new ColorGroupCut(less, more, mode, limit);
     }

@@ -158,7 +158,7 @@ public final class Debug {
         debug(getDebug(message, map));
     }
 
-    public static String getDebug(final String message, final Map<?,?> map) {
+    public static String getDebug(final String message, final Map<?, ?> map) {
         final StringBuilder result = new StringBuilder();
 
         if (map == null) {
@@ -195,7 +195,7 @@ public final class Debug {
     }
 
     public static boolean compare(final String prefix, final Map<?, ?> a, final Map<?, ?> b, final List<?> ignore,
-            final StringBuilder buffer) {
+                                  final StringBuilder buffer) {
         if ((a == null) && (b == null)) {
             log(buffer, prefix + " both maps null");
             return true;
@@ -261,7 +261,7 @@ public final class Debug {
         final char c4 = (char) b4;
         // return new String(new char[] { c1, c2, c3, c4 });
         final StringBuilder fStringBuffer = new StringBuilder();
-        fStringBuffer.append(new String(new char[] { c1, c2, c3, c4 }));
+        fStringBuffer.append(new String(new char[]{c1, c2, c3, c4}));
         fStringBuffer.append(" bytequad: " + bytequad);
         fStringBuffer.append(" b1: " + b1);
         fStringBuffer.append(" b2: " + b2);
@@ -329,8 +329,8 @@ public final class Debug {
             debug(message, (List<?>) value);
         } else if (value instanceof Map) {
             debug(message, (Map<?, ?>) value);
-        // } else if (value instanceof Object) {
-        //   debug(message, (Object) value);
+            // } else if (value instanceof Object) {
+            //   debug(message, (Object) value);
         } else if (value instanceof ICC_Profile) {
             debug(message, (ICC_Profile) value);
         } else if (value instanceof File) {
@@ -372,11 +372,11 @@ public final class Debug {
         } else if (value instanceof ICC_Profile) {
             return getDebug(message, (ICC_Profile) value);
         } else if (value instanceof Map) {
-            return getDebug(message, (Map<?,?>) value);
+            return getDebug(message, (Map<?, ?>) value);
         } else if (value instanceof Map) {
-            return getDebug(message, (Map<?,?>) value); //
-        // else if (value instanceof Object) // getDebug(message, (Object)
-        // value);
+            return getDebug(message, (Map<?, ?>) value); //
+            // else if (value instanceof Object) // getDebug(message, (Object)
+            // value);
         } else if (value instanceof String) {
             return getDebug(message, (String) value);
         } else if (value instanceof byte[]) {
@@ -729,7 +729,7 @@ public final class Debug {
         return (prefix
                 + ": "
                 + ((r == null) ? "null" : (r.x + "x" + r.y + "," + r.width
-                        + "x" + r.height)) + " aspect_ratio: " + s_ar1 + " ("
+                + "x" + r.height)) + " aspect_ratio: " + s_ar1 + " ("
                 + s_ar2 + ")");
     }
 
@@ -792,13 +792,13 @@ public final class Debug {
                 dump(prefix + "\t" + "list: " + i + ": ", list.get(i));
             }
         } else if (value instanceof Map) {
-            final Map<?,?> map = (Map<?,?>) value;
+            final Map<?, ?> map = (Map<?, ?>) value;
             debug(prefix, "map");
-            for (final Map.Entry<?,?> entry : map.entrySet()) {
+            for (final Map.Entry<?, ?> entry : map.entrySet()) {
                 dump(prefix + "\t" + "map: " + entry.getKey() + " -> ", entry.getValue());
             }
-        // } else if (value instanceof String) {
-        //     debug(prefix, value);
+            // } else if (value instanceof String) {
+            //     debug(prefix, value);
         } else {
             debug(prefix, value.toString());
             debug(prefix + "\t", value.getClass().getName());

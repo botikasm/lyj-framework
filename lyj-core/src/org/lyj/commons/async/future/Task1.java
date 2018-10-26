@@ -145,10 +145,10 @@ public class Task1<T> {
     public T get(final long timeout, final TimeUnit unit) throws Exception {
         // join execution
         try {
-            if(!_executor.awaitTermination(timeout, unit)) {
+            if (!_executor.awaitTermination(timeout, unit)) {
 
                 //-- TIMEOUT --//
-               this.fail(new Exception("task timeout"));
+                this.fail(new Exception("task timeout"));
 
             }
         } catch (InterruptedException e) {

@@ -42,7 +42,7 @@ public class PngWriter implements PngConstants {
         this.verbose = verbose;
     }
 
-    public PngWriter(final Map<String,Object> params) {
+    public PngWriter(final Map<String, Object> params) {
         this.verbose = ParamMap.getParamBoolean(params, PARAM_KEY_VERBOSE,
                 false);
     }
@@ -61,7 +61,7 @@ public class PngWriter implements PngConstants {
      4. Miscellaneous information: bKGD, hIST, pHYs, sPLT (see 11.3.5: Miscellaneous information).
      5. Time information: tIME (see 11.3.6: Time stamp information).
     */
-    
+
     private final void writeInt(final OutputStream os, final int value) throws IOException {
         os.write(0xff & (value >> 24));
         os.write(0xff & (value >> 16));
@@ -70,7 +70,7 @@ public class PngWriter implements PngConstants {
     }
 
     private final void writeChunk(final OutputStream os, final byte chunkType[],
-            final byte data[]) throws IOException {
+                                  final byte data[]) throws IOException {
         final int dataLength = data == null ? 0 : data.length;
         writeInt(os, dataLength);
         os.write(chunkType);
@@ -98,8 +98,8 @@ public class PngWriter implements PngConstants {
         public final byte interlaceMethod;
 
         public ImageHeader(final int width, final int height, final byte bit_depth,
-                final byte colorType, final byte compressionMethod, final byte filterMethod,
-                final byte interlaceMethod) {
+                           final byte colorType, final byte compressionMethod, final byte filterMethod,
+                           final byte interlaceMethod) {
             this.width = width;
             this.height = height;
             this.bit_depth = bit_depth;
@@ -253,11 +253,11 @@ public class PngWriter implements PngConstants {
 
     private void writeChunkTRNS(final OutputStream os, final Palette palette) throws IOException {
         final byte[] bytes = new byte[palette.length()];
-        
+
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = (byte) (0xff & (palette.getEntry(i) >> 24));
         }
-        
+
         writeChunk(os, TRNS_CHUNK_TYPE.toByteArray(), bytes);
     }
 
@@ -307,36 +307,36 @@ public class PngWriter implements PngConstants {
         return result;
     }
 
-    private byte getBitDepth(final byte colorType, final Map<String,Object> params) {
+    private byte getBitDepth(final byte colorType, final Map<String, Object> params) {
         byte result = 8;
 
         final Object o = params.get(PARAM_KEY_PNG_BIT_DEPTH);
         if (o != null && o instanceof Number) {
             final int value = ((Number) o).intValue();
             switch (value) {
-            case 1:
-            case 2:
-            case 4:
-            case 8:
-            case 16:
-                result = (byte) value;
-                break;
-            default:
-                result = 8;
+                case 1:
+                case 2:
+                case 4:
+                case 8:
+                case 16:
+                    result = (byte) value;
+                    break;
+                default:
+                    result = 8;
             }
             switch (colorType) {
-            case COLOR_TYPE_GREYSCALE:
-                break;
-            case COLOR_TYPE_INDEXED_COLOR:
-                result = (byte) Math.min(8, result);
-                break;
-            case COLOR_TYPE_GREYSCALE_WITH_ALPHA:
-            case COLOR_TYPE_TRUE_COLOR:
-            case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA:
-                result = (byte) Math.max(8, result);
-                break;
-            default:
-                result = 8;
+                case COLOR_TYPE_GREYSCALE:
+                    break;
+                case COLOR_TYPE_INDEXED_COLOR:
+                    result = (byte) Math.min(8, result);
+                    break;
+                case COLOR_TYPE_GREYSCALE_WITH_ALPHA:
+                case COLOR_TYPE_TRUE_COLOR:
+                case COLOR_TYPE_TRUE_COLOR_WITH_ALPHA:
+                    result = (byte) Math.max(8, result);
+                    break;
+                default:
+                    result = 8;
             }
         }
 
@@ -346,11 +346,11 @@ public class PngWriter implements PngConstants {
     /// Wraps a palette by adding a single transparent entry at index 0.
     private static class TransparentPalette extends Palette {
         private final Palette palette;
-        
+
         TransparentPalette(final Palette palette) {
             this.palette = palette;
         }
-        
+
         @Override
         public int getEntry(final int index) {
             if (index == 0) {
@@ -359,12 +359,12 @@ public class PngWriter implements PngConstants {
                 return palette.getEntry(index - 1);
             }
         }
-        
+
         @Override
         public int length() {
             return 1 + palette.length();
         }
-        
+
         @Override
         public int getPaletteIndex(final int rgb) throws ImageWriteException {
             if (rgb == 0x00000000) {
@@ -379,6 +379,7 @@ public class PngWriter implements PngConstants {
             }
         }
     }
+
     /*
      between two chunk types indicates alternatives.
      Table 5.3 - Chunk ordering rules
@@ -407,10 +408,10 @@ public class PngWriter implements PngConstants {
      tEXt   Yes None
      zTXt   Yes None
      */
-    public void writeImage(final BufferedImage src, final OutputStream os, Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, Map<String, Object> params)
             throws ImageWriteException, IOException {
         // make copy of params; we'll clear keys as we consume them.
-        params = new HashMap<String,Object>(params);
+        params = new HashMap<String, Object>(params);
 
         // clear format key.
         if (params.containsKey(PARAM_KEY_FORMAT)) {
@@ -421,7 +422,7 @@ public class PngWriter implements PngConstants {
             params.remove(PARAM_KEY_VERBOSE);
         }
 
-        final Map<String,Object> rawParams = new HashMap<String,Object>(params);
+        final Map<String, Object> rawParams = new HashMap<String, Object>(params);
         if (params.containsKey(PARAM_KEY_PNG_FORCE_TRUE_COLOR)) {
             params.remove(PARAM_KEY_PNG_FORCE_TRUE_COLOR);
         }
@@ -535,8 +536,8 @@ public class PngWriter implements PngConstants {
 
             if (hasAlpha) {
                 palette = new TransparentPalette(palette);
-                writeChunkPLTE(os, palette);                
-                writeChunkTRNS(os, new SimplePalette(new int[] { 0x00000000 }));
+                writeChunkPLTE(os, palette);
+                writeChunkTRNS(os, new SimplePalette(new int[]{0x00000000}));
             } else {
                 writeChunkPLTE(os, palette);
             }
@@ -547,12 +548,12 @@ public class PngWriter implements PngConstants {
             final PixelDensity pixelDensity = (PixelDensity) pixelDensityObj;
             if (pixelDensity.isUnitless()) {
                 writeChunkPHYS(os, (int) Math.round(pixelDensity
-                        .getRawHorizontalDensity()),
+                                .getRawHorizontalDensity()),
                         (int) Math.round(pixelDensity.getRawVerticalDensity()),
                         (byte) 0);
             } else {
                 writeChunkPHYS(os, (int) Math.round(pixelDensity
-                        .horizontalDensityMetres()),
+                                .horizontalDensityMetres()),
                         (int) Math.round(pixelDensity.verticalDensityMetres()),
                         (byte) 1);
             }
@@ -703,6 +704,6 @@ public class PngWriter implements PngConstants {
 
         os.close();
     } // todo: filter types
-      // proper colour types
-      // srgb, etc.
+    // proper colour types
+    // srgb, etc.
 }

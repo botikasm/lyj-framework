@@ -26,11 +26,9 @@ import java.io.InputStream;
 
 public class ScanExpediterSimple extends ScanExpediter {
     public ScanExpediterSimple(final int width, final int height, final InputStream is,
-            final BufferedImage bi, final int color_type, final int BitDepth, final int bitsPerPixel,
-            final PngChunkPlte pngChunkPLTE, final GammaCorrection gammaCorrection,
-            final TransparencyFilter transparencyFilter)
-
-    {
+                               final BufferedImage bi, final int color_type, final int BitDepth, final int bitsPerPixel,
+                               final PngChunkPlte pngChunkPLTE, final GammaCorrection gammaCorrection,
+                               final TransparencyFilter transparencyFilter) {
         super(width, height, is, bi, color_type, BitDepth, bitsPerPixel,
                 pngChunkPLTE, gammaCorrection, transparencyFilter);
     }

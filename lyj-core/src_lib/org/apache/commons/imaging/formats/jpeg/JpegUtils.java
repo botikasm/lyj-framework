@@ -89,7 +89,7 @@ public class JpegUtils extends BinaryFileParser implements JpegConstants {
                     return;
                 }
             }
-            
+
             Debug.debug("" + markerCount + " markers");
 
         } finally {
@@ -105,60 +105,60 @@ public class JpegUtils extends BinaryFileParser implements JpegConstants {
 
     public static String getMarkerName(final int marker) {
         switch (marker) {
-        case SOS_Marker:
-            return "SOS_Marker";
+            case SOS_Marker:
+                return "SOS_Marker";
             // case JPEG_APP0 :
             // return "JPEG_APP0";
             // case JPEG_APP0_Marker :
             // return "JPEG_APP0_Marker";
-        case JPEG_APP1_Marker:
-            return "JPEG_APP1_Marker";
-        case JPEG_APP2_Marker:
-            return "JPEG_APP2_Marker";
-        case JPEG_APP13_Marker:
-            return "JPEG_APP13_Marker";
-        case JPEG_APP14_Marker:
-            return "JPEG_APP14_Marker";
-        case JPEG_APP15_Marker:
-            return "JPEG_APP15_Marker";
-        case JFIFMarker:
-            return "JFIFMarker";
-        case SOF0Marker:
-            return "SOF0Marker";
-        case SOF1Marker:
-            return "SOF1Marker";
-        case SOF2Marker:
-            return "SOF2Marker";
-        case SOF3Marker:
-            return "SOF3Marker";
-        case DHTMarker:
-            return "SOF4Marker";
-        case SOF5Marker:
-            return "SOF5Marker";
-        case SOF6Marker:
-            return "SOF6Marker";
-        case SOF7Marker:
-            return "SOF7Marker";
-        case SOF8Marker:
-            return "SOF8Marker";
-        case SOF9Marker:
-            return "SOF9Marker";
-        case SOF10Marker:
-            return "SOF10Marker";
-        case SOF11Marker:
-            return "SOF11Marker";
-        case DACMarker:
-            return "DACMarker";
-        case SOF13Marker:
-            return "SOF13Marker";
-        case SOF14Marker:
-            return "SOF14Marker";
-        case SOF15Marker:
-            return "SOF15Marker";
-        case DQTMarker:
-            return "DQTMarker";
-        default:
-            return "Unknown";
+            case JPEG_APP1_Marker:
+                return "JPEG_APP1_Marker";
+            case JPEG_APP2_Marker:
+                return "JPEG_APP2_Marker";
+            case JPEG_APP13_Marker:
+                return "JPEG_APP13_Marker";
+            case JPEG_APP14_Marker:
+                return "JPEG_APP14_Marker";
+            case JPEG_APP15_Marker:
+                return "JPEG_APP15_Marker";
+            case JFIFMarker:
+                return "JFIFMarker";
+            case SOF0Marker:
+                return "SOF0Marker";
+            case SOF1Marker:
+                return "SOF1Marker";
+            case SOF2Marker:
+                return "SOF2Marker";
+            case SOF3Marker:
+                return "SOF3Marker";
+            case DHTMarker:
+                return "SOF4Marker";
+            case SOF5Marker:
+                return "SOF5Marker";
+            case SOF6Marker:
+                return "SOF6Marker";
+            case SOF7Marker:
+                return "SOF7Marker";
+            case SOF8Marker:
+                return "SOF8Marker";
+            case SOF9Marker:
+                return "SOF9Marker";
+            case SOF10Marker:
+                return "SOF10Marker";
+            case SOF11Marker:
+                return "SOF11Marker";
+            case DACMarker:
+                return "DACMarker";
+            case SOF13Marker:
+                return "SOF13Marker";
+            case SOF14Marker:
+                return "SOF14Marker";
+            case SOF15Marker:
+                return "SOF15Marker";
+            case DQTMarker:
+                return "DQTMarker";
+            default:
+                return "Unknown";
         }
     }
 
@@ -171,7 +171,7 @@ public class JpegUtils extends BinaryFileParser implements JpegConstants {
             }
 
             public void visitSOS(final int marker, final byte markerBytes[],
-                    final byte imageData[]) {
+                                 final byte imageData[]) {
                 Debug.debug("SOS marker.  " + imageData.length
                         + " bytes of image data.");
                 Debug.debug("");
@@ -179,8 +179,8 @@ public class JpegUtils extends BinaryFileParser implements JpegConstants {
 
             // return false to exit traversal.
             public boolean visitSegment(final int marker, final byte markerBytes[],
-                    final int segmentLength, final byte segmentLengthBytes[],
-                    final byte segmentData[]) {
+                                        final int segmentLength, final byte segmentLengthBytes[],
+                                        final byte segmentData[]) {
                 Debug.debug("Segment marker: " + Integer.toHexString(marker)
                         + " (" + getMarkerName(marker) + "), "
                         + segmentData.length + " bytes of segment data.");

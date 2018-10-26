@@ -23,20 +23,19 @@
  * provided by this class represents a substantial improvement in speed
  * compared to that of the BufferedImage class that was originally used
  * in Apache Sanselan.
- *   This increase is attained because ImageBuilder is a highly specialized
+ * This increase is attained because ImageBuilder is a highly specialized
  * class that does not need to perform the general-purpose logic required
- * for BufferedImage.  If you need to modify this class to add new 
+ * for BufferedImage.  If you need to modify this class to add new
  * image formats or functionality, keep in mind that some of its methods
- * are invoked literally millions of times when building an image. 
+ * are invoked literally millions of times when building an image.
  * Since even the introduction of something as small as a single conditional
  * inside of setRGB could result in a noticeable increase in the
  * time to read a file, changes should be made with care.
- *    During development, I experimented with inlining the setRGB logic
+ * During development, I experimented with inlining the setRGB logic
  * in some of the code that uses it. This approach did not significantly
  * improve performance, leading me to speculate that the Java JIT compiler
- * might have inlined the method at run time.  Further investigation 
+ * might have inlined the method at run time.  Further investigation
  * is required.
- * 
  */
 package org.apache.commons.imaging.common;
 
@@ -62,13 +61,13 @@ public class ImageBuilder {
      * requirements for the ImageBuilder or resulting BufferedImage.
      */
     public ImageBuilder(final int width, final int height, final boolean hasAlpha) {
-        if(width<=0){
+        if (width <= 0) {
             throw new RasterFormatException("zero or negative width value");
         }
-        if(height<=0){
+        if (height <= 0) {
             throw new RasterFormatException("zero or negative height value");
         }
-            
+
         data = new int[width * height];
         this.width = width;
         this.height = height;
@@ -85,7 +84,7 @@ public class ImageBuilder {
 
     /**
      * Get the height of the ImageBuilder pixel field
-     * @return  a positive integer
+     * @return a positive integer
      */
     public int getHeight() {
         return height;
@@ -124,7 +123,7 @@ public class ImageBuilder {
     public BufferedImage getBufferedImage() {
         return makeBufferedImage(data, width, height, hasAlpha);
     }
-    
+
     /**
      * Gets a subimage from the ImageBuilder using the specified parameters.
      * If the parameters specify a rectangular region that is not entirely
@@ -143,8 +142,7 @@ public class ImageBuilder {
      * @throws RasterFormatException f the specified area is not contained
      *         within this ImageBuilder
      */
-    public BufferedImage getSubimage(final int x, final int y, final int w, final int h)
-    {
+    public BufferedImage getSubimage(final int x, final int y, final int w, final int h) {
         if (w <= 0) {
             throw new RasterFormatException("negative or zero subimage width");
         }
@@ -182,8 +180,7 @@ public class ImageBuilder {
     }
 
     private BufferedImage makeBufferedImage(
-            final int[] argb, final int w, final int h, final boolean useAlpha)
-    {
+            final int[] argb, final int w, final int h, final boolean useAlpha) {
         ColorModel colorModel;
         WritableRaster raster;
         final DataBufferInt buffer = new DataBufferInt(argb, w * h);
@@ -191,13 +188,13 @@ public class ImageBuilder {
             colorModel = new DirectColorModel(32, 0x00ff0000, 0x0000ff00,
                     0x000000ff, 0xff000000);
             raster = WritableRaster.createPackedRaster(buffer, w, h,
-                    w, new int[] { 0x00ff0000, 0x0000ff00, 0x000000ff,
-                            0xff000000 }, null);
+                    w, new int[]{0x00ff0000, 0x0000ff00, 0x000000ff,
+                            0xff000000}, null);
         } else {
             colorModel = new DirectColorModel(24, 0x00ff0000, 0x0000ff00,
                     0x000000ff);
             raster = WritableRaster.createPackedRaster(buffer, w, h,
-                    w, new int[] { 0x00ff0000, 0x0000ff00, 0x000000ff },
+                    w, new int[]{0x00ff0000, 0x0000ff00, 0x000000ff},
                     null);
         }
         return new BufferedImage(colorModel, raster,

@@ -60,7 +60,7 @@ public class BinaryFunctions {
     }
 
     public static final byte[] readBytes(final String name, final InputStream is, final int length,
-            final String exception) throws IOException {
+                                         final String exception) throws IOException {
         final byte result[] = new byte[length];
         int read = 0;
         while (read < length) {
@@ -81,7 +81,7 @@ public class BinaryFunctions {
     }
 
     public static final void readAndVerifyBytes(final InputStream is, final byte expected[],
-            final String exception) throws ImageReadException, IOException {
+                                                final String exception) throws ImageReadException, IOException {
         for (final byte element : expected) {
             final int data = is.read();
             final byte b = (byte) (0xff & data);
@@ -97,7 +97,7 @@ public class BinaryFunctions {
     }
 
     public static final void readAndVerifyBytes(final InputStream is,
-            final BinaryConstant expected, final String exception)
+                                                final BinaryConstant expected, final String exception)
             throws ImageReadException, IOException {
         for (int i = 0; i < expected.size(); i++) {
             final int data = is.read();
@@ -114,7 +114,7 @@ public class BinaryFunctions {
     }
 
     public static final void readAndVerifyBytes(final String name, final InputStream is,
-            final byte expected[], final String exception) throws ImageReadException,
+                                                final byte expected[], final String exception) throws ImageReadException,
             IOException {
         final byte bytes[] = readBytes(name, is, expected.length, exception);
 
@@ -177,7 +177,7 @@ public class BinaryFunctions {
     }
 
     public static final boolean compareBytes(final byte a[], final int aStart, final byte b[],
-            final int bStart, final int length) {
+                                             final int bStart, final int length) {
         if (a.length < (aStart + length)) {
             return false;
         }
@@ -195,7 +195,7 @@ public class BinaryFunctions {
     }
 
     public static final int read4Bytes(final String name, final InputStream is,
-            final String exception, final ByteOrder byteOrder) throws IOException {
+                                       final String exception, final ByteOrder byteOrder) throws IOException {
         final int byte0 = is.read();
         final int byte1 = is.read();
         final int byte2 = is.read();
@@ -217,7 +217,7 @@ public class BinaryFunctions {
     }
 
     public static final int read3Bytes(final String name, final InputStream is,
-            final String exception, final ByteOrder byteOrder) throws IOException {
+                                       final String exception, final ByteOrder byteOrder) throws IOException {
         final int byte0 = is.read();
         final int byte1 = is.read();
         final int byte2 = is.read();
@@ -238,20 +238,20 @@ public class BinaryFunctions {
     }
 
     public static final int read2Bytes(final String name, final InputStream is,
-            final String exception, final ByteOrder byteOrder) throws IOException {
+                                       final String exception, final ByteOrder byteOrder) throws IOException {
         final int byte0 = is.read();
         final int byte1 = is.read();
         if ((byte0 | byte1) < 0) {
             throw new IOException(exception);
         }
-        
+
         final int result;
         if (byteOrder == ByteOrder.MOTOROLA) {
             result = (byte0 << 8) | byte1;
         } else {
             result = (byte1 << 8) | byte0;
         }
-        
+
         return result;
     }
 
@@ -291,7 +291,7 @@ public class BinaryFunctions {
     }
 
     public static final byte[] getRAFBytes(final RandomAccessFile raf, final long pos,
-            final int length, final String exception) throws IOException {
+                                           final int length, final String exception) throws IOException {
         final byte result[] = new byte[length];
 
         raf.seek(pos);

@@ -42,7 +42,7 @@ public class CloudFSIndex {
 
     public Entity get(final String key) {
         if (null != _collection_disks) {
-            return new Entity( _collection_disks.get(key));
+            return new Entity(_collection_disks.get(key));
         }
         return null;
     }

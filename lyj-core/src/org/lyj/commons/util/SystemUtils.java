@@ -203,7 +203,7 @@ public abstract class SystemUtils {
     public static void selectFile(final String path) throws Exception {
         final File file = new File(PathUtils.getAbsolutePath(path));
         if (file.exists()) {
-           open(file, true);
+            open(file, true);
         }
     }
 

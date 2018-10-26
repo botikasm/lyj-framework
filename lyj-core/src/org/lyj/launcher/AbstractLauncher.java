@@ -104,7 +104,7 @@ public abstract class AbstractLauncher {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public AbstractLauncher handle(final Delegates.Handler callback){
+    public AbstractLauncher handle(final Delegates.Handler callback) {
         _handler = callback;
         return this;
     }
@@ -124,19 +124,19 @@ public abstract class AbstractLauncher {
         return _argsMap;
     }
 
-    public final Object getArg(final String name){
+    public final Object getArg(final String name) {
         return _argsMap.get(name);
     }
 
-    public final Object getArgString(final String name){
+    public final Object getArgString(final String name) {
         return ConversionUtils.toString(_argsMap.get(name));
     }
 
-    public final boolean getArgBoolean(final String name){
+    public final boolean getArgBoolean(final String name) {
         return ConversionUtils.toBoolean(_argsMap.get(name));
     }
 
-    public final int getArgInteger(final String name){
+    public final int getArgInteger(final String name) {
         return ConversionUtils.toInteger(_argsMap.get(name));
     }
 
@@ -145,6 +145,7 @@ public abstract class AbstractLauncher {
     // ------------------------------------------------------------------------
 
     public abstract void ready();
+
     public abstract void shutdown();
 
     // ------------------------------------------------------------------------
@@ -163,10 +164,11 @@ public abstract class AbstractLauncher {
 
             // ready method
             this.ready();
-            if(null!=_handler){
+            if (null != _handler) {
                 try {
                     Delegates.invoke(_handler);
-                }catch(Throwable ignored){}
+                } catch (Throwable ignored) {
+                }
             }
         } catch (Exception x) {
             System.err.println("Uncaught exception: ");
@@ -192,7 +194,7 @@ public abstract class AbstractLauncher {
         return loader;
     }
 
-    private void initLoggerPath(){
+    private void initLoggerPath() {
         // init internal logger
         LoggingRepository.getInstance().setFilePath(IConstants.PATH_LOG.concat("/lyj.log"));
     }
@@ -282,15 +284,15 @@ public abstract class AbstractLauncher {
     private static ClassLoader createClassLoader(final File home)
             throws IOException {
         /**
-        final String classpath = System.getProperty(SYSPROP_CLASSPATH, DEFAULT_CLASSPATH);
-        final String[] classes = classpath.split(",");
+         final String classpath = System.getProperty(SYSPROP_CLASSPATH, DEFAULT_CLASSPATH);
+         final String[] classes = classpath.split(",");
 
-        // ensure classpath exists
-        for (final String path : classes) {
-            final String cleanPath = path.replaceAll("\\*", "");
-            FileUtils.mkdirs(PathUtils.getAbsolutePath(cleanPath));
-        }
-        **/
+         // ensure classpath exists
+         for (final String path : classes) {
+         final String cleanPath = path.replaceAll("\\*", "");
+         FileUtils.mkdirs(PathUtils.getAbsolutePath(cleanPath));
+         }
+         **/
         // creates and set the new class loader as context class loader
         final LyjClassLoader loader = new LyjClassLoader(home, new String[0]);
         Thread.currentThread().setContextClassLoader(loader);

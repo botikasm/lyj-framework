@@ -228,7 +228,7 @@ public abstract class FileDeployer {
     }
 
     public void finish() {
-       // do nothing. override this method to implement a finalization task after deploy
+        // do nothing. override this method to implement a finalization task after deploy
     }
 
     // ------------------------------------------------------------------------

@@ -5,8 +5,8 @@ import org.lyj.commons.Delegates;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.lang.CharEncoding;
 import org.lyj.commons.network.http.IHttpConstants;
-import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.util.Map;
 
@@ -109,41 +109,41 @@ public class HttpClient {
     }
 
     public void post(final String surl, final Map<String, Object> params,
-                     final Delegates.SingleResultCallback<String> callback){
+                     final Delegates.SingleResultCallback<String> callback) {
 
-        try{
-            this.doPost(surl, params, (err, totalBuffer)->{
-                if(null!=err){
+        try {
+            this.doPost(surl, params, (err, totalBuffer) -> {
+                if (null != err) {
                     Delegates.invoke(callback, err, "");
                 } else {
                     Delegates.invoke(callback, null, totalBuffer.read());
                 }
             });
-        } catch(Throwable t){
+        } catch (Throwable t) {
             Delegates.invoke(callback, t, "");
         }
     }
 
     public void get(final String surl, final Map<String, Object> params,
-                     final Delegates.SingleResultCallback<String> callback){
+                    final Delegates.SingleResultCallback<String> callback) {
 
-        try{
-            this.doGet(surl, params, (err, totalBuffer)->{
-                if(null!=err){
+        try {
+            this.doGet(surl, params, (err, totalBuffer) -> {
+                if (null != err) {
                     Delegates.invoke(callback, err, "");
                 } else {
                     Delegates.invoke(callback, null, totalBuffer.read());
                 }
             });
-        } catch(Throwable t){
+        } catch (Throwable t) {
             Delegates.invoke(callback, t, "");
         }
     }
 
-    public Task<String> post(final String surl, final Map<String, Object> params){
-        return new Task<String>((t)->{
-            this.post(surl, params, (err, response)->{
-                if(null!=err){
+    public Task<String> post(final String surl, final Map<String, Object> params) {
+        return new Task<String>((t) -> {
+            this.post(surl, params, (err, response) -> {
+                if (null != err) {
                     t.fail(err);
                 } else {
                     t.success(response);
@@ -152,10 +152,10 @@ public class HttpClient {
         });
     }
 
-    public Task<String> post(final String surl, final JSONObject params){
-        return new Task<String>((t)->{
-            this.post(surl, params, (err, response)->{
-                if(null!=err){
+    public Task<String> post(final String surl, final JSONObject params) {
+        return new Task<String>((t) -> {
+            this.post(surl, params, (err, response) -> {
+                if (null != err) {
                     t.fail(err);
                 } else {
                     t.success(response);
@@ -169,7 +169,7 @@ public class HttpClient {
     // ------------------------------------------------------------------------
 
     private void doPost(final String surl, final Map<String, Object> params,
-                      final Delegates.SingleResultCallback<HttpBuffer> callback) {
+                        final Delegates.SingleResultCallback<HttpBuffer> callback) {
         try {
             HttpRequest request = new HttpRequest(POST, surl)
                     .setEncoding(_char_encoding)
@@ -190,16 +190,16 @@ public class HttpClient {
             });
 
             request.write(body).end();
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             Delegates.invoke(callback, t, null);
         }
     }
 
     private void doGet(final String surl, final Map<String, Object> params,
-                        final Delegates.SingleResultCallback<HttpBuffer> callback) {
+                       final Delegates.SingleResultCallback<HttpBuffer> callback) {
         try {
             final String body = StringUtils.toQueryString(params, _char_encoding, true);
-            final String url = StringUtils.hasLength(body)?surl.concat("?").concat(body):surl;
+            final String url = StringUtils.hasLength(body) ? surl.concat("?").concat(body) : surl;
 
             HttpRequest request = new HttpRequest(GET, url)
                     .setEncoding(_char_encoding)
@@ -217,8 +217,8 @@ public class HttpClient {
             });
 
             request.write(body).end();
-            
-        } catch(Throwable t) {
+
+        } catch (Throwable t) {
             Delegates.invoke(callback, t, null);
         }
     }
@@ -227,21 +227,21 @@ public class HttpClient {
     //                      S T A T I C
     // ------------------------------------------------------------------------
 
-    public static boolean isPOST(final String method){
+    public static boolean isPOST(final String method) {
         return StringUtils.hasText(method) && method.toUpperCase().equals(POST);
     }
 
-    public static boolean isGET(final String method){
+    public static boolean isGET(final String method) {
         return StringUtils.hasText(method) && method.toUpperCase().equals(GET);
     }
 
-    public static String get (final String url) throws Exception {
-        return get(url, null, 60*1000);
+    public static String get(final String url) throws Exception {
+        return get(url, null, 60 * 1000);
     }
 
-    public static String get (final String url,
-                              final Map<String, Object> params,
-                              final int connection_timeout) throws Exception{
+    public static String get(final String url,
+                             final Map<String, Object> params,
+                             final int connection_timeout) throws Exception {
         final Task<String> task = new Task<String>(t -> {
 
             final HttpClient client = new HttpClient();

@@ -19,7 +19,7 @@ public class PhoneUtilsTest {
 
     @Test
     public void localize_SM() throws Exception {
-        
+
         assertEquals(PhoneUtils.localize("33312121212", "SM"), "+37833312121212");
 
     }

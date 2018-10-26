@@ -41,12 +41,12 @@ import java.util.concurrent.*;
  * Sample usage:
  * <code>
  * Timed alarmClock2 = new Timed(TimeUnit.SECONDS,<br>
- *      0, // start after 3 seconds<br>
- *      1, // run each 1 second<br>
- *      0, 3);<br>
+ * 0, // start after 3 seconds<br>
+ * 1, // run each 1 second<br>
+ * 0, 3);<br>
  * alarmClock2.start((t) -> {<br>
- *      final String msg = FormatUtils.format("[%s] Stop after 3 loop. #%s",t.id(), t.count());<br>
- *      System.out.println(msg);<br>
+ * final String msg = FormatUtils.format("[%s] Stop after 3 loop. #%s",t.id(), t.count());<br>
+ * System.out.println(msg);<br>
  * });<br>
  * </code>
  */
@@ -212,16 +212,16 @@ public class Timed
         }
     }
 
-    public boolean isRunning(){
-        return null!=__scheduler && !__scheduler.isShutdown() && !__scheduler.isTerminated();
+    public boolean isRunning() {
+        return null != __scheduler && !__scheduler.isShutdown() && !__scheduler.isTerminated();
     }
 
-    public boolean isShutdown(){
-        return null!=__scheduler && __scheduler.isShutdown();
+    public boolean isShutdown() {
+        return null != __scheduler && __scheduler.isShutdown();
     }
 
-    public boolean isTerminated(){
-        return null!=__scheduler && __scheduler.isTerminated();
+    public boolean isTerminated() {
+        return null != __scheduler && __scheduler.isTerminated();
     }
 
     // --------------------------------------------------------------------
@@ -402,7 +402,7 @@ public class Timed
 
                     boolean stop = interruptor.isStopped();
 
-                    if(!stop) {
+                    if (!stop) {
                         // if reached max number of iterations, stop
                         final int max_iterations = _sender.getShutdownAfterCount();
                         if (max_iterations > 0 && count >= max_iterations) {

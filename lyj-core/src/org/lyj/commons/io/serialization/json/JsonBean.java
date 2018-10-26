@@ -19,7 +19,7 @@
  */
 
 /*
- * 
+ *
  */
 package org.lyj.commons.io.serialization.json;
 
@@ -102,9 +102,9 @@ public final class JsonBean {
                             final int len = array.length();
                             for (int i = 0; i < len; i++) {
                                 final Object val = array.opt(i);
-                                if(val instanceof String || BeanUtils.PrimitiveClasses.isPrimitive(val.getClass())){
+                                if (val instanceof String || BeanUtils.PrimitiveClasses.isPrimitive(val.getClass())) {
                                     result.add("\"".concat(val.toString()).concat("\""));
-                                } else{
+                                } else {
                                     result.add(val);
                                 }
                             }
@@ -127,6 +127,7 @@ public final class JsonBean {
 
     /**
      * Returns JSONObjects List, JSONArray or JSONObject
+     *
      * @return JSONObjects List, JSONArray or JSONObject
      */
     public Object asJSONObject() {

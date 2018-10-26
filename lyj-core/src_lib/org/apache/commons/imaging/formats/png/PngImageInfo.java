@@ -26,13 +26,13 @@ public class PngImageInfo extends ImageInfo {
     private final List<PngText> textChunks;
 
     public PngImageInfo(final String formatDetails, final int bitsPerPixel,
-            final List<String> comments, final ImageFormat format, final String formatName,
-            final int height, final String mimeType, final int numberOfImages,
-            final int physicalHeightDpi, final float physicalHeightInch,
-            final int physicalWidthDpi, final float physicalWidthInch, final int width,
-            final boolean isProgressive, final boolean isTransparent, final boolean usesPalette,
-            final int colorType, final String compressionAlgorithm,
-            final List<PngText> textChunks) {
+                        final List<String> comments, final ImageFormat format, final String formatName,
+                        final int height, final String mimeType, final int numberOfImages,
+                        final int physicalHeightDpi, final float physicalHeightInch,
+                        final int physicalWidthDpi, final float physicalWidthInch, final int width,
+                        final boolean isProgressive, final boolean isTransparent, final boolean usesPalette,
+                        final int colorType, final String compressionAlgorithm,
+                        final List<PngText> textChunks) {
         super(formatDetails, bitsPerPixel, comments, format, formatName,
                 height, mimeType, numberOfImages, physicalHeightDpi,
                 physicalHeightInch, physicalWidthDpi, physicalWidthInch, width,

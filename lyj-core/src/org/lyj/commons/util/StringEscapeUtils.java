@@ -53,10 +53,10 @@ public class StringEscapeUtils {
     private static final int MIN_ESCAPE = 2;
     private static final int MAX_ESCAPE = 6;
     private static final String[][] ESCAPES = {
-            {"\"",     "quot"}, // " - double-quote
-            {"&",      "amp"}, // & - ampersand
-            {"<",      "lt"}, // < - less-than
-            {">",      "gt"}, // > - greater-than
+            {"\"", "quot"}, // " - double-quote
+            {"&", "amp"}, // & - ampersand
+            {"<", "lt"}, // < - less-than
+            {">", "gt"}, // > - greater-than
 
             // Mapping to escape ISO-8859-1 characters to their named HTML 3.x equivalents.
             {"\u00A0", "nbsp"}, // non-breaking space
@@ -158,6 +158,7 @@ public class StringEscapeUtils {
     };
 
     private static final HashMap<String, CharSequence> lookupMap;
+
     static {
         lookupMap = new HashMap<String, CharSequence>();
         for (final CharSequence[] seq : ESCAPES)
@@ -201,7 +202,7 @@ public class StringEscapeUtils {
      * @param out Writer to write escaped string into
      * @param str String to escape values in, may be null
      * @throws IllegalArgumentException if the Writer is <code>null</code>
-     * @throws IOException      if error occurs on underlying Writer
+     * @throws IOException              if error occurs on underlying Writer
      * @see #escapeJava(String)
      */
     public static void escapeJava(Writer out, String str) throws IOException {
@@ -456,7 +457,7 @@ public class StringEscapeUtils {
      *
      * @param str the input CSV column String, may be null
      * @return the input String, enclosed in double quotes if the value contains a comma,
-     *         newline or double quote, <code>null</code> if null string input
+     * newline or double quote, <code>null</code> if null string input
      * @since 2.4
      */
     public static String escapeCsv(String str) {
@@ -534,7 +535,7 @@ public class StringEscapeUtils {
      *
      * @param str the input CSV column String, may be null
      * @return the input String, with enclosing double quotes removed and embedded double
-     *         quotes unescaped, <code>null</code> if null string input
+     * quotes unescaped, <code>null</code> if null string input
      * @since 2.4
      */
     public static String unescapeCsv(String str) {
@@ -606,7 +607,7 @@ public class StringEscapeUtils {
         int st = 0;
         while (true) {
             // look for '&'
-            while (i < len && input.charAt(i-1) != '&')
+            while (i < len && input.charAt(i - 1) != '&')
                 i++;
             if (i >= len)
                 break;
@@ -651,8 +652,7 @@ public class StringEscapeUtils {
                     i++;
                     continue;
                 }
-            }
-            else {
+            } else {
                 // named escape
                 CharSequence value = lookupMap.get(input.substring(i, j));
                 if (value == null) {

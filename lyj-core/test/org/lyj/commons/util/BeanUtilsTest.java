@@ -40,7 +40,7 @@ public class BeanUtilsTest {
     }
 
     @Test
-    public void testGetDefault(){
+    public void testGetDefault() {
 
         String s_def = BeanUtils.getDefault("hello");
         assertEquals("", s_def);

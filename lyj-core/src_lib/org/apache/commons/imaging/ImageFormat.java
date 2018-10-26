@@ -51,7 +51,7 @@ public class ImageFormat {
     public String getName() {
         return name;
     }
-    
+
     public String getExtension() {
         return extension;
     }
@@ -89,12 +89,12 @@ public class ImageFormat {
     public static final ImageFormat IMAGE_FORMAT_WBMP = new ImageFormat("WBMP");
     public static final ImageFormat IMAGE_FORMAT_XBM = new ImageFormat("XBM");
     public static final ImageFormat IMAGE_FORMAT_XPM = new ImageFormat("XPM");
-    
-    
+
 
     /**
      * Gets an array of ImageFormat objects for all supported image
      * formats.
+     *
      * @return A valid array of ImageFormat objects.
      */
     public static ImageFormat[] getAllFormats() {
@@ -117,8 +117,8 @@ public class ImageFormat {
                 IMAGE_FORMAT_PPM,
                 IMAGE_FORMAT_RGBE,
                 IMAGE_FORMAT_TGA,
-                IMAGE_FORMAT_TIFF, 
-                IMAGE_FORMAT_WBMP, 
+                IMAGE_FORMAT_TIFF,
+                IMAGE_FORMAT_WBMP,
                 IMAGE_FORMAT_XBM,
                 IMAGE_FORMAT_XPM,
         };

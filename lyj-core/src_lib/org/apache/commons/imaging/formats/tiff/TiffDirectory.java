@@ -37,7 +37,7 @@ public class TiffDirectory extends TiffElement {
     public final long nextDirectoryOffset;
 
     public TiffDirectory(final int type, final List<TiffField> entries, final long offset,
-            final long nextDirectoryOffset) {
+                         final long nextDirectoryOffset) {
         super(offset, TiffConstants.TIFF_DIRECTORY_HEADER_LENGTH +
                 entries.size() * TiffConstants.TIFF_ENTRY_LENGTH +
                 TiffConstants.TIFF_DIRECTORY_FOOTER_LENGTH);
@@ -46,7 +46,7 @@ public class TiffDirectory extends TiffElement {
         this.entries = entries;
         this.nextDirectoryOffset = nextDirectoryOffset;
     }
-    
+
     public String description() {
         return TiffDirectory.description(type);
     }
@@ -82,22 +82,22 @@ public class TiffDirectory extends TiffElement {
 
     public static final String description(final int type) {
         switch (type) {
-        case TiffConstants.DIRECTORY_TYPE_UNKNOWN:
-            return "Unknown";
-        case TiffConstants.DIRECTORY_TYPE_ROOT:
-            return "Root";
-        case TiffConstants.DIRECTORY_TYPE_SUB:
-            return "Sub";
-        case TiffConstants.DIRECTORY_TYPE_THUMBNAIL:
-            return "Thumbnail";
-        case TiffConstants.DIRECTORY_TYPE_EXIF:
-            return "Exif";
-        case TiffConstants.DIRECTORY_TYPE_GPS:
-            return "Gps";
-        case TiffConstants.DIRECTORY_TYPE_INTEROPERABILITY:
-            return "Interoperability";
-        default:
-            return "Bad Type";
+            case TiffConstants.DIRECTORY_TYPE_UNKNOWN:
+                return "Unknown";
+            case TiffConstants.DIRECTORY_TYPE_ROOT:
+                return "Root";
+            case TiffConstants.DIRECTORY_TYPE_SUB:
+                return "Sub";
+            case TiffConstants.DIRECTORY_TYPE_THUMBNAIL:
+                return "Thumbnail";
+            case TiffConstants.DIRECTORY_TYPE_EXIF:
+                return "Exif";
+            case TiffConstants.DIRECTORY_TYPE_GPS:
+                return "Gps";
+            case TiffConstants.DIRECTORY_TYPE_INTEROPERABILITY:
+                return "Interoperability";
+            default:
+                return "Bad Type";
         }
     }
 
@@ -136,11 +136,11 @@ public class TiffDirectory extends TiffElement {
 
     public BufferedImage getTiffImage(final ByteOrder byteOrder) throws ImageReadException,
             IOException {
-        final Map<String,Object> params = null;
+        final Map<String, Object> params = null;
         return getTiffImage(byteOrder, params);
     }
 
-    public BufferedImage getTiffImage(final ByteOrder byteOrder, final Map<String,Object> params)
+    public BufferedImage getTiffImage(final ByteOrder byteOrder, final Map<String, Object> params)
             throws ImageReadException, IOException {
         if (null == tiffImageData) {
             return null;
@@ -220,7 +220,7 @@ public class TiffDirectory extends TiffElement {
         }
         return result[0];
     }
-    
+
     public int getSingleFieldValue(final TagInfoShortOrLong tag) throws ImageReadException {
         final int[] result = getFieldValue(tag, true);
         if (result.length != 1) {
@@ -388,7 +388,7 @@ public class TiffDirectory extends TiffElement {
         final byte[] bytes = field.getByteArrayValue();
         return tag.getValue(field.getByteOrder(), bytes);
     }
-    
+
     public int[] getFieldValue(final TagInfoShortOrLong tag, final boolean mustExist)
             throws ImageReadException {
         final TiffField field = findField(tag);
@@ -508,7 +508,7 @@ public class TiffDirectory extends TiffElement {
     }
 
     public RationalNumber[] getFieldValue(final TagInfoSRational tag,
-            final boolean mustExist) throws ImageReadException {
+                                          final boolean mustExist) throws ImageReadException {
         final TiffField field = findField(tag);
         if (field == null) {
             if (mustExist) {

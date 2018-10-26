@@ -86,7 +86,7 @@ public class MyBitOutputStream extends OutputStream {
             final int bitMask = (1 << bitsInCache) - 1;
             int b = bitMask & bitCache;
 
-            if (byteOrder == ByteOrder.NETWORK) { 
+            if (byteOrder == ByteOrder.NETWORK) {
                 // MSB, so write from left
                 b <<= 8 - bitsInCache; // left align fragment.
                 os.write(b);

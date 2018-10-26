@@ -90,7 +90,7 @@ public class XMLTokener extends JSONTokener {
      * text between markup tags.
      *
      * @return A string, or a '<' Character, or null if there is no more
-     *         source text.
+     * source text.
      * @throws JSONException
      */
     public Object nextContent() throws JSONException {
@@ -152,8 +152,8 @@ public class XMLTokener extends JSONTokener {
      * and <?...?> structures.
      *
      * @return Syntax characters (<code>< > / = ! ?</code>) are returned as
-     *         Character, and strings and names are returned as Boolean. We don't care
-     *         what the values actually are.
+     * Character, and strings and names are returned as Boolean. We don't care
+     * what the values actually are.
      * @throws JSONException If a string is not properly closed or if the XML
      *                       is badly structured.
      */

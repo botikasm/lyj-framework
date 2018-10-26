@@ -148,7 +148,7 @@ public abstract class JsonConverter {
                 return new JSONObject(value);
             } catch (Throwable ignored) {
                 // may be a map
-                return  toObject(CollectionUtils.stringToMap(value.substring(1, value.length() - 1)));
+                return toObject(CollectionUtils.stringToMap(value.substring(1, value.length() - 1)));
             }
         } else {
             result.put("value", value);

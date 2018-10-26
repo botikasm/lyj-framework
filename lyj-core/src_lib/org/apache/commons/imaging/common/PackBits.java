@@ -114,7 +114,7 @@ public class PackBits {
             int ptr = 0;
             while (ptr < bytes.length) {
                 int dup = findNextDuplicate(bytes, ptr);
-    
+
                 if (dup == ptr) {
                     // write run length
                     final int len = findRunLength(bytes, dup);
@@ -125,7 +125,7 @@ public class PackBits {
                 } else {
                     // write literals
                     int len = dup - ptr;
-    
+
                     if (dup > 0) {
                         final int runlen = findRunLength(bytes, dup);
                         if (runlen < 3) {
@@ -139,12 +139,12 @@ public class PackBits {
                             }
                         }
                     }
-    
+
                     if (dup < 0) {
                         len = bytes.length - ptr;
                     }
                     final int actual_len = Math.min(len, 128);
-    
+
                     baos.write(actual_len - 1);
                     for (int i = 0; i < actual_len; i++) {
                         baos.write(bytes[ptr]);
@@ -153,7 +153,7 @@ public class PackBits {
                 }
             }
             final byte result[] = baos.toByteArray();
-    
+
             return result;
         } finally {
             if (baos != null) {

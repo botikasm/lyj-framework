@@ -1,6 +1,6 @@
 {
   "enabled": true,
-  "autocreate":true,
+  "autocreate": true,
   "hosts": [
     {
       "path": "",

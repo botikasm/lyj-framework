@@ -25,38 +25,38 @@ public interface PngConstants extends ImagingConstants {
     public static final int COMPRESSION_DEFLATE_INFLATE = 0;
 
     public final static BinaryConstant IHDR_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { 73, 72, 68, 82 });
+            new byte[]{73, 72, 68, 82});
     public final static BinaryConstant PLTE_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { 80, 76, 84, 69 });
+            new byte[]{80, 76, 84, 69});
     public final static BinaryConstant TRNS_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { 't', 'R', 'N', 'S'});
+            new byte[]{'t', 'R', 'N', 'S'});
     public final static BinaryConstant IEND_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { 73, 69, 78, 68 });
+            new byte[]{73, 69, 78, 68});
     public final static BinaryConstant IDAT_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { 73, 68, 65, 84 });
+            new byte[]{73, 68, 65, 84});
     public final static BinaryConstant iTXt_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { //
-            105, //
+            new byte[]{ //
+                    105, //
                     84, //
                     88, //
                     116, //
             });
     public final static BinaryConstant tEXt_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { //
-            0x74, //
+            new byte[]{ //
+                    0x74, //
                     0x45, //
                     0x58, //
                     0x74, //
             });
     public final static BinaryConstant zTXt_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { //
-            0x7A, //
+            new byte[]{ //
+                    0x7A, //
                     0x54, //
                     0x58, //
                     0x74, //
             });
     public final static BinaryConstant IPHYS_CHUNK_TYPE = new BinaryConstant(
-            new byte[] { 'p', 'H', 'Y', 's' });
+            new byte[]{'p', 'H', 'Y', 's'});
 
     public final static int IEND = BinaryFunctions.charsToQuad('I', 'E',
             'N', 'D');
@@ -86,7 +86,7 @@ public interface PngConstants extends ImagingConstants {
             'X', 't');
 
     public static final BinaryConstant PNG_Signature = new BinaryConstant(
-            new byte[] { (byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, });
+            new byte[]{(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A,});
 
     public static final String PARAM_KEY_PNG_BIT_DEPTH = "PNG_BIT_DEPTH";
     public static final String PARAM_KEY_PNG_FORCE_INDEXED_COLOR = "PNG_FORCE_INDEXED_COLOR";
@@ -139,7 +139,7 @@ public interface PngConstants extends ImagingConstants {
 
     /**
      * Parameter key.
-     * 
+     * <p>
      * Only used when writing Png images.
      * <p>
      * Valid values: a list of WriteTexts.

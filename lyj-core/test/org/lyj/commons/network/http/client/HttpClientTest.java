@@ -2,15 +2,13 @@ package org.lyj.commons.network.http.client;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lyj.Lyj;
 import org.lyj.TestInitializer;
 import org.lyj.commons.async.Async;
 import org.lyj.commons.async.future.Task;
 import org.lyj.commons.util.ClassLoaderUtils;
-import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.json.JsonWrapper;
 import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.SystemUtils;
+import org.lyj.commons.util.json.JsonWrapper;
 
 import java.util.ArrayList;
 import java.util.List;

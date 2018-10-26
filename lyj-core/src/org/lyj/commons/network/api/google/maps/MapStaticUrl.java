@@ -94,7 +94,7 @@ public class MapStaticUrl {
         return this;
     }
 
-    public MapMarker[] markers(){
+    public MapMarker[] markers() {
         return _markers.toArray(new MapMarker[_markers.size()]);
     }
 
@@ -166,17 +166,17 @@ public class MapStaticUrl {
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
-    public BufferedImage toImage(){
+    public BufferedImage toImage() {
         InputStream is = null;
-        try{
+        try {
             is = URLUtils.getInputStream(this.toString());
-            if(null!=is){
+            if (null != is) {
                 return ImageIOUtils.readBytes(ByteUtils.getBytes(is));
             }
-        } catch(Throwable ignored) {
+        } catch (Throwable ignored) {
 
         } finally {
-            if(null!=is) {
+            if (null != is) {
                 try {
                     is.close();
                 } catch (IOException ignored) {
@@ -186,18 +186,18 @@ public class MapStaticUrl {
         return null;
     }
 
-    public String toBase64(){
+    public String toBase64() {
         InputStream is = null;
-        try{
+        try {
 
             is = URLUtils.getInputStream(this.toString());
-            if(null!=is){
+            if (null != is) {
                 return Base64.encodeBytes(ByteUtils.getBytes(is));
             }
-        } catch(Throwable ignored) {
+        } catch (Throwable ignored) {
             System.out.println(ignored);
         } finally {
-            if(null!=is) {
+            if (null != is) {
                 try {
                     is.close();
                 } catch (IOException ignored) {
@@ -262,8 +262,8 @@ public class MapStaticUrl {
         }
 
         // markers
-        if(_markers.size()>0){
-            for(final MapMarker marker:_markers) {
+        if (_markers.size() > 0) {
+            for (final MapMarker marker : _markers) {
                 sb.append(format(false, PARAM_MARKERS, marker.toString()));
             }
         }

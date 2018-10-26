@@ -17,7 +17,7 @@ public class Task2Test {
 
         System.out.println("START ASYNC CALL");
 
-        Async.invoke((args)->{
+        Async.invoke((args) -> {
             try {
                 final Task<String> task = new Task<String>((interruptor) -> {
                     System.out.println("RUNNING TASK...");
@@ -31,7 +31,7 @@ public class Task2Test {
 
                 String response = task.get();
                 assertEquals("Finished", response);
-            }catch(Throwable t){
+            } catch (Throwable t) {
                 System.out.println(t);
             }
         }).join();

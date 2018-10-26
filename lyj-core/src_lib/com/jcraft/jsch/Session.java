@@ -268,7 +268,7 @@ public class Session implements Runnable {
                 if (i == buf.buffer.length ||
                         i < 7 ||                                      // SSH-1.99 or SSH-2.0
                         (buf.buffer[4] == '1' && buf.buffer[6] != '9')  // SSH-1.5
-                        ) {
+                ) {
                     throw new JSchException("invalid server's version string");
                 }
                 break;
@@ -1136,19 +1136,19 @@ public class Session implements Runnable {
 
 
     /*
-   * RFC 4253  7.2. Output from Key Exchange
-   * If the key length needed is longer than the output of the HASH, the
-   * key is extended by computing HASH of the concatenation of K and H and
-   * the entire key so far, and appending the resulting bytes (as many as
-   * HASH generates) to the key.  This process is repeated until enough
-   * key material is available; the key is taken from the beginning of
-   * this value.  In other words:
-   *   K1 = HASH(K || H || X || session_id)   (X is e.g., "A")
-   *   K2 = HASH(K || H || K1)
-   *   K3 = HASH(K || H || K1 || K2)
-   *   ...
-   *   key = K1 || K2 || K3 || ...
-   */
+     * RFC 4253  7.2. Output from Key Exchange
+     * If the key length needed is longer than the output of the HASH, the
+     * key is extended by computing HASH of the concatenation of K and H and
+     * the entire key so far, and appending the resulting bytes (as many as
+     * HASH generates) to the key.  This process is repeated until enough
+     * key material is available; the key is taken from the beginning of
+     * this value.  In other words:
+     *   K1 = HASH(K || H || X || session_id)   (X is e.g., "A")
+     *   K2 = HASH(K || H || K1)
+     *   K3 = HASH(K || H || K1 || K2)
+     *   ...
+     *   key = K1 || K2 || K3 || ...
+     */
     private byte[] expandKey(Buffer buf, byte[] K, byte[] H, byte[] key,
                              HASH hash, int required_length) throws Exception {
         byte[] result = key;

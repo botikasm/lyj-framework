@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Provides information about the compliance of a specified data 
+ * Provides information about the compliance of a specified data
  * source (byte array, file, etc&#46;) to an image format.
  */
 public class FormatCompliance {
@@ -125,7 +125,7 @@ public class FormatCompliance {
 
     public boolean compare(final String name, final int valid, final int actual)
             throws ImageReadException {
-        return compare(name, new int[] { valid, }, actual);
+        return compare(name, new int[]{valid,}, actual);
     }
 
     public boolean compare(final String name, final int valid[], final int actual)

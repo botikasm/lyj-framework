@@ -48,8 +48,8 @@ public class TiffField {
     private final int sortHint;
 
     public TiffField(final int tag, final int directoryType, final FieldType fieldType,
-            final long count, final long offset, final byte[] value,
-            final ByteOrder byteOrder, final int sortHint) throws ImageReadException{
+                     final long count, final long offset, final byte[] value,
+                     final ByteOrder byteOrder, final int sortHint) throws ImageReadException {
 
         this.tag = tag;
         this.directoryType = directoryType;
@@ -62,25 +62,27 @@ public class TiffField {
 
         tagInfo = getTag(directoryType, tag);
     }
-    
+
     public int getDirectoryType() {
         return directoryType;
     }
-    
+
     public TagInfo getTagInfo() {
         return tagInfo;
     }
 
     /**
      * Returns the field's tag, derived from bytes 0-1.
-     * @return the tag, as an <code>int</code> in which only the lowest 2 bytes are set 
+     *
+     * @return the tag, as an <code>int</code> in which only the lowest 2 bytes are set
      */
     public int getTag() {
         return tag;
     }
-    
+
     /**
      * Returns the field's type, derived from bytes 2-3.
+     *
      * @return the field's type, as a {@code FieldType} object.
      */
     public FieldType getFieldType() {
@@ -89,6 +91,7 @@ public class TiffField {
 
     /**
      * Returns the field's count, derived from bytes 4-7.
+     *
      * @return the count
      */
     public long getCount() {
@@ -97,15 +100,17 @@ public class TiffField {
 
     /**
      * Returns the TIFF field's offset/value field, derived from bytes 8-11.
+     *
      * @return the field's offset in a <code>long</code> of 4 packed bytes,
      * or its inlined value <= 4 bytes long encoded in the field's byte order.
      */
     public int getOffset() {
-        return (int)offset;
+        return (int) offset;
     }
 
     /**
      * Returns the field's byte order.
+     *
      * @return the byte order
      */
     public ByteOrder getByteOrder() {
@@ -118,6 +123,7 @@ public class TiffField {
 
     /**
      * Indicates whether the field's value is inlined into the offset field.
+     *
      * @return true if the value is inlined
      */
     public boolean isLocalValue() {
@@ -126,6 +132,7 @@ public class TiffField {
 
     /**
      * The length of the field's value.
+     *
      * @return the length, in bytes.
      */
     public int getBytesLength() {
@@ -133,7 +140,8 @@ public class TiffField {
     }
 
     /**
-     * Returns a copy of the raw value of the field. 
+     * Returns a copy of the raw value of the field.
+     *
      * @return the value of the field, in the byte order of the field.
      */
     public byte[] getByteArrayValue() {
@@ -165,7 +173,7 @@ public class TiffField {
     }
 
     private static TagInfo getTag(final int directoryType, final int tag,
-            final List<TagInfo> possibleMatches) {
+                                  final List<TagInfo> possibleMatches) {
         // Please keep this method in sync with TiffImageMetadata's findField()
 
         if (possibleMatches.size() < 1) {
@@ -342,21 +350,21 @@ public class TiffField {
                 result.append("" + object);
             }
             return result.toString();
-        // } else if (o instanceof Number[])
-        // {
-        // Number numbers[] = (Number[]) o;
-        // StringBuffer result = new StringBuffer();
-        //
-        // for (int i = 0; i < numbers.length; i++)
-        // {
-        // Number number = numbers[i];
-        //
-        // if (i > 0)
-        // result.append(", ");
-        // result.append("" + number);
-        // }
-        // return result.toString();
-        // }
+            // } else if (o instanceof Number[])
+            // {
+            // Number numbers[] = (Number[]) o;
+            // StringBuffer result = new StringBuffer();
+            //
+            // for (int i = 0; i < numbers.length; i++)
+            // {
+            // Number number = numbers[i];
+            //
+            // if (i > 0)
+            // result.append(", ");
+            // result.append("" + number);
+            // }
+            // return result.toString();
+            // }
         } else if (o instanceof short[]) {
             final short values[] = (short[]) o;
             final StringBuffer result = new StringBuffer();
@@ -590,7 +598,7 @@ public class TiffField {
         // return null;
 
         if (o instanceof Number) {
-            return new int[] { ((Number) o).intValue() };
+            return new int[]{((Number) o).intValue()};
         } else if (o instanceof Number[]) {
             final Number numbers[] = (Number[]) o;
             final int result[] = new int[numbers.length];
@@ -625,7 +633,7 @@ public class TiffField {
         // return null;
 
         if (o instanceof Number) {
-            return new double[] { ((Number) o).doubleValue() };
+            return new double[]{((Number) o).doubleValue()};
         } else if (o instanceof Number[]) {
             final Number numbers[] = (Number[]) o;
             final double result[] = new double[numbers.length];

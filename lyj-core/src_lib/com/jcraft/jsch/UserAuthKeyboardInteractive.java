@@ -140,7 +140,7 @@ class UserAuthKeyboardInteractive extends UserAuth {
                         password = null;
                     } else if (num > 0
                             || (name.length() > 0 || instruction.length() > 0)
-                            ) {
+                    ) {
                         if (userinfo != null) {
                             UIKeyboardInteractive kbi = (UIKeyboardInteractive) userinfo;
                             String[] _response = kbi.promptKeyboardInteractive(dest,

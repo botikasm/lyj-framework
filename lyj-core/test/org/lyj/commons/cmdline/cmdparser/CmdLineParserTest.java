@@ -3,8 +3,6 @@ package org.lyj.commons.cmdline.cmdparser;
 import org.junit.Test;
 import org.lyj.commons.util.StringUtils;
 
-import java.util.Vector;
-
 /**
  * Test the parser
  */
@@ -21,8 +19,8 @@ public class CmdLineParserTest {
 
         parser.parse(CMD1);
 
-        String c = (String)parser.getOptionValue(optC);
-        String t = (String)parser.getOptionValue(optT);
+        String c = (String) parser.getOptionValue(optC);
+        String t = (String) parser.getOptionValue(optT);
 
         System.out.println("-c: " + c);
         System.out.println("-t: " + t);

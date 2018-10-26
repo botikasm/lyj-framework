@@ -85,16 +85,16 @@ public class IcnsType {
             ICNS_32x32_32BIT_IMAGE, ICNS_48x48_1BIT_IMAGE_AND_MASK,
             ICNS_48x48_4BIT_IMAGE, ICNS_48x48_8BIT_IMAGE,
             ICNS_48x48_32BIT_IMAGE, ICNS_128x128_32BIT_IMAGE,
-            ICNS_256x256_32BIT_ARGB_IMAGE, ICNS_512x512_32BIT_ARGB_IMAGE };
+            ICNS_256x256_32BIT_ARGB_IMAGE, ICNS_512x512_32BIT_ARGB_IMAGE};
 
     private static final IcnsType[] allMaskTypes = {
             ICNS_16x12_1BIT_IMAGE_AND_MASK, ICNS_16x16_1BIT_IMAGE_AND_MASK,
             ICNS_16x16_8BIT_MASK, ICNS_32x32_1BIT_IMAGE_AND_MASK,
             ICNS_32x32_8BIT_MASK, ICNS_48x48_1BIT_IMAGE_AND_MASK,
-            ICNS_48x48_8BIT_MASK, ICNS_128x128_8BIT_MASK };
+            ICNS_48x48_8BIT_MASK, ICNS_128x128_8BIT_MASK};
 
     private IcnsType(final String type, final int width, final int height, final int bitsPerPixel,
-            final boolean hasMask) {
+                     final boolean hasMask) {
         this.type = typeAsInt(type);
         this.width = width;
         this.height = height;

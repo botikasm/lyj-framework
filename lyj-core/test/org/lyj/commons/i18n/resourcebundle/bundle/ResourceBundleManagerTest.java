@@ -7,7 +7,8 @@ import org.lyj.commons.util.PathUtils;
 
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * TEST SOME FEATURES
@@ -26,9 +27,9 @@ public class ResourceBundleManagerTest {
         final String bundle = PathUtils.concat(root, "i18n");
 
         // load default lang
-        final Properties props =  ResourceBundleManager.getProperties(bundle, "de");
+        final Properties props = ResourceBundleManager.getProperties(bundle, "de");
         assertNotNull(props);
-        assertTrue(props.size()>0);
+        assertTrue(props.size() > 0);
 
         final FilesystemDictionary dic = new FilesystemDictionary(bundle);
         final String msg = dic.getMessage("common_welcome", "en");

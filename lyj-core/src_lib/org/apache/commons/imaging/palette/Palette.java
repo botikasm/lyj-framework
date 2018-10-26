@@ -25,6 +25,7 @@ public abstract class Palette {
 
     /**
      * Looks up the palette index for a given color.
+     *
      * @param rgb the color to look up
      * @return the palette index
      * @throws ImageWriteException
@@ -33,6 +34,7 @@ public abstract class Palette {
 
     /**
      * Looks up the color for a given palette index.
+     *
      * @param index the palette index to look up
      * @return the color in ARGB format
      */
@@ -40,6 +42,7 @@ public abstract class Palette {
 
     /**
      * The number of entries in the palette.
+     *
      * @return the number of palette entries
      */
     public abstract int length();

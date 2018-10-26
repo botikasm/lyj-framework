@@ -7,7 +7,7 @@ import org.lyj.commons.util.FormatUtils;
  */
 public class ConnectionException extends Exception {
 
-    public ConnectionException(final int code, final String message){
+    public ConnectionException(final int code, final String message) {
         super(FormatUtils.format("Server responded with error '%s': '%s'", code, message));
     }
 

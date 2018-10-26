@@ -227,10 +227,10 @@ public class HttpRequest {
     // ------------------------------------------------------------------------
 
     private void initHeaders(final Map<String, String> headers) {
-        if(!headers.containsKey(HEADER_CHARSET)){
+        if (!headers.containsKey(HEADER_CHARSET)) {
             headers.put(HEADER_CHARSET, CharEncoding.UTF_8);
         }
-        if(!headers.containsKey(HEADER_USER_AGENT)){
+        if (!headers.containsKey(HEADER_USER_AGENT)) {
             headers.put(HEADER_USER_AGENT, "lyj/v=" + IConstants.VERSION);
         }
     }
@@ -277,7 +277,7 @@ public class HttpRequest {
     }};
 
     // Create all-trusting host name verifier
-    private static HostnameVerifier trustAllHosts =  new HostnameVerifier() {
+    private static HostnameVerifier trustAllHosts = new HostnameVerifier() {
         public boolean verify(String hostname, SSLSession session) {
             return true;
         }
@@ -286,7 +286,7 @@ public class HttpRequest {
     private static SSLSocketFactory getFactorySimple() throws Exception {
         final SSLContext context = SSLContext.getInstance("TLS");
         context.init(null, trustAllCerts, new SecureRandom());
-        
+
         return context.getSocketFactory();
     }
 

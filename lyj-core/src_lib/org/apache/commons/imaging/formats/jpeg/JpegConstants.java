@@ -27,14 +27,14 @@ public interface JpegConstants {
     public static final int MAX_SEGMENT_SIZE = 0xffff;
 
     public static final BinaryConstant JFIF0_SIGNATURE = new BinaryConstant(
-            new byte[] { 0x4a, // J
+            new byte[]{0x4a, // J
                     0x46, // F
                     0x49, // I
                     0x46, // F
                     0x0, //
             });
     public static final BinaryConstant JFIF0_SIGNATURE_ALTERNATIVE = new BinaryConstant(
-            new byte[] { 0x4a, // J
+            new byte[]{0x4a, // J
                     0x46, // F
                     0x49, // I
                     0x46, // F
@@ -42,14 +42,14 @@ public interface JpegConstants {
             });
 
     public static final BinaryConstant EXIF_IDENTIFIER_CODE = new BinaryConstant(
-            new byte[] { 0x45, // E
+            new byte[]{0x45, // E
                     0x78, // x
                     0x69, // i
                     0x66, // f
             });
 
     public static final BinaryConstant XMP_IDENTIFIER = new BinaryConstant(
-            new byte[] { 0x68, // h
+            new byte[]{0x68, // h
                     0x74, // t
                     0x74, // t
                     0x70, // p
@@ -80,10 +80,10 @@ public interface JpegConstants {
                     0, // 0-terminated us-ascii string.
             });
 
-    public static final BinaryConstant SOI = new BinaryConstant(new byte[] {
-            (byte) 0xff, (byte) 0xd8 });
-    public static final BinaryConstant EOI = new BinaryConstant(new byte[] {
-            (byte) 0xff, (byte) 0xd9 });
+    public static final BinaryConstant SOI = new BinaryConstant(new byte[]{
+            (byte) 0xff, (byte) 0xd8});
+    public static final BinaryConstant EOI = new BinaryConstant(new byte[]{
+            (byte) 0xff, (byte) 0xd9});
 
     public static final int JPEG_APP0 = 0xE0;
     public static final int JPEG_APP0_Marker = (0xff00) | (JPEG_APP0);
@@ -128,11 +128,11 @@ public interface JpegConstants {
                     DNLMarker, COMMarker));
 
     public static final BinaryConstant icc_profile_label = new BinaryConstant(
-            new byte[] { 0x49, 0x43, 0x43, 0x5F, 0x50, 0x52, 0x4F, 0x46, 0x49,
-                    0x4C, 0x45, 0x0 });
+            new byte[]{0x49, 0x43, 0x43, 0x5F, 0x50, 0x52, 0x4F, 0x46, 0x49,
+                    0x4C, 0x45, 0x0});
 
     public static final BinaryConstant PHOTOSHOP_IDENTIFICATION_STRING = new BinaryConstant(
-            new byte[] { 0x50, // P
+            new byte[]{0x50, // P
                     0x68, // h
                     0x6F, // o
                     0x74, // t
@@ -145,6 +145,6 @@ public interface JpegConstants {
                     0x33, // 3
                     0x2E, // .
                     0x30, // 0
-                    0, });
+                    0,});
     public static final int CONST_8BIM = BinaryFunctions.charsToQuad('8', 'B', 'I', 'M');
 }

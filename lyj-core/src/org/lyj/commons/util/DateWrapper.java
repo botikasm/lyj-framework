@@ -287,6 +287,7 @@ public class DateWrapper {
 
     /**
      * Return Month. January, ...
+     *
      * @return JANUARY=0, FEBRUARY=1, MARCH=2, APRIL=3, MAY=4, JUNE=5, JULY=6, AUGUST=7, SEPTEMBER=8, OCTOBER=9, NOVEMBER=10, DECEMBER=11
      */
     public int getMonth() {
@@ -341,9 +342,10 @@ public class DateWrapper {
 
     /**
      * Return Day of Week. SUNDAY, MONDAY,....
+     *
      * @return SUNDAY=1, MONDAY=2, TUESDAY = 3, WEDNESDAY = 4, THURSDAY = 5, FRIDAY = 6, SATURDAY = 7
      */
-    public int getDayOfWeek(){
+    public int getDayOfWeek() {
         return _calendar.get(Calendar.DAY_OF_WEEK);
     }
 
@@ -438,7 +440,7 @@ public class DateWrapper {
     private void init(Calendar calendar) {
         // reset milliseconds
         _calendar.set(Calendar.MILLISECOND, 0);
-        
+
         _year = calendar.get(Calendar.YEAR);
         _month = calendar.get(Calendar.MONTH) + 1;
         _day = calendar.get(Calendar.DAY_OF_MONTH);
@@ -501,7 +503,7 @@ public class DateWrapper {
     public static DateWrapper parse(final String date, final String pattern) {
         try {
             return new DateWrapper(date, pattern);
-        }catch(Throwable t) {
+        } catch (Throwable t) {
             return new DateWrapper();
         }
     }
