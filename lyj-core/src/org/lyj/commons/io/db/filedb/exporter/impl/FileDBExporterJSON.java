@@ -36,7 +36,7 @@ public class FileDBExporterJSON
             writer.write("[");
             collection.forEach((final FileDBEntity entity) -> {
                 try {
-                    if(entity.index()>0){
+                    if (entity.index() > 0) {
                         writer.write(",");
                     }
                     writer.write(entity.toString());

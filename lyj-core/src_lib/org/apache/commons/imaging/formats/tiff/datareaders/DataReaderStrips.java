@@ -40,10 +40,10 @@ public final class DataReaderStrips extends DataReader {
     private final TiffImageData.Strips imageData;
 
     public DataReaderStrips(final TiffDirectory directory,
-            final PhotometricInterpreter photometricInterpreter, final int bitsPerPixel,
-            final int bitsPerSample[], final int predictor, final int samplesPerPixel, final int width,
-            final int height, final int compression, final ByteOrder byteOrder, final int rowsPerStrip,
-            final TiffImageData.Strips imageData) {
+                            final PhotometricInterpreter photometricInterpreter, final int bitsPerPixel,
+                            final int bitsPerSample[], final int predictor, final int samplesPerPixel, final int width,
+                            final int height, final int compression, final ByteOrder byteOrder, final int rowsPerStrip,
+                            final TiffImageData.Strips imageData) {
         super(directory, photometricInterpreter, bitsPerSample, predictor,
                 samplesPerPixel, width, height);
 
@@ -55,7 +55,7 @@ public final class DataReaderStrips extends DataReader {
     }
 
     private void interpretStrip(
-            final ImageBuilder imageBuilder, 
+            final ImageBuilder imageBuilder,
             final byte bytes[],
             final int pixels_per_strip,
             final int yLimit) throws ImageReadException, IOException {
@@ -184,7 +184,7 @@ public final class DataReaderStrips extends DataReader {
                 samples = applyPredictor(samples);
 
                 photometricInterpreter.interpretPixel(
-                        imageBuilder, samples, x,  y);
+                        imageBuilder, samples, x, y);
             }
 
             x++;
@@ -226,12 +226,11 @@ public final class DataReaderStrips extends DataReader {
 
         }
     }
-    
-    
+
+
     @Override
     public BufferedImage readImageData(final Rectangle subImage)
-            throws ImageReadException, IOException
-    {
+            throws ImageReadException, IOException {
         // the legacy code is optimized to the reading of whole
         // strips (except for the last strip in the image, which can
         // be a partial).  So create a working image with compatible 
@@ -250,9 +249,9 @@ public final class DataReaderStrips extends DataReader {
         // by interpretStrip. y is set to zero before the first 
         // call to interpretStrip.  y0 will be the index of the first row
         // in the full image (the source image) that will be processed.
- 
+
         final int y0 = strip0 * rowsPerStrip;
-        final int yLimit = subImage.y-y0+subImage.height;
+        final int yLimit = subImage.y - y0 + subImage.height;
 
 
         // TO DO: we can probably save some processing by using yLimit instead
@@ -279,7 +278,7 @@ public final class DataReaderStrips extends DataReader {
                     (int) pixelsPerStrip,
                     yLimit);
         }
- 
+
 
         if (subImage.x == 0
                 && subImage.y == y0
@@ -293,7 +292,7 @@ public final class DataReaderStrips extends DataReader {
                     subImage.y - y0,
                     subImage.width,
                     subImage.height);
-        }      
+        }
     }
 
 }

@@ -32,7 +32,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class TagInfoXpString extends TagInfo {
     public TagInfoXpString(final String name, final int tag, final int length,
-            final TiffDirectoryType directoryType) {
+                           final TiffDirectoryType directoryType) {
         super(name, tag, FieldType.BYTE, length, directoryType);
     }
 

@@ -24,8 +24,8 @@ class ImageDataOffsets {
     public final TiffOutputItem outputItems[];
 
     public ImageDataOffsets(final TiffElement.DataElement imageData[],
-            final int[] imageDataOffsets,
-            final TiffOutputField imageDataOffsetsField) {
+                            final int[] imageDataOffsets,
+                            final TiffOutputField imageDataOffsetsField) {
         this.imageDataOffsets = imageDataOffsets;
         this.imageDataOffsetsField = imageDataOffsetsField;
 

@@ -207,7 +207,7 @@ public interface TiffTagConstants {
             TiffDirectoryType.TIFF_DIRECTORY_ROOT);
 
     public static final TagInfoRational TIFF_TAG_YPOSITION = new TagInfoRational(
-            "YPosition",  0x11F, -1,
+            "YPosition", 0x11F, -1,
             TiffDirectoryType.TIFF_DIRECTORY_ROOT);
 
     public static final TagInfoLong TIFF_TAG_FREE_OFFSETS = new TagInfoLong(

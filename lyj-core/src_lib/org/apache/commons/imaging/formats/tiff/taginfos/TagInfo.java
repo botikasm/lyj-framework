@@ -33,12 +33,12 @@ public abstract class TagInfo {
     public static final int LENGTH_UNKNOWN = -1;
 
     public TagInfo(final String name, final int tag, final FieldType dataType, final int length,
-            final TiffDirectoryType exifDirectory) {
+                   final TiffDirectoryType exifDirectory) {
         this(name, tag, Arrays.asList(dataType), length, exifDirectory);
     }
 
     public TagInfo(final String name, final int tag, final FieldType dataType, final int length,
-            final TiffDirectoryType exifDirectory, final boolean isOffset) {
+                   final TiffDirectoryType exifDirectory, final boolean isOffset) {
         this(name, tag, Arrays.asList(dataType), length, exifDirectory,
                 isOffset);
     }
@@ -61,12 +61,12 @@ public abstract class TagInfo {
     private final boolean isOffset;
 
     public TagInfo(final String name, final int tag, final List<FieldType> dataTypes, final int length,
-            final TiffDirectoryType exifDirectory) {
+                   final TiffDirectoryType exifDirectory) {
         this(name, tag, dataTypes, length, exifDirectory, false);
     }
 
     public TagInfo(final String name, final int tag, final List<FieldType> dataTypes, final int length,
-            final TiffDirectoryType exifDirectory, final boolean isOffset) {
+                   final TiffDirectoryType exifDirectory, final boolean isOffset) {
         this.name = name;
         this.tag = tag;
         this.dataTypes = Collections.unmodifiableList(new ArrayList<FieldType>(

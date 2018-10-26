@@ -21,9 +21,9 @@ import org.apache.commons.imaging.common.ByteOrder;
 
 public interface TiffConstants
         extends
-            ImagingConstants,
+        ImagingConstants,
         TiffDirectoryConstants,
-            AllTagConstants {
+        AllTagConstants {
     public static final ByteOrder DEFAULT_TIFF_BYTE_ORDER = ByteOrder.INTEL;
 
     public static final int TIFF_HEADER_SIZE = 8;
@@ -65,8 +65,8 @@ public interface TiffConstants
     public static final int TIFF_FLAG_T4_OPTIONS_UNCOMPRESSED_MODE = 2;
     public static final int TIFF_FLAG_T4_OPTIONS_FILL = 4;
     public static final int TIFF_FLAG_T6_OPTIONS_UNCOMPRESSED_MODE = 2;
-    
-    
+
+
     public static final String PARAM_KEY_SUBIMAGE_X = "SUBIMAGE_X";
     public static final String PARAM_KEY_SUBIMAGE_Y = "SUBIMAGE_Y";
     public static final String PARAM_KEY_SUBIMAGE_WIDTH = "SUBIMAGE_WIDTH";

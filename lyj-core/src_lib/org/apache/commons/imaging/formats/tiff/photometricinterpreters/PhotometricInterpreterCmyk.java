@@ -24,13 +24,13 @@ import java.io.IOException;
 
 public class PhotometricInterpreterCmyk extends PhotometricInterpreter {
     public PhotometricInterpreterCmyk(final int fSamplesPerPixel,
-            final int fBitsPerSample[], final int Predictor, final int width, final int height) {
+                                      final int fBitsPerSample[], final int Predictor, final int width, final int height) {
         super(fSamplesPerPixel, fBitsPerSample, Predictor, width, height);
     }
 
     @Override
     public void interpretPixel(final ImageBuilder imageBuilder, final int samples[], final int x,
-            final int y) throws ImageReadException, IOException {
+                               final int y) throws ImageReadException, IOException {
 
         final int sc = samples[0];
         final int sm = samples[1];

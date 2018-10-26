@@ -30,7 +30,7 @@ public class TagInfoSRational extends TagInfo {
     public RationalNumber[] getValue(final ByteOrder byteOrder, final byte[] bytes) {
         return ByteConversions.toRationals(bytes, byteOrder);
     }
-    
+
     public byte[] encodeValue(final ByteOrder byteOrder, final RationalNumber... values) {
         return ByteConversions.toBytes(values, byteOrder);
     }

@@ -37,12 +37,12 @@ public class TiffOutputField implements TiffConstants {
     private final TiffOutputItem.Value separateValueItem;
 
     public TiffOutputField(final TagInfo tagInfo, final FieldType tagtype, final int count,
-            final byte bytes[]) {
+                           final byte bytes[]) {
         this(tagInfo.tag, tagInfo, tagtype, count, bytes);
     }
 
     public TiffOutputField(final int tag, final TagInfo tagInfo, final FieldType fieldType,
-            final int count, final byte bytes[]) {
+                           final int count, final byte bytes[]) {
         this.tag = tag;
         this.tagInfo = tagInfo;
         this.fieldType = fieldType;
@@ -61,7 +61,7 @@ public class TiffOutputField implements TiffConstants {
     private int sortHint = -1;
 
     protected static final TiffOutputField createOffsetField(final TagInfo tagInfo,
-            final ByteOrder byteOrder) throws ImageWriteException {
+                                                             final ByteOrder byteOrder) throws ImageWriteException {
         return new TiffOutputField(tagInfo, FieldType.LONG, 1,
                 FieldType.LONG.writeData(0, byteOrder));
     }
@@ -91,7 +91,7 @@ public class TiffOutputField implements TiffConstants {
                 throw new ImageWriteException("Missing separate value item.");
             }
 
-            bos.write4Bytes((int)separateValueItem.getOffset());
+            bos.write4Bytes((int) separateValueItem.getOffset());
         }
     }
 
@@ -102,7 +102,7 @@ public class TiffOutputField implements TiffConstants {
     protected boolean isLocalValue() {
         return bytes.length <= TIFF_ENTRY_MAX_VALUE_LENGTH;
     }
-    
+
     public boolean bytesEqual(final byte[] data) {
         return Arrays.equals(bytes, data);
     }

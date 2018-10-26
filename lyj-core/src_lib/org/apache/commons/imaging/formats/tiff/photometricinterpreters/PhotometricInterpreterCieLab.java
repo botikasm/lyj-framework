@@ -24,7 +24,7 @@ import java.io.IOException;
 
 public class PhotometricInterpreterCieLab extends PhotometricInterpreter {
     public PhotometricInterpreterCieLab(final int fSamplesPerPixel,
-            final int fBitsPerSample[], final int Predictor, final int width, final int height) {
+                                        final int fBitsPerSample[], final int Predictor, final int width, final int height) {
         super(fSamplesPerPixel, fBitsPerSample, Predictor, width, height);
     }
 
@@ -34,7 +34,7 @@ public class PhotometricInterpreterCieLab extends PhotometricInterpreter {
 
     @Override
     public void interpretPixel(final ImageBuilder imageBuilder, final int samples[], final int x,
-            final int y) throws ImageReadException, IOException {
+                               final int y) throws ImageReadException, IOException {
         final int cieL = samples[0];
         final int cieA = (byte) samples[1];
         final int cieB = (byte) samples[2];

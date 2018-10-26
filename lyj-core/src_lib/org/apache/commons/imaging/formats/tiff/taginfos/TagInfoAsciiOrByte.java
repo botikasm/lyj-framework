@@ -21,7 +21,7 @@ import org.apache.commons.imaging.formats.tiff.fieldtypes.FieldType;
 
 public class TagInfoAsciiOrByte extends TagInfo {
     public TagInfoAsciiOrByte(final String name, final int tag, final int length,
-            final TiffDirectoryType directoryType) {
+                              final TiffDirectoryType directoryType) {
         super(name, tag, FieldType.ASCII_OR_BYTE, length,
                 directoryType, false);
     }

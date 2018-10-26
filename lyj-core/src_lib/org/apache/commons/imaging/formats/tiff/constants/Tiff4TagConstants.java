@@ -37,8 +37,8 @@ public interface Tiff4TagConstants {
     public static final int COLOR_RESPONSE_UNIT_VALUE_0_001 = 3;
     public static final int COLOR_RESPONSE_UNIT_VALUE_0_0001 = 4;
     public static final int COLOR_RESPONSE_UNIT_VALUE_0_00001 = 5;
-    
+
     public static final List<TagInfo> ALL_TIFF_4_TAGS =
             Collections.unmodifiableList(Arrays.asList(
-                    new TagInfo[] {TIFF_TAG_COLOR_RESPONSE_UNIT}));
+                    new TagInfo[]{TIFF_TAG_COLOR_RESPONSE_UNIT}));
 }

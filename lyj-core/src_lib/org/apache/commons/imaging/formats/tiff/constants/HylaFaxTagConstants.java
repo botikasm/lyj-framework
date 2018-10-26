@@ -43,8 +43,8 @@ public interface HylaFaxTagConstants {
 
     public static final List<TagInfo> ALL_HYLAFAX_TAGS =
             Collections.unmodifiableList(Arrays.asList(
-                EXIF_TAG_FAX_RECV_PARAMS,
-                EXIF_TAG_FAX_SUB_ADDRESS,
-                EXIF_TAG_FAX_RECV_TIME,
-                EXIF_TAG_FAX_DCS));
+                    EXIF_TAG_FAX_RECV_PARAMS,
+                    EXIF_TAG_FAX_SUB_ADDRESS,
+                    EXIF_TAG_FAX_RECV_TIME,
+                    EXIF_TAG_FAX_DCS));
 }

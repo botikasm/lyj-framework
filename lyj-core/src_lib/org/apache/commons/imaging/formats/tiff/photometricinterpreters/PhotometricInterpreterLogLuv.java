@@ -25,8 +25,8 @@ public class PhotometricInterpreterLogLuv extends PhotometricInterpreter {
     // private final boolean yOnly;
 
     public PhotometricInterpreterLogLuv(final int fSamplesPerPixel,
-            final int fBitsPerSample[], final int Predictor, final int width, final int height,
-            final boolean yonly) {
+                                        final int fBitsPerSample[], final int Predictor, final int width, final int height,
+                                        final boolean yonly) {
         super(fSamplesPerPixel, fBitsPerSample, Predictor, width, height);
 
         // this.yOnly = yonly;
@@ -44,7 +44,7 @@ public class PhotometricInterpreterLogLuv extends PhotometricInterpreter {
 
     @Override
     public void interpretPixel(final ImageBuilder imageBuilder, final int samples[], final int x,
-            final int y) throws ImageReadException, IOException {
+                               final int y) throws ImageReadException, IOException {
         float X, Y, Z;
 
         final int cieL = samples[0];

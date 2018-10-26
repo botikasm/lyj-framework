@@ -58,7 +58,7 @@ public abstract class TiffImageWriterBase implements TiffConstants {
             throws ImageWriteException {
         final List<TiffOutputDirectory> directories = outputSet.getDirectories();
 
-        if (1 > directories.size()) { 
+        if (1 > directories.size()) {
             throw new ImageWriteException("No directories.");
         }
 
@@ -80,32 +80,32 @@ public abstract class TiffImageWriterBase implements TiffConstants {
 
             if (dirType < 0) {
                 switch (dirType) {
-                case DIRECTORY_TYPE_EXIF:
-                    if (exifDirectory != null) {
-                        throw new ImageWriteException(
-                                "More than one EXIF directory.");
-                    }
-                    exifDirectory = directory;
-                    break;
+                    case DIRECTORY_TYPE_EXIF:
+                        if (exifDirectory != null) {
+                            throw new ImageWriteException(
+                                    "More than one EXIF directory.");
+                        }
+                        exifDirectory = directory;
+                        break;
 
-                case DIRECTORY_TYPE_GPS:
-                    if (gpsDirectory != null) {
-                        throw new ImageWriteException(
-                                "More than one GPS directory.");
-                    }
-                    gpsDirectory = directory;
-                    break;
+                    case DIRECTORY_TYPE_GPS:
+                        if (gpsDirectory != null) {
+                            throw new ImageWriteException(
+                                    "More than one GPS directory.");
+                        }
+                        gpsDirectory = directory;
+                        break;
 
-                case DIRECTORY_TYPE_INTEROPERABILITY:
-                    if (interoperabilityDirectory != null) {
-                        throw new ImageWriteException(
-                                "More than one Interoperability directory.");
-                    }
-                    interoperabilityDirectory = directory;
-                    break;
-                default:
-                    throw new ImageWriteException("Unknown directory: "
-                            + dirType);
+                    case DIRECTORY_TYPE_INTEROPERABILITY:
+                        if (interoperabilityDirectory != null) {
+                            throw new ImageWriteException(
+                                    "More than one Interoperability directory.");
+                        }
+                        interoperabilityDirectory = directory;
+                        break;
+                    default:
+                        throw new ImageWriteException("Unknown directory: "
+                                + dirType);
                 }
             } else {
                 if (directoryIndices.contains(dirType)) {
@@ -238,10 +238,10 @@ public abstract class TiffImageWriterBase implements TiffConstants {
         // Debug.debug();
     }
 
-    public void writeImage(final BufferedImage src, final OutputStream os, Map<String,Object> params)
+    public void writeImage(final BufferedImage src, final OutputStream os, Map<String, Object> params)
             throws ImageWriteException, IOException {
         // make copy of params; we'll clear keys as we consume them.
-        params = new HashMap<String,Object>(params);
+        params = new HashMap<String, Object>(params);
 
         // clear format key.
         if (params.containsKey(PARAM_KEY_FORMAT)) {
@@ -280,7 +280,7 @@ public abstract class TiffImageWriterBase implements TiffConstants {
             }
             params.remove(PARAM_KEY_COMPRESSION);
         }
-        final HashMap<String,Object> rawParams = new HashMap<String,Object>(params);
+        final HashMap<String, Object> rawParams = new HashMap<String, Object>(params);
         params.remove(PARAM_KEY_T4_OPTIONS);
         params.remove(PARAM_KEY_T6_OPTIONS);
         if (params.size() > 0) {
@@ -483,7 +483,7 @@ public abstract class TiffImageWriterBase implements TiffConstants {
     }
 
     private void combineUserExifIntoFinalExif(final TiffOutputSet userExif,
-            final TiffOutputSet outputSet) throws ImageWriteException {
+                                              final TiffOutputSet outputSet) throws ImageWriteException {
         final List<TiffOutputDirectory> outputDirectories = outputSet
                 .getDirectories();
         Collections.sort(outputDirectories, TiffOutputDirectory.COMPARATOR);
@@ -505,7 +505,7 @@ public abstract class TiffImageWriterBase implements TiffConstants {
     }
 
     private byte[][] getStrips(final BufferedImage src, final int samplesPerPixel,
-            final int bitsPerSample, final int rowsPerStrip) {
+                               final int bitsPerSample, final int rowsPerStrip) {
         final int width = src.getWidth();
         final int height = src.getHeight();
 
@@ -583,7 +583,7 @@ public abstract class TiffImageWriterBase implements TiffConstants {
     }
 
     protected void writeImageFileHeader(final BinaryOutputStream bos,
-            final long offsetToFirstIFD) throws IOException {
+                                        final long offsetToFirstIFD) throws IOException {
         if (byteOrder == ByteOrder.INTEL) {
             bos.write('I');
             bos.write('I');
@@ -594,7 +594,7 @@ public abstract class TiffImageWriterBase implements TiffConstants {
 
         bos.write2Bytes(42); // tiffVersion
 
-        bos.write4Bytes((int)offsetToFirstIFD);
+        bos.write4Bytes((int) offsetToFirstIFD);
     }
 
 }

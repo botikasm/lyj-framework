@@ -2,9 +2,9 @@
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -93,14 +93,14 @@ public class JpegDecoder extends BinaryFileParser implements JpegUtils.Visitor,
                 colorModel = new DirectColorModel(24, 0x00ff0000, 0x0000ff00,
                         0x000000ff);
                 raster = WritableRaster.createPackedRaster(DataBuffer.TYPE_INT,
-                        sofnSegment.width, sofnSegment.height, new int[] {
-                                0x00ff0000, 0x0000ff00, 0x000000ff }, null);
+                        sofnSegment.width, sofnSegment.height, new int[]{
+                                0x00ff0000, 0x0000ff00, 0x000000ff}, null);
             } else if (sofnSegment.numberOfComponents == 1) {
                 colorModel = new DirectColorModel(24, 0x00ff0000, 0x0000ff00,
                         0x000000ff);
                 raster = WritableRaster.createPackedRaster(DataBuffer.TYPE_INT,
-                        sofnSegment.width, sofnSegment.height, new int[] {
-                                0x00ff0000, 0x0000ff00, 0x000000ff }, null);
+                        sofnSegment.width, sofnSegment.height, new int[]{
+                                0x00ff0000, 0x0000ff00, 0x000000ff}, null);
                 // FIXME: why do images come out too bright with CS_GRAY?
                 // colorModel = new ComponentColorModel(
                 // ColorSpace.getInstance(ColorSpace.CS_GRAY), false, true,
@@ -164,12 +164,12 @@ public class JpegDecoder extends BinaryFileParser implements JpegUtils.Visitor,
     }
 
     public boolean visitSegment(final int marker, final byte[] markerBytes,
-            final int segmentLength, final byte[] segmentLengthBytes, final byte[] segmentData)
+                                final int segmentLength, final byte[] segmentLengthBytes, final byte[] segmentData)
             throws ImageReadException, IOException {
-        final int[] sofnSegments = { SOF0Marker, SOF1Marker, SOF2Marker,
+        final int[] sofnSegments = {SOF0Marker, SOF1Marker, SOF2Marker,
                 SOF3Marker, SOF5Marker, SOF6Marker, SOF7Marker, SOF9Marker,
                 SOF10Marker, SOF11Marker, SOF13Marker, SOF14Marker,
-                SOF15Marker, };
+                SOF15Marker,};
 
         if (Arrays.binarySearch(sofnSegments, marker) >= 0) {
             if (marker != SOF0Marker) {

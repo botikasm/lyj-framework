@@ -31,7 +31,7 @@ public interface MicrosoftTagConstants {
     public static final TagInfoShort EXIF_TAG_RATING = new TagInfoShort(
             "Rating", 0x4746, 1,
             TiffDirectoryType.EXIF_DIRECTORY_IFD0);
-    
+
     public static final TagInfoShort EXIF_TAG_RATING_PERCENT = new TagInfoShort(
             "RatingPercent", 0x4749, 1,
             TiffDirectoryType.EXIF_DIRECTORY_IFD0);
@@ -53,7 +53,7 @@ public interface MicrosoftTagConstants {
             TiffDirectoryType.EXIF_DIRECTORY_IFD0);
 
     public static final TagInfoXpString EXIF_TAG_XPSUBJECT = new TagInfoXpString(
-            "XPSubject",  0x9c9f, -1,
+            "XPSubject", 0x9c9f, -1,
             TiffDirectoryType.EXIF_DIRECTORY_IFD0);
 
     public static final List<TagInfo> ALL_MICROSOFT_TAGS =

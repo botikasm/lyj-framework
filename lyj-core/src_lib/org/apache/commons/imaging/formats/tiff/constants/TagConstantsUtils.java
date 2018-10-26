@@ -36,7 +36,7 @@ public class TagConstantsUtils implements TiffDirectoryConstants {
 
         for (final List<?> tagList : tagLists) {
             for (int j = 0; j < tagList.size(); j++) {
-                result.add((TagInfo)tagList.get(j));
+                result.add((TagInfo) tagList.get(j));
             }
         }
 
@@ -54,11 +54,11 @@ public class TagConstantsUtils implements TiffDirectoryConstants {
     }
 
     public static BinaryConstant createMicrosoftHdPhotoGuidEndingWith(final byte end) {
-        return new BinaryConstant(new byte[] { (byte) 0x24, (byte) 0xC3,
+        return new BinaryConstant(new byte[]{(byte) 0x24, (byte) 0xC3,
                 (byte) 0xDD, (byte) 0x6F, (byte) 0x03, (byte) 0x4E,
                 (byte) 0xFE, (byte) 0x4B, (byte) 0xB1, (byte) 0x85,
                 (byte) 0x3D, (byte) 0x77, (byte) 0x76, (byte) 0x8D,
-                (byte) 0xC9, end });
+                (byte) 0xC9, end});
     }
 
 }

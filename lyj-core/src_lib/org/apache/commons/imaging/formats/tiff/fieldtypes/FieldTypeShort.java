@@ -42,7 +42,7 @@ public class FieldTypeShort extends FieldType {
     public byte[] writeData(final Object o, final ByteOrder byteOrder) throws ImageWriteException {
         if (o instanceof Short) {
             return ByteConversions.toBytes(
-                    ((Short)o).shortValue(), byteOrder);
+                    ((Short) o).shortValue(), byteOrder);
         } else if (o instanceof short[]) {
             final short numbers[] = (short[]) o;
             return ByteConversions.toBytes(numbers, byteOrder);

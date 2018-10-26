@@ -27,7 +27,7 @@ import java.util.List;
  * http://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/EXIF.html
  * http://tiki-lounge.com/~raf/tiff/fields.html
  * http://www.awaresystems.be/imaging/tiff/tifftags.html
- * 
+ * <p>
  * "Stonits": http://www.anyhere.com/gward/pixformat/tiffluv.html
  */
 public interface ExifTagConstants {
@@ -600,8 +600,8 @@ public interface ExifTagConstants {
                     EXIF_TAG_SHADOWS, EXIF_TAG_BRIGHTNESS, EXIF_TAG_CONTRAST_2,
                     EXIF_TAG_SATURATION_2, EXIF_TAG_SHARPNESS_2, EXIF_TAG_SMOOTHNESS,
                     EXIF_TAG_MOIRE_FILTER,
-        
+
                     EXIF_TAG_USER_COMMENT, //
-        
+
                     EXIF_TAG_MAKER_NOTE));
 }

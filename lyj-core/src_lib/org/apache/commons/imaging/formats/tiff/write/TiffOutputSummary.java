@@ -31,8 +31,8 @@ class TiffOutputSummary implements TiffConstants {
     public final Map<Integer, TiffOutputDirectory> directoryTypeMap;
 
     public TiffOutputSummary(final ByteOrder byteOrder,
-            final TiffOutputDirectory rootDirectory,
-            final Map<Integer, TiffOutputDirectory> directoryTypeMap) {
+                             final TiffOutputDirectory rootDirectory,
+                             final Map<Integer, TiffOutputDirectory> directoryTypeMap) {
         this.byteOrder = byteOrder;
         this.rootDirectory = rootDirectory;
         this.directoryTypeMap = directoryTypeMap;
@@ -43,7 +43,7 @@ class TiffOutputSummary implements TiffConstants {
         public final TiffOutputField itemOffsetField;
 
         public OffsetItem(final TiffOutputItem item,
-                final TiffOutputField itemOffsetField) {
+                          final TiffOutputField itemOffsetField) {
             super();
             this.itemOffsetField = itemOffsetField;
             this.item = item;
@@ -53,7 +53,7 @@ class TiffOutputSummary implements TiffConstants {
     private final List<OffsetItem> offsetItems = new ArrayList<OffsetItem>();
 
     public void add(final TiffOutputItem item,
-            final TiffOutputField itemOffsetField) {
+                    final TiffOutputField itemOffsetField) {
         offsetItems.add(new OffsetItem(item, itemOffsetField));
     }
 
@@ -62,7 +62,7 @@ class TiffOutputSummary implements TiffConstants {
             final OffsetItem offset = offsetItems.get(i);
 
             final byte value[] = FieldType.LONG.writeData(
-                    (int)offset.item.getOffset(), byteOrder);
+                    (int) offset.item.getOffset(), byteOrder);
             offset.itemOffsetField.setData(value);
         }
 
@@ -71,7 +71,7 @@ class TiffOutputSummary implements TiffConstants {
 
             for (int j = 0; j < imageDataInfo.outputItems.length; j++) {
                 final TiffOutputItem item = imageDataInfo.outputItems[j];
-                imageDataInfo.imageDataOffsets[j] = (int)item.getOffset();
+                imageDataInfo.imageDataOffsets[j] = (int) item.getOffset();
             }
 
             imageDataInfo.imageDataOffsetsField.setData(FieldType.LONG

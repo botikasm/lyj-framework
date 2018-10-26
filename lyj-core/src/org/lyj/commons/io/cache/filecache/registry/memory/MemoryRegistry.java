@@ -22,7 +22,6 @@ package org.lyj.commons.io.cache.filecache.registry.memory;
 
 import org.json.JSONObject;
 import org.lyj.Lyj;
-import org.lyj.commons.Delegates;
 import org.lyj.commons.io.cache.filecache.registry.IRegistry;
 import org.lyj.commons.io.cache.filecache.registry.IRegistryItem;
 import org.lyj.commons.util.FileUtils;

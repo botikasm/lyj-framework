@@ -46,8 +46,8 @@ public abstract class DataReader implements TiffConstants {
     protected final int width, height;
 
     public DataReader(final TiffDirectory directory,
-            final PhotometricInterpreter photometricInterpreter, final int bitsPerSample[],
-            final int predictor, final int samplesPerPixel, final int width, final int height) {
+                      final PhotometricInterpreter photometricInterpreter, final int bitsPerSample[],
+                      final int predictor, final int samplesPerPixel, final int width, final int height) {
         this.directory = directory;
         this.photometricInterpreter = photometricInterpreter;
         this.bitsPerSample = bitsPerSample;
@@ -67,16 +67,13 @@ public abstract class DataReader implements TiffConstants {
     public abstract BufferedImage readImageData(Rectangle subImage)
             throws ImageReadException, IOException;
 
-    
-    
+
     /**
      * Reads samples and returns them in an int array.
-     * 
-     * @param bis
-     *            the stream to read from
-     * @param result
-     *            the samples array to populate, must be the same length as
-     *            bitsPerSample.length
+     *
+     * @param bis    the stream to read from
+     * @param result the samples array to populate, must be the same length as
+     *               bitsPerSample.length
      * @throws IOException
      */
     protected void getSamplesAsBytes(final BitInputStream bis, final int[] result)
@@ -116,7 +113,7 @@ public abstract class DataReader implements TiffConstants {
     }
 
     protected byte[] decompress(final byte compressed[], final int compression,
-            final int expected_size, final int tileWidth, final int tileHeight)
+                                final int expected_size, final int tileWidth, final int tileHeight)
             throws ImageReadException, IOException {
         final TiffField fillOrderField = directory
                 .findField(TiffTagConstants.TIFF_TAG_FILL_ORDER);
@@ -136,76 +133,76 @@ public abstract class DataReader implements TiffConstants {
         }
 
         switch (compression) {
-        case TIFF_COMPRESSION_UNCOMPRESSED: // None;
-            return compressed;
-        case TIFF_COMPRESSION_CCITT_1D: // CCITT Group 3 1-Dimensional Modified
-                                        // Huffman run-length encoding.
-            return T4AndT6Compression.decompressModifiedHuffman(compressed,
-                    tileWidth, tileHeight);
-        case TIFF_COMPRESSION_CCITT_GROUP_3: {
-            int t4Options = 0;
-            final TiffField field = directory
-                    .findField(TiffTagConstants.TIFF_TAG_T4_OPTIONS);
-            if (field != null) {
-                t4Options = field.getIntValue();
+            case TIFF_COMPRESSION_UNCOMPRESSED: // None;
+                return compressed;
+            case TIFF_COMPRESSION_CCITT_1D: // CCITT Group 3 1-Dimensional Modified
+                // Huffman run-length encoding.
+                return T4AndT6Compression.decompressModifiedHuffman(compressed,
+                        tileWidth, tileHeight);
+            case TIFF_COMPRESSION_CCITT_GROUP_3: {
+                int t4Options = 0;
+                final TiffField field = directory
+                        .findField(TiffTagConstants.TIFF_TAG_T4_OPTIONS);
+                if (field != null) {
+                    t4Options = field.getIntValue();
+                }
+                final boolean is2D = (t4Options & TIFF_FLAG_T4_OPTIONS_2D) != 0;
+                final boolean usesUncompressedMode = (t4Options & TIFF_FLAG_T4_OPTIONS_UNCOMPRESSED_MODE) != 0;
+                if (usesUncompressedMode) {
+                    throw new ImageReadException(
+                            "T.4 compression with the uncompressed mode extension is not yet supported");
+                }
+                final boolean hasFillBitsBeforeEOL = (t4Options & TIFF_FLAG_T4_OPTIONS_FILL) != 0;
+                if (is2D) {
+                    return T4AndT6Compression.decompressT4_2D(compressed,
+                            tileWidth, tileHeight, hasFillBitsBeforeEOL);
+                } else {
+                    return T4AndT6Compression.decompressT4_1D(compressed,
+                            tileWidth, tileHeight, hasFillBitsBeforeEOL);
+                }
             }
-            final boolean is2D = (t4Options & TIFF_FLAG_T4_OPTIONS_2D) != 0;
-            final boolean usesUncompressedMode = (t4Options & TIFF_FLAG_T4_OPTIONS_UNCOMPRESSED_MODE) != 0;
-            if (usesUncompressedMode) {
+            case TIFF_COMPRESSION_CCITT_GROUP_4: {
+                int t6Options = 0;
+                final TiffField field = directory
+                        .findField(TiffTagConstants.TIFF_TAG_T6_OPTIONS);
+                if (field != null) {
+                    t6Options = field.getIntValue();
+                }
+                final boolean usesUncompressedMode = (t6Options & TIFF_FLAG_T6_OPTIONS_UNCOMPRESSED_MODE) != 0;
+                if (usesUncompressedMode) {
+                    throw new ImageReadException(
+                            "T.6 compression with the uncompressed mode extension is not yet supported");
+                }
+                return T4AndT6Compression.decompressT6(compressed, tileWidth,
+                        tileHeight);
+            }
+            case TIFF_COMPRESSION_LZW: // LZW
+            {
+                final InputStream is = new ByteArrayInputStream(compressed);
+
+                final int LZWMinimumCodeSize = 8;
+
+                final MyLzwDecompressor myLzwDecompressor = new MyLzwDecompressor(
+                        LZWMinimumCodeSize, ByteOrder.NETWORK);
+
+                myLzwDecompressor.setTiffLZWMode();
+
+                final byte[] result = myLzwDecompressor.decompress(is, expected_size);
+
+                return result;
+            }
+
+            case TIFF_COMPRESSION_PACKBITS: // Packbits
+            {
+                final byte unpacked[] = new PackBits().decompress(compressed,
+                        expected_size);
+
+                return unpacked;
+            }
+
+            default:
                 throw new ImageReadException(
-                        "T.4 compression with the uncompressed mode extension is not yet supported");
-            }
-            final boolean hasFillBitsBeforeEOL = (t4Options & TIFF_FLAG_T4_OPTIONS_FILL) != 0;
-            if (is2D) {
-                return T4AndT6Compression.decompressT4_2D(compressed,
-                        tileWidth, tileHeight, hasFillBitsBeforeEOL);
-            } else {
-                return T4AndT6Compression.decompressT4_1D(compressed,
-                        tileWidth, tileHeight, hasFillBitsBeforeEOL);
-            }
-        }
-        case TIFF_COMPRESSION_CCITT_GROUP_4: {
-            int t6Options = 0;
-            final TiffField field = directory
-                    .findField(TiffTagConstants.TIFF_TAG_T6_OPTIONS);
-            if (field != null) {
-                t6Options = field.getIntValue();
-            }
-            final boolean usesUncompressedMode = (t6Options & TIFF_FLAG_T6_OPTIONS_UNCOMPRESSED_MODE) != 0;
-            if (usesUncompressedMode) {
-                throw new ImageReadException(
-                        "T.6 compression with the uncompressed mode extension is not yet supported");
-            }
-            return T4AndT6Compression.decompressT6(compressed, tileWidth,
-                    tileHeight);
-        }
-        case TIFF_COMPRESSION_LZW: // LZW
-        {
-            final InputStream is = new ByteArrayInputStream(compressed);
-
-            final int LZWMinimumCodeSize = 8;
-
-            final MyLzwDecompressor myLzwDecompressor = new MyLzwDecompressor(
-                    LZWMinimumCodeSize, ByteOrder.NETWORK);
-
-            myLzwDecompressor.setTiffLZWMode();
-
-            final byte[] result = myLzwDecompressor.decompress(is, expected_size);
-
-            return result;
-        }
-
-        case TIFF_COMPRESSION_PACKBITS: // Packbits
-        {
-            final byte unpacked[] = new PackBits().decompress(compressed,
-                    expected_size);
-
-            return unpacked;
-        }
-
-        default:
-            throw new ImageReadException(
-                    "Tiff: unknown/unsupported compression: " + compression);
+                        "Tiff: unknown/unsupported compression: " + compression);
         }
     }
 }

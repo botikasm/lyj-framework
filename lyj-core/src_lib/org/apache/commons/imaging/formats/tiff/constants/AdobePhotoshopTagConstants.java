@@ -40,7 +40,7 @@ public interface AdobePhotoshopTagConstants {
             TiffDirectoryType.EXIF_DIRECTORY_IFD0);
 
     public static final List<TagInfo> ALL_ADOBE_PHOTOSHOP_TAGS =
-            Collections.unmodifiableList(Arrays.asList(new TagInfo[] {
+            Collections.unmodifiableList(Arrays.asList(new TagInfo[]{
                     EXIF_TAG_JPEGTABLES,
                     EXIF_TAG_IMAGE_SOURCE_DATA
             }));

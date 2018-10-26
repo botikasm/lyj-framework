@@ -25,7 +25,7 @@ import java.io.UnsupportedEncodingException;
 
 public class TagInfoAscii extends TagInfo {
     public TagInfoAscii(final String name, final int tag, final int length,
-            final TiffDirectoryType directoryType) {
+                        final TiffDirectoryType directoryType) {
         super(name, tag, FieldType.ASCII, length, directoryType);
     }
 

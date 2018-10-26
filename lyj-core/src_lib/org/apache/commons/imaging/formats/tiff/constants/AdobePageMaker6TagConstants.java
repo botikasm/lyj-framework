@@ -31,17 +31,17 @@ import java.util.List;
  */
 public interface AdobePageMaker6TagConstants {
     public static final TagInfoLongOrIFD TIFF_TAG_SUB_IFD = new TagInfoLongOrIFD(
-            "SubIFDs",  0x014a, -1,
+            "SubIFDs", 0x014a, -1,
             TiffDirectoryType.EXIF_DIRECTORY_UNKNOWN, true);
 
     public static final TagInfoByte TIFF_TAG_CLIP_PATH = new TagInfoByte(
-            "ClipPath",  0x0157, -1,
+            "ClipPath", 0x0157, -1,
             TiffDirectoryType.EXIF_DIRECTORY_UNKNOWN);
-    
+
     public static final TagInfoLong TIFF_TAG_XCLIP_PATH_UNITS = new TagInfoLong(
             "XClipPathUnits", 0x0158, 1,
             TiffDirectoryType.EXIF_DIRECTORY_UNKNOWN);
-    
+
     public static final TagInfoLong TIFF_TAG_YCLIP_PATH_UNITS = new TagInfoLong(
             "YClipPathUnits", 0x0159, 1,
             TiffDirectoryType.EXIF_DIRECTORY_UNKNOWN);
@@ -61,7 +61,7 @@ public interface AdobePageMaker6TagConstants {
     public static final TagInfoAscii TIFF_TAG_IMAGE_ID = new TagInfoAscii(
             "ImageID", 0x800d, -1,
             TiffDirectoryType.EXIF_DIRECTORY_UNKNOWN);
-    
+
     public static final List<TagInfo> ALL_ADOBE_PAGEMAKER_6_TAGS =
             Collections.unmodifiableList(Arrays.asList(
                     TIFF_TAG_SUB_IFD,

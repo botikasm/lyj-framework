@@ -36,7 +36,7 @@ public class SofnSegment extends Segment {
         public final int quantTabDestSelector;
 
         public Component(final int componentIdentifier, final int horizontalSamplingFactor,
-                final int veritcalSamplingFactor, final int quantTabDestSelector) {
+                         final int veritcalSamplingFactor, final int quantTabDestSelector) {
             this.componentIdentifier = componentIdentifier;
             this.horizontalSamplingFactor = horizontalSamplingFactor;
             this.verticalSamplingFactor = veritcalSamplingFactor;

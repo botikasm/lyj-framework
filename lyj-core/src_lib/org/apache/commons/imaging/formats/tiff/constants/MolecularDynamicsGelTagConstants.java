@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  * Molecular Dynamics GEL file format
- * <BR>  
+ * <BR>
  * http://www.awaresystems.be/imaging/tiff/tifftags/docs/gel.html
  */
 public interface MolecularDynamicsGelTagConstants {

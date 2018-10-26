@@ -31,7 +31,7 @@ public class App14Segment extends AppnSegment {
     public static final int ADOBE_COLOR_TRANSFORM_UNKNOWN = 0;
     public static final int ADOBE_COLOR_TRANSFORM_YCbCr = 1;
     public static final int ADOBE_COLOR_TRANSFORM_YCCK = 2;
-    
+
     static {
         byte[] adobe = null;
         try {
@@ -46,7 +46,7 @@ public class App14Segment extends AppnSegment {
         this(marker, segmentData.length, new ByteArrayInputStream(
                 segmentData));
     }
-    
+
     public App14Segment(final int marker, final int marker_length, final InputStream is)
             throws IOException {
         super(marker, marker_length, is);

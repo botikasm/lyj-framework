@@ -41,7 +41,7 @@ public interface AllTagConstants extends
         TiffEpTagConstants,
         TiffTagConstants,
         WangTagConstants {
-    
+
     public static final List<TagInfo> ALL_TAGS = Collections.unmodifiableList(TagConstantsUtils.mergeTagLists(
             AdobePageMaker6TagConstants.ALL_ADOBE_PAGEMAKER_6_TAGS,
             AdobePhotoshopTagConstants.ALL_ADOBE_PHOTOSHOP_TAGS,

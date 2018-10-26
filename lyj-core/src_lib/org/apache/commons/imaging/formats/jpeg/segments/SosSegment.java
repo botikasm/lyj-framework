@@ -34,7 +34,7 @@ public class SosSegment extends Segment {
         public final int acCodingTableSelector;
 
         public Component(final int scanComponentSelector, final int dcCodingTableSelector,
-                final int acCodingTableSelector) {
+                         final int acCodingTableSelector) {
             this.scanComponentSelector = scanComponentSelector;
             this.dcCodingTableSelector = dcCodingTableSelector;
             this.acCodingTableSelector = acCodingTableSelector;

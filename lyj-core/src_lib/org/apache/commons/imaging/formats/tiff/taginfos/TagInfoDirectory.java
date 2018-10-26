@@ -23,7 +23,7 @@ import org.apache.commons.imaging.formats.tiff.constants.TiffDirectoryType;
  */
 public class TagInfoDirectory extends TagInfoLong {
     public TagInfoDirectory(final String name, final int tag, final int length,
-            final TiffDirectoryType directoryType) {
+                            final TiffDirectoryType directoryType) {
         super(name, tag, length, directoryType, true);
     }
 }

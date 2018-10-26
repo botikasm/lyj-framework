@@ -21,7 +21,7 @@ import org.apache.commons.imaging.formats.tiff.fieldtypes.FieldType;
 
 public class TagInfoAny extends TagInfo {
     public TagInfoAny(final String name, final int tag, final int length,
-            final TiffDirectoryType directoryType) {
+                      final TiffDirectoryType directoryType) {
         super(name, tag, FieldType.ANY, length, directoryType);
     }
 }

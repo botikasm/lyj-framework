@@ -24,9 +24,9 @@ import java.io.IOException;
 public class PhotometricInterpreterYCbCr extends PhotometricInterpreter {
 
     public PhotometricInterpreterYCbCr(final double[] fYCbCrCoefficients,
-            final int[] fYCbCrPositioning, final int[] fYCbCrSubSampling,
-            final double[] fReferenceBlackWhite, final int fSamplesPerPixel,
-            final int fBitsPerSample[], final int Predictor, final int width, final int height) {
+                                       final int[] fYCbCrPositioning, final int[] fYCbCrSubSampling,
+                                       final double[] fReferenceBlackWhite, final int fSamplesPerPixel,
+                                       final int fBitsPerSample[], final int Predictor, final int width, final int height) {
         super(fSamplesPerPixel, fBitsPerSample, Predictor, width, height);
     }
 
@@ -42,13 +42,10 @@ public class PhotometricInterpreterYCbCr extends PhotometricInterpreter {
      * imageWidth and imageHeight. These variables are either set manually in
      * the case of a null constructor, or they are automatically calculated from
      * the image parameter constructor.
-     * 
-     * @param Y
-     *            The Y component set.
-     * @param Cb
-     *            The Cb component set.
-     * @param Cr
-     *            The Cr component set.
+     *
+     * @param Y  The Y component set.
+     * @param Cb The Cb component set.
+     * @param Cr The Cr component set.
      * @return R The R component.
      */
     public int convertYCbCrtoRGB(final int Y, final int Cb, final int Cr) {
@@ -67,7 +64,7 @@ public class PhotometricInterpreterYCbCr extends PhotometricInterpreter {
 
     @Override
     public void interpretPixel(final ImageBuilder imageBuilder, final int samples[], final int x,
-            final int y) throws ImageReadException, IOException {
+                               final int y) throws ImageReadException, IOException {
         final int Y = samples[0];
         final int Cb = samples[1];
         final int Cr = samples[2];

@@ -286,7 +286,7 @@ public final class TiffOutputDirectory extends TiffOutputItem implements
     }
 
     public void add(final TagInfoShortOrLongOrRational tagInfo,
-            final RationalNumber... values) throws ImageWriteException {
+                    final RationalNumber... values) throws ImageWriteException {
         if (tagInfo.length > 0 && tagInfo.length != values.length) {
             throw new ImageWriteException("Tag expects " + tagInfo.length
                     + " value(s), not " + values.length);
@@ -464,7 +464,7 @@ public final class TiffOutputDirectory extends TiffOutputItem implements
         if (nextDirectoryOffset == UNDEFINED_VALUE) {
             bos.write4Bytes(0);
         } else {
-            bos.write4Bytes((int)nextDirectoryOffset);
+            bos.write4Bytes((int) nextDirectoryOffset);
         }
     }
 

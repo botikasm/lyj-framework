@@ -34,6 +34,6 @@ public interface AliasSketchbookProTagConstants {
             TiffDirectoryType.EXIF_DIRECTORY_UNKNOWN);
 
     public static final List<TagInfo> ALL_ALIAS_SKETCHBOOK_PRO_TAGS =
-            Collections.unmodifiableList(Arrays.asList(new TagInfo[] {
+            Collections.unmodifiableList(Arrays.asList(new TagInfo[]{
                     EXIF_TAG_ALIAS_LAYER_METADATA}));
 }

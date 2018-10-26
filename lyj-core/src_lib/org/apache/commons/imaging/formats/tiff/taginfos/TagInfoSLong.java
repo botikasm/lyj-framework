@@ -26,11 +26,11 @@ public class TagInfoSLong extends TagInfo {
     public TagInfoSLong(final String name, final int tag, final int length, final TiffDirectoryType directoryType) {
         super(name, tag, FieldType.SLONG, length, directoryType);
     }
-    
+
     public int[] getValue(final ByteOrder byteOrder, final byte[] bytes) {
         return ByteConversions.toInts(bytes, byteOrder);
     }
-    
+
     public byte[] encodeValue(final ByteOrder byteOrder, final int... values) throws ImageWriteException {
         return ByteConversions.toBytes(values, byteOrder);
     }

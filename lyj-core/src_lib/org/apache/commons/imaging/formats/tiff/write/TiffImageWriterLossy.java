@@ -66,7 +66,7 @@ public class TiffImageWriterLossy extends TiffImageWriterBase {
     }
 
     private void writeStep(final BinaryOutputStream bos,
-            final List<TiffOutputItem> outputItems) throws IOException,
+                           final List<TiffOutputItem> outputItems) throws IOException,
             ImageWriteException {
         writeImageFileHeader(bos);
 
