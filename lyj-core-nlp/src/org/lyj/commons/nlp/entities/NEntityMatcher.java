@@ -6,17 +6,16 @@ import org.lyj.commons.nlp.elements.IKeywordConstants;
 import org.lyj.commons.nlp.elements.KeywordList;
 import org.lyj.commons.nlp.elements.KeywordsSolver;
 import org.lyj.commons.nlp.elements.custom.CustomExpression;
-import org.lyj.commons.nlp.entities.macro.*;
-import org.lyj.commons.nlp.entities.macro.simple.*;
-import org.lyj.commons.nlp.entities.macro.withparams.*;
+import org.lyj.commons.nlp.entities.macro.AbstractEntityMacro;
+import org.lyj.commons.nlp.entities.macro.Macros;
 import org.lyj.commons.nlp.entities.regex.RegExHelper;
-import org.lyj.commons.util.ClassLoaderUtils;
 import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.StringUtils;
 import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.json.JsonWrapper;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Set;
 
 /**
  * Detect entities using a schema like this:
@@ -69,16 +68,13 @@ public class NEntityMatcher {
 
     // ------------------------------------------------------------------------
     //                      f i e l d s
-    // ------------------------------------------------------------------------
-
-    private final Macros _macros;
+    // ------------------------------------------------------------------------;
 
     // ------------------------------------------------------------------------
     //                      c o n s t r u c t o r
     // ------------------------------------------------------------------------
 
     private NEntityMatcher() {
-        _macros = new Macros();
         this.init();
     }
 
@@ -118,27 +114,7 @@ public class NEntityMatcher {
 
     private void init() {
 
-        //-- REGISTER MACRO --//
-        _macros.register(EntityMacroName.NAME, EntityMacroName.class);
-        _macros.register(EntityMacroEmail.NAME, EntityMacroEmail.class);
-        _macros.register(EntityMacroNumber.NAME, EntityMacroNumber.class);
-        _macros.register(EntityMacroInteger.NAME, EntityMacroInteger.class);
-        _macros.register(EntityMacroPhone.NAME, EntityMacroPhone.class);
-        _macros.register(EntityMacroVat.NAME, EntityMacroVat.class);
-        _macros.register(EntityMacroSocialSecurityNumber.NAME, EntityMacroSocialSecurityNumber.class);
 
-        // require parameters in contructor
-        _macros.register(EntityMacroStartsWith.NAME, EntityMacroStartsWith.class);
-        _macros.register(EntityMacroStartsWithExp.NAME, EntityMacroStartsWithExp.class);
-        _macros.register(EntityMacroEndsWith.NAME, EntityMacroEndsWith.class);
-        _macros.register(EntityMacroContains.NAME, EntityMacroContains.class);
-        _macros.register(EntityMacroIntegerLen.NAME, EntityMacroIntegerLen.class);
-        _macros.register(EntityMacroIntegerLenG.NAME, EntityMacroIntegerLenG.class);
-        _macros.register(EntityMacroIntegerLenL.NAME, EntityMacroIntegerLenL.class);
-        _macros.register(EntityMacroLen.NAME, EntityMacroLen.class);
-        _macros.register(EntityMacroLenG.NAME, EntityMacroLenG.class);
-        _macros.register(EntityMacroLenL.NAME, EntityMacroLenL.class);
-        _macros.register(EntityMacroExp.NAME, EntityMacroExp.class);
     }
 
     private Entity parse(final String lang,
@@ -182,11 +158,8 @@ public class NEntityMatcher {
 
             //-- MACRO --//
             final String name = rule.substring(1);
-            final AbstractEntityMacro macro = _macros.get(name);
-            if (null != macro) {
-                final String[] match_response = macro.parse(lang, start_index, phrase);
-                CollectionUtils.addAllNoDuplicates(response, match_response);
-            }
+            final String[] match_response = Macros.instance().parse(name, lang, start_index, phrase);
+            CollectionUtils.addAllNoDuplicates(response, match_response);
 
         } else if (isRegEx(rule)) {
 
@@ -194,6 +167,7 @@ public class NEntityMatcher {
             final String pattern = rule.substring(1, rule.length() - 1);
             final String[] match_response = RegExHelper.instance().parse(start_index, phrase, pattern);
             CollectionUtils.addAllNoDuplicates(response, match_response);
+            
         }
         return response.toArray(new String[0]);
     }
@@ -278,52 +252,5 @@ public class NEntityMatcher {
 
     }
 
-    /**
-     * Maco list
-     */
-    private static class Macros {
-
-        // ------------------------------------------------------------------------
-        //                      f i e l d s
-        // ------------------------------------------------------------------------
-
-        private final Map<String, Class<? extends AbstractEntityMacro>> _classes;
-
-        // ------------------------------------------------------------------------
-        //                      c o n s t r u c t o r
-        // ------------------------------------------------------------------------
-
-        public Macros() {
-            _classes = new HashMap<>();
-        }
-
-        // ------------------------------------------------------------------------
-        //                      p u b l i c
-        // ------------------------------------------------------------------------
-
-        public void register(final String key,
-                             final Class<? extends AbstractEntityMacro> aclass) {
-            _classes.put(key, aclass);
-        }
-
-        public AbstractEntityMacro get(final String name) {
-            try {
-                final String raw_name = name.startsWith(PREFIX_MACRO) ? name.substring(1) : name;
-                final String[] tokens = StringUtils.split(raw_name, PREFIX_MACRO); // params are separated with #
-                final String key = tokens[0]; // macro name is first
-                if (_classes.containsKey(key)) {
-                    final String[] args = CollectionUtils.subArray(tokens, 1, tokens.length - 1);
-                    final Class<? extends AbstractEntityMacro> aclass = _classes.get(key);
-                    return (AbstractEntityMacro) ((args.length > 0)
-                            ? ClassLoaderUtils.newInstance(aclass, new Object[]{args})
-                            : ClassLoaderUtils.newInstance(aclass));
-                }
-            } catch (Throwable ignored) {
-                // ignored
-            }
-            return null;
-        }
-
-    }
 
 }

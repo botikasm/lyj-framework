@@ -454,7 +454,14 @@ public final class StringUtils {
         if (null != args && args.length > 0) {
             for (final Object arg : args) {
                 if (!isNULL(arg)) {
-                    result.append(arg);
+                    if (arg instanceof Collection) {
+                        final Collection coll_arg = (Collection) arg;
+                        for (final Object coll_item : coll_arg) {
+                            result.append(concatArgs(coll_item));
+                        }
+                    } else {
+                        result.append(arg);
+                    }
                 }
             }
         }
@@ -467,10 +474,17 @@ public final class StringUtils {
         if (null != args && args.length > 0) {
             for (final Object arg : args) {
                 if (!isNULL(arg)) {
-                    if (hasText(separator) && result.length() > 0) {
-                        result.append(separator);
+                    if (arg instanceof Collection) {
+                        final Collection coll_arg = (Collection) arg;
+                        for (final Object coll_item : coll_arg) {
+                            result.append(concatArgsEx(separator, coll_item));
+                        }
+                    } else {
+                        if (hasText(separator) && result.length() > 0) {
+                            result.append(separator);
+                        }
+                        result.append(arg);
                     }
-                    result.append(arg);
                 }
             }
         }

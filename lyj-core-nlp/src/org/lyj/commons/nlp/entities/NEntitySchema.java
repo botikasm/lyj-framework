@@ -2,6 +2,7 @@ package org.lyj.commons.nlp.entities;
 
 import org.json.JSONArray;
 import org.lyj.commons.nlp.elements.IKeywordConstants;
+import org.lyj.commons.nlp.entities.macro.Macros;
 import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.json.JsonWrapper;
 
@@ -12,7 +13,7 @@ public class NEntitySchema
     //                      c o n s t
     // ------------------------------------------------------------------------
 
-    public static final String PREFIX_MACRO = "#"; // macro command prefix
+    public static final String PREFIX_MACRO = Macros.PREFIX_MACRO; // macro command prefix
     public static final String PREFIX_EXPRESSION = IKeywordConstants.PREFIX_CUSTOM; // @
     public static final String PREFIX_REGEX = "/";
 
