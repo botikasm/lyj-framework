@@ -2,10 +2,7 @@ package org.lyj.ext.db.model;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.lyj.commons.util.CollectionUtils;
-import org.lyj.commons.util.ConversionUtils;
-import org.lyj.commons.util.RandomUtils;
-import org.lyj.commons.util.StringUtils;
+import org.lyj.commons.util.*;
 import org.lyj.commons.util.converters.JsonConverter;
 import org.lyj.commons.util.converters.MapConverter;
 import org.lyj.commons.util.json.JsonItem;
@@ -63,6 +60,16 @@ public class MapDocument
     @Override
     public String toString() {
         return this.json().toString();
+    }
+
+    @Override
+    public Object get(final Object key) {
+        return this.getOrDefault(key, null);
+    }
+
+    @Override
+    public Object getOrDefault(final Object key, Object defaultValue) {
+        return this.find(key, defaultValue);
     }
 
     // ------------------------------------------------------------------------
@@ -150,7 +157,7 @@ public class MapDocument
     }
 
     public String getString(final String name, final String def_val) {
-        final String response = StringUtils.toString(super.get(name));
+        final String response = StringUtils.toString(this.get(name));
         return StringUtils.hasText(response) ? response : def_val;
     }
 
@@ -159,7 +166,7 @@ public class MapDocument
     }
 
     public long getLong(final String name, final long def_val) {
-        return ConversionUtils.toLong(super.get(name), def_val);
+        return ConversionUtils.toLong(this.get(name), def_val);
     }
 
     public int getInt(final String name) {
@@ -167,7 +174,7 @@ public class MapDocument
     }
 
     public int getInt(final String name, final int def_val) {
-        return ConversionUtils.toInteger(super.get(name), def_val);
+        return ConversionUtils.toInteger(this.get(name), def_val);
     }
 
     public double getDouble(final String name) {
@@ -175,11 +182,11 @@ public class MapDocument
     }
 
     public double getDouble(final String name, final double def_val) {
-        return ConversionUtils.toDouble(super.get(name), 3, def_val);
+        return ConversionUtils.toDouble(this.get(name), 3, def_val);
     }
 
     public double getDouble(final String name, final int decimal_place, final double def_val) {
-        return ConversionUtils.toDouble(super.get(name), decimal_place, def_val);
+        return ConversionUtils.toDouble(this.get(name), decimal_place, def_val);
     }
 
     public boolean getBoolean(final String name) {
@@ -187,7 +194,7 @@ public class MapDocument
     }
 
     public boolean getBoolean(final String name, final boolean def_val) {
-        return ConversionUtils.toBoolean(super.get(name), def_val);
+        return ConversionUtils.toBoolean(this.get(name), def_val);
     }
 
     public MapDocument getMap(final String name) {
@@ -196,7 +203,7 @@ public class MapDocument
 
     public MapDocument getMap(final String name,
                               final boolean auto_create) {
-        final Object response = super.get(name);
+        final Object response = this.get(name);
         final MapDocument item;
         if (null != response) {
             if (response instanceof MapDocument) {
@@ -206,11 +213,11 @@ public class MapDocument
             } else {
                 // convert to json document
                 super.put(name, new MapDocument(response));
-                item = (MapDocument) super.get(name);
+                item = (MapDocument) this.get(name);
             }
         } else if (auto_create) {
             super.put(name, new MapDocument());
-            item = (MapDocument) super.get(name);
+            item = (MapDocument) this.get(name);
         } else {
             return null;
         }
@@ -244,14 +251,14 @@ public class MapDocument
 
     public Collection getList(final String name,
                               final boolean auto_create) {
-        final Object response = super.get(name);
+        final Object response = this.get(name);
         final MapList list;
 
         if (null != response) {
             list = new MapList(MapConverter.toList(response));
         } else if (auto_create) {
             super.put(name, new MapList());
-            list = (MapList) super.get(name);
+            list = (MapList) this.get(name);
         } else {
             return null;
         }
@@ -262,12 +269,32 @@ public class MapDocument
         return list;
     }
 
+
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
 
     private void init() {
 
+    }
+
+    private Object find(final Object o_key, final Object defaultValue) {
+        if (o_key instanceof String) {
+            final String key = (String) o_key;
+            if (key.contains(".")) {
+                // DEEP
+                final Object response = this.deep(key);
+                return null != response ? response : defaultValue;
+            } else {
+                // DIRECT
+                return super.getOrDefault(key, defaultValue);
+            }
+        }
+        return defaultValue;
+    }
+
+    private Object deep(final String path) {
+        return BeanUtils.getValueIfAny(this, path);
     }
 
     // ------------------------------------------------------------------------
