@@ -12,6 +12,7 @@ import org.lyj.ext.script.program.tools.sys.ToolEngine;
 import org.lyj.ext.script.program.tools.sys.ToolRequirer;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class Program
     public Program(final String encoding,
                    final Map<String, Object> context,
                    final ProgramLogger logger) {
-        _context = null != context ? context : new HashMap<>();
+        _context = Collections.synchronizedMap(null != context ? new HashMap<>(context) : new HashMap<>());
         _logger = null != logger ? logger : new ToolConsole(null);
         _encoding = encoding;
         _engine_name = ENGINE_JAVASCRIPT;

@@ -269,6 +269,23 @@ public class MapDocument
         return list;
     }
 
+    public String[] getStringArray(final String name) {
+        try {
+            final Collection list = getList(name);
+            return (String[]) list.toArray(new Object[0]);
+        } catch (Throwable ignored) {
+            return new String[0];
+        }
+    }
+
+    public MapDocument[] getMapArray(final String name) {
+        try {
+            final Collection list = getList(name);
+            return (MapDocument[]) list.toArray(new Object[0]);
+        } catch (Throwable ignored) {
+            return new MapDocument[0];
+        }
+    }
 
     // ------------------------------------------------------------------------
     //                      p r i v a t e
