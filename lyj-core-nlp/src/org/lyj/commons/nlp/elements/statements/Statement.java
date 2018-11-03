@@ -42,12 +42,12 @@ public class Statement
     // ------------------------------------------------------------------------
 
     public Statement(final String text) {
-        _char_count = this.len(text);
+        _char_count = len(text);
         _raw_text = _char_count > 0 ? text.toLowerCase() : "";
-        _has_wildchars = (_char_count > 0) && text.contains(WILDCHAR);
-        _clean_text = _has_wildchars ? this.cleanText(_raw_text) : _raw_text;
-        _text_tokens = _has_wildchars ? this.textTokens(_raw_text) : new String[]{_raw_text};
-        _mode = _has_wildchars ? this.mode(_raw_text) : MODE_NONE;
+        _has_wildchars = hasWildChars(text);
+        _clean_text = _has_wildchars ? cleanText(_raw_text) : _raw_text;
+        _text_tokens = _has_wildchars ? textTokens(_raw_text) : new String[]{_raw_text};
+        _mode = _has_wildchars ? mode(_raw_text) : MODE_NONE;
     }
 
     // ------------------------------------------------------------------------
@@ -62,7 +62,12 @@ public class Statement
      * @return True if text matches.
      */
     public boolean match(final String text) {
-        if (this.len(text) > 0) {
+        if (len(text) > 0) {
+            // try direct match at first
+            if (this.matchText(text)) {
+                return true;
+            }
+            // try with clear text
             final String clean_text = Keyword.clearKeyword(text); // remove dots, commas, etc...
             return this.matchText(clean_text);
         }
@@ -73,35 +78,8 @@ public class Statement
     //                     p r i v a t e
     // ------------------------------------------------------------------------
 
-    private int len(final String text) {
-        return null != text ? text.length() : 0;
-    }
-
-    private String[] textTokens(final String text_with_wildchars) {
-        final String text = StringUtils.replaceDuplicates(text_with_wildchars, WILDCHAR);
-        return StringUtils.split(text, WILDCHAR, true);
-    }
-
-    private String cleanText(final String text_with_wildchars) {
-        final String text = StringUtils.replaceDuplicates(text_with_wildchars, WILDCHAR);
-        return StringUtils.replace(RegExpUtils.replaceNoAlphanumericChar(text), WILDCHAR, "");
-    }
-
-    private int mode(final String text_with_wildchars) {
-        final int pos_first = text_with_wildchars.indexOf(WILDCHAR);
-        if (pos_first == 0) {
-            return MODE_START;
-        } else {
-            final int pos_last = text_with_wildchars.lastIndexOf(WILDCHAR);
-            if (pos_last == text_with_wildchars.length() - 1) {
-                return MODE_END;
-            }
-        }
-        return MODE_MIDDLE;
-    }
-
     private boolean matchText(final String text) {
-        if (this.len(text) == _char_count) {
+        if (len(text) == _char_count) {
             if (_has_wildchars) {
                 // are equals?
                 if (text.equals(_clean_text)) {
@@ -126,5 +104,36 @@ public class Statement
         return false;
     }
 
+    private static int len(final String text) {
+        return null != text ? text.length() : 0;
+    }
+
+    private static String[] textTokens(final String text_with_wildchars) {
+        final String text = StringUtils.replaceDuplicates(text_with_wildchars, WILDCHAR);
+        return StringUtils.split(text, WILDCHAR, true);
+    }
+
+    private static boolean hasWildChars(final String text) {
+        final int char_count = len(text);
+        return (char_count > 0) && text.contains(WILDCHAR);
+    }
+
+    private static String cleanText(final String text_with_wildchars) {
+        final String text = StringUtils.replaceDuplicates(text_with_wildchars, WILDCHAR);
+        return StringUtils.replace(RegExpUtils.replaceNoAlphanumericChar(text), WILDCHAR, "");
+    }
+
+    private static int mode(final String text_with_wildchars) {
+        final int pos_first = text_with_wildchars.indexOf(WILDCHAR);
+        if (pos_first == 0) {
+            return MODE_START;
+        } else {
+            final int pos_last = text_with_wildchars.lastIndexOf(WILDCHAR);
+            if (pos_last == text_with_wildchars.length() - 1) {
+                return MODE_END;
+            }
+        }
+        return MODE_MIDDLE;
+    }
 
 }

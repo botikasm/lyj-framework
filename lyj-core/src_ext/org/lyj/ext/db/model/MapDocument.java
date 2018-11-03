@@ -90,7 +90,7 @@ public class MapDocument
     }
 
     public MapDocument put(final String key, final Object value) {
-        super.put(key, MapConverter.convert(value));
+        this.write(key, MapConverter.convert(value));
         return this;
     }
 
@@ -271,17 +271,17 @@ public class MapDocument
 
     public String[] getStringArray(final String name) {
         try {
-            final Collection list = getList(name);
-            return (String[]) list.toArray(new Object[0]);
+            final Collection<String> list = getList(name);
+            return list.toArray(new String[0]);
         } catch (Throwable ignored) {
             return new String[0];
         }
     }
 
-    public MapDocument[] getMapArray(final String name) {
+    public HashMap[] getMapArray(final String name) {
         try {
-            final Collection list = getList(name);
-            return (MapDocument[]) list.toArray(new Object[0]);
+            final Collection<HashMap> list = getList(name);
+            return list.toArray(new HashMap[0]);
         } catch (Throwable ignored) {
             return new MapDocument[0];
         }
@@ -295,7 +295,8 @@ public class MapDocument
 
     }
 
-    private Object find(final Object o_key, final Object defaultValue) {
+    private Object find(final Object o_key,
+                        final Object defaultValue) {
         if (o_key instanceof String) {
             final String key = (String) o_key;
             if (key.contains(".")) {
@@ -310,8 +311,26 @@ public class MapDocument
         return defaultValue;
     }
 
+    private void write(final Object o_key,
+                       final Object value) {
+        if (o_key instanceof String) {
+            final String key = (String) o_key;
+            if (key.contains(".")) {
+                // DEEP
+                this.deep(key, value);
+            } else {
+                // DIRECT
+                super.put(key, value);
+            }
+        }
+    }
+
     private Object deep(final String path) {
         return BeanUtils.getValueIfAny(this, path);
+    }
+
+    private boolean deep(final String path, final Object value) {
+        return BeanUtils.setValueIfAny(this, path, value);
     }
 
     // ------------------------------------------------------------------------
