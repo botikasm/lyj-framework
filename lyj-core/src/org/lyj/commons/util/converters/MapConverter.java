@@ -93,7 +93,7 @@ public abstract class MapConverter {
     }
 
     private static Map<String, Object> toMap(final JSONObject json) {
-        final Map<String, Object> response = new LinkedHashMap<>();
+        final Map<String, Object> response = new HashMap<>();
         final Iterator keys = json.keys();
         while (keys.hasNext()) {
             final String name = keys.next().toString();

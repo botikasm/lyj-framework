@@ -451,43 +451,16 @@ public final class StringUtils {
 
     public static String concatArgs(final Object... args) {
         final StringBuilder result = new StringBuilder();
-        if (null != args && args.length > 0) {
-            for (final Object arg : args) {
-                if (!isNULL(arg)) {
-                    if (arg instanceof Collection) {
-                        final Collection coll_arg = (Collection) arg;
-                        for (final Object coll_item : coll_arg) {
-                            result.append(concatArgs(coll_item));
-                        }
-                    } else {
-                        result.append(arg);
-                    }
-                }
-            }
-        }
+        concatArgs(result, args);
         return result.toString();
     }
+
+
 
     public static String concatArgsEx(final String separator,
                                       final Object... args) {
         final StringBuilder result = new StringBuilder();
-        if (null != args && args.length > 0) {
-            for (final Object arg : args) {
-                if (!isNULL(arg)) {
-                    if (arg instanceof Collection) {
-                        final Collection coll_arg = (Collection) arg;
-                        for (final Object coll_item : coll_arg) {
-                            result.append(concatArgsEx(separator, coll_item));
-                        }
-                    } else {
-                        if (hasText(separator) && result.length() > 0) {
-                            result.append(separator);
-                        }
-                        result.append(arg);
-                    }
-                }
-            }
-        }
+        concatArgsEx(result, separator, args);
         return result.toString();
     }
 
@@ -1740,6 +1713,46 @@ public final class StringUtils {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private static void concatArgsEx(final StringBuilder result,
+                                     final String separator,
+                                     final Object... args) {
+        if (null != args && args.length > 0) {
+            for (final Object arg : args) {
+                if (!isNULL(arg)) {
+                    if (arg instanceof Collection) {
+                        final Collection coll_arg = (Collection) arg;
+                        for (final Object coll_item : coll_arg) {
+                            concatArgsEx(result, separator, coll_item);
+                        }
+                    } else {
+                        if (hasLength(separator) && result.length() > 0) {
+                            result.append(separator);
+                        }
+                        result.append(arg);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void concatArgs(final StringBuilder result,
+                                   final Object... args) {
+        if (null != args && args.length > 0) {
+            for (final Object arg : args) {
+                if (!isNULL(arg)) {
+                    if (arg instanceof Collection) {
+                        final Collection coll_arg = (Collection) arg;
+                        for (final Object coll_item : coll_arg) {
+                            concatArgs(result, coll_item);
+                        }
+                    } else {
+                        result.append(arg);
+                    }
+                }
+            }
+        }
+    }
 
     private static String[] changeFirstCharacterCase(final String[] str,
                                                      final Boolean[] capitalize) {
