@@ -396,6 +396,10 @@ public abstract class MathUtils {
         return getAverage(Arrays.asList(array));
     }
 
+    public static Number getAverage(Integer... array) {
+        return getAverage(Arrays.asList(array));
+    }
+
     /**
      * Get the sum of the values
      *

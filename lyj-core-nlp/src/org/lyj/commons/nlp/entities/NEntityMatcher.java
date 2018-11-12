@@ -6,7 +6,6 @@ import org.lyj.commons.nlp.elements.IKeywordConstants;
 import org.lyj.commons.nlp.elements.KeywordList;
 import org.lyj.commons.nlp.elements.KeywordsSolver;
 import org.lyj.commons.nlp.elements.custom.CustomExpression;
-import org.lyj.commons.nlp.entities.macro.AbstractEntityMacro;
 import org.lyj.commons.nlp.entities.macro.Macros;
 import org.lyj.commons.nlp.entities.regex.RegExHelper;
 import org.lyj.commons.util.CollectionUtils;
@@ -100,9 +99,13 @@ public class NEntityMatcher {
             if (!rule.isEmpty()) {
                 final String[] start = rule.start(); // keywords to match for a starting point into phrase
                 final String[] rules = rule.rules(); // expressions, regexp or macro
+                final String opt_intent = rule.optIntent();
                 final int start_index = KeywordsSolver.instance().matchIndex(phrase, start);
                 final Entity entity = parse(lang, entity_name, Math.max(0, start_index), phrase, rules, callback);
-                if (null != entity) response.add(entity);
+                if (null != entity) {
+                    entity.optIntent(opt_intent); // intent to infer if any
+                    response.add(entity);
+                }
             }
         }
         return response.toArray(new Entity[0]);
@@ -167,7 +170,7 @@ public class NEntityMatcher {
             final String pattern = rule.substring(1, rule.length() - 1);
             final String[] match_response = RegExHelper.instance().parse(start_index, phrase, pattern);
             CollectionUtils.addAllNoDuplicates(response, match_response);
-            
+
         }
         return response.toArray(new String[0]);
     }
@@ -213,6 +216,7 @@ public class NEntityMatcher {
 
         private static final String FLD_NAME = "name";  // name of entity
         private static final String FLD_VALUE = "value"; // detected values for this entity
+        private static final String FLD_OPT_INTENT = "opt_intent";  // (optional intent to infer)
 
         // ------------------------------------------------------------------------
         //                      c o n s t r u c t o r
@@ -249,6 +253,16 @@ public class NEntityMatcher {
         public String[] value() {
             return JsonWrapper.toArrayOfString(this.valueArray());
         }
+
+        public String optIntent() {
+            return super.getString(FLD_OPT_INTENT);
+        }
+
+        public Entity optIntent(final String name) {
+            super.put(FLD_OPT_INTENT, name);
+            return this;
+        }
+
 
     }
 

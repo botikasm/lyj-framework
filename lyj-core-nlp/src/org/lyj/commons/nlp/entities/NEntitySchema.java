@@ -28,15 +28,16 @@ public class NEntitySchema
     public NEntitySchema(final Object item) {
         super(item);
     }
+
     // ------------------------------------------------------------------------
     //                      p u b l i c
     // ------------------------------------------------------------------------
 
     public Rule rule(final String name) {
-        if (super.has(name)) {
-            return new Rule(super.get(name));
+        if (!super.has(name)) {
+            super.put(name, new Rule().json());
         }
-        return new Rule();
+        return new Rule(super.get(name));
     }
 
     // ------------------------------------------------------------------------
@@ -61,6 +62,7 @@ public class NEntitySchema
 
         private static final String FLD_START = "start";
         private static final String FLD_RULES = "rules";
+        private static final String FLD_OPT_INTENT = "opt_intent";
 
         // ------------------------------------------------------------------------
         //                      c o n s t r u c t o r
@@ -103,6 +105,33 @@ public class NEntitySchema
 
         public String[] rules() {
             return JsonWrapper.toArrayOfString(this.rulesArray());
+        }
+
+        public Rule start(final String[] values) {
+            final JSONArray array = new JSONArray();
+            for (final String value : values) {
+                array.put(value);
+            }
+            super.put(FLD_START, array);
+            return this;
+        }
+
+        public Rule rules(final String[] values) {
+            final JSONArray array = new JSONArray();
+            for (final String value : values) {
+                array.put(value);
+            }
+            super.put(FLD_RULES, array);
+            return this;
+        }
+
+        public String optIntent() {
+            return super.getString(FLD_OPT_INTENT);
+        }
+
+        public Rule optIntent(final String name) {
+            super.put(FLD_OPT_INTENT, name);
+            return this;
         }
 
     }
