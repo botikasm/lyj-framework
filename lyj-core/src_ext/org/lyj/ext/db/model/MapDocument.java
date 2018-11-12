@@ -241,15 +241,15 @@ public class MapDocument
 
     public JSONArray getJSONArray(final String name,
                                   final boolean auto_create) {
-        final Collection response = this.getList(name, auto_create);
+        final Collection<?> response = this.getList(name, auto_create);
         return JsonConverter.toArray(response);
     }
 
-    public Collection getList(final String name) {
+    public Collection<?> getList(final String name) {
         return this.getList(name, true);
     }
 
-    public Collection getList(final String name,
+    public Collection<?> getList(final String name,
                               final boolean auto_create) {
         final Object response = this.get(name);
         final MapList list;
@@ -271,7 +271,7 @@ public class MapDocument
 
     public String[] getStringArray(final String name) {
         try {
-            final Collection<String> list = getList(name);
+            final Collection<String> list = (Collection<String>) getList(name);
             return list.toArray(new String[0]);
         } catch (Throwable ignored) {
             return new String[0];
@@ -280,7 +280,7 @@ public class MapDocument
 
     public HashMap[] getMapArray(final String name) {
         try {
-            final Collection<HashMap> list = getList(name);
+            final Collection<HashMap> list = (Collection<HashMap>) getList(name);
             return list.toArray(new HashMap[0]);
         } catch (Throwable ignored) {
             return new MapDocument[0];
