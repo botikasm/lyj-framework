@@ -12,6 +12,13 @@ public class JavascriptUtils {
         return false;
     }
 
+    public static String getErrorMessage(final Object item) {
+        if (isError(item)) {
+            return (String) ((ScriptObjectMirror) item).get("message");
+        }
+        return null;
+    }
+
     public static boolean isUndefined(final Object item) {
         return item instanceof Undefined;
     }
