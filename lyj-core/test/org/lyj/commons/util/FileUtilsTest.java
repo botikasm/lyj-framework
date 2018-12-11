@@ -49,4 +49,25 @@ public class FileUtilsTest {
 
     }
 
+    @Test
+    public void copy() throws Exception {
+        final String root = "/users/angelogeminiani/test";
+        FileUtils.mkdirs(root);
+        final String source = PathUtils.concat(root, "geckodriver");
+        final String target = PathUtils.concat(root, "copy_of_geckodriver");
+
+        final File source_file = new File(source);
+        final File target_file = new File(target);
+        if(target_file.exists()){
+            FileUtils.delete(target_file);
+        }
+
+        // copy
+        FileUtils.copy(source_file, target_file);
+
+        System.out.println("SOURCE: " + source_file.isFile() + ", " + source_file.length() + ", " + source_file.canExecute());
+        System.out.println("TARGET: " + target_file.isFile() + ", " + target_file.length() + ", " + target_file.canExecute());
+
+    }
+
 }

@@ -117,20 +117,20 @@ public class ZipUtils {
                     fixed.setCharAt(i, sep);
                 }
             }
-            final File file = new File(fixed.toString());
+            final File out_file = new File(fixed.toString());
 
             // create dir
             if (entry.isDirectory()) {
-                file.mkdirs();
+                out_file.mkdirs();
                 continue;
             }
-            final String dir = file.getParent();
+            final String dir = out_file.getParent();
             if (dir != null) {
                 new File(dir).mkdirs();
             }
             // unzip file
             //System.out.println("unzipping: " + file);
-            final OutputStream out = new FileOutputStream(file);
+            final OutputStream out = new FileOutputStream(out_file);
             final InputStream in = zip.getInputStream(entry);
             try {
                 while ((n = in.read(buff, 0, buff.length)) != -1) {
@@ -141,6 +141,8 @@ public class ZipUtils {
                 out.close();
                 in.close();
             }
+
+
         }
         zip.close();
     }

@@ -49,12 +49,11 @@ public abstract class MapConverter {
     public static Map<String, Object> toMap(final Object value) {
         if (value instanceof Map) {
             // avoid map with invalid values
-            final Map map = (Map) value;
-            final Map<String, Object> response = new HashMap<>();
+            final Map<String, Object> map = (Map) value;
             map.forEach((key, val) -> {
-                response.put(key.toString(), convert(val));
+                map.put(key.toString(), convert(val));
             });
-            return response;
+            return map;
         } else if (value instanceof JSONObject) {
             return toMap((JSONObject) value);
         } else if (value instanceof JsonItem) {

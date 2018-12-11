@@ -1,0 +1,14 @@
+{
+  "enabled": false,
+  "name": "",
+  "version": "1.0.0",
+  "browser": "firefox",
+  "url": "",
+  "proxy": {
+    "enabled": false,
+    "protocol": "http",
+    "ip": "",
+    "port": -1
+  },
+  "log_level": "info"
+}

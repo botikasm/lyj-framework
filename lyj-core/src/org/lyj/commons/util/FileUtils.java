@@ -73,6 +73,9 @@ public abstract class FileUtils {
         final String ext = PathUtils.getFilenameExtension(fileName);
         if (!StringUtils.hasText(ext)) {
             dir = new File(fileName);
+            if (dir.isFile()) {
+                dir = dir.getParentFile();
+            }
         } else {
             final File file = new File(fileName);
             dir = file.getParentFile();
@@ -326,9 +329,17 @@ public abstract class FileUtils {
      * @throws IOException in case of I/O errors
      */
     public static void copy(final File in, final File out) throws IOException {
+        // copy bytes
         copy(
                 new BufferedInputStream(new FileInputStream(in)),
-                new BufferedOutputStream(new FileOutputStream(out)));
+                new BufferedOutputStream(new FileOutputStream(out))
+        );
+        // copy attributes
+        if (out.exists()) {
+            out.setExecutable(in.canExecute());
+            out.setReadable(in.canRead());
+            out.setWritable(in.canWrite());
+        }
     }
 
     /**

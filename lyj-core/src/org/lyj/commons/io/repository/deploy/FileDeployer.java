@@ -295,7 +295,7 @@ public abstract class FileDeployer {
             if (!exists || overwrite) {
                 if (!item.isDirectory()) {
                     try {
-                        FileUtils.mkdirs(targetPath);
+                        FileUtils.mkdirs(PathUtils.getParent(targetPath));
                         final String packagename = item.getPackageName();
                         final InputStream in = this.read(packagename);
                         if (null != in) {
@@ -329,7 +329,13 @@ public abstract class FileDeployer {
                                 }
 
                                 //-- deploy file --//
-                                FileUtils.copy(binaryData, new File(targetPath));
+                                final File out_file = new File(targetPath);
+                                FileUtils.copy(binaryData, out_file);
+                                if(out_file.exists()){
+                                   out_file.setExecutable(item.isExecutable());
+                                    out_file.setReadable(item.isReadable());
+                                    out_file.setWritable(item.isWritable());
+                                }
 
                                 //-- compress file --//
                                 if (_settings.isCompressibleExt(ext(targetPath))) {
@@ -451,8 +457,8 @@ public abstract class FileDeployer {
             }
 
             //-- creates resource and add to list --//
-            for (final String child : children) {
-                result.add(new FileItem(_class_owner, root, child));
+            for (final String resource_path : children) {
+                result.add(new FileItem(_class_owner, root, resource_path));
             }
 
             this.logInfo("Created FileDeployer '{0}'. Resources: {1}",
@@ -485,7 +491,8 @@ public abstract class FileDeployer {
         final FileRepository repository = new FileRepository(path);
         final Resource[] children = repository.getResources(true);
         for (final Resource child : children) {
-            result.add(child.getPath());
+            final String resource_path = child.getPath();
+            result.add(resource_path);
         }
 
         return result.toArray(new String[result.size()]);

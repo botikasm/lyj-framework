@@ -36,9 +36,12 @@ public class Logger {
     private String _name;
     private String _short_name;
     private Level _level = Level.INFO;
+    private boolean _use_console;
+
 
     public Logger(final String name) {
         this.setName(name);
+        this.setUseConsole(true);
     }
 
     public String getName() {
@@ -49,11 +52,21 @@ public class Logger {
         this._name = name;
         if (StringUtils.hasText(name) && StringUtils.contains(name, ".")) {
             _short_name = CollectionUtils.getLast(name, ".");
+        } else {
+            _short_name = _name;
         }
     }
 
     public String getShortName() {
         return _short_name;
+    }
+
+    public boolean getUseConsole() {
+        return _use_console;
+    }
+
+    public void setUseConsole(boolean value) {
+        _use_console = value;
     }
 
     public Level getLevel() {

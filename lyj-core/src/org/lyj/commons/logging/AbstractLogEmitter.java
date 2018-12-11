@@ -30,8 +30,14 @@ public class AbstractLogEmitter
     }
 
     // ------------------------------------------------------------------------
-    //                      p r o t e c t e d
+    //                      p u b l i c
     // ------------------------------------------------------------------------
+
+    public void useConsole(final boolean value) {
+        if (null != _logger) {
+            _logger.setUseConsole(value);
+        }
+    }
 
     public Logger logger() {
         return _logger;

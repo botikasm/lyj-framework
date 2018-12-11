@@ -111,6 +111,13 @@ public abstract class SystemUtils {
     private static final String REPORT_SEP = "------------------------------------------";
     private static final String REPORT_TAB = "    ";
 
+    public static final String OS_UNDEFINED = "undefined";
+    public static final String OS_MAC = "mac";
+    public static final String OS_LINUX_32 = "linux_32";
+    public static final String OS_LINUX_64 = "linux_64";
+    public static final String OS_WIN_32 = "win_32";
+    public static final String OS_WIN_64 = "win_64";
+
     // ------------------------------------------------------------------------
     //                      f i e l d s
     // ------------------------------------------------------------------------
@@ -118,6 +125,7 @@ public abstract class SystemUtils {
     private static Boolean _iswindow = null;
     private static Boolean _islinux = null;
     private static Boolean _ismac = null;
+    private static String _os_symbol = null;  // win-32, win-64, mac, linux-32, linux-64
 
     private static Runtime __runtime;
 
@@ -135,6 +143,23 @@ public abstract class SystemUtils {
 
     public static String getOSAchitecture() {
         return System.getProperty("os.arch");
+    }
+
+    public static String getOSSymbol() {
+        if (!StringUtils.hasText(_os_symbol)) {
+            final String os = getOperatingSystem();
+            if (isWindows()) {
+                _os_symbol = os.contains("32") ? OS_WIN_32 : OS_WIN_64;
+            } else if (isLinux()) {
+                _os_symbol = os.contains("32") ? OS_LINUX_32 : OS_LINUX_64;
+            } else if (isMac()) {
+                _os_symbol = os.contains("32") ? OS_MAC : OS_MAC;
+            } else {
+                _os_symbol = OS_UNDEFINED; // undefined
+            }
+        }
+        return _os_symbol;
+
     }
 
     public static boolean isWindows() {

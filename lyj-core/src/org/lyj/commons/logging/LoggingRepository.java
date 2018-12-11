@@ -225,7 +225,9 @@ public final class LoggingRepository
             }
 
             this.writeFile(logger, item);
-            this.writeConsole(item);
+            if(logger.getUseConsole()){
+                this.writeConsole(item);
+            }
         }
     }
 

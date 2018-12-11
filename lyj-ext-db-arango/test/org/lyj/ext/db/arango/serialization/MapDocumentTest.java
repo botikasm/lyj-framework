@@ -3,6 +3,7 @@ package org.lyj.ext.db.arango.serialization;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.lyj.commons.util.BeanUtils;
 import org.lyj.commons.util.json.JsonItem;
 import org.lyj.commons.util.MapBuilder;
 import org.lyj.ext.db.IDatabaseCollection;
@@ -75,6 +76,25 @@ public class MapDocumentTest {
 
         entity = collection.get(entity);
         assertNull(entity);
+    }
+
+    @Test
+    public void testDeep() throws Exception {
+
+        final ArangoMapDocument doc = new ArangoMapDocument();
+
+
+        doc.put("nested.type", "NESTED");
+        System.out.println(doc);
+        assertEquals(doc.getString("nested.type"), "NESTED");
+
+        doc.put("nested.twolevel.name", "Mario");
+        System.out.println(doc);
+        assertEquals(doc.getString("nested.twolevel.name"), "Mario");
+
+        doc.put("nested.twolevel.surname", "Rossi");
+        System.out.println(doc);
+        assertEquals(doc.getString("nested.twolevel.surname"), "Rossi");
     }
 
 }

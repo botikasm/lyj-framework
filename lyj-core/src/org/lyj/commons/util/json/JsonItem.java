@@ -84,6 +84,10 @@ public class JsonItem
         return new JsonItem(this.toString());
     }
 
+    public void initializeFromResource() {
+        this.loadResource();
+    }
+
     public Set<String> keys() {
         return _data.keys();
     }
@@ -169,7 +173,8 @@ public class JsonItem
         return this;
     }
 
-    public JsonItem putAll(final JSONObject values, final boolean only_existing_fields) {
+    public JsonItem putAll(final JSONObject values,
+                           final boolean only_existing_fields) {
         final Set<String> keys = values.keySet();
         for (final String key : keys) {
             if (!only_existing_fields || this.has(key)) {
@@ -194,6 +199,35 @@ public class JsonItem
                     final Object value = values.opt(key);
                     if (null != value) {
                         this.putValue(key, value);
+                    }
+                }
+            }
+        }
+        return this;
+    }
+
+    public JsonItem putAllNoOverwrite(final JSONObject values) {
+        return putAllNoOverwrite(values, false, null);
+    }
+
+    public JsonItem putAllNoOverwrite(final JSONObject values,
+                                      final boolean only_existing_fields) {
+        return putAllNoOverwrite(values, only_existing_fields, null);
+    }
+
+    public JsonItem putAllNoOverwrite(final JSONObject values,
+                                      final boolean only_existing_fields,
+                                      final String[] exclude_fields) {
+        final Set<String> keys = values.keySet();
+        for (final String key : keys) {
+            if (!only_existing_fields || this.has(key)) {
+                if (!CollectionUtils.contains(exclude_fields, key)) {
+                    final Object existing_value = this.get(key);
+                    if (null == existing_value || !StringUtils.hasText(existing_value.toString())) {
+                        final Object value = values.opt(key);
+                        if (null != value) {
+                            this.putValue(key, value);
+                        }
                     }
                 }
             }
@@ -333,6 +367,18 @@ public class JsonItem
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    private void loadResource() {
+        try {
+            final String model = ClassLoaderUtils.getResourceAsString(null, this.getClass(), this.getClass().getSimpleName().concat(".json"));
+            if (StringUtils.isJSONObject(model)) {
+                final JSONObject obj = new JSONObject(model);
+                this.putAllNoOverwrite(obj);
+            }
+        } catch (Throwable ignored) {
+            // ignored
+        }
+    }
 
     private boolean isPath(final String key) {
         return key.contains(".");

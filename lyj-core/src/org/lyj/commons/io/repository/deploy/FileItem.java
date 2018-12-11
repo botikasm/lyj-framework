@@ -24,7 +24,6 @@ import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.Logger;
 import org.lyj.commons.logging.util.LoggingUtils;
 import org.lyj.commons.util.PathUtils;
-import org.lyj.commons.util.StringUtils;
 
 /**
  * @author angelo.geminiani
@@ -36,12 +35,20 @@ public class FileItem {
     private String _relativePath;
     private final String _root;
     private final String _folder;
+    private final boolean _is_dir;
+    private final boolean _is_executable;
+    private final boolean _is_readable;
+    private final boolean _is_writable;
 
     public FileItem(final Class deployer,
                     final String root,
-                    final String absolutePath) {
-        _absolutePath = PathUtils.validateFolderSeparator(absolutePath);
-        _root = this.toExternalForm(root, absolutePath);
+                    final String file_absolutePath) {
+        _absolutePath = PathUtils.validateFolderSeparator(file_absolutePath, false); // does not add terminator
+        _is_dir = PathUtils.isDirectory(file_absolutePath);
+        _is_executable = PathUtils.isExecutable(file_absolutePath);
+        _is_readable = PathUtils.isReadable(file_absolutePath);
+        _is_writable = PathUtils.isWritable(file_absolutePath);
+        _root = this.toExternalForm(root, file_absolutePath);
         _folder = this.lookupFolder(_root, _absolutePath);
         try {
             if (!this.isJar(_absolutePath)) {
@@ -103,7 +110,19 @@ public class FileItem {
     }
 
     public boolean isDirectory() {
-        return !StringUtils.hasText(PathUtils.getFilenameExtension(_fileName));
+        return _is_dir; //!StringUtils.hasText(PathUtils.getFilenameExtension(_fileName));
+    }
+
+    public boolean isExecutable() {
+        return _is_executable;
+    }
+
+    public boolean isReadable() {
+        return _is_readable;
+    }
+
+    public boolean isWritable() {
+        return _is_writable;
     }
 
     // ------------------------------------------------------------------------

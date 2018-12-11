@@ -286,6 +286,21 @@ public abstract class PathUtils
         }
     }
 
+    public static boolean isExecutable(final String path) {
+        final File file = new File(path);
+        return file.exists() && file.canExecute();
+    }
+
+    public static boolean isReadable(final String path) {
+        final File file = new File(path);
+        return file.exists() && file.canRead();
+    }
+
+    public static boolean isWritable(final String path) {
+        final File file = new File(path);
+        return file.exists() && file.canWrite();
+    }
+
     /**
      * Strip the filename extension from the given path,
      * e.g. "mypath/myfile.txt" -> "mypath/myfile".
@@ -424,6 +439,10 @@ public abstract class PathUtils
         return path;
     }
 
+    public static String validateFolderSeparator(final String path) {
+        return validateFolderSeparator(path, true);
+    }
+
     /**
      * Replace all windows folder separator "\" with java separator "/".
      * Remove also duplicates and add a separator at the end
@@ -434,10 +453,13 @@ public abstract class PathUtils
      * is a file name
      * (i.e. "c:/myfile.txt"), no separator is added at the and of path.
      */
-    public static String validateFolderSeparator(final String path) {
+    public static String validateFolderSeparator(final String path,
+                                                 final boolean check_mising_terminator) {
         final String result = PathUtils.toUnixPath(path);
+
         // add separator at the end if result has none, and if is not a file name
-        if (!StringUtils.hasText(PathUtils.getFilenameExtension(result))
+        if (check_mising_terminator
+                && !StringUtils.hasText(PathUtils.getFilenameExtension(result))
                 && !result.endsWith(FOLDER_SEPARATOR)) {
             return result.concat(FOLDER_SEPARATOR);
         } else {

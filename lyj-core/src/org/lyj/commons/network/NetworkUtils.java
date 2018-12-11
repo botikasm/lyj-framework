@@ -23,8 +23,11 @@
  */
 package org.lyj.commons.network;
 
+import org.json.JSONObject;
+import org.lyj.IConstants;
 import org.lyj.commons.logging.Level;
 import org.lyj.commons.logging.util.LoggingUtils;
+import org.lyj.commons.util.PathUtils;
 import org.lyj.commons.util.StringUtils;
 
 import java.net.*;
@@ -101,6 +104,24 @@ public class NetworkUtils {
             return false;
         }
     }
+
+    /**
+     * Return json object containing some information about  proxy (IP, country)
+     * @return JSON {"ip":"194.183.86.206","country":"San Marino","country_code":"SM"}
+     */
+    public static JSONObject getHostProxyInfo() {
+        final JSONObject result = new JSONObject();
+        //  {"ip":"194.183.86.206","country":"San Marino","cc":"SM"}
+        final String content = URLUtils.getUrlContent("https://api.myip.com/", 10000, IConstants.TYPE_JSON);
+        if(StringUtils.isJSONObject(content)){
+            final JSONObject jcontent = new JSONObject(content);
+            result.put("ip", jcontent.optString("ip"));
+            result.put("country", jcontent.optString("country"));
+            result.put("country_code", jcontent.optString("cc"));
+        }
+        return result;
+    }
+
 
     public static String getHost() {
         String result = null;
@@ -226,7 +247,62 @@ public class NetworkUtils {
         return proxy;
     }
 
-    public static boolean ping(final String host, final int timeout) {
+
+    public static boolean ping(final String host,
+                               final int timeout,
+                               final String ip,
+                               final int port,
+                               final String user,
+                               final String password) {
+        final String protocol = PathUtils.getProtocol(host);
+        final Proxy.Type type;
+        if (StringUtils.hasText(protocol)) {
+            if (protocol.startsWith("http")) {
+                type = Proxy.Type.HTTP;
+            } else {
+                type = Proxy.Type.SOCKS;
+            }
+        } else {
+            type = Proxy.Type.DIRECT;
+        }
+
+        return ping(host, timeout, Proxy.Type.HTTP, ip, port, user, password);
+    }
+
+    public static boolean ping(final String host,
+                               final int timeout,
+                               final Proxy.Type type,
+                               final String ip,
+                               final int port,
+                               final String user,
+                               final String password) {
+        try {
+            final Proxy proxy = new Proxy(type, new InetSocketAddress(ip, port));
+            if (StringUtils.hasText(user) && StringUtils.hasText(password)) {
+                Authenticator.setDefault(
+                        new Authenticator() {
+                            public PasswordAuthentication getPasswordAuthentication() {
+                                return new PasswordAuthentication(user, password.toCharArray());
+                            }
+                        }
+                );
+            }
+
+            URL url = new URL(host);
+            HttpURLConnection uc = (HttpURLConnection) url.openConnection(proxy);
+            uc.setConnectTimeout(timeout);
+            uc.connect();
+            uc.disconnect();
+
+            return true;
+        } catch (Throwable ignored) {
+            // ignored
+        }
+        return false;
+    }
+
+    public static boolean ping(final String host,
+                               final int timeout) {
         try {
             final InetAddress address = InetAddress.getByName(host);
             return address.isReachable(timeout);

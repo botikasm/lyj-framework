@@ -159,6 +159,8 @@ public class ClassLoaderUtils {
         return null;
     }
 
+
+
     //-- newInstance Methods --//
 
     @SuppressWarnings("unchecked")
@@ -204,6 +206,7 @@ public class ClassLoaderUtils {
             return ctor.newInstance(args);
         }
     }
+
 
     public static Object newInstance(final Class cls) throws InstantiationException, IllegalAccessException,
             NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
@@ -261,6 +264,33 @@ public class ClassLoaderUtils {
         } catch (Throwable ignored) {
         }
         return null;
+    }
+
+    public static <T> T optInstance(final Class cls) {
+        try {
+            return (T) newInstance(cls);
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    public static <T> T tryNewInstance(final Class cls,
+                                       final Object[] args) {
+        try {
+            return (T) newInstance(cls, args);
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    public static <T> T optInstance(final String clsName,
+                                    final Class[] argTypes,
+                                    final Object[] args) {
+        try {
+            return (T) newInstance(clsName, argTypes, args);
+        } catch (Throwable t) {
+            return null;
+        }
     }
 
     // --------------------------------------------------------------------

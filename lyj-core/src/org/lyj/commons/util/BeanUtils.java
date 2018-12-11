@@ -145,6 +145,37 @@ public abstract class BeanUtils {
         return result;
     }
 
+    public static boolean isAbstract(final Class aclass) {
+        return Modifier.isAbstract(aclass.getModifiers());
+    }
+
+    /**
+     * Search and return for root superclass before Object.class.
+     *
+     * @param instance Object
+     * @return Root superclass
+     */
+    public static Class getRootclass(final Object instance) {
+        return getRootclass(instance.getClass());
+    }
+
+    public static Class getRootclass(final Class instance) {
+        Class response = instance;
+        while (true) {
+            try {
+                final Class tmp = response.getSuperclass();
+                if (null != tmp && tmp != Object.class && !isAbstract(tmp)) {
+                    response = tmp;
+                } else {
+                    break;
+                }
+            } catch (Throwable t) {
+                break;
+            }
+        }
+        return response;
+    }
+
     public static boolean isPrimitiveClass(final Object obj) {
         final Class clazz = obj.getClass();
         return isPrimitiveClass(clazz);
@@ -206,7 +237,7 @@ public abstract class BeanUtils {
     public static Object getValue(final Object instance,
                                   final String path)
             throws IllegalAccessException, InvocationTargetException {
-        return getPropertyValue(instance, path);
+        return getPropertyValue(instance, path, false);
     }
 
     /**
@@ -670,7 +701,8 @@ public abstract class BeanUtils {
     }
 
     private static Object getPropertyValue(final Object instance,
-                                           final String path)
+                                           final String path,
+                                           final boolean autocreate)
             throws IllegalAccessException, InvocationTargetException {
         Object result = null;
         if (null != instance) {
@@ -681,13 +713,32 @@ public abstract class BeanUtils {
                 for (final String token : tokens) {
                     if (null != result) {
                         if (result instanceof JSONArray) {
-                            result = getItemOfArray((JSONArray) result, null, token);
+                            final Object prop_result = getItemOfArray((JSONArray) result, null, token);
+                            if (null == prop_result && autocreate) {
+
+                            }
+                            result = prop_result;
                         } else if (result.getClass().isArray()) {
-                            result = getItemOfArray((Object[]) result, null, token);
+                            final Object prop_result = getItemOfArray((Object[]) result, null, token);
+                            if (null == prop_result && autocreate) {
+
+                            }
+                            result = prop_result;
                         } else if (result instanceof List) {
-                            result = getItemOfList((List) result, null, token);
+                            final Object prop_result = getItemOfList((List) result, null, token);
+                            if (null == prop_result && autocreate) {
+
+                            }
+                            result = prop_result;
                         } else {
-                            result = getSimplePropertyValue(result, token);
+                            Object prop_result = getSimplePropertyValue(result, token);
+                            if (null == prop_result && autocreate) {
+                                prop_result = ClassLoaderUtils.optInstance(BeanUtils.getRootclass(result));
+                                if (null != prop_result) {
+                                    setSimplePropertyValue(result, token, prop_result);
+                                }
+                            }
+                            result = prop_result;
                         }
                     } else {
                         break;
@@ -697,6 +748,7 @@ public abstract class BeanUtils {
         }
         return result;
     }
+
 
     private static Object getItemOfArray(final Object[] array,
                                          final String fieldName, final Object fieldValue)
@@ -837,7 +889,7 @@ public abstract class BeanUtils {
                 final String[] a = CollectionUtils.removeTokenFromArray(tokens,
                         tokens.length - 1);
                 final String newpath = CollectionUtils.toDelimitedString(a, ".");
-                propertyBean = getPropertyValue(instance, newpath);
+                propertyBean = getPropertyValue(instance, newpath, true);
                 fieldName = CollectionUtils.getLast(tokens);
             }
         }

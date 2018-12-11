@@ -3,6 +3,7 @@ package org.lyj.commons.util;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.lyj.ext.db.model.MapDocument;
 
 import static org.junit.Assert.*;
 
@@ -18,6 +19,16 @@ public class BeanUtilsTest {
     // ------------------------------------------------------------------------
     //                      p r i v a t e
     // ------------------------------------------------------------------------
+
+    @Test
+    public void getSuperclass() {
+
+        final MapDocument instance = new MapDocument();
+        Class c1 = BeanUtils.getRootclass(instance);
+        Class c2 = instance.getClass().getSuperclass();
+        System.out.println(c1);
+        System.out.println(c2);
+    }
 
     @Test
     public void testGetValueIfAny() throws Exception {
