@@ -10,10 +10,8 @@ lyj is a Java 8 library created to build both client side and server side applic
 
 ### Quick Summary
 lyj is a light-weight java library (lyj-core) with some extensions and modules (projects).
-
-### OS-Enterprise (OSE)
-OSE is a "Serverless" Application Server.
-You can find [more about OSE here](./projects/os_enterprise/readme.md).
+At [Botika](https://www.botika.it) we use lyj as a base for all our custom programs.
+OS-Enterprise, for example, is entirely built on lyj framework.
 
 #### Desktop Gap
 [DesktopGap](https://bitbucket.org/angelogeminiani/lyj/src/827bc77cf709fbfa3e0ac62d96ec57768f8c5551/projects/desktopgap/?at=master) allows java developers to write awesome applications with an HTML gui.
